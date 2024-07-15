@@ -1,0 +1,19 @@
+# Xcode
+*.xcworkspace
+*.xcuserdata
+*.xcscmblueprint
+xcuserdata/
+DerivedData/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+.build/
+Packages/
+Package.pins
+.swiftpm/xcode
+
+# Cocoapods
+Pods/
