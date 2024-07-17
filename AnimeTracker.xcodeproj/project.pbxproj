@@ -13,6 +13,11 @@
 		CDC14F282C453DBF00BC14FA /* Base in Resources */ = {isa = PBXBuildFile; fileRef = CDC14F272C453DBF00BC14FA /* Base */; };
 		CDC14F2A2C453DC000BC14FA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDC14F292C453DC000BC14FA /* Assets.xcassets */; };
 		CDC14F2D2C453DC000BC14FA /* Base in Resources */ = {isa = PBXBuildFile; fileRef = CDC14F2C2C453DC000BC14FA /* Base */; };
+		CDC14F382C4554F500BC14FA /* PickerData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC14F372C4554F500BC14FA /* PickerData.swift */; };
+		CDC14F3A2C4555D200BC14FA /* SearchPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC14F392C4555D200BC14FA /* SearchPageViewController.swift */; };
+		CDC14F3C2C46A7C200BC14FA /* AnimeFetchData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC14F3B2C46A7C200BC14FA /* AnimeFetchData.swift */; };
+		CDE22E452C47C39500080BAD /* SearchingAnimeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE22E442C47C39500080BAD /* SearchingAnimeCollectionViewCell.swift */; };
+		CDE22E482C47F8B600080BAD /* AnimeDataDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE22E472C47F8B600080BAD /* AnimeDataDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +29,11 @@
 		CDC14F292C453DC000BC14FA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CDC14F2C2C453DC000BC14FA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CDC14F2E2C453DC000BC14FA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CDC14F372C4554F500BC14FA /* PickerData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerData.swift; sourceTree = "<group>"; };
+		CDC14F392C4555D200BC14FA /* SearchPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPageViewController.swift; sourceTree = "<group>"; };
+		CDC14F3B2C46A7C200BC14FA /* AnimeFetchData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeFetchData.swift; sourceTree = "<group>"; };
+		CDE22E442C47C39500080BAD /* SearchingAnimeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchingAnimeCollectionViewCell.swift; sourceTree = "<group>"; };
+		CDE22E472C47F8B600080BAD /* AnimeDataDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeDataDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +66,10 @@
 		CDC14F1F2C453DBF00BC14FA /* AnimeTracker */ = {
 			isa = PBXGroup;
 			children = (
+				CDE22E462C47F89400080BAD /* Protocol */,
+				CDC14F362C45544F00BC14FA /* Model */,
+				CDC14F352C45544800BC14FA /* View */,
+				CDC14F342C45543500BC14FA /* ViewController */,
 				CDC14F202C453DBF00BC14FA /* AppDelegate.swift */,
 				CDC14F222C453DBF00BC14FA /* SceneDelegate.swift */,
 				CDC14F242C453DBF00BC14FA /* ViewController.swift */,
@@ -65,6 +79,39 @@
 				CDC14F2E2C453DC000BC14FA /* Info.plist */,
 			);
 			path = AnimeTracker;
+			sourceTree = "<group>";
+		};
+		CDC14F342C45543500BC14FA /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				CDC14F392C4555D200BC14FA /* SearchPageViewController.swift */,
+			);
+			path = ViewController;
+			sourceTree = "<group>";
+		};
+		CDC14F352C45544800BC14FA /* View */ = {
+			isa = PBXGroup;
+			children = (
+				CDE22E442C47C39500080BAD /* SearchingAnimeCollectionViewCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		CDC14F362C45544F00BC14FA /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				CDC14F372C4554F500BC14FA /* PickerData.swift */,
+				CDC14F3B2C46A7C200BC14FA /* AnimeFetchData.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		CDE22E462C47F89400080BAD /* Protocol */ = {
+			isa = PBXGroup;
+			children = (
+				CDE22E472C47F8B600080BAD /* AnimeDataDelegate.swift */,
+			);
+			path = Protocol;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -139,8 +186,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				CDC14F252C453DBF00BC14FA /* ViewController.swift in Sources */,
+				CDE22E482C47F8B600080BAD /* AnimeDataDelegate.swift in Sources */,
+				CDC14F3C2C46A7C200BC14FA /* AnimeFetchData.swift in Sources */,
 				CDC14F212C453DBF00BC14FA /* AppDelegate.swift in Sources */,
+				CDE22E452C47C39500080BAD /* SearchingAnimeCollectionViewCell.swift in Sources */,
 				CDC14F232C453DBF00BC14FA /* SceneDelegate.swift in Sources */,
+				CDC14F382C4554F500BC14FA /* PickerData.swift in Sources */,
+				CDC14F3A2C4555D200BC14FA /* SearchPageViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -300,6 +352,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -328,6 +381,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
