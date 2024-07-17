@@ -19,7 +19,6 @@
 		CDE22E452C47C39500080BAD /* SearchingAnimeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE22E442C47C39500080BAD /* SearchingAnimeCollectionViewCell.swift */; };
 		CDE22E482C47F8B600080BAD /* AnimeDataDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE22E472C47F8B600080BAD /* AnimeDataDelegate.swift */; };
 		CDE22E4B2C480F7400080BAD /* Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56.png in Resources */ = {isa = PBXBuildFile; fileRef = CDE22E4A2C480F7400080BAD /* Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56.png */; };
-		CDE22E4D2C48103C00080BAD /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = CDE22E4C2C48103C00080BAD /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,7 +36,7 @@
 		CDE22E442C47C39500080BAD /* SearchingAnimeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchingAnimeCollectionViewCell.swift; sourceTree = "<group>"; };
 		CDE22E472C47F8B600080BAD /* AnimeDataDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeDataDelegate.swift; sourceTree = "<group>"; };
 		CDE22E4A2C480F7400080BAD /* Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56.png"; path = "../../../Desktop/Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56.png"; sourceTree = "<group>"; };
-		CDE22E4C2C48103C00080BAD /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../../Desktop/README.md; sourceTree = "<group>"; };
+		CDE22E4E2C48115800080BAD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,7 +53,7 @@
 		CDC14F142C453DBF00BC14FA = {
 			isa = PBXGroup;
 			children = (
-				CDE22E4C2C48103C00080BAD /* README.md */,
+				CDE22E4E2C48115800080BAD /* README.md */,
 				CDE22E492C480F4100080BAD /* Demo */,
 				CDC14F1F2C453DBF00BC14FA /* AnimeTracker */,
 				CDC14F1E2C453DBF00BC14FA /* Products */,
@@ -188,7 +187,6 @@
 			files = (
 				CDC14F2A2C453DC000BC14FA /* Assets.xcassets in Resources */,
 				CDC14F2D2C453DC000BC14FA /* Base in Resources */,
-				CDE22E4D2C48103C00080BAD /* README.md in Resources */,
 				CDE22E4B2C480F7400080BAD /* Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56.png in Resources */,
 				CDC14F282C453DBF00BC14FA /* Base in Resources */,
 			);
