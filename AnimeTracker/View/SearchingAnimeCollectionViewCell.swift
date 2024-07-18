@@ -15,7 +15,7 @@ class SearchingAnimeCollectionViewCell: UICollectionViewCell {
         super.awakeFromNib()
     }
     
-    func setup(title: String, image: UIImage?) {
+    func setup(title: String, imageURL: String?) {
         
         for views in subviews {
             views.removeFromSuperview()
@@ -24,8 +24,8 @@ class SearchingAnimeCollectionViewCell: UICollectionViewCell {
         animeCoverImage.translatesAutoresizingMaskIntoConstraints = false
         animeCoverImage.contentMode = .scaleAspectFill
         animeCoverImage.clipsToBounds = true
-        if let image = image {
-            animeCoverImage.image = image
+        if let imageURL = imageURL {
+            animeCoverImage.loadImage(from: imageURL)
         } else {
             animeCoverImage.image = UIImage(systemName: "photo")
         }

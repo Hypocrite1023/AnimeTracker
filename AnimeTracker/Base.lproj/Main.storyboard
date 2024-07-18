@@ -14,14 +14,45 @@
         <!--Trending-->
         <scene sceneID="cde-k4-2Xj">
             <objects>
-                <viewController id="HCt-2S-Foc" sceneMemberID="viewController">
+                <viewController id="HCt-2S-Foc" customClass="TrendingPageViewController" customModule="AnimeTracker" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="xVu-e5-edL">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="eeF-DL-tUM">
+                                <rect key="frame" x="0.0" y="59" width="393" height="710"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Ydy-Rp-0ii">
+                                    <size key="itemSize" width="120" height="185"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="trendingCell" id="ndC-dg-CR3" customClass="SearchingAnimeCollectionViewCell" customModule="AnimeTracker" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="119.99999999999997" height="185"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="MWN-Ha-tU5">
+                                            <rect key="frame" x="0.0" y="0.0" width="119.99999999999997" height="185"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </collectionViewCellContentView>
+                                    </collectionViewCell>
+                                </cells>
+                            </collectionView>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="vbC-qZ-Jtq"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="vbC-qZ-Jtq" firstAttribute="bottom" secondItem="eeF-DL-tUM" secondAttribute="bottom" id="398-gJ-xQJ"/>
+                            <constraint firstItem="vbC-qZ-Jtq" firstAttribute="trailing" secondItem="eeF-DL-tUM" secondAttribute="trailing" id="Jva-jz-W7G"/>
+                            <constraint firstItem="eeF-DL-tUM" firstAttribute="leading" secondItem="vbC-qZ-Jtq" secondAttribute="leading" id="OkE-6G-leY"/>
+                            <constraint firstItem="eeF-DL-tUM" firstAttribute="top" secondItem="vbC-qZ-Jtq" secondAttribute="top" id="RtP-xB-40z"/>
+                        </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Trending" image="flame.fill" catalog="system" id="uxf-P7-bk3"/>
+                    <connections>
+                        <outlet property="trendingCollectionView" destination="eeF-DL-tUM" id="ugw-zo-lcr"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dRB-1a-lxw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -45,7 +76,7 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="cell" id="s4y-fi-CdG" customClass="SearchingAnimeCollectionViewCell" customModule="AnimeTracker" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="searchCell" id="s4y-fi-CdG" customClass="SearchingAnimeCollectionViewCell" customModule="AnimeTracker" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="120" height="185"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="KvS-y9-alG">

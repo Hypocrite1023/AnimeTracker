@@ -8,5 +8,5 @@
 import Foundation
 
 protocol AnimeDataDelegate: AnyObject {
-    func passAnimeData(animeData: AnimeTrend)
+    func passAnimeData(animeData: AnimeSearchedOrTrending)
 }

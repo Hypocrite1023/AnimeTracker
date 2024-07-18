@@ -16,7 +16,7 @@ class SearchPageViewController: UIViewController {
     var seasonTableView: UITableView!
     let apiManager = AnimeFetchData()
     var images: [UIImage?] = Array(repeating: nil, count: 50)
-    var animeData: AnimeTrend?
+    var animeData: AnimeSearchedOrTrending?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,9 +62,9 @@ class SearchPageViewController: UIViewController {
         
         trendingAnimeCollectionView?.dataSource = self
         trendingAnimeCollectionView?.delegate = self
-        trendingAnimeCollectionView?.register(SearchingAnimeCollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        trendingAnimeCollectionView?.register(SearchingAnimeCollectionViewCell.self, forCellWithReuseIdentifier: "searchCell")
         if let seasonUpperCase = PickerData.seasonPickerOption.first?.uppercased(), let yearStr = PickerData.yearPickerOption.last?.description {
-            apiManager.fetchData(year: yearStr, season: seasonUpperCase)
+            apiManager.fetchAnimeBySearch(year: yearStr, season: seasonUpperCase)
         }
 //        fetchImages()
     }
@@ -143,14 +143,14 @@ extension SearchPageViewController: UITableViewDataSource, UITableViewDelegate {
             tableView.deselectRow(at: indexPath, animated: true)
             tableView.isHidden = true
             if let seasonUpperCase = seasonButton.titleLabel?.text?.uppercased(), let yearStr = yearButton.titleLabel?.text?.description {
-                apiManager.fetchData(year: yearStr, season: seasonUpperCase)
+                apiManager.fetchAnimeBySearch(year: yearStr, season: seasonUpperCase)
             }
         } else if tableView == yearTableView {
             yearButton.setTitle(PickerData.yearPickerOption[indexPath.row].description, for: .normal)
             tableView.deselectRow(at: indexPath, animated: true)
             tableView.isHidden = true
             if let seasonUpperCase = seasonButton.titleLabel?.text?.uppercased(), let yearStr = yearButton.titleLabel?.text?.description {
-                apiManager.fetchData(year: yearStr, season: seasonUpperCase)
+                apiManager.fetchAnimeBySearch(year: yearStr, season: seasonUpperCase)
             }
         }
         
@@ -167,16 +167,15 @@ extension SearchPageViewController: UICollectionViewDataSource, UICollectionView
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! SearchingAnimeCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "searchCell", for: indexPath) as! SearchingAnimeCollectionViewCell
         // Set a placeholder or initial image here if needed
 //        cell.animeCoverImage?.image = UIImage(systemName: "photo")
 //        cell.contentView.backgroundColor = .green
-        if let image = images[indexPath.item] {
-            if let animeTitle = self.animeData?.data.Page.media[indexPath.item].title.native {
-                cell.setup(title: animeTitle, image: image)
-            }
+        if let animeAllData = animeData {
+            let animeOneData = animeAllData.data.Page.media[indexPath.item]
+            cell.setup(title: animeOneData.title.native, imageURL: animeOneData.coverImage.extraLarge)
         } else {
-            cell.setup(title: "\(indexPath.item)", image: nil)
+            cell.setup(title: "", imageURL: nil)
         }
         return cell
     }
@@ -218,7 +217,7 @@ extension SearchPageViewController: UICollectionViewDataSource, UICollectionView
 }
 
 extension SearchPageViewController: AnimeDataDelegate {
-    func passAnimeData(animeData: AnimeTrend) {
+    func passAnimeData(animeData: AnimeSearchedOrTrending) {
         self.animeData = animeData
         for index in 0..<(self.animeData?.data.Page.media.count)! {
             if let coverImage = self.animeData?.data.Page.media[index].coverImage.extraLarge {
