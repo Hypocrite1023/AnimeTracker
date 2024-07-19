@@ -18,7 +18,8 @@ class TrendingPageViewController: UIViewController {
 
         // Do any additional setup after loading the view.
         animeFetchManager.animeDataDelegateManager = self
-        animeFetchManager.fetchAnimeByTrending()
+        animeFetchManager.fetchAnimeByTrending(page: animeFetchManager.trendingNextFetchPage)
+        animeFetchManager.isFetchingData = false
         trendingCollectionView.dataSource = self
         trendingCollectionView.delegate = self
     }
@@ -72,12 +73,42 @@ extension TrendingPageViewController: UICollectionViewDelegateFlowLayout {
 }
 extension TrendingPageViewController: AnimeDataDelegate {
     func passAnimeData(animeData: AnimeSearchedOrTrending) {
-        self.animeFetchedData = animeData
-        print("pass data")
-        DispatchQueue.main.sync {
-            trendingCollectionView.reloadData()
+        if self.animeFetchedData == nil {
+            self.animeFetchedData = animeData
+            DispatchQueue.main.async {
+                self.trendingCollectionView.reloadData()
+            }
+        } else {
+            let dataLengthBeforeAppend = self.animeFetchedData?.data.Page.media.count ?? 0
+            self.animeFetchedData?.data.Page.media.append(contentsOf: animeData.data.Page.media)
+            let dataLengthAfterAppend = self.animeFetchedData?.data.Page.media.count ?? 0
+            
+            let indexPaths = (dataLengthBeforeAppend..<dataLengthAfterAppend).map { IndexPath(item: $0, section: 0) }
+            DispatchQueue.main.async {
+                self.trendingCollectionView.performBatchUpdates({
+                    self.trendingCollectionView.insertItems(at: indexPaths)
+                }, completion: nil)
+            }
+            animeFetchManager.isFetchingData = false
         }
     }
     
     
+}
+extension TrendingPageViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let frameHeight = scrollView.frame.size.height
+//        print("offsetY: \(offsetY)", "contentHeight: \(contentHeight)", "frameHeight: \(frameHeight)")
+        if offsetY > contentHeight - frameHeight {
+            if let animeFetchedData = animeFetchedData {
+                print(animeFetchManager.isFetchingData.description)
+                if animeFetchedData.data.Page.pageInfo.hasNextPage && !animeFetchManager.isFetchingData {
+                    print("fetch data")
+                    animeFetchManager.fetchAnimeByTrending(page: animeFetchManager.trendingNextFetchPage)
+                }
+            }
+        }
+    }
 }

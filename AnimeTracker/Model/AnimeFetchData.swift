@@ -8,13 +8,13 @@
 import Foundation
 
 struct AnimeSearchedOrTrending: Codable {
-    let data: Page
+    var data: Page
     
     struct Page: Codable {
-        let Page: PageInfoAndMedia
+        var Page: PageInfoAndMedia
     }
     struct PageInfoAndMedia: Codable {
-        let media: [Anime]
+        var media: [Anime]
         let pageInfo: PageInfo
     }
     struct Anime: Codable {
@@ -40,6 +40,8 @@ class AnimeFetchData {
     // anime image, anime title
     let queryURL = URL(string: "https://graphql.anilist.co")!
     var animeDataDelegateManager: AnimeDataDelegate?
+    var trendingNextFetchPage = 1
+    var isFetchingData = false
     
     func fetchAnimeBySearch(year: String, season: String) {
         var urlRequest = URLRequest(url: queryURL)
@@ -108,14 +110,15 @@ class AnimeFetchData {
         
     }
     
-    func fetchAnimeByTrending() {
+    func fetchAnimeByTrending(page: Int) {
+        isFetchingData = true
         var urlRequest = URLRequest(url: queryURL)
         urlRequest.httpMethod = "post"
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         let query = """
             query {
-              Page(page: 1, perPage: 50) {
+              Page(page: \(page), perPage: 50) {
                 media(sort: TRENDING_DESC, type: ANIME) {
                   title {
                     romaji
@@ -161,6 +164,7 @@ class AnimeFetchData {
             do {
                 let media = try JSONDecoder().decode(AnimeSearchedOrTrending.self, from: data)
                 self.animeDataDelegateManager?.passAnimeData(animeData: media)
+                self.trendingNextFetchPage += 1
 //                print(media.data.Page.first?.media.coverImage)
             } catch {
                 print("Error parsing JSON: \(error.localizedDescription)")
