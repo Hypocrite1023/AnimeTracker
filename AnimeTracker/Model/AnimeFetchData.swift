@@ -18,6 +18,7 @@ struct AnimeSearchedOrTrending: Codable {
         let pageInfo: PageInfo
     }
     struct Anime: Codable {
+        let id: Int
         let title: Title
         let coverImage: CoverImage
     }
@@ -25,13 +26,41 @@ struct AnimeSearchedOrTrending: Codable {
         let hasNextPage: Bool
     }
     struct Title: Codable {
-        let romaji: String?
-        let english: String?
         let native: String
     }
-
     struct CoverImage: Codable {
         let extraLarge: String
+    }
+}
+
+struct MediaResponse: Decodable {
+    let data: MediaData
+
+    struct MediaData: Decodable {
+        let media: Media
+
+        enum CodingKeys: String, CodingKey {
+            case media = "Media"
+        }
+
+        struct Media: Decodable {
+            let title: MediaTitle
+            let coverImage: MediaCoverImage
+            let seasonYear: Int
+            let season: String
+            let averageScore: Int
+            let description: String
+
+            struct MediaTitle: Decodable {
+                let romaji: String?
+                let english: String?
+                let native: String?
+            }
+
+            struct MediaCoverImage: Decodable {
+                let extraLarge: String?
+            }
+        }
     }
 }
 
@@ -40,6 +69,7 @@ class AnimeFetchData {
     // anime image, anime title
     let queryURL = URL(string: "https://graphql.anilist.co")!
     var animeDataDelegateManager: AnimeDataDelegate?
+    var animeDetailDataDelegate: AnimeDetailDataDelegate?
     var trendingNextFetchPage = 1
     var isFetchingData = false
     
@@ -120,9 +150,8 @@ class AnimeFetchData {
             query {
               Page(page: \(page), perPage: 50) {
                 media(sort: TRENDING_DESC, type: ANIME) {
+                  id
                   title {
-                    romaji
-                    english
                     native
                   }
                   coverImage {
@@ -166,6 +195,68 @@ class AnimeFetchData {
                 self.animeDataDelegateManager?.passAnimeData(animeData: media)
                 self.trendingNextFetchPage += 1
 //                print(media.data.Page.first?.media.coverImage)
+            } catch {
+                print("Error parsing JSON: \(error.localizedDescription)")
+            }
+        }
+        
+        // Execute URLSession task
+        task.resume()
+    }
+    
+    func fetchAnimeByID(id: Int) {
+        isFetchingData = true
+        var urlRequest = URLRequest(url: queryURL)
+        urlRequest.httpMethod = "post"
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let query = """
+query {
+  Media(id: \(id)) {
+    title {
+      romaji
+      english
+      native
+    }
+    coverImage {
+      extraLarge
+    }
+    seasonYear
+    season
+    averageScore
+    description
+  }
+}
+"""
+        
+        let graphQLData = ["query": query]
+        
+        do {
+            urlRequest.httpBody = try JSONSerialization.data(withJSONObject: graphQLData, options: [])
+        } catch {
+            print("Error serializing JSON: \(error.localizedDescription)")
+            return
+        }
+        // Create URLSession task
+        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+            if let error = error {
+                print("Error fetching data: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                print("Invalid response")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+            do {
+                let media = try JSONDecoder().decode(MediaResponse.self, from: data)
+                self.animeDetailDataDelegate?.animeDetailDataDelegate(media: media.data.media)
+                self.isFetchingData = false
             } catch {
                 print("Error parsing JSON: \(error.localizedDescription)")
             }

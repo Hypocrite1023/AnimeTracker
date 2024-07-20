@@ -23,7 +23,6 @@ class TrendingPageViewController: UIViewController {
         trendingCollectionView.dataSource = self
         trendingCollectionView.delegate = self
     }
-    
 
     /*
     // MARK: - Navigation
@@ -51,6 +50,15 @@ extension TrendingPageViewController: UICollectionViewDelegate, UICollectionView
             cell.setup(title: "", imageURL: nil)
         }
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let animeData = self.animeFetchedData?.data.Page.media[indexPath.item] {
+            let detailViewController = AnimeDetailViewController(animeFetchingDataManager: animeFetchManager, mediaID: animeData.id)
+            detailViewController.modalPresentationStyle = .formSheet
+            present(detailViewController, animated: true)
+        }
+        collectionView.deselectItem(at: indexPath, animated: true)
     }
     
 }
