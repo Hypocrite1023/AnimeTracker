@@ -6,10 +6,26 @@
 <img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-07-17%20at%2022.38.56.png" width = "200">
 
 ### Anime Detail Page
-<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-07-20%20at%2023.33.46.png" width = "200">
+<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/screenshot%202024-07-24%2023.02.45.png" width = "200">
 
-#### 遇到的問題紀錄
+#### 遇到的問題及紀錄
 > 2024.07.20
->> UIScrollView沒辦法上或下滑動，後來發現如果是使用AutoLayout 加入UIScrollView的最後一個物件，他的trailing anchor一定要設成那個UIScrollView的trailing anchor
->> 這個問題是我在寫動畫詳細介紹頁面的時候遇到的，有６個按鈕但我怕一般直立的裝置沒辦法全部擠進去，所以使用了scroll view
+>> UIScrollView沒辦法上或下滑動，後來發現如果是使用AutoLayout 加入UIScrollView的最後一個物件，他的trailing anchor一定要設成那個UIScrollView的trailing anchor  
+>> 這個問題是我在寫動畫詳細介紹頁面的時候遇到的，有６個按鈕但我怕一般直立的裝置沒辦法全部擠進去，所以使用了scroll view  
+> 2024.07.24
+>> storyboard中的UIScrollView有content layout guide 和 frame layout guide
+>> content layout guide  
+>> 定義:
+	•	表示捲動視圖中可捲動內容的大小和位置。  
+	•	約束這個 guide 可以用來確定捲動視圖內容的大小和位置。  
+	•	換句話說，它代表的是捲動視圖的整個內容區域，包括所有可捲動的部分，而不僅僅是目前可見的部分。  
+>> 用途:  
+	•	如果你需要設置捲動視圖的內容大小，比如確定內容的總高度或寬度，你需要使用這個 guide。
+>> frame layout guide
+>> 定義:  
+	•	表示捲動視圖本身的邊界和位置。  
+	•	約束這個 guide 可以用來確定捲動視圖的實際大小和位置。  
+	•	它代表的是捲動視圖的可見區域，即不包含任何超出邊界的捲動內容部分。  
+>> 用途:  
+	•	這個 guide 用於約束捲動視圖本身的大小和位置。  
 
