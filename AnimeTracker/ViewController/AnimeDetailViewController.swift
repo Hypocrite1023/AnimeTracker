@@ -70,13 +70,13 @@ class AnimeDetailViewController: UIViewController {
                 let orientation = windowScene.interfaceOrientation
                 if orientation.isLandscape {
                     self.view.frame = self.view.bounds
-//                    self.animeDetailView.frame = self.view.bounds
+                    self.animeDetailView.frame = self.view.bounds
                     NSLayoutConstraint.deactivate(self.portraitConstraints)
-                    NSLayoutConstraint.activate(self.landscapeConstraints)
+                    NSLayoutConstraint.activate(self.portraitConstraints)
                     print("橫向")
                 } else if orientation.isPortrait {
                     self.view.frame = self.view.bounds
-//                    self.animeDetailView.frame = self.view.bounds
+                    self.animeDetailView.frame = self.view.bounds
                     NSLayoutConstraint.activate(self.portraitConstraints)
                     NSLayoutConstraint.deactivate(self.landscapeConstraints)
                     print("縱向")
@@ -99,6 +99,39 @@ class AnimeDetailViewController: UIViewController {
     private func setupPortraitConstraint() {
         portraitConstraints = [
             animeDetailView.tmpScrollView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
+            animeDetailView.tmpScrollView.leadingAnchor.constraint(equalTo: animeDetailView.safeAreaLayoutGuide.leadingAnchor),
+            animeDetailView.tmpScrollView.trailingAnchor.constraint(equalTo: animeDetailView.safeAreaLayoutGuide.trailingAnchor),
+            animeDetailView.tmpScrollView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor),
+//            animeDetailView.tmpScrollView.widthAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.widthAnchor),
+            
+            animeDetailView.animeBannerView.topAnchor.constraint(equalTo: animeDetailView.tmpScrollView.topAnchor),
+            animeDetailView.animeBannerView.leadingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.safeAreaLayoutGuide.leadingAnchor),
+            animeDetailView.animeBannerView.widthAnchor.constraint(equalTo: animeDetailView.tmpScrollView.widthAnchor),
+            animeDetailView.animeBannerView.heightAnchor.constraint(equalToConstant: 370),
+            
+            animeDetailView.animeInformationScrollView.topAnchor.constraint(equalTo: animeDetailView.animeBannerView.bottomAnchor, constant: 20),
+            animeDetailView.animeInformationScrollView.leadingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.leadingAnchor, constant: 10),
+            
+            animeDetailView.animeInformationScrollView.heightAnchor.constraint(equalToConstant: 70),
+            animeDetailView.animeInformationScrollView.widthAnchor.constraint(equalTo: animeDetailView.tmpScrollView.widthAnchor, constant: -20),
+
+            animeDetailView.animeDescriptionView.topAnchor.constraint(equalTo: animeDetailView.animeInformationScrollView.bottomAnchor, constant: 20),
+            animeDetailView.animeDescriptionView.leadingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.leadingAnchor),
+            animeDetailView.animeDescriptionView.widthAnchor.constraint(equalTo: animeDetailView.tmpScrollView.widthAnchor),
+            
+            animeDetailView.relationView.topAnchor.constraint(equalTo: animeDetailView.animeDescriptionView.bottomAnchor),
+            animeDetailView.relationView.leadingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.leadingAnchor),
+            animeDetailView.relationView.trailingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.trailingAnchor),
+            animeDetailView.relationView.widthAnchor.constraint(equalTo: animeDetailView.tmpScrollView.widthAnchor),
+            animeDetailView.relationView.heightAnchor.constraint(equalToConstant: 200),
+            animeDetailView.relationView.bottomAnchor.constraint(equalTo: animeDetailView.tmpScrollView.bottomAnchor),
+            
+        ]
+    }
+    
+    private func setupLandscapeConstraint() {
+        landscapeConstraints = [
+            animeDetailView.tmpScrollView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
             animeDetailView.tmpScrollView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
             animeDetailView.tmpScrollView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
             animeDetailView.tmpScrollView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor),
@@ -116,12 +149,15 @@ class AnimeDetailViewController: UIViewController {
             animeDetailView.animeDescriptionView.topAnchor.constraint(equalTo: animeDetailView.animeInformationScrollView.bottomAnchor, constant: 20),
             animeDetailView.animeDescriptionView.leadingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.leadingAnchor),
             animeDetailView.animeDescriptionView.widthAnchor.constraint(equalTo: self.view.widthAnchor),
-            animeDetailView.animeDescriptionView.bottomAnchor.constraint(equalTo: animeDetailView.tmpScrollView.bottomAnchor),
+//            animeDetailView.animeDescriptionView.bottomAnchor.constraint(equalTo: animeDetailView.tmpScrollView.bottomAnchor),
+            
+            animeDetailView.relationView.topAnchor.constraint(equalTo: animeDetailView.animeDescriptionView.bottomAnchor),
+            animeDetailView.relationView.leadingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.safeAreaLayoutGuide.leadingAnchor),
+            animeDetailView.relationView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
+            animeDetailView.relationView.heightAnchor.constraint(equalToConstant: 200),
+            animeDetailView.relationView.bottomAnchor.constraint(equalTo: animeDetailView.tmpScrollView.bottomAnchor),
+            
         ]
-    }
-    
-    private func setupLandscapeConstraint() {
-
     }
         
     

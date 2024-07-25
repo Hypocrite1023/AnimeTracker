@@ -111,6 +111,7 @@
                             </subviews>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
+                                <constraint firstAttribute="height" constant="50" id="5xM-9k-u5h"/>
                                 <constraint firstAttribute="trailing" secondItem="haa-wV-dfe" secondAttribute="trailing" id="7Hq-B0-G49"/>
                                 <constraint firstItem="P8a-Jx-dhU" firstAttribute="leading" secondItem="l1n-RG-f36" secondAttribute="trailing" id="7gZ-0N-7gH"/>
                                 <constraint firstItem="U7P-Vx-yqS" firstAttribute="top" secondItem="v6I-l9-1gg" secondAttribute="top" id="BAZ-73-lg6"/>
@@ -139,8 +140,6 @@
                         <constraint firstItem="v6I-l9-1gg" firstAttribute="top" secondItem="2OW-qm-sVO" secondAttribute="top" id="U5Q-W3-nFy"/>
                         <constraint firstItem="v6I-l9-1gg" firstAttribute="leading" secondItem="2OW-qm-sVO" secondAttribute="leading" id="Udf-vK-Im7"/>
                         <constraint firstAttribute="height" constant="50" id="ck0-bc-hJp"/>
-                        <constraint firstItem="8Jo-Kh-TCE" firstAttribute="width" secondItem="v6I-l9-1gg" secondAttribute="width" multiplier="0.879195" id="dbj-Pr-ggi"/>
-                        <constraint firstItem="v6I-l9-1gg" firstAttribute="bottom" secondItem="8Jo-Kh-TCE" secondAttribute="bottom" id="ysm-5G-QOA"/>
                     </constraints>
                     <viewLayoutGuide key="contentLayoutGuide" id="2OW-qm-sVO"/>
                     <viewLayoutGuide key="frameLayoutGuide" id="8Jo-Kh-TCE"/>

@@ -25,6 +25,8 @@ class AnimeDetailView: UIView {
     // heart button
     var animeInformationScrollView: AnimeInformationView!
     var animeDescriptionView: AnimeDescriptionView!
+    var relationView: RelationView!
+    
         
     var differentViewContainer: UIView!
         
@@ -60,13 +62,22 @@ class AnimeDetailView: UIView {
         animeDescriptionView.translatesAutoresizingMaskIntoConstraints = false
         tmpScrollView.addSubview(animeDescriptionView)
         
+        relationView = RelationView()
+        relationView.translatesAutoresizingMaskIntoConstraints = false
+        tmpScrollView.addSubview(relationView)
+        
     }
     
     func setupAnimeInfoPage(animeDetailData: MediaResponse.MediaData.Media) {
-        animeBannerView.animeBanner.loadImage(from: animeDetailData.bannerImage)
+        animeBannerView.animeBanner.loadImage(from: animeDetailData.bannerImage ?? "photo")
         animeBannerView.animeThumbnail.loadImage(from: animeDetailData.coverImage.extraLarge!)
         animeBannerView.animeTitleLabel.text = animeDetailData.title.native
-        animeInformationScrollView.airingLabel.text =  "Ep \(animeDetailData.nextAiringEpisode.episode): \(AnimeDetailFunc.timeLeft(from: animeDetailData.nextAiringEpisode.airingAt))"
+        if let nextAiringEpisode = animeDetailData.nextAiringEpisode {
+            animeInformationScrollView.airingLabel.text =  "Ep \(nextAiringEpisode.episode): \(AnimeDetailFunc.timeLeft(from: nextAiringEpisode.airingAt))"
+        } else {
+            animeInformationScrollView.airingLabel.text = "FINISHED"
+        }
+        
         animeInformationScrollView.formatLabel.text = animeDetailData.format
         if let episodes = animeDetailData.episodes {
             animeInformationScrollView.episodeLabel.text = "\(episodes)"
@@ -91,6 +102,39 @@ class AnimeDetailView: UIView {
         animeInformationScrollView.nativeLabel.text = animeDetailData.title.native
         animeInformationScrollView.synonymsLabel.text = animeDetailData.synonyms.joined(separator: ",")
         animeDescriptionView.descriptionBody.attributedText = AnimeDetailFunc.updateAnimeDescription(animeDescription: animeDetailData.description)
+        if let relations = animeDetailData.relations {
+            var tmpRelationPreview: RelationPreview?
+            for (index, edge) in relations.edges.enumerated() {
+                let relationPreview = RelationPreview()
+                // count == 1 set leading and trailing
+                // count == 2 set leading
+                // count == 3 set leading and trailing
+                relationPreview.previewImage.loadImage(from: edge.node.coverImage.large)
+                relationPreview.sourceLabel.text = edge.relationType
+                relationPreview.titleLabel.text = edge.node.title.userPreferred
+                relationPreview.typeLabel.text = edge.node.type
+                relationPreview.statusLabel.text = edge.node.status
+                relationPreview.translatesAutoresizingMaskIntoConstraints = false
+                relationView.viewInScrollView.addSubview(relationPreview)
+                relationPreview.heightAnchor.constraint(equalToConstant: 150).isActive = true
+                relationPreview.widthAnchor.constraint(equalToConstant: 300).isActive = true
+                
+                if index != relations.edges.count - 1 && index != 0 { // middle of the scroll view
+                    
+                    relationPreview.leadingAnchor.constraint(equalTo: tmpRelationPreview!.trailingAnchor, constant: 30).isActive = true
+                    
+                    tmpRelationPreview = relationPreview
+                } else if index == 0 { // first of the scroll view
+                    relationPreview.leadingAnchor.constraint(equalTo: relationView.viewInScrollView.leadingAnchor).isActive = true
+                    tmpRelationPreview = relationPreview
+                } else { // last of the scroll view
+                    relationPreview.leadingAnchor.constraint(equalTo: tmpRelationPreview!.trailingAnchor, constant: 30).isActive = true
+                    relationPreview.trailingAnchor.constraint(equalTo: relationView.viewInScrollView.trailingAnchor).isActive = true
+                }
+                
+            }
+        }
+        
     }
     
     

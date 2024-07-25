@@ -288,8 +288,8 @@ struct MediaResponse: Decodable {
             
             let description: String
             let streamingEpisodes: [StreamingEpisodes]
-            let bannerImage: String
-            let nextAiringEpisode: NextAiringEpisode
+            let bannerImage: String?
+            let nextAiringEpisode: NextAiringEpisode?
             let format: String
             let episodes: Int?
             let duration: Int // min
@@ -304,6 +304,37 @@ struct MediaResponse: Decodable {
             let hashtag: String
             let genres: [String]
             let synonyms: [String]
+            let relations: Relations?
+            
+            struct Relations: Decodable {
+                let edges: [Edges]
+                
+                struct Edges: Decodable {
+                    let id: Int
+                    let relationType: String
+                    let node: Node
+                    
+                    struct Node: Decodable {
+                        let id: Int
+                        let title: Title
+                        let format: String?
+                        let type: String?
+                        let status: String?
+                        let bannerImage: String?
+                        let coverImage: CoverImage
+                        
+                        struct Title: Decodable {
+                            let userPreferred: String
+                        }
+                        struct CoverImage: Decodable {
+                            let large: String
+                        }
+                    }
+                    
+                }
+            }
+            
+            
             
             struct Studios: Decodable {
                 let edges: [Edges]
@@ -554,6 +585,25 @@ query {
         hashtag
         genres
         synonyms
+        relations {
+            edges {
+                id
+                relationType(version:2)
+                node {
+                    id
+                    title {
+                        userPreferred
+                    }
+                    format
+                    type
+                    status(version:2)
+                    bannerImage
+                    coverImage {
+                        large
+                    }
+                }
+            }
+        }
     }
 }
 """
