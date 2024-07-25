@@ -305,6 +305,49 @@ struct MediaResponse: Decodable {
             let genres: [String]
             let synonyms: [String]
             let relations: Relations?
+            let characterPreview: CharacterPreview
+            
+            struct CharacterPreview: Decodable {
+                let edges: [Edges]
+                
+                struct Edges: Decodable {
+                    let id: Int
+                    let role: String
+                    let voiceActors: [VoiceActors]
+                    let node: Node
+                    
+                    struct Node: Decodable {
+                        let id: Int
+                        let name: Name
+                        let image: Image
+                        
+                        struct Image: Decodable {
+                            let large: String
+                        }
+                        
+                        struct Name: Decodable {
+                            let userPreferred: String
+                        }
+                    }
+                    
+                    struct VoiceActors: Decodable {
+                        let id: Int
+                        let name: Name
+                        let language: String
+                        let image: Image
+                        
+                        struct Image: Decodable {
+                            let large: String
+                        }
+                        
+                        struct Name: Decodable {
+                            let userPreferred: String
+                        }
+                        
+                    }
+                }
+            }
+            
             
             struct Relations: Decodable {
                 let edges: [Edges]
@@ -599,6 +642,32 @@ query {
                     status(version:2)
                     bannerImage
                     coverImage {
+                        large
+                    }
+                }
+            }
+        }
+        characterPreview:characters(perPage:6,sort:[ROLE,RELEVANCE,ID]) {
+            edges {
+                id
+                role
+                name
+                voiceActors(language:JAPANESE,sort:[RELEVANCE,ID]) {
+                    id
+                    name {
+                        userPreferred
+                    }
+                    language:languageV2
+                    image {
+                        large
+                    }
+                }
+                node {
+                    id
+                    name {
+                        userPreferred
+                    }
+                    image {
                         large
                     }
                 }

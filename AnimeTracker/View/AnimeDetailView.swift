@@ -26,6 +26,7 @@ class AnimeDetailView: UIView {
     var animeInformationScrollView: AnimeInformationView!
     var animeDescriptionView: AnimeDescriptionView!
     var relationView: RelationView!
+    var characterView: CharacterCollectionView!
     
         
     var differentViewContainer: UIView!
@@ -65,6 +66,10 @@ class AnimeDetailView: UIView {
         relationView = RelationView()
         relationView.translatesAutoresizingMaskIntoConstraints = false
         tmpScrollView.addSubview(relationView)
+        
+        characterView = CharacterCollectionView()
+        characterView.translatesAutoresizingMaskIntoConstraints = false
+        tmpScrollView.addSubview(characterView)
         
     }
     
@@ -133,6 +138,31 @@ class AnimeDetailView: UIView {
                 }
                 
             }
+        }
+        var tmpCharacterPreview: CharacterPreview?
+        for (index, edge) in animeDetailData.characterPreview.edges.enumerated() {
+            print(index)
+            let characterPreview = CharacterPreview()
+            characterPreview.characterImageView.loadImage(from: edge.node.image.large)
+            characterPreview.characterNameLabel.text = edge.node.name.userPreferred
+            characterPreview.characterRoleLabel.text = edge.role
+            characterPreview.voiceActorImageView.loadImage(from: edge.voiceActors.first?.image.large ?? "photo")
+            characterPreview.voiceActorNameLabel.text = edge.voiceActors.first?.name.userPreferred
+            characterPreview.voiceActorCountryLabel.text = edge.voiceActors.first?.language
+            characterPreview.translatesAutoresizingMaskIntoConstraints = false
+            characterView.characterCollectionView.addSubview(characterPreview)
+            if index == 0 { // first
+                characterPreview.topAnchor.constraint(equalTo: characterView.characterCollectionView.topAnchor).isActive = true
+            } else if index == animeDetailData.characterPreview.edges.count - 1 { // last
+                characterPreview.topAnchor.constraint(equalTo: tmpCharacterPreview!.bottomAnchor, constant: 10).isActive = true
+                characterPreview.bottomAnchor.constraint(equalTo: characterView.characterCollectionView.bottomAnchor).isActive = true
+            } else { // middle
+                characterPreview.topAnchor.constraint(equalTo: tmpCharacterPreview!.bottomAnchor, constant: 10).isActive = true
+            }
+            characterPreview.leadingAnchor.constraint(equalTo: characterView.characterCollectionView.leadingAnchor).isActive = true
+            characterPreview.trailingAnchor.constraint(equalTo: characterView.characterCollectionView.trailingAnchor).isActive = true
+            characterPreview.heightAnchor.constraint(equalToConstant: 83).isActive = true
+            tmpCharacterPreview = characterPreview
         }
         
     }

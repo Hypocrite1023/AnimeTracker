@@ -17,18 +17,6 @@ class AnimeDetailViewController: UIViewController {
     private var portraitConstraints: [NSLayoutConstraint] = []
     private var landscapeConstraints: [NSLayoutConstraint] = []
     
-    private lazy var overviewView: OverviewView = {
-        let view = OverviewView(frame: .zero)
-        view.animeDescriptionDelegate = self
-        return view
-    }()
-    
-    private lazy var watchView: WatchView = {
-        let view = WatchView(frame: .zero)
-        view.streamingDetailDelegate = self
-        return view
-    }()
-    
     init(animeFetchingDataManager: AnimeFetchData, mediaID: Int) {
         self.animeFetchingDataManager = animeFetchingDataManager
         self.animeMediaID = mediaID
@@ -64,7 +52,6 @@ class AnimeDetailViewController: UIViewController {
     override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         print("transition")
-        watchView.streamingEpisodeCollectionView.collectionViewLayout.invalidateLayout()
         coordinator.animate(alongsideTransition: { _ in
             if let windowScene = self.view.window?.windowScene {
                 let orientation = windowScene.interfaceOrientation
@@ -124,7 +111,12 @@ class AnimeDetailViewController: UIViewController {
             animeDetailView.relationView.trailingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.trailingAnchor),
             animeDetailView.relationView.widthAnchor.constraint(equalTo: animeDetailView.tmpScrollView.widthAnchor),
             animeDetailView.relationView.heightAnchor.constraint(equalToConstant: 200),
-            animeDetailView.relationView.bottomAnchor.constraint(equalTo: animeDetailView.tmpScrollView.bottomAnchor),
+//            animeDetailView.relationView.bottomAnchor.constraint(equalTo: animeDetailView.tmpScrollView.bottomAnchor),
+            
+            animeDetailView.characterView.topAnchor.constraint(equalTo: animeDetailView.relationView.bottomAnchor, constant: 10),
+            animeDetailView.characterView.leadingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.leadingAnchor),
+            animeDetailView.characterView.trailingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.trailingAnchor),
+            animeDetailView.characterView.bottomAnchor.constraint(equalTo: animeDetailView.tmpScrollView.bottomAnchor),
             
         ]
     }

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CharacterCollectionView" customModule="AnimeTracker" customModuleProvider="target">
+            <connections>
+                <outlet property="characterCollectionView" destination="V5A-ia-b29" id="EhE-LA-YiT"/>
+                <outlet property="contentView" destination="iN0-l3-epB" id="Gz7-BT-QNT"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="374"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Characters" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Spp-VJ-9Qt">
+                    <rect key="frame" x="5" y="5" width="365" height="21"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="21" id="XxT-C6-KgR"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="V5A-ia-b29" userLabel="character collection view">
+                    <rect key="frame" x="5" y="41" width="365" height="333"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                </view>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="Spp-VJ-9Qt" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="5" id="8HZ-4U-fLh"/>
+                <constraint firstItem="Spp-VJ-9Qt" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="5" id="ECk-KQ-xjG"/>
+                <constraint firstAttribute="trailing" secondItem="Spp-VJ-9Qt" secondAttribute="trailing" constant="5" id="SGH-A0-8tv"/>
+                <constraint firstItem="V5A-ia-b29" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="5" id="Tb1-Ui-Av6"/>
+                <constraint firstItem="V5A-ia-b29" firstAttribute="top" secondItem="Spp-VJ-9Qt" secondAttribute="bottom" constant="15" id="U8C-tq-2SX"/>
+                <constraint firstAttribute="bottom" secondItem="V5A-ia-b29" secondAttribute="bottom" id="UXg-BZ-7ZE"/>
+                <constraint firstAttribute="trailing" secondItem="V5A-ia-b29" secondAttribute="trailing" constant="5" id="ypY-Zh-kmB"/>
+            </constraints>
+            <nil key="simulatedTopBarMetrics"/>
+            <nil key="simulatedBottomBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="106.10687022900763" y="-82.394366197183103"/>
+        </view>
+    </objects>
+</document>
