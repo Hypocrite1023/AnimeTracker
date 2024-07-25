@@ -28,6 +28,7 @@ class AnimeDetailView: UIView {
     var relationView: RelationView!
     var characterView: CharacterCollectionView!
     var staffView: StaffCollectionView!
+    var statusDistributionView: StatusDistributionView!
     
         
     var differentViewContainer: UIView!
@@ -75,6 +76,10 @@ class AnimeDetailView: UIView {
         staffView = StaffCollectionView()
         staffView.translatesAutoresizingMaskIntoConstraints = false
         tmpScrollView.addSubview(staffView)
+        
+        statusDistributionView = StatusDistributionView()
+        statusDistributionView.translatesAutoresizingMaskIntoConstraints = false
+        tmpScrollView.addSubview(statusDistributionView)
         
     }
     
@@ -190,6 +195,55 @@ class AnimeDetailView: UIView {
             staffPreview.trailingAnchor.constraint(equalTo: staffView.staffCollectionView.trailingAnchor).isActive = true
             staffPreview.heightAnchor.constraint(equalToConstant: 83).isActive = true
             tmpStaffPreview = staffPreview
+        }
+        
+        let statusDistribution = animeDetailData.stats.statusDistribution.sorted(by: {$0.amount > $1.amount})
+        let totalAmount = statusDistribution.reduce(0) { (result, statusDistribution) -> Int in
+            return result + statusDistribution.amount
+        }
+        var statusDistributionStatusLabel = [statusDistributionView.firstTextLabel, statusDistributionView.secondTextLabel, statusDistributionView.thirdTextLabel, statusDistributionView.fourthTextLabel, statusDistributionView.fifthTextLabel]
+        var statusDistributionAmountLabel = [statusDistributionView.firstUsersLabel, statusDistributionView.secondUsersLabel, statusDistributionView.thirdUsersLabel, statusDistributionView.fourthUsersLabel, statusDistributionView.fifthUsersLabel]
+        let statsColor: [UIColor] = [#colorLiteral(red: 0.4110881686, green: 0.8372716904, blue: 0.2253350019, alpha: 1), #colorLiteral(red: 0.00486722542, green: 0.6609873176, blue: 0.9997979999, alpha: 1), #colorLiteral(red: 0.5738196373, green: 0.3378910422, blue: 0.9544720054, alpha: 1), #colorLiteral(red: 0.9687278867, green: 0.4746391773, blue: 0.6418368816, alpha: 1), #colorLiteral(red: 0.9119635224, green: 0.3648597598, blue: 0.4597702026, alpha: 1)]
+        var buttonConf = UIButton.Configuration.filled()
+        buttonConf.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 2, bottom: 2, trailing: 2)
+        for (index, label) in statusDistributionStatusLabel.enumerated() {
+            buttonConf.baseBackgroundColor = statsColor[index]
+            buttonConf.baseForegroundColor = .white
+            buttonConf.title = statusDistribution[index].status.lowercased()
+            label?.configuration = buttonConf
+//            label?.titleLabel?.text = statusDistribution[index].status
+//            label?.setTitle(statusDistribution[index].status, for: .normal)
+//            label?.titleLabel?.adjustsFontSizeToFitWidth = true
+//            label?.titleLabel?.numberOfLines = 1
+//            label?.titleLabel?.font = .systemFont(ofSize: 17)
+//            label?.titleLabel?.minimumScaleFactor = 0.3
+//            label?.titleLabel?.lineBreakMode = .byClipping
+        }
+        for (index, label) in statusDistributionAmountLabel.enumerated() {
+            label?.text = "\(statusDistribution[index].amount)"
+            label?.adjustsFontSizeToFitWidth = true
+        }
+        var lastView: UIView = statusDistributionView.persentView
+        for (index, status) in statusDistribution.enumerated() {
+            let tmpView = UIView()
+            tmpView.backgroundColor = statsColor[index]
+            tmpView.translatesAutoresizingMaskIntoConstraints = false
+            statusDistributionView.persentView.addSubview(tmpView)
+            tmpView.heightAnchor.constraint(equalToConstant: 15).isActive = true
+            tmpView.bottomAnchor.constraint(equalTo: statusDistributionView.persentView.bottomAnchor).isActive = true
+            print(CGFloat(status.amount) / CGFloat(totalAmount) * statusDistributionView.persentView.bounds.size.width)
+            if index != statusDistribution.count - 1 && index != 0 {
+                
+                tmpView.widthAnchor.constraint(equalTo: statusDistributionView.persentView.widthAnchor, multiplier: CGFloat(status.amount) / CGFloat(totalAmount)).isActive = true
+                tmpView.leadingAnchor.constraint(equalTo: lastView.trailingAnchor).isActive = true
+            } else if index == 0 {
+                tmpView.leadingAnchor.constraint(equalTo: lastView.leadingAnchor).isActive = true
+                tmpView.widthAnchor.constraint(equalTo: statusDistributionView.persentView.widthAnchor, multiplier: CGFloat(status.amount) / CGFloat(totalAmount)).isActive = true
+            } else {
+                tmpView.leadingAnchor.constraint(equalTo: lastView.trailingAnchor).isActive = true
+                tmpView.trailingAnchor.constraint(equalTo: statusDistributionView.persentView.trailingAnchor).isActive = true
+            }
+            lastView = tmpView
         }
         
     }

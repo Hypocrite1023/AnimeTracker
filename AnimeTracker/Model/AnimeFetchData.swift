@@ -307,6 +307,22 @@ struct MediaResponse: Decodable {
             let relations: Relations?
             let characterPreview: CharacterPreview
             let staffPreview: StaffPreview
+            let stats: Stats
+            
+            struct Stats: Decodable {
+                let statusDistribution: [StatusDistribution]
+                let scoreDistribution: [ScoreDistribution]
+                
+                struct ScoreDistribution: Decodable {
+                    let score: Int
+                    let amount: Int
+                }
+                
+                struct StatusDistribution: Decodable {
+                    let status: String
+                    let amount: Int
+                }
+            }
             
             struct StaffPreview: Decodable {
                 let edges: [Edges]
@@ -715,6 +731,16 @@ query {
                         large
                     }
                 }
+            }
+        }
+        stats {
+            statusDistribution {
+                status
+                amount
+            }
+            scoreDistribution {
+                score
+                amount
             }
         }
     }
