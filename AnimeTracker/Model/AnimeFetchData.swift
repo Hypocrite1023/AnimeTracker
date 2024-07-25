@@ -306,6 +306,34 @@ struct MediaResponse: Decodable {
             let synonyms: [String]
             let relations: Relations?
             let characterPreview: CharacterPreview
+            let staffPreview: StaffPreview
+            
+            struct StaffPreview: Decodable {
+                let edges: [Edges]
+                
+                struct Edges: Decodable {
+                    let id: Int
+                    let role: String
+                    let node: Node
+                    
+                    struct Node: Decodable {
+                        let id: Int
+                        let name: Name
+                        let language: String
+                        let image: Image
+                        
+                        struct Name: Decodable {
+                            let userPreferred: String
+                            
+                        }
+                        
+                        struct Image: Decodable {
+                            let large: String
+                        }
+                    }
+                }
+                
+            }
             
             struct CharacterPreview: Decodable {
                 let edges: [Edges]
@@ -631,7 +659,7 @@ query {
         relations {
             edges {
                 id
-                relationType(version:2)
+                relationType(version: 2)
                 node {
                     id
                     title {
@@ -639,7 +667,7 @@ query {
                     }
                     format
                     type
-                    status(version:2)
+                    status(version: 2)
                     bannerImage
                     coverImage {
                         large
@@ -647,17 +675,17 @@ query {
                 }
             }
         }
-        characterPreview:characters(perPage:6,sort:[ROLE,RELEVANCE,ID]) {
+        characterPreview:characters(perPage: 6,sort: [ROLE,RELEVANCE,ID]) {
             edges {
                 id
                 role
                 name
-                voiceActors(language:JAPANESE,sort:[RELEVANCE,ID]) {
+                voiceActors(language: JAPANESE,sort: [RELEVANCE,ID]) {
                     id
                     name {
                         userPreferred
                     }
-                    language:languageV2
+                    language: languageV2
                     image {
                         large
                     }
@@ -667,6 +695,22 @@ query {
                     name {
                         userPreferred
                     }
+                    image {
+                        large
+                    }
+                }
+            }
+        }
+        staffPreview: staff(perPage: 8,sort: [RELEVANCE,ID]) {
+            edges {
+                id
+                role
+                node {
+                    id
+                    name {
+                        userPreferred
+                    }
+                    language: languageV2
                     image {
                         large
                     }

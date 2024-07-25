@@ -116,7 +116,12 @@ class AnimeDetailViewController: UIViewController {
             animeDetailView.characterView.topAnchor.constraint(equalTo: animeDetailView.relationView.bottomAnchor, constant: 10),
             animeDetailView.characterView.leadingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.leadingAnchor),
             animeDetailView.characterView.trailingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.trailingAnchor),
-            animeDetailView.characterView.bottomAnchor.constraint(equalTo: animeDetailView.tmpScrollView.bottomAnchor),
+//            animeDetailView.characterView.bottomAnchor.constraint(equalTo: animeDetailView.tmpScrollView.bottomAnchor),
+            
+            animeDetailView.staffView.topAnchor.constraint(equalTo: animeDetailView.characterView.bottomAnchor, constant: 10),
+            animeDetailView.staffView.leadingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.leadingAnchor),
+            animeDetailView.staffView.trailingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.trailingAnchor),
+            animeDetailView.staffView.bottomAnchor.constraint(equalTo: animeDetailView.tmpScrollView.bottomAnchor),
             
         ]
     }

@@ -27,6 +27,7 @@ class AnimeDetailView: UIView {
     var animeDescriptionView: AnimeDescriptionView!
     var relationView: RelationView!
     var characterView: CharacterCollectionView!
+    var staffView: StaffCollectionView!
     
         
     var differentViewContainer: UIView!
@@ -70,6 +71,10 @@ class AnimeDetailView: UIView {
         characterView = CharacterCollectionView()
         characterView.translatesAutoresizingMaskIntoConstraints = false
         tmpScrollView.addSubview(characterView)
+        
+        staffView = StaffCollectionView()
+        staffView.translatesAutoresizingMaskIntoConstraints = false
+        tmpScrollView.addSubview(staffView)
         
     }
     
@@ -163,6 +168,28 @@ class AnimeDetailView: UIView {
             characterPreview.trailingAnchor.constraint(equalTo: characterView.characterCollectionView.trailingAnchor).isActive = true
             characterPreview.heightAnchor.constraint(equalToConstant: 83).isActive = true
             tmpCharacterPreview = characterPreview
+        }
+        var tmpStaffPreview: StaffPreview?
+        for (index, edge) in animeDetailData.staffPreview.edges.enumerated() {
+            let staffPreview = StaffPreview()
+            staffPreview.staffImageView.loadImage(from: edge.node.image.large)
+            staffPreview.staffNameLabel.text = edge.node.name.userPreferred
+            staffPreview.staffRoleLabel.text = edge.role
+            staffPreview.translatesAutoresizingMaskIntoConstraints = false
+            staffView.staffCollectionView.addSubview(staffPreview)
+            
+            if index == 0 { // first
+                staffPreview.topAnchor.constraint(equalTo: staffView.staffCollectionView.topAnchor).isActive = true
+            } else if index == animeDetailData.staffPreview.edges.count - 1 { // last
+                staffPreview.topAnchor.constraint(equalTo: tmpStaffPreview!.bottomAnchor, constant: 10).isActive = true
+                staffPreview.bottomAnchor.constraint(equalTo: staffView.staffCollectionView.bottomAnchor).isActive = true
+            } else { // middle
+                staffPreview.topAnchor.constraint(equalTo: tmpStaffPreview!.bottomAnchor, constant: 10).isActive = true
+            }
+            staffPreview.leadingAnchor.constraint(equalTo: staffView.staffCollectionView.leadingAnchor).isActive = true
+            staffPreview.trailingAnchor.constraint(equalTo: staffView.staffCollectionView.trailingAnchor).isActive = true
+            staffPreview.heightAnchor.constraint(equalToConstant: 83).isActive = true
+            tmpStaffPreview = staffPreview
         }
         
     }
