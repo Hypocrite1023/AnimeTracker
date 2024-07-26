@@ -29,6 +29,7 @@ class AnimeDetailView: UIView {
     var characterView: CharacterCollectionView!
     var staffView: StaffCollectionView!
     var statusDistributionView: StatusDistributionView!
+    var scoreDistributionView: ScoreDistributionView!
     
         
     var differentViewContainer: UIView!
@@ -80,6 +81,10 @@ class AnimeDetailView: UIView {
         statusDistributionView = StatusDistributionView()
         statusDistributionView.translatesAutoresizingMaskIntoConstraints = false
         tmpScrollView.addSubview(statusDistributionView)
+        
+        scoreDistributionView = ScoreDistributionView()
+        scoreDistributionView.translatesAutoresizingMaskIntoConstraints = false
+        tmpScrollView.addSubview(scoreDistributionView)
         
     }
     
@@ -151,7 +156,6 @@ class AnimeDetailView: UIView {
         }
         var tmpCharacterPreview: CharacterPreview?
         for (index, edge) in animeDetailData.characterPreview.edges.enumerated() {
-            print(index)
             let characterPreview = CharacterPreview()
             characterPreview.characterImageView.loadImage(from: edge.node.image.large)
             characterPreview.characterNameLabel.text = edge.node.name.userPreferred
@@ -201,8 +205,8 @@ class AnimeDetailView: UIView {
         let totalAmount = statusDistribution.reduce(0) { (result, statusDistribution) -> Int in
             return result + statusDistribution.amount
         }
-        var statusDistributionStatusLabel = [statusDistributionView.firstTextLabel, statusDistributionView.secondTextLabel, statusDistributionView.thirdTextLabel, statusDistributionView.fourthTextLabel, statusDistributionView.fifthTextLabel]
-        var statusDistributionAmountLabel = [statusDistributionView.firstUsersLabel, statusDistributionView.secondUsersLabel, statusDistributionView.thirdUsersLabel, statusDistributionView.fourthUsersLabel, statusDistributionView.fifthUsersLabel]
+        let statusDistributionStatusLabel = [statusDistributionView.firstTextLabel, statusDistributionView.secondTextLabel, statusDistributionView.thirdTextLabel, statusDistributionView.fourthTextLabel, statusDistributionView.fifthTextLabel]
+        let statusDistributionAmountLabel = [statusDistributionView.firstUsersLabel, statusDistributionView.secondUsersLabel, statusDistributionView.thirdUsersLabel, statusDistributionView.fourthUsersLabel, statusDistributionView.fifthUsersLabel]
         let statsColor: [UIColor] = [#colorLiteral(red: 0.4110881686, green: 0.8372716904, blue: 0.2253350019, alpha: 1), #colorLiteral(red: 0.00486722542, green: 0.6609873176, blue: 0.9997979999, alpha: 1), #colorLiteral(red: 0.5738196373, green: 0.3378910422, blue: 0.9544720054, alpha: 1), #colorLiteral(red: 0.9687278867, green: 0.4746391773, blue: 0.6418368816, alpha: 1), #colorLiteral(red: 0.9119635224, green: 0.3648597598, blue: 0.4597702026, alpha: 1)]
         var buttonConf = UIButton.Configuration.filled()
         buttonConf.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 2, bottom: 2, trailing: 2)
@@ -211,13 +215,6 @@ class AnimeDetailView: UIView {
             buttonConf.baseForegroundColor = .white
             buttonConf.title = statusDistribution[index].status.lowercased()
             label?.configuration = buttonConf
-//            label?.titleLabel?.text = statusDistribution[index].status
-//            label?.setTitle(statusDistribution[index].status, for: .normal)
-//            label?.titleLabel?.adjustsFontSizeToFitWidth = true
-//            label?.titleLabel?.numberOfLines = 1
-//            label?.titleLabel?.font = .systemFont(ofSize: 17)
-//            label?.titleLabel?.minimumScaleFactor = 0.3
-//            label?.titleLabel?.lineBreakMode = .byClipping
         }
         for (index, label) in statusDistributionAmountLabel.enumerated() {
             label?.text = "\(statusDistribution[index].amount)"
@@ -231,7 +228,7 @@ class AnimeDetailView: UIView {
             statusDistributionView.persentView.addSubview(tmpView)
             tmpView.heightAnchor.constraint(equalToConstant: 15).isActive = true
             tmpView.bottomAnchor.constraint(equalTo: statusDistributionView.persentView.bottomAnchor).isActive = true
-            print(CGFloat(status.amount) / CGFloat(totalAmount) * statusDistributionView.persentView.bounds.size.width)
+//            print(CGFloat(status.amount) / CGFloat(totalAmount) * statusDistributionView.persentView.bounds.size.width)
             if index != statusDistribution.count - 1 && index != 0 {
                 
                 tmpView.widthAnchor.constraint(equalTo: statusDistributionView.persentView.widthAnchor, multiplier: CGFloat(status.amount) / CGFloat(totalAmount)).isActive = true
@@ -244,6 +241,46 @@ class AnimeDetailView: UIView {
                 tmpView.trailingAnchor.constraint(equalTo: statusDistributionView.persentView.trailingAnchor).isActive = true
             }
             lastView = tmpView
+        }
+        let scoreAmountTotal = animeDetailData.stats.scoreDistribution.reduce(0) { ( result, scoreDistribution) -> Int in
+            return result + scoreDistribution.amount
+        }
+        var tmpScoreView: UIView?
+        for (index, score) in animeDetailData.stats.scoreDistribution.enumerated() {
+            let percent = AnimeDetailFunc.partOfAmount(value: score.amount, totalValue: scoreAmountTotal)
+            let scoreView = UIView()
+            scoreView.layer.cornerRadius = 5
+            scoreView.clipsToBounds = true
+            // 0 1 2 3 4(yellow) | 5 6 7 8 9
+            print(CGFloat(index) / 5)
+            if index < 5 {
+                scoreView.backgroundColor = AnimeDetailFunc.mixColor(color1: UIColor.systemRed, color2: UIColor.systemYellow, fraction: CGFloat(index) / 5)
+            } else {
+                scoreView.backgroundColor = AnimeDetailFunc.mixColor(color1: UIColor.systemYellow, color2: UIColor.systemGreen, fraction: CGFloat(index - 4) / 5)
+            }
+            
+            scoreDistributionView.contentViewInScoreView.addSubview(scoreView)
+            scoreView.translatesAutoresizingMaskIntoConstraints = false
+            scoreView.bottomAnchor.constraint(equalTo: scoreDistributionView.contentViewInScoreView.bottomAnchor).isActive = true
+            scoreView.heightAnchor.constraint(equalToConstant: 100 * percent + 10).isActive = true
+            scoreView.widthAnchor.constraint(equalToConstant: 15).isActive = true
+            if index == 0 {
+                scoreView.leadingAnchor.constraint(equalTo: scoreDistributionView.contentViewInScoreView.leadingAnchor, constant: 30).isActive = true
+            } else if index == animeDetailData.stats.scoreDistribution.count - 1 {
+                scoreView.leadingAnchor.constraint(equalTo: tmpScoreView!.trailingAnchor, constant: 30).isActive = true
+                scoreView.trailingAnchor.constraint(equalTo: scoreDistributionView.contentViewInScoreView.trailingAnchor, constant: -30).isActive = true
+            } else {
+                scoreView.leadingAnchor.constraint(equalTo: tmpScoreView!.trailingAnchor, constant: 30).isActive = true
+            }
+            tmpScoreView = scoreView
+            let percentLabel = UILabel()
+            percentLabel.adjustsFontSizeToFitWidth = true
+            percentLabel.translatesAutoresizingMaskIntoConstraints = false
+            percentLabel.text = String(format: "%.1f%%", percent * 100)
+            scoreDistributionView.contentViewInScoreView.addSubview(percentLabel)
+            percentLabel.bottomAnchor.constraint(equalTo: scoreView.topAnchor, constant: -10).isActive = true
+            percentLabel.widthAnchor.constraint(equalToConstant: 30).isActive = true
+            percentLabel.centerXAnchor.constraint(equalTo: scoreView.centerXAnchor).isActive = true
         }
         
     }

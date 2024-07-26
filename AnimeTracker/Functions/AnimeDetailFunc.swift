@@ -100,4 +100,34 @@ struct AnimeDetailFunc {
         }
         return finalAttributedString
     }
+    
+    static func logScale(value: CGFloat, maxValue: CGFloat) -> CGFloat {
+        return log(value + 1) / log(maxValue + 1)
+    }
+    
+    static func partOfAmount(value: Int, totalValue: Int) -> CGFloat {
+        return CGFloat(value) / CGFloat(totalValue)
+    }
+    
+    static func mixColor(color1: UIColor, color2: UIColor, fraction: CGFloat) -> UIColor {
+        var color1Red: CGFloat = 0
+        var color1Green: CGFloat = 0
+        var color1Blue: CGFloat = 0
+        var color1Alpha: CGFloat = 0
+        color1.getRed(&color1Red, green: &color1Green, blue: &color1Blue, alpha: &color1Alpha)
+        
+        var color2Red: CGFloat = 0
+        var color2Green: CGFloat = 0
+        var color2Blue: CGFloat = 0
+        var color2Alpha: CGFloat = 0
+        color2.getRed(&color2Red, green: &color2Green, blue: &color2Blue, alpha: &color2Alpha)
+        
+        let returnRed = color1Red * (1 - (fraction)) + (fraction) * color2Red
+        let returnBlue = color1Blue * (1 - (fraction)) + (fraction) * color2Blue
+        let returnGreen = color1Green * (1 - (fraction)) + (fraction) * color2Green
+        let returnAlpha = color1Alpha * (1 - (fraction)) + (fraction) * color2Alpha
+        print(returnRed, returnGreen, returnBlue, returnAlpha)
+        
+        return UIColor(red: returnRed, green: returnGreen, blue: returnBlue, alpha: returnAlpha)
+    }
 }
