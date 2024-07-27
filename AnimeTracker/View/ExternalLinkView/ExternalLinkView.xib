@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ExternalLinkView" customModule="AnimeTracker" customModuleProvider="target">
+            <connections>
+                <outlet property="contentView" destination="iN0-l3-epB" id="PxS-aB-YwU"/>
+                <outlet property="linkContainer" destination="7aD-Hp-JB6" id="c3g-Te-S3b"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="393" height="357"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="External &amp; Streaming links" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dP8-Ou-KHh">
+                    <rect key="frame" x="5" y="15" width="383" height="21"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="21" id="RED-Q1-oMj"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7aD-Hp-JB6">
+                    <rect key="frame" x="5" y="46" width="383" height="311"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                </view>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="7aD-Hp-JB6" firstAttribute="top" secondItem="dP8-Ou-KHh" secondAttribute="bottom" constant="10" id="2eU-GE-MwN"/>
+                <constraint firstAttribute="trailing" secondItem="7aD-Hp-JB6" secondAttribute="trailing" constant="5" id="DgW-Ny-ZfH"/>
+                <constraint firstItem="dP8-Ou-KHh" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="5" id="ET6-bz-aWF"/>
+                <constraint firstAttribute="trailing" secondItem="dP8-Ou-KHh" secondAttribute="trailing" constant="5" id="Jao-fb-EwO"/>
+                <constraint firstAttribute="bottom" secondItem="7aD-Hp-JB6" secondAttribute="bottom" id="PWt-Nv-eRt"/>
+                <constraint firstItem="dP8-Ou-KHh" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="15" id="bvc-jk-WT6"/>
+                <constraint firstItem="7aD-Hp-JB6" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="5" id="ugp-de-GzJ"/>
+            </constraints>
+            <nil key="simulatedTopBarMetrics"/>
+            <nil key="simulatedBottomBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="-2.2900763358778624" y="-154.57746478873241"/>
+        </view>
+    </objects>
+</document>

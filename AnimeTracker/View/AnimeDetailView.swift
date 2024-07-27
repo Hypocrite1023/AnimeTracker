@@ -33,7 +33,7 @@ class AnimeDetailView: UIView {
     var watchView: AnimeWatchPreviewContainer!
     var recommendationsView: RecommendationsView!
     var reviewView: ReviewsView!
-    
+    var externalLinkView: ExternalLinkView!
         
     var differentViewContainer: UIView!
         
@@ -100,6 +100,10 @@ class AnimeDetailView: UIView {
         reviewView = ReviewsView()
         reviewView.translatesAutoresizingMaskIntoConstraints = false
         tmpScrollView.addSubview(reviewView)
+        
+        externalLinkView = ExternalLinkView()
+        externalLinkView.translatesAutoresizingMaskIntoConstraints = false
+        tmpScrollView.addSubview(externalLinkView)
         
     }
     
@@ -372,12 +376,12 @@ class AnimeDetailView: UIView {
             voidLabel.font = .italicSystemFont(ofSize: 15)
             voidLabel.textColor = UIColor.secondaryLabel
             voidLabel.translatesAutoresizingMaskIntoConstraints = false
-            reviewView.addSubview(voidLabel)
+            reviewView.reviewContainer.addSubview(voidLabel)
             voidLabel.topAnchor.constraint(equalTo: reviewView.reviewContainer.topAnchor).isActive = true
             voidLabel.leadingAnchor.constraint(equalTo: reviewView.reviewContainer.leadingAnchor).isActive = true
             voidLabel.trailingAnchor.constraint(equalTo: reviewView.reviewContainer.trailingAnchor).isActive = true
             voidLabel.bottomAnchor.constraint(equalTo: reviewView.reviewContainer.bottomAnchor).isActive = true
-            voidLabel.heightAnchor.constraint(equalToConstant: 100).isActive = true
+            voidLabel.heightAnchor.constraint(equalToConstant: 60).isActive = true
 
         } else {
             for (index, review) in animeDetailData.reviewPreview.nodes.enumerated() {
@@ -403,6 +407,42 @@ class AnimeDetailView: UIView {
                 }
                 tmpAnimeReview = animeReview
             }
+        }
+        
+        var tmpExternalLinkPreview: ExternalLinkPreview?
+        for (index, externalLink) in animeDetailData.externalLinks.enumerated() {
+            let externalLinkPreview = ExternalLinkPreview()
+            externalLinkPreview.translatesAutoresizingMaskIntoConstraints = false
+            if let externalLinkIcon = externalLink.icon {
+                externalLinkPreview.externalLinkIcon.loadImage(from: externalLinkIcon)
+            } else {
+                externalLinkPreview.externalLinkIcon.image = UIImage(systemName: "link")
+            }
+            externalLinkPreview.externalLinkIcon.backgroundColor = UIColor(hex: externalLink.color)
+            externalLinkPreview.externalLinkIconColor.backgroundColor = UIColor(hex: externalLink.color)
+            externalLinkPreview.externalLinkIconColor.layer.cornerRadius = 10
+            externalLinkPreview.externalLinkIconColor.clipsToBounds = true
+            externalLinkPreview.externalLinkTitle.text = externalLink.site
+//            externalLinkPreview.externalLinkTitle.textColor = .secondaryLabel
+            externalLinkPreview.externalLinkTitleNote.text = externalLink.notes == nil ? "" : "(\(externalLink.notes!))"
+            externalLinkPreview.externalLinkTitleNote.textColor = .secondaryLabel
+            externalLinkPreview.layer.cornerRadius = 10
+            externalLinkPreview.clipsToBounds = true
+            externalLinkView.linkContainer.addSubview(externalLinkPreview)
+            
+            externalLinkPreview.leadingAnchor.constraint(equalTo: externalLinkView.linkContainer.leadingAnchor).isActive = true
+            externalLinkPreview.trailingAnchor.constraint(equalTo: externalLinkView.linkContainer.trailingAnchor).isActive = true
+            if index == 0 {
+                externalLinkPreview.topAnchor.constraint(equalTo: externalLinkView.linkContainer.topAnchor).isActive = true
+            } else if index == animeDetailData.externalLinks.count - 1 {
+                externalLinkPreview.bottomAnchor.constraint(equalTo: externalLinkView.linkContainer.bottomAnchor).isActive = true
+                if let tmpExternalLinkPreview = tmpExternalLinkPreview {
+                    externalLinkPreview.topAnchor.constraint(equalTo: tmpExternalLinkPreview.bottomAnchor, constant: 10).isActive = true
+                }
+            } else {
+                externalLinkPreview.topAnchor.constraint(equalTo: tmpExternalLinkPreview!.bottomAnchor, constant: 10).isActive = true
+            }
+            tmpExternalLinkPreview = externalLinkPreview
         }
         
     }

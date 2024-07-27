@@ -311,6 +311,19 @@ struct MediaResponse: Decodable {
             let stats: Stats
             let recommendations: Recommendations
             let reviewPreview: ReviewPreview
+            let externalLinks: [ExternalLinks]
+            
+            struct ExternalLinks: Decodable {
+                let id: Int
+                let site: String
+                let url: String
+                let type: String
+                let language: String?
+                let color: String?
+                let icon: String?
+                let notes: String?
+                let isDisabled: Bool
+            }
             
             struct ReviewPreview: Decodable {
                 let pageInfo: PageInfo
@@ -865,6 +878,17 @@ query {
                     }
                 }
             }
+        }
+        externalLinks {
+            id
+            site
+            url
+            type
+            language
+            color
+            icon
+            notes
+            isDisabled
         }
     }
 }
