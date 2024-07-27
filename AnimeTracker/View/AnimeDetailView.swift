@@ -30,6 +30,7 @@ class AnimeDetailView: UIView {
     var staffView: StaffCollectionView!
     var statusDistributionView: StatusDistributionView!
     var scoreDistributionView: ScoreDistributionView!
+    var watchView: AnimeWatchPreviewContainer!
     
         
     var differentViewContainer: UIView!
@@ -85,6 +86,10 @@ class AnimeDetailView: UIView {
         scoreDistributionView = ScoreDistributionView()
         scoreDistributionView.translatesAutoresizingMaskIntoConstraints = false
         tmpScrollView.addSubview(scoreDistributionView)
+        
+        watchView = AnimeWatchPreviewContainer()
+        watchView.translatesAutoresizingMaskIntoConstraints = false
+        tmpScrollView.addSubview(watchView)
         
     }
     
@@ -213,7 +218,7 @@ class AnimeDetailView: UIView {
         for (index, label) in statusDistributionStatusLabel.enumerated() {
             buttonConf.baseBackgroundColor = statsColor[index]
             buttonConf.baseForegroundColor = .white
-            buttonConf.title = statusDistribution[index].status.lowercased()
+            buttonConf.title = statusDistribution[index].status.uppercased()
             label?.configuration = buttonConf
         }
         for (index, label) in statusDistributionAmountLabel.enumerated() {
@@ -261,14 +266,14 @@ class AnimeDetailView: UIView {
             
             scoreDistributionView.contentViewInScoreView.addSubview(scoreView)
             scoreView.translatesAutoresizingMaskIntoConstraints = false
-            scoreView.bottomAnchor.constraint(equalTo: scoreDistributionView.contentViewInScoreView.bottomAnchor).isActive = true
+            scoreView.bottomAnchor.constraint(equalTo: scoreDistributionView.contentViewInScoreView.bottomAnchor, constant: -40).isActive = true
             scoreView.heightAnchor.constraint(equalToConstant: 100 * percent + 10).isActive = true
-            scoreView.widthAnchor.constraint(equalToConstant: 15).isActive = true
+            scoreView.widthAnchor.constraint(equalToConstant: 25).isActive = true
             if index == 0 {
-                scoreView.leadingAnchor.constraint(equalTo: scoreDistributionView.contentViewInScoreView.leadingAnchor, constant: 30).isActive = true
+                scoreView.leadingAnchor.constraint(equalTo: scoreDistributionView.contentViewInScoreView.leadingAnchor, constant: 15).isActive = true
             } else if index == animeDetailData.stats.scoreDistribution.count - 1 {
                 scoreView.leadingAnchor.constraint(equalTo: tmpScoreView!.trailingAnchor, constant: 30).isActive = true
-                scoreView.trailingAnchor.constraint(equalTo: scoreDistributionView.contentViewInScoreView.trailingAnchor, constant: -30).isActive = true
+                scoreView.trailingAnchor.constraint(equalTo: scoreDistributionView.contentViewInScoreView.trailingAnchor, constant: -15).isActive = true
             } else {
                 scoreView.leadingAnchor.constraint(equalTo: tmpScoreView!.trailingAnchor, constant: 30).isActive = true
             }
@@ -281,8 +286,44 @@ class AnimeDetailView: UIView {
             percentLabel.bottomAnchor.constraint(equalTo: scoreView.topAnchor, constant: -10).isActive = true
             percentLabel.widthAnchor.constraint(equalToConstant: 30).isActive = true
             percentLabel.centerXAnchor.constraint(equalTo: scoreView.centerXAnchor).isActive = true
+            
+            let scoreLabel = UILabel()
+            scoreLabel.translatesAutoresizingMaskIntoConstraints = false
+            scoreLabel.textAlignment = .center
+            scoreLabel.text = "\(score.score)"
+            scoreLabel.textColor = .secondaryLabel
+            scoreDistributionView.contentViewInScoreView.addSubview(scoreLabel)
+            scoreLabel.topAnchor.constraint(equalTo: scoreView.bottomAnchor, constant: 5).isActive = true
+            scoreLabel.widthAnchor.constraint(equalToConstant: 30).isActive = true
+            scoreLabel.centerXAnchor.constraint(equalTo: scoreView.centerXAnchor).isActive = true
         }
         
+        var tmpStreamingPreview: AnimeWatchPreview?
+        for (index, streaming) in animeDetailData.streamingEpisodes.enumerated() {
+            let watchPreview = AnimeWatchPreview()
+            watchPreview.animeWatchPreviewImageView.loadImage(from: streaming.thumbnail)
+            watchPreview.animeWatchPreviewLabel.text = streaming.title
+            watchPreview.translatesAutoresizingMaskIntoConstraints = false
+            watchView.viewInScrollView.addSubview(watchPreview)
+            
+            watchPreview.heightAnchor.constraint(equalToConstant: 128).isActive = true
+            watchPreview.widthAnchor.constraint(equalToConstant: 300).isActive = true
+            // 0 1 2 3
+            if index == 0 {
+                watchPreview.leadingAnchor.constraint(equalTo: watchView.viewInScrollView.leadingAnchor).isActive = true
+                if animeDetailData.streamingEpisodes.count == 1 {
+                    watchPreview.trailingAnchor.constraint(equalTo: watchView.viewInScrollView.trailingAnchor).isActive = true
+                }
+            }else if index == animeDetailData.streamingEpisodes.count - 1 {
+                watchPreview.trailingAnchor.constraint(equalTo: watchView.viewInScrollView.trailingAnchor).isActive = true
+                if let tmpStreamingPreview = tmpStreamingPreview {
+                    watchPreview.leadingAnchor.constraint(equalTo: tmpStreamingPreview.trailingAnchor, constant: 20).isActive = true
+                }
+            } else {
+                watchPreview.leadingAnchor.constraint(equalTo: tmpStreamingPreview!.trailingAnchor, constant: 20).isActive = true
+            }
+            tmpStreamingPreview = watchPreview
+        }
     }
     
     
