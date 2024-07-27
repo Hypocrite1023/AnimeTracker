@@ -6,7 +6,7 @@
 <img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-07-17%20at%2022.38.56.png" width = "200">
 
 ### Anime Detail Page
-[![Watch the video](https://youtube.com/shorts/9i-IkybcsOQ?si=9s-YCwDvsqnEH-qW/0.jpg)]
+[![Watch the video](https://img.youtube.com/vi/9i-IkybcsOQ/0.jpg)]
 (https://youtube.com/shorts/9i-IkybcsOQ?si=AVUDLoM01vDf2PCn)
 <img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/screenshot%202024-07-24%2023.02.45.png" width = "200">
 
