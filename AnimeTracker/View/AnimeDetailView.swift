@@ -34,6 +34,7 @@ class AnimeDetailView: UIView {
     var recommendationsView: RecommendationsView!
     var reviewView: ReviewsView!
     var externalLinkView: ExternalLinkView!
+    var tagView: TagView!
         
     var differentViewContainer: UIView!
         
@@ -104,6 +105,10 @@ class AnimeDetailView: UIView {
         externalLinkView = ExternalLinkView()
         externalLinkView.translatesAutoresizingMaskIntoConstraints = false
         tmpScrollView.addSubview(externalLinkView)
+        
+        tagView = TagView()
+        tagView.translatesAutoresizingMaskIntoConstraints = false
+        tmpScrollView.addSubview(tagView)
         
     }
     
@@ -443,6 +448,31 @@ class AnimeDetailView: UIView {
                 externalLinkPreview.topAnchor.constraint(equalTo: tmpExternalLinkPreview!.bottomAnchor, constant: 10).isActive = true
             }
             tmpExternalLinkPreview = externalLinkPreview
+        }
+        
+        var tmpTagPreview: TagPreview?
+        for (index, tag) in animeDetailData.tags.enumerated() {
+            let tagPreview = TagPreview()
+            tagPreview.tagName.text = tag.name
+            tagPreview.tagPercent.text = "\(tag.rank) %"
+            tagPreview.isHidden = tag.isMediaSpoiler
+            tagPreview.translatesAutoresizingMaskIntoConstraints = false
+            tagView.tagsContainer.addSubview(tagPreview)
+            
+            tagPreview.leadingAnchor.constraint(equalTo: tagView.tagsContainer.leadingAnchor).isActive = true
+            tagPreview.trailingAnchor.constraint(equalTo: tagView.tagsContainer.trailingAnchor).isActive = true
+            tagPreview.heightAnchor.constraint(equalToConstant: 40).isActive = true
+            if index == 0 {
+                tagPreview.topAnchor.constraint(equalTo: tagView.tagsContainer.topAnchor).isActive = true
+            } else if index == animeDetailData.tags.count - 1 {
+                tagPreview.bottomAnchor.constraint(equalTo: tagView.tagsContainer.bottomAnchor).isActive = true
+                if let tmpTagPreview = tmpTagPreview {
+                    tagPreview.topAnchor.constraint(equalTo: tmpTagPreview.bottomAnchor, constant: 10).isActive = true
+                }
+            } else {
+                tagPreview.topAnchor.constraint(equalTo: tmpTagPreview!.bottomAnchor, constant: 10).isActive = true
+            }
+            tmpTagPreview = tagPreview
         }
         
     }

@@ -57,6 +57,10 @@
 		CD9D4ED72C550A64003492C1 /* ExternalLinkPreview.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD9D4ED62C550A64003492C1 /* ExternalLinkPreview.xib */; };
 		CD9D4ED92C550B85003492C1 /* ExternalLinkPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D4ED82C550B85003492C1 /* ExternalLinkPreview.swift */; };
 		CD9D4EDB2C550FB2003492C1 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D4EDA2C550FB2003492C1 /* UIColorExtension.swift */; };
+		CD9D4EDE2C551BF3003492C1 /* TagView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD9D4EDD2C551BF3003492C1 /* TagView.xib */; };
+		CD9D4EE02C551CB4003492C1 /* TagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D4EDF2C551CB4003492C1 /* TagView.swift */; };
+		CD9D4EE32C551D1C003492C1 /* TagPreview.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD9D4EE22C551D1C003492C1 /* TagPreview.xib */; };
+		CD9D4EE52C551E10003492C1 /* TagPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D4EE42C551E10003492C1 /* TagPreview.swift */; };
 		CDC14F212C453DBF00BC14FA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC14F202C453DBF00BC14FA /* AppDelegate.swift */; };
 		CDC14F232C453DBF00BC14FA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC14F222C453DBF00BC14FA /* SceneDelegate.swift */; };
 		CDC14F252C453DBF00BC14FA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC14F242C453DBF00BC14FA /* ViewController.swift */; };
@@ -122,6 +126,10 @@
 		CD9D4ED62C550A64003492C1 /* ExternalLinkPreview.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ExternalLinkPreview.xib; sourceTree = "<group>"; };
 		CD9D4ED82C550B85003492C1 /* ExternalLinkPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalLinkPreview.swift; sourceTree = "<group>"; };
 		CD9D4EDA2C550FB2003492C1 /* UIColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
+		CD9D4EDD2C551BF3003492C1 /* TagView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TagView.xib; sourceTree = "<group>"; };
+		CD9D4EDF2C551CB4003492C1 /* TagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagView.swift; sourceTree = "<group>"; };
+		CD9D4EE22C551D1C003492C1 /* TagPreview.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TagPreview.xib; sourceTree = "<group>"; };
+		CD9D4EE42C551E10003492C1 /* TagPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagPreview.swift; sourceTree = "<group>"; };
 		CDC14F1D2C453DBF00BC14FA /* AnimeTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AnimeTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDC14F202C453DBF00BC14FA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CDC14F222C453DBF00BC14FA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -346,6 +354,24 @@
 			path = ExternalLinkPreview;
 			sourceTree = "<group>";
 		};
+		CD9D4EDC2C551BE6003492C1 /* TagView */ = {
+			isa = PBXGroup;
+			children = (
+				CD9D4EDD2C551BF3003492C1 /* TagView.xib */,
+				CD9D4EDF2C551CB4003492C1 /* TagView.swift */,
+			);
+			path = TagView;
+			sourceTree = "<group>";
+		};
+		CD9D4EE12C551D0B003492C1 /* TagPreview */ = {
+			isa = PBXGroup;
+			children = (
+				CD9D4EE22C551D1C003492C1 /* TagPreview.xib */,
+				CD9D4EE42C551E10003492C1 /* TagPreview.swift */,
+			);
+			path = TagPreview;
+			sourceTree = "<group>";
+		};
 		CDC14F142C453DBF00BC14FA = {
 			isa = PBXGroup;
 			children = (
@@ -397,6 +423,8 @@
 		CDC14F352C45544800BC14FA /* View */ = {
 			isa = PBXGroup;
 			children = (
+				CD9D4EE12C551D0B003492C1 /* TagPreview */,
+				CD9D4EDC2C551BE6003492C1 /* TagView */,
 				CD9D4ED52C550A49003492C1 /* ExternalLinkPreview */,
 				CD9D4ED02C550770003492C1 /* ExternalLinkView */,
 				CD9D4EC92C54F56B003492C1 /* AnimeReview */,
@@ -512,6 +540,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CD9D4E962C523DBA003492C1 /* CharacterPreview.xib in Resources */,
+				CD9D4EE32C551D1C003492C1 /* TagPreview.xib in Resources */,
 				CD9D4EAF2C53A587003492C1 /* ScoreDistributionView.xib in Resources */,
 				CD9D4EA52C524FF4003492C1 /* StaffCollectionView.xib in Resources */,
 				CD9D4ED72C550A64003492C1 /* ExternalLinkPreview.xib in Resources */,
@@ -522,6 +551,7 @@
 				CD9D4E842C515695003492C1 /* RelationPreview.xib in Resources */,
 				CD9D4E7B2C51445B003492C1 /* AnimeDescriptionView.xib in Resources */,
 				CD9D4EB92C54D501003492C1 /* AnimeWatchPreviewContainer.xib in Resources */,
+				CD9D4EDE2C551BF3003492C1 /* TagView.xib in Resources */,
 				CD9D4ED22C550796003492C1 /* ExternalLinkView.xib in Resources */,
 				CD9D4E812C51535D003492C1 /* RelationView.xib in Resources */,
 				CDC14F2D2C453DC000BC14FA /* Base in Resources */,
@@ -562,6 +592,7 @@
 				CD9D4E882C51596A003492C1 /* RelationView.swift in Sources */,
 				CD9D4E702C4FF2EE003492C1 /* AnimeInformationView.swift in Sources */,
 				CD9D4EC32C54E7CA003492C1 /* RecommendationsAnimePreview.swift in Sources */,
+				CD9D4EE52C551E10003492C1 /* TagPreview.swift in Sources */,
 				CDE22E482C47F8B600080BAD /* AnimeDataDelegate.swift in Sources */,
 				CDC14F3C2C46A7C200BC14FA /* AnimeFetchData.swift in Sources */,
 				CD9D4E682C4D0126003492C1 /* AnimeDescriptionDelegate.swift in Sources */,
@@ -577,6 +608,7 @@
 				CD1AA0E22C49457F00993AEB /* TrendingPageViewController.swift in Sources */,
 				CD9D4ECD2C54F6DF003492C1 /* AnimeReview.swift in Sources */,
 				CD9D4EA22C524F1E003492C1 /* StaffPreview.swift in Sources */,
+				CD9D4EE02C551CB4003492C1 /* TagView.swift in Sources */,
 				CD9D4E792C513B07003492C1 /* AnimeDetailFunc.swift in Sources */,
 				CDE22E452C47C39500080BAD /* SearchingAnimeCollectionViewCell.swift in Sources */,
 				CD9D4E6A2C4E4E6F003492C1 /* WatchViewCollectionViewCell.swift in Sources */,

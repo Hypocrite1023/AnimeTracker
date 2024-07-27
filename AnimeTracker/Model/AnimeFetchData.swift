@@ -312,6 +312,17 @@ struct MediaResponse: Decodable {
             let recommendations: Recommendations
             let reviewPreview: ReviewPreview
             let externalLinks: [ExternalLinks]
+            let tags: [Tag]
+            
+            struct Tag: Decodable {
+                let id: Int
+                let name: String
+                let description: String?
+                let rank: Int
+                let isMediaSpoiler: Bool
+                let isGeneralSpoiler: Bool
+                let userId: Int
+            }
             
             struct ExternalLinks: Decodable {
                 let id: Int
@@ -889,6 +900,15 @@ query {
             icon
             notes
             isDisabled
+        }
+        tags {
+            id
+            name
+            description
+            rank
+            isMediaSpoiler
+            isGeneralSpoiler
+            userId
         }
     }
 }
