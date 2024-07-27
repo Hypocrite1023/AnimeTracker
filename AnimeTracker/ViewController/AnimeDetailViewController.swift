@@ -141,7 +141,13 @@ class AnimeDetailViewController: UIViewController {
             animeDetailView.watchView.leadingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.leadingAnchor),
             animeDetailView.watchView.trailingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.trailingAnchor),
 //            animeDetailView.watchView.heightAnchor.constraint(equalToConstant: 300),
-            animeDetailView.watchView.bottomAnchor.constraint(equalTo: animeDetailView.tmpScrollView.bottomAnchor),
+//            animeDetailView.watchView.bottomAnchor.constraint(equalTo: animeDetailView.tmpScrollView.bottomAnchor),
+            
+            animeDetailView.recommendationsView.topAnchor.constraint(equalTo: animeDetailView.watchView.bottomAnchor, constant: 15),
+            animeDetailView.recommendationsView.leadingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.leadingAnchor, constant: 5),
+            animeDetailView.recommendationsView.trailingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.trailingAnchor, constant: -5),
+            animeDetailView.recommendationsView.heightAnchor.constraint(equalToConstant: 250),
+            animeDetailView.recommendationsView.bottomAnchor.constraint(equalTo: animeDetailView.tmpScrollView.bottomAnchor),
             
         ]
     }

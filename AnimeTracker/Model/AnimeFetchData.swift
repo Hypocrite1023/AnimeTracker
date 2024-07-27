@@ -308,6 +308,52 @@ struct MediaResponse: Decodable {
             let characterPreview: CharacterPreview
             let staffPreview: StaffPreview
             let stats: Stats
+            let recommendations: Recommendations
+            
+            struct Recommendations: Decodable {
+                let pageInfo: PageInfo
+                let nodes: [Nodes]
+                
+                struct Nodes: Decodable {
+                    let id: Int
+                    let rating: Int?
+                    let userRating: String?
+                    let mediaRecommendation: MediaRecommendation?
+                    let user: User
+                    
+                    struct User: Decodable {
+                        let id: Int
+                        let name: String?
+                        let avatar: Avatar?
+                        
+                        struct Avatar: Decodable {
+                            let large: String
+                        }
+                    }
+                    
+                    struct MediaRecommendation: Decodable {
+                        let id: Int
+                        let title: Title
+                        let format: String?
+                        let type: String?
+                        let status: String?
+                        let bannerImage: String?
+                        let coverImage: CoverImage?
+                        
+                        struct CoverImage: Decodable {
+                            let large: String
+                        }
+                        
+                        struct Title: Decodable {
+                            let userPreferred: String
+                        }
+                    }
+                }
+                
+                struct PageInfo: Decodable {
+                    let total: Int
+                }
+            }
             
             struct Stats: Decodable {
                 let statusDistribution: [StatusDistribution]
@@ -741,6 +787,36 @@ query {
             scoreDistribution {
                 score
                 amount
+            }
+        }
+        recommendations(perPage: 7,sort: [RATING_DESC,ID]) {
+            pageInfo {
+                total
+            }
+            nodes {
+                id
+                rating
+                userRating
+                mediaRecommendation {
+                    id
+                    title {
+                        userPreferred
+                    }
+                    format
+                    type
+                    status(version:2)
+                    bannerImage
+                    coverImage {
+                        large
+                    }
+                }
+                user {
+                    id
+                    name
+                    avatar {
+                        large
+                    }
+                }
             }
         }
     }

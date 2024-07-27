@@ -31,6 +31,7 @@ class AnimeDetailView: UIView {
     var statusDistributionView: StatusDistributionView!
     var scoreDistributionView: ScoreDistributionView!
     var watchView: AnimeWatchPreviewContainer!
+    var recommendationsView: RecommendationsView!
     
         
     var differentViewContainer: UIView!
@@ -90,6 +91,10 @@ class AnimeDetailView: UIView {
         watchView = AnimeWatchPreviewContainer()
         watchView.translatesAutoresizingMaskIntoConstraints = false
         tmpScrollView.addSubview(watchView)
+        
+        recommendationsView = RecommendationsView()
+        recommendationsView.translatesAutoresizingMaskIntoConstraints = false
+        tmpScrollView.addSubview(recommendationsView)
         
     }
     
@@ -323,6 +328,35 @@ class AnimeDetailView: UIView {
                 watchPreview.leadingAnchor.constraint(equalTo: tmpStreamingPreview!.trailingAnchor, constant: 20).isActive = true
             }
             tmpStreamingPreview = watchPreview
+        }
+        
+        var tmpRecommendationsPreview: RecommendationsAnimePreview?
+        for (index, recommendation) in animeDetailData.recommendations.nodes.enumerated() {
+            let recommendationsPreview = RecommendationsAnimePreview()
+            recommendationsPreview.translatesAutoresizingMaskIntoConstraints = false
+            recommendationsPreview.animeTitle.text = recommendation.mediaRecommendation?.title.userPreferred
+            if let coverImage = recommendation.mediaRecommendation?.coverImage?.large {
+                recommendationsPreview.coverImageView.loadImage(from: coverImage)
+            } else {
+                recommendationsPreview.coverImageView.image = UIImage(systemName: "photo")
+            }
+            recommendationsView.viewInScrollView.addSubview(recommendationsPreview)
+            
+            recommendationsPreview.topAnchor.constraint(equalTo: recommendationsView.viewInScrollView.topAnchor).isActive = true
+            recommendationsPreview.heightAnchor.constraint(equalTo: recommendationsView.viewInScrollView.heightAnchor).isActive = true
+            
+            if index == 0 {
+                recommendationsPreview.leadingAnchor.constraint(equalTo: recommendationsView.viewInScrollView.leadingAnchor).isActive = true
+                
+            } else if index == animeDetailData.recommendations.nodes.count - 1 {
+                recommendationsPreview.trailingAnchor.constraint(equalTo: recommendationsView.viewInScrollView.trailingAnchor, constant: -20).isActive = true
+                if let tmpRecommendationsPreview = tmpRecommendationsPreview {
+                    recommendationsPreview.leadingAnchor.constraint(equalTo: tmpRecommendationsPreview.trailingAnchor, constant: 20).isActive = true
+                }
+            } else {
+                recommendationsPreview.leadingAnchor.constraint(equalTo: tmpRecommendationsPreview!.trailingAnchor, constant: 20).isActive = true
+            }
+            tmpRecommendationsPreview = recommendationsPreview
         }
     }
     
