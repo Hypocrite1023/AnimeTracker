@@ -32,6 +32,7 @@ class AnimeDetailView: UIView {
     var scoreDistributionView: ScoreDistributionView!
     var watchView: AnimeWatchPreviewContainer!
     var recommendationsView: RecommendationsView!
+    var reviewView: ReviewsView!
     
         
     var differentViewContainer: UIView!
@@ -95,6 +96,10 @@ class AnimeDetailView: UIView {
         recommendationsView = RecommendationsView()
         recommendationsView.translatesAutoresizingMaskIntoConstraints = false
         tmpScrollView.addSubview(recommendationsView)
+        
+        reviewView = ReviewsView()
+        reviewView.translatesAutoresizingMaskIntoConstraints = false
+        tmpScrollView.addSubview(reviewView)
         
     }
     
@@ -358,6 +363,48 @@ class AnimeDetailView: UIView {
             }
             tmpRecommendationsPreview = recommendationsPreview
         }
+        
+        var tmpAnimeReview: AnimeReview?
+        if animeDetailData.reviewPreview.nodes.count == 0 {
+            let voidLabel = UILabel()
+            voidLabel.backgroundColor = .white
+            voidLabel.text = "This anime didn't have review yet"
+            voidLabel.font = .italicSystemFont(ofSize: 15)
+            voidLabel.textColor = UIColor.secondaryLabel
+            voidLabel.translatesAutoresizingMaskIntoConstraints = false
+            reviewView.addSubview(voidLabel)
+            voidLabel.topAnchor.constraint(equalTo: reviewView.reviewContainer.topAnchor).isActive = true
+            voidLabel.leadingAnchor.constraint(equalTo: reviewView.reviewContainer.leadingAnchor).isActive = true
+            voidLabel.trailingAnchor.constraint(equalTo: reviewView.reviewContainer.trailingAnchor).isActive = true
+            voidLabel.bottomAnchor.constraint(equalTo: reviewView.reviewContainer.bottomAnchor).isActive = true
+            voidLabel.heightAnchor.constraint(equalToConstant: 100).isActive = true
+
+        } else {
+            for (index, review) in animeDetailData.reviewPreview.nodes.enumerated() {
+                let animeReview = AnimeReview()
+                animeReview.userReviewLabel.layer.cornerRadius = 10
+                animeReview.userReviewLabel.clipsToBounds = true
+                animeReview.userAvatar.loadImage(from: review.user.avatar?.large)
+                animeReview.userReviewLabel.text = review.summary
+                animeReview.translatesAutoresizingMaskIntoConstraints = false
+                reviewView.reviewContainer.addSubview(animeReview)
+                
+                animeReview.leadingAnchor.constraint(equalTo: reviewView.reviewContainer.leadingAnchor).isActive = true
+                animeReview.trailingAnchor.constraint(equalTo: reviewView.reviewContainer.trailingAnchor).isActive = true
+                if index == 0 {
+                    animeReview.topAnchor.constraint(equalTo: reviewView.reviewContainer.topAnchor).isActive = true
+                } else if index == animeDetailData.reviewPreview.nodes.count - 1 {
+                    animeReview.bottomAnchor.constraint(equalTo: reviewView.reviewContainer.bottomAnchor).isActive = true
+                    if let tmpAnimeReview = tmpAnimeReview {
+                        animeReview.topAnchor.constraint(equalTo: tmpAnimeReview.bottomAnchor, constant: 20).isActive = true
+                    }
+                } else {
+                    animeReview.topAnchor.constraint(equalTo: tmpAnimeReview!.bottomAnchor, constant: 20).isActive = true
+                }
+                tmpAnimeReview = animeReview
+            }
+        }
+        
     }
     
     

@@ -33,6 +33,7 @@ struct AnimeSearchedOrTrending: Codable {
     }
 }
 
+
 let query = """
 query{
     Media(id:$id,type:$type,isAdult:$isAdult){
@@ -309,6 +310,34 @@ struct MediaResponse: Decodable {
             let staffPreview: StaffPreview
             let stats: Stats
             let recommendations: Recommendations
+            let reviewPreview: ReviewPreview
+            
+            struct ReviewPreview: Decodable {
+                let pageInfo: PageInfo
+                let nodes: [Nodes]
+                
+                struct Nodes: Decodable {
+                    let id: Int
+                    let summary: String
+                    let rating: Int
+                    let ratingAmount: Int
+                    let user: User
+                    
+                    struct User: Decodable {
+                        let id: Int
+                        let name: String?
+                        let avatar: Avatar?
+                        
+                        struct Avatar: Decodable {
+                            let large: String
+                        }
+                    }
+                }
+                
+                struct PageInfo: Decodable {
+                    let total: Int
+                }
+            }
             
             struct Recommendations: Decodable {
                 let pageInfo: PageInfo
@@ -814,6 +843,24 @@ query {
                     id
                     name
                     avatar {
+                        large
+                    }
+                }
+            }
+        }
+        reviewPreview: reviews(perPage: 2,sort: [RATING_DESC,ID]) {
+            pageInfo {
+                total
+            }
+            nodes {
+                id
+                summary
+                rating
+                ratingAmount
+                user {
+                    id
+                    name
+                    avatar{
                         large
                     }
                 }
