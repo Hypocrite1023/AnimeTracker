@@ -29,6 +29,13 @@ class AnimeBannerView: UIView {
     @IBOutlet weak var statsButton: UIButton!
     @IBOutlet weak var socialButton: UIButton!
 
+    @IBAction func overviewButtonTap(_ sender: UIButton) {
+        sender.setTitleColor(.blue.withAlphaComponent(0.9), for: .normal)
+        sender.layer.shadowColor = UIColor.blue.cgColor
+        sender.layer.shadowOpacity = 0.7
+        sender.layer.shadowOffset = CGSize(width: 2, height: 5)
+        sender.layer.shadowRadius = 4
+    }
     override init(frame: CGRect) {
         super.init(frame: frame)
         commonInit()

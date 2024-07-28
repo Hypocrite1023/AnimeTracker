@@ -110,52 +110,52 @@ query{
                 }
             }
         }
-        characterPreview:characters(perPage:6,sort:[ROLE,RELEVANCE,ID]){
-            edges{
+        characterPreview: characters(perPage: 6, sort:[ROLE, RELEVANCE, ID]) {
+            edges {
                 id
                 role
                 name
-                voiceActors(language:JAPANESE,sort:[RELEVANCE,ID]){
+                voiceActors(language: JAPANESE, sort: [RELEVANCE , ID]) {
                     id
-                    name{
+                    name {
                         userPreferred
                     }
-                    language:languageV2
-                    image{
+                    language: languageV2
+                    image {
                         large
                     }
                 }
-                node{
+                node {
                     id
-                    name{
+                    name {
                         userPreferred
                     }
-                    image{
+                    image {
                         large
                     }
                 }
             }
         }
-        staffPreview:staff(perPage:8,sort:[RELEVANCE,ID]){
-            edges{
+        staffPreview: staff(perPage: 8, sort: [RELEVANCE, ID]) {
+            edges {
                 id
                 role
-                node{
+                node {
                     id
-                    name{
+                    name {
                         userPreferred
                     }
-                    language:languageV2
-                    image{
+                    language: languageV2
+                    image {
                         large
                     }
                 }
             }
         }
-        studios{
-            edges{
+        studios {
+            edges {
                 isMain
-                node{
+                node {
                     id
                     name
                 }
@@ -268,6 +268,20 @@ query{
 }
 """
 
+struct MediaCharacterPreview: Decodable {
+    let data: MediaData
+
+    struct MediaData: Decodable {
+        let media: Media
+        
+        enum CodingKeys: String, CodingKey {
+            case media = "Media"
+        }
+        struct Media: Decodable {
+            let characterPreview: MediaResponse.MediaData.Media.CharacterPreview
+        }
+    }
+}
 
 struct MediaResponse: Decodable {
     let data: MediaData
@@ -281,6 +295,7 @@ struct MediaResponse: Decodable {
 
         // airing, format, episodes, episode duration, status, start date, season, average score, mean score, popularity, favorites, studios, producers, source, hashtag, genres, romaji, english, native, synonyms
         struct Media: Decodable {
+            let id: Int
             let title: MediaTitle
             let coverImage: MediaCoverImage
             
@@ -306,7 +321,7 @@ struct MediaResponse: Decodable {
             let genres: [String]
             let synonyms: [String]
             let relations: Relations?
-            let characterPreview: CharacterPreview
+            var characterPreview: CharacterPreview
             let staffPreview: StaffPreview
             let stats: Stats
             let recommendations: Recommendations
@@ -451,7 +466,13 @@ struct MediaResponse: Decodable {
             }
             
             struct CharacterPreview: Decodable {
-                let edges: [Edges]
+                var pageInfo: PageInfo
+                var edges: [Edges]
+                
+                struct PageInfo: Decodable {
+                    var currentPage: Int
+                    var hasNextPage: Bool
+                }
                 
                 struct Edges: Decodable {
                     let id: Int
@@ -717,6 +738,7 @@ class AnimeFetchData {
         let query = """
 query {
     Media(id: \(id)) {
+        id
         title {
             romaji
             english
@@ -791,6 +813,10 @@ query {
             }
         }
         characterPreview:characters(perPage: 6,sort: [ROLE,RELEVANCE,ID]) {
+            pageInfo {
+                currentPage
+                hasNextPage
+            }
             edges {
                 id
                 role
@@ -940,8 +966,89 @@ query {
             }
             do {
                 let media = try JSONDecoder().decode(MediaResponse.self, from: data)
-                print(media.data.media.streamingEpisodes)
+                print(media.data.media.characterPreview.pageInfo.currentPage, "currentPage")
                 self.animeDetailDataDelegate?.animeDetailDataDelegate(media: media.data.media)
+                self.isFetchingData = false
+            } catch {
+                print("Error parsing JSON: \(error.localizedDescription)")
+            }
+        }
+        
+        // Execute URLSession task
+        task.resume()
+    }
+    
+    func fetchCharacterPreviewByMediaId(id: Int, page: Int, contentOffset: CGPoint) {
+        isFetchingData = true
+        print(id)
+        var urlRequest = URLRequest(url: queryURL)
+        urlRequest.httpMethod = "post"
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let query = """
+query {
+    Media(id: \(id)) {
+        characterPreview:characters(perPage: 6, page: \(page), sort: [ROLE, RELEVANCE, ID]) {
+            pageInfo {
+                currentPage
+                hasNextPage
+            }
+            edges {
+                id
+                role
+                voiceActors(language: JAPANESE, sort: [RELEVANCE, ID]) {
+                    id
+                    name {
+                        userPreferred
+                    }
+                    language: languageV2
+                    image {
+                        large
+                    }
+                }
+                node {
+                    id
+                    name {
+                        userPreferred
+                    }
+                    image {
+                        large
+                    }
+                }
+            }
+        }
+    }
+}
+"""
+        
+        let graphQLData = ["query": query]
+        
+        do {
+            urlRequest.httpBody = try JSONSerialization.data(withJSONObject: graphQLData, options: [])
+        } catch {
+            print("Error serializing JSON: \(error.localizedDescription)")
+            return
+        }
+        // Create URLSession task
+        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+            if let error = error {
+                print("Error fetching data: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                print("Invalid response")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+            do {
+                let media = try JSONDecoder().decode(MediaCharacterPreview.self, from: data)
+                print(media.data.media.characterPreview.pageInfo.currentPage, "currentPage")
+                self.animeDetailDataDelegate?.animeDetailCharacterDataDelegate(characterData: media, contentOffset: contentOffset)
                 self.isFetchingData = false
             } catch {
                 print("Error parsing JSON: \(error.localizedDescription)")

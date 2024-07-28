@@ -126,7 +126,7 @@ struct AnimeDetailFunc {
         let returnBlue = color1Blue * (1 - (fraction)) + (fraction) * color2Blue
         let returnGreen = color1Green * (1 - (fraction)) + (fraction) * color2Green
         let returnAlpha = color1Alpha * (1 - (fraction)) + (fraction) * color2Alpha
-        print(returnRed, returnGreen, returnBlue, returnAlpha)
+//        print(returnRed, returnGreen, returnBlue, returnAlpha)
         
         return UIColor(red: returnRed, green: returnGreen, blue: returnBlue, alpha: returnAlpha)
     }

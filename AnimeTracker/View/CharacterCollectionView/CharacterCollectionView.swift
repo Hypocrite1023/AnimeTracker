@@ -19,6 +19,9 @@ class CharacterCollectionView: UIView {
     
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var characterCollectionView: UIView!
+    var canLoadMoreData: Bool?
+//    var progressIndicator: UIActivityIndicatorView?
+    var lastBottomConstraint: NSLayoutConstraint?
 
     
     override init(frame: CGRect) {

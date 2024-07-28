@@ -52,68 +52,59 @@
                     <rect key="frame" x="0.0" y="416" width="393" height="50"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="v6I-l9-1gg">
-                            <rect key="frame" x="0.0" y="0.0" width="447" height="50"/>
+                            <rect key="frame" x="0.0" y="0.0" width="435" height="50"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="U7P-Vx-yqS">
-                                    <rect key="frame" x="0.0" y="0.0" width="92" height="50"/>
-                                    <state key="normal" title="Button"/>
-                                    <buttonConfiguration key="configuration" style="filled" title="Overview">
-                                        <directionalEdgeInsets key="contentInsets" top="0.0" leading="10" bottom="0.0" trailing="10"/>
-                                        <color key="baseForegroundColor" systemColor="labelColor"/>
-                                        <color key="baseBackgroundColor" systemColor="systemBackgroundColor"/>
-                                    </buttonConfiguration>
+                                    <rect key="frame" x="20" y="0.0" width="64" height="50"/>
+                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                    <state key="normal" title="Overview">
+                                        <color key="titleColor" systemColor="labelColor"/>
+                                    </state>
+                                    <connections>
+                                        <action selector="overviewButtonTap:" destination="-1" eventType="touchUpInside" id="IcQ-1G-7IR"/>
+                                    </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oI2-oy-Isw">
-                                    <rect key="frame" x="92" y="0.0" width="69" height="50"/>
-                                    <state key="normal" title="Button"/>
-                                    <buttonConfiguration key="configuration" style="filled" title="Watch">
-                                        <directionalEdgeInsets key="contentInsets" top="0.0" leading="10" bottom="0.0" trailing="10"/>
-                                        <color key="baseForegroundColor" systemColor="labelColor"/>
-                                        <color key="baseBackgroundColor" systemColor="systemBackgroundColor"/>
-                                    </buttonConfiguration>
+                                    <rect key="frame" x="104" y="0.0" width="44" height="50"/>
+                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                    <state key="normal" title="Watch">
+                                        <color key="titleColor" systemColor="labelColor"/>
+                                    </state>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="l1n-RG-f36">
-                                    <rect key="frame" x="161" y="0.0" width="104" height="50"/>
-                                    <state key="normal" title="Button"/>
-                                    <buttonConfiguration key="configuration" style="filled" title="Characters">
-                                        <directionalEdgeInsets key="contentInsets" top="0.0" leading="10" bottom="0.0" trailing="10"/>
-                                        <color key="baseForegroundColor" systemColor="labelColor"/>
-                                        <color key="baseBackgroundColor" systemColor="systemBackgroundColor"/>
-                                    </buttonConfiguration>
+                                    <rect key="frame" x="168" y="0.0" width="76" height="50"/>
+                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                    <state key="normal" title="Characters">
+                                        <color key="titleColor" systemColor="labelColor"/>
+                                    </state>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="P8a-Jx-dhU">
-                                    <rect key="frame" x="265" y="0.0" width="56.666666666666686" height="50"/>
-                                    <state key="normal" title="Button"/>
-                                    <buttonConfiguration key="configuration" style="filled" title="Staff">
-                                        <directionalEdgeInsets key="contentInsets" top="0.0" leading="10" bottom="0.0" trailing="10"/>
-                                        <color key="baseForegroundColor" systemColor="labelColor"/>
-                                        <color key="baseBackgroundColor" systemColor="systemBackgroundColor"/>
-                                    </buttonConfiguration>
+                                    <rect key="frame" x="264" y="0.0" width="33" height="50"/>
+                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                    <state key="normal" title="Staff">
+                                        <color key="titleColor" systemColor="labelColor"/>
+                                    </state>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Prd-2N-NOn">
-                                    <rect key="frame" x="321.66666666666669" y="0.0" width="59.333333333333314" height="50"/>
-                                    <state key="normal" title="Button"/>
-                                    <buttonConfiguration key="configuration" style="filled" title="Stats">
-                                        <directionalEdgeInsets key="contentInsets" top="0.0" leading="10" bottom="0.0" trailing="10"/>
-                                        <color key="baseForegroundColor" systemColor="labelColor"/>
-                                        <color key="baseBackgroundColor" systemColor="systemBackgroundColor"/>
-                                    </buttonConfiguration>
+                                    <rect key="frame" x="317" y="0.0" width="36" height="50"/>
+                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                    <state key="normal" title="Stats">
+                                        <color key="titleColor" systemColor="labelColor"/>
+                                    </state>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="haa-wV-dfe">
-                                    <rect key="frame" x="381" y="0.0" width="66" height="50"/>
-                                    <state key="normal" title="Button"/>
-                                    <buttonConfiguration key="configuration" style="filled" title="Social">
-                                        <directionalEdgeInsets key="contentInsets" top="0.0" leading="10" bottom="0.0" trailing="10"/>
-                                        <color key="baseForegroundColor" systemColor="labelColor"/>
-                                        <color key="baseBackgroundColor" systemColor="systemBackgroundColor"/>
-                                    </buttonConfiguration>
+                                    <rect key="frame" x="373" y="0.0" width="42" height="50"/>
+                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                    <state key="normal" title="Social">
+                                        <color key="titleColor" systemColor="labelColor"/>
+                                    </state>
                                 </button>
                             </subviews>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="50" id="5xM-9k-u5h"/>
-                                <constraint firstAttribute="trailing" secondItem="haa-wV-dfe" secondAttribute="trailing" id="7Hq-B0-G49"/>
-                                <constraint firstItem="P8a-Jx-dhU" firstAttribute="leading" secondItem="l1n-RG-f36" secondAttribute="trailing" id="7gZ-0N-7gH"/>
+                                <constraint firstAttribute="trailing" secondItem="haa-wV-dfe" secondAttribute="trailing" constant="20" id="7Hq-B0-G49"/>
+                                <constraint firstItem="P8a-Jx-dhU" firstAttribute="leading" secondItem="l1n-RG-f36" secondAttribute="trailing" constant="20" id="7gZ-0N-7gH"/>
                                 <constraint firstItem="U7P-Vx-yqS" firstAttribute="top" secondItem="v6I-l9-1gg" secondAttribute="top" id="BAZ-73-lg6"/>
                                 <constraint firstAttribute="bottom" secondItem="Prd-2N-NOn" secondAttribute="bottom" id="BLb-md-N21"/>
                                 <constraint firstItem="oI2-oy-Isw" firstAttribute="top" secondItem="v6I-l9-1gg" secondAttribute="top" id="M68-HQ-DeQ"/>
@@ -121,15 +112,15 @@
                                 <constraint firstItem="P8a-Jx-dhU" firstAttribute="top" secondItem="v6I-l9-1gg" secondAttribute="top" id="QBJ-IW-cfJ"/>
                                 <constraint firstAttribute="bottom" secondItem="oI2-oy-Isw" secondAttribute="bottom" id="UUj-e3-F1y"/>
                                 <constraint firstAttribute="bottom" secondItem="U7P-Vx-yqS" secondAttribute="bottom" id="UsE-RN-Qdk"/>
-                                <constraint firstItem="l1n-RG-f36" firstAttribute="leading" secondItem="oI2-oy-Isw" secondAttribute="trailing" id="XGv-4P-kWT"/>
-                                <constraint firstItem="haa-wV-dfe" firstAttribute="leading" secondItem="Prd-2N-NOn" secondAttribute="trailing" id="YVa-cC-4DR"/>
+                                <constraint firstItem="l1n-RG-f36" firstAttribute="leading" secondItem="oI2-oy-Isw" secondAttribute="trailing" constant="20" id="XGv-4P-kWT"/>
+                                <constraint firstItem="haa-wV-dfe" firstAttribute="leading" secondItem="Prd-2N-NOn" secondAttribute="trailing" constant="20" id="YVa-cC-4DR"/>
                                 <constraint firstAttribute="bottom" secondItem="P8a-Jx-dhU" secondAttribute="bottom" id="eeq-AL-P2r"/>
                                 <constraint firstAttribute="bottom" secondItem="l1n-RG-f36" secondAttribute="bottom" id="ey4-0K-nRc"/>
                                 <constraint firstItem="l1n-RG-f36" firstAttribute="top" secondItem="v6I-l9-1gg" secondAttribute="top" id="gBa-6h-cqh"/>
-                                <constraint firstItem="U7P-Vx-yqS" firstAttribute="leading" secondItem="v6I-l9-1gg" secondAttribute="leading" id="gdd-qI-NVe"/>
-                                <constraint firstItem="oI2-oy-Isw" firstAttribute="leading" secondItem="U7P-Vx-yqS" secondAttribute="trailing" id="kSa-nw-Eyv"/>
+                                <constraint firstItem="U7P-Vx-yqS" firstAttribute="leading" secondItem="v6I-l9-1gg" secondAttribute="leading" constant="20" id="gdd-qI-NVe"/>
+                                <constraint firstItem="oI2-oy-Isw" firstAttribute="leading" secondItem="U7P-Vx-yqS" secondAttribute="trailing" constant="20" id="kSa-nw-Eyv"/>
                                 <constraint firstItem="haa-wV-dfe" firstAttribute="top" secondItem="v6I-l9-1gg" secondAttribute="top" id="khh-LI-3gs"/>
-                                <constraint firstItem="Prd-2N-NOn" firstAttribute="leading" secondItem="P8a-Jx-dhU" secondAttribute="trailing" id="yUF-e1-qg4"/>
+                                <constraint firstItem="Prd-2N-NOn" firstAttribute="leading" secondItem="P8a-Jx-dhU" secondAttribute="trailing" constant="20" id="yUF-e1-qg4"/>
                                 <constraint firstAttribute="bottom" secondItem="haa-wV-dfe" secondAttribute="bottom" id="yjZ-D3-WKv"/>
                             </constraints>
                         </view>
