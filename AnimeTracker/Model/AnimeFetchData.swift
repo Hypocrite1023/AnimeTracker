@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 struct AnimeSearchedOrTrending: Codable {
     var data: Page
@@ -268,6 +269,21 @@ query{
 }
 """
 
+struct MediaStaffPreview: Decodable {
+    let data: MediaData
+
+    struct MediaData: Decodable {
+        let media: Media
+        
+        enum CodingKeys: String, CodingKey {
+            case media = "Media"
+        }
+        struct Media: Decodable {
+            let staffPreview: MediaResponse.MediaData.Media.StaffPreview
+        }
+    }
+}
+
 struct MediaCharacterPreview: Decodable {
     let data: MediaData
 
@@ -282,7 +298,7 @@ struct MediaCharacterPreview: Decodable {
         }
     }
 }
-
+// MARK: - MediaResponse struct
 struct MediaResponse: Decodable {
     let data: MediaData
 
@@ -322,7 +338,7 @@ struct MediaResponse: Decodable {
             let synonyms: [String]
             let relations: Relations?
             var characterPreview: CharacterPreview
-            let staffPreview: StaffPreview
+            var staffPreview: StaffPreview
             let stats: Stats
             let recommendations: Recommendations
             let reviewPreview: ReviewPreview
@@ -439,7 +455,13 @@ struct MediaResponse: Decodable {
             }
             
             struct StaffPreview: Decodable {
-                let edges: [Edges]
+                var pageInfo: PageInfo
+                var edges: [Edges]
+                
+                struct PageInfo: Decodable {
+                    var hasNextPage: Bool
+                    var currentPage: Int
+                }
                 
                 struct Edges: Decodable {
                     let id: Int
@@ -595,7 +617,7 @@ class AnimeFetchData {
     var animeDataDelegateManager: AnimeDataDelegate?
     var animeDetailDataDelegate: AnimeDetailDataDelegate?
     var trendingNextFetchPage = 1
-    var isFetchingData = false
+    @Published var isFetchingData = false
     
     func fetchAnimeBySearch(year: String, season: String) {
         var urlRequest = URLRequest(url: queryURL)
@@ -842,7 +864,11 @@ query {
                 }
             }
         }
-        staffPreview: staff(perPage: 8,sort: [RELEVANCE,ID]) {
+        staffPreview: staff(perPage: 6, page: 1,sort: [RELEVANCE,ID]) {
+            pageInfo {
+                hasNextPage
+                currentPage
+            }
             edges {
                 id
                 role
@@ -966,7 +992,7 @@ query {
             }
             do {
                 let media = try JSONDecoder().decode(MediaResponse.self, from: data)
-                print(media.data.media.characterPreview.pageInfo.currentPage, "currentPage")
+//                print(media.data.media.characterPreview.pageInfo.currentPage, "currentPage")
                 self.animeDetailDataDelegate?.animeDetailDataDelegate(media: media.data.media)
                 self.isFetchingData = false
             } catch {
@@ -978,7 +1004,7 @@ query {
         task.resume()
     }
     
-    func fetchCharacterPreviewByMediaId(id: Int, page: Int, contentOffset: CGPoint) {
+    func fetchCharacterPreviewByMediaId(id: Int, page: Int) {
         isFetchingData = true
         print(id)
         var urlRequest = URLRequest(url: queryURL)
@@ -1047,9 +1073,80 @@ query {
             }
             do {
                 let media = try JSONDecoder().decode(MediaCharacterPreview.self, from: data)
-                print(media.data.media.characterPreview.pageInfo.currentPage, "currentPage")
-                self.animeDetailDataDelegate?.animeDetailCharacterDataDelegate(characterData: media, contentOffset: contentOffset)
+//                print(media.data.media.characterPreview.pageInfo.currentPage, "currentPage")
+                self.animeDetailDataDelegate?.animeDetailCharacterDataDelegate(characterData: media)
                 self.isFetchingData = false
+            } catch {
+                print("Error parsing JSON: \(error.localizedDescription)")
+            }
+        }
+        
+        // Execute URLSession task
+        task.resume()
+    }
+    
+    func fetchStaffPreviewByMediaId(id: Int, page: Int) {
+        isFetchingData = true
+        print(id)
+        var urlRequest = URLRequest(url: queryURL)
+        urlRequest.httpMethod = "post"
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let query = """
+query {
+    Media(id: \(id)) {
+        staffPreview: staff(perPage: 6, page: \(page), sort: [RELEVANCE, ID]) {
+            pageInfo {
+                hasNextPage
+                currentPage
+            }
+            edges {
+                id
+                role
+                node {
+                    id
+                    name {
+                        userPreferred
+                    }
+                    language: languageV2
+                    image {
+                        large
+                    }
+                }
+            }
+        }
+    }
+}
+"""
+        
+        let graphQLData = ["query": query]
+        
+        do {
+            urlRequest.httpBody = try JSONSerialization.data(withJSONObject: graphQLData, options: [])
+        } catch {
+            print("Error serializing JSON: \(error.localizedDescription)")
+            return
+        }
+        // Create URLSession task
+        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+            if let error = error {
+                print("Error fetching data: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                print("Invalid response")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+            do {
+                let media = try JSONDecoder().decode(MediaStaffPreview.self, from: data)
+                self.animeDetailDataDelegate?.animeDetailStaffDataDelegate(staffData: media)
+//                self.isFetchingData = false
             } catch {
                 print("Error parsing JSON: \(error.localizedDescription)")
             }

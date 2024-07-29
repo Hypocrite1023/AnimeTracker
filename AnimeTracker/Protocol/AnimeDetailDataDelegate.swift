@@ -9,5 +9,6 @@ import Foundation
 
 protocol AnimeDetailDataDelegate: AnyObject {
     func animeDetailDataDelegate(media: MediaResponse.MediaData.Media)
-    func animeDetailCharacterDataDelegate(characterData: MediaCharacterPreview, contentOffset: CGPoint)
+    func animeDetailCharacterDataDelegate(characterData: MediaCharacterPreview)
+    func animeDetailStaffDataDelegate(staffData: MediaStaffPreview)
 }

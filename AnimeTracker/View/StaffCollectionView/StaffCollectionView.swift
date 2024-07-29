@@ -19,6 +19,7 @@ class StaffCollectionView: UIView {
     
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var staffCollectionView: UIView!
+    var lastBottomAnchor: NSLayoutConstraint?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
