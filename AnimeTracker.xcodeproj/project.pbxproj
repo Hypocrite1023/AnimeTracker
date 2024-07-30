@@ -61,6 +61,14 @@
 		CD9D4EE02C551CB4003492C1 /* TagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D4EDF2C551CB4003492C1 /* TagView.swift */; };
 		CD9D4EE32C551D1C003492C1 /* TagPreview.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD9D4EE22C551D1C003492C1 /* TagPreview.xib */; };
 		CD9D4EE52C551E10003492C1 /* TagPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D4EE42C551E10003492C1 /* TagPreview.swift */; };
+		CDA141E52C579F6000708A8B /* RankingView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CDA141E42C579F6000708A8B /* RankingView.xib */; };
+		CDA141E72C57A06B00708A8B /* RankingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA141E62C57A06B00708A8B /* RankingView.swift */; };
+		CDA141EA2C57A6BB00708A8B /* RankingPreview.xib in Resources */ = {isa = PBXBuildFile; fileRef = CDA141E92C57A6BB00708A8B /* RankingPreview.xib */; };
+		CDA141EC2C57A99100708A8B /* RankingPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA141EB2C57A99100708A8B /* RankingPreview.swift */; };
+		CDA141F12C57C5DE00708A8B /* ThreadPreview.xib in Resources */ = {isa = PBXBuildFile; fileRef = CDA141F02C57C5DE00708A8B /* ThreadPreview.xib */; };
+		CDA141F32C57CCC100708A8B /* ThreadPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA141F22C57CCC100708A8B /* ThreadPreview.swift */; };
+		CDA141F62C57CDDD00708A8B /* ThreadsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CDA141F52C57CDDD00708A8B /* ThreadsView.xib */; };
+		CDA141F82C57CEC000708A8B /* ThreadsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA141F72C57CEC000708A8B /* ThreadsView.swift */; };
 		CDC14F212C453DBF00BC14FA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC14F202C453DBF00BC14FA /* AppDelegate.swift */; };
 		CDC14F232C453DBF00BC14FA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC14F222C453DBF00BC14FA /* SceneDelegate.swift */; };
 		CDC14F252C453DBF00BC14FA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC14F242C453DBF00BC14FA /* ViewController.swift */; };
@@ -130,6 +138,14 @@
 		CD9D4EDF2C551CB4003492C1 /* TagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagView.swift; sourceTree = "<group>"; };
 		CD9D4EE22C551D1C003492C1 /* TagPreview.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TagPreview.xib; sourceTree = "<group>"; };
 		CD9D4EE42C551E10003492C1 /* TagPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagPreview.swift; sourceTree = "<group>"; };
+		CDA141E42C579F6000708A8B /* RankingView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RankingView.xib; sourceTree = "<group>"; };
+		CDA141E62C57A06B00708A8B /* RankingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankingView.swift; sourceTree = "<group>"; };
+		CDA141E92C57A6BB00708A8B /* RankingPreview.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RankingPreview.xib; sourceTree = "<group>"; };
+		CDA141EB2C57A99100708A8B /* RankingPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankingPreview.swift; sourceTree = "<group>"; };
+		CDA141F02C57C5DE00708A8B /* ThreadPreview.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ThreadPreview.xib; sourceTree = "<group>"; };
+		CDA141F22C57CCC100708A8B /* ThreadPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadPreview.swift; sourceTree = "<group>"; };
+		CDA141F52C57CDDD00708A8B /* ThreadsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ThreadsView.xib; sourceTree = "<group>"; };
+		CDA141F72C57CEC000708A8B /* ThreadsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadsView.swift; sourceTree = "<group>"; };
 		CDC14F1D2C453DBF00BC14FA /* AnimeTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AnimeTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDC14F202C453DBF00BC14FA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CDC14F222C453DBF00BC14FA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -372,6 +388,42 @@
 			path = TagPreview;
 			sourceTree = "<group>";
 		};
+		CDA141E32C579B7E00708A8B /* RankingView */ = {
+			isa = PBXGroup;
+			children = (
+				CDA141E42C579F6000708A8B /* RankingView.xib */,
+				CDA141E62C57A06B00708A8B /* RankingView.swift */,
+			);
+			path = RankingView;
+			sourceTree = "<group>";
+		};
+		CDA141E82C57A67C00708A8B /* RankingPreview */ = {
+			isa = PBXGroup;
+			children = (
+				CDA141E92C57A6BB00708A8B /* RankingPreview.xib */,
+				CDA141EB2C57A99100708A8B /* RankingPreview.swift */,
+			);
+			path = RankingPreview;
+			sourceTree = "<group>";
+		};
+		CDA141EF2C57C5BC00708A8B /* ThreadPreview */ = {
+			isa = PBXGroup;
+			children = (
+				CDA141F02C57C5DE00708A8B /* ThreadPreview.xib */,
+				CDA141F22C57CCC100708A8B /* ThreadPreview.swift */,
+			);
+			path = ThreadPreview;
+			sourceTree = "<group>";
+		};
+		CDA141F42C57CDCA00708A8B /* ThreadsView */ = {
+			isa = PBXGroup;
+			children = (
+				CDA141F52C57CDDD00708A8B /* ThreadsView.xib */,
+				CDA141F72C57CEC000708A8B /* ThreadsView.swift */,
+			);
+			path = ThreadsView;
+			sourceTree = "<group>";
+		};
 		CDC14F142C453DBF00BC14FA = {
 			isa = PBXGroup;
 			children = (
@@ -423,6 +475,10 @@
 		CDC14F352C45544800BC14FA /* View */ = {
 			isa = PBXGroup;
 			children = (
+				CDA141F42C57CDCA00708A8B /* ThreadsView */,
+				CDA141EF2C57C5BC00708A8B /* ThreadPreview */,
+				CDA141E82C57A67C00708A8B /* RankingPreview */,
+				CDA141E32C579B7E00708A8B /* RankingView */,
 				CD9D4EE12C551D0B003492C1 /* TagPreview */,
 				CD9D4EDC2C551BE6003492C1 /* TagView */,
 				CD9D4ED52C550A49003492C1 /* ExternalLinkPreview */,
@@ -542,6 +598,7 @@
 				CD9D4E962C523DBA003492C1 /* CharacterPreview.xib in Resources */,
 				CD9D4EE32C551D1C003492C1 /* TagPreview.xib in Resources */,
 				CD9D4EAF2C53A587003492C1 /* ScoreDistributionView.xib in Resources */,
+				CDA141EA2C57A6BB00708A8B /* RankingPreview.xib in Resources */,
 				CD9D4EA52C524FF4003492C1 /* StaffCollectionView.xib in Resources */,
 				CD9D4ED72C550A64003492C1 /* ExternalLinkPreview.xib in Resources */,
 				CD9D4EA02C524E2F003492C1 /* StaffPreview.xib in Resources */,
@@ -564,6 +621,9 @@
 				CD9D4ECB2C54F584003492C1 /* AnimeReview.xib in Resources */,
 				CD9D4EC82C54F45B003492C1 /* ReviewsView.xib in Resources */,
 				CDC14F282C453DBF00BC14FA /* Base in Resources */,
+				CDA141F62C57CDDD00708A8B /* ThreadsView.xib in Resources */,
+				CDA141F12C57C5DE00708A8B /* ThreadPreview.xib in Resources */,
+				CDA141E52C579F6000708A8B /* RankingView.xib in Resources */,
 				CD1AA0E72C49547100993AEB /* Simulator Screenshot - iPhone 15 Pro - 2024-07-18 at 21.47.05.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -576,6 +636,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CD9D4E7E2C5145D8003492C1 /* AnimeDescriptionView.swift in Sources */,
+				CDA141F32C57CCC100708A8B /* ThreadPreview.swift in Sources */,
 				CD1AA0E52C49475D00993AEB /* UIImageViewExtension.swift in Sources */,
 				CD9D4E982C523EEC003492C1 /* CharacterPreview.swift in Sources */,
 				CD1AA0E92C4A72B200993AEB /* AnimeDetailView.swift in Sources */,
@@ -592,17 +653,20 @@
 				CD9D4E882C51596A003492C1 /* RelationView.swift in Sources */,
 				CD9D4E702C4FF2EE003492C1 /* AnimeInformationView.swift in Sources */,
 				CD9D4EC32C54E7CA003492C1 /* RecommendationsAnimePreview.swift in Sources */,
+				CDA141F82C57CEC000708A8B /* ThreadsView.swift in Sources */,
 				CD9D4EE52C551E10003492C1 /* TagPreview.swift in Sources */,
 				CDE22E482C47F8B600080BAD /* AnimeDataDelegate.swift in Sources */,
 				CDC14F3C2C46A7C200BC14FA /* AnimeFetchData.swift in Sources */,
 				CD9D4E682C4D0126003492C1 /* AnimeDescriptionDelegate.swift in Sources */,
 				CD9D4E9D2C524097003492C1 /* CharacterCollectionView.swift in Sources */,
 				CD9D4ECF2C54F747003492C1 /* ReviewsView.swift in Sources */,
+				CDA141EC2C57A99100708A8B /* RankingPreview.swift in Sources */,
 				CD9D4ED42C5507A6003492C1 /* ExternalLinkView.swift in Sources */,
 				CD9D4EDB2C550FB2003492C1 /* UIColorExtension.swift in Sources */,
 				CDC14F212C453DBF00BC14FA /* AppDelegate.swift in Sources */,
 				CD9D4EAC2C526F5E003492C1 /* StatusDistributionView.swift in Sources */,
 				CD9D4EB12C53AB1A003492C1 /* ScoreDistributionView.swift in Sources */,
+				CDA141E72C57A06B00708A8B /* RankingView.swift in Sources */,
 				CD1AA0EB2C4A851900993AEB /* AnimeDetailViewController.swift in Sources */,
 				CD9D4EC02C54E73E003492C1 /* RecommendationsView.swift in Sources */,
 				CD1AA0E22C49457F00993AEB /* TrendingPageViewController.swift in Sources */,

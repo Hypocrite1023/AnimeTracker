@@ -268,6 +268,81 @@ query{
     }
 }
 """
+struct ThreadResponse: Decodable {
+    let data: PageData
+    
+    struct PageData: Decodable {
+        let Page: Page
+        
+        struct Page: Decodable {
+            let pageInfo: PageInfo
+            let threads: [Thread]
+            
+            struct PageInfo: Decodable {
+                let total: Int
+                let perPage: Int
+                let currentPage: Int
+                let lastPage: Int
+                let hasNextPage: Bool
+            }
+            
+            struct Thread: Decodable {
+                let id: Int
+                let title: String
+                let replyCount: Int
+                let viewCount: Int
+                let replyCommentId: Int?
+                let repliedAt: Int64
+                let createdAt: Int64
+                let categories: [Category]
+                let user: User
+                let replyUser: User?
+                
+                struct Category: Decodable {
+                    let id: Int
+                    let name: String
+                }
+                
+                struct User: Decodable {
+                    let id: Int
+                    let name: String
+                    let avatar: Avatar
+                    
+                    struct Avatar: Decodable {
+                        let large: String
+                    }
+                }
+            }
+        }
+    }
+    
+    
+}
+
+struct MediaRanking: Decodable {
+    let data: MediaData
+
+    struct MediaData: Decodable {
+        let media: Media
+        
+        enum CodingKeys: String, CodingKey {
+            case media = "Media"
+        }
+        struct Media: Decodable {
+            let rankings: [Ranking]
+            
+            struct Ranking: Decodable {
+                let rank: Int
+                let type: String
+                let format: String
+                let year: Int?
+                let season: String?
+                let allTime: Bool?
+                let context: String
+            }
+        }
+    }
+}
 
 struct MediaStaffPreview: Decodable {
     let data: MediaData
@@ -352,7 +427,7 @@ struct MediaResponse: Decodable {
                 let rank: Int
                 let isMediaSpoiler: Bool
                 let isGeneralSpoiler: Bool
-                let userId: Int
+                let userId: Int?
             }
             
             struct ExternalLinks: Decodable {
@@ -1146,7 +1221,152 @@ query {
             do {
                 let media = try JSONDecoder().decode(MediaStaffPreview.self, from: data)
                 self.animeDetailDataDelegate?.animeDetailStaffDataDelegate(staffData: media)
-//                self.isFetchingData = false
+                self.isFetchingData = false
+            } catch {
+                print("Error parsing JSON: \(error.localizedDescription)")
+            }
+        }
+        
+        // Execute URLSession task
+        task.resume()
+    }
+    
+    func fetchRankingDataByMediaId(id: Int) {
+        isFetchingData = true
+        print(id)
+        var urlRequest = URLRequest(url: queryURL)
+        urlRequest.httpMethod = "post"
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let query = """
+query {
+    Media(id: \(id)) {
+        rankings {
+            rank
+            type
+            format
+            year
+            season
+            allTime
+            context
+        }
+    }
+}
+"""
+        
+        let graphQLData = ["query": query]
+        
+        do {
+            urlRequest.httpBody = try JSONSerialization.data(withJSONObject: graphQLData, options: [])
+        } catch {
+            print("Error serializing JSON: \(error.localizedDescription)")
+            return
+        }
+        // Create URLSession task
+        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+            if let error = error {
+                print("Error fetching data: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                print("Invalid response")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+            do {
+                let media = try JSONDecoder().decode(MediaRanking.self, from: data)
+                self.animeDetailDataDelegate?.animeDetailRankingDataDelegate(rankingData: media.data.media)
+                self.isFetchingData = false
+            } catch {
+                print("Error parsing JSON: \(error.localizedDescription)")
+            }
+        }
+        
+        // Execute URLSession task
+        task.resume()
+    }
+    
+    func fetchThreadDataByMediaId(id: Int, page: Int) {
+        isFetchingData = true
+        print(id)
+        var urlRequest = URLRequest(url: queryURL)
+        urlRequest.httpMethod = "post"
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let query = """
+query {
+  Page(page: \(page), perPage: 10) {
+    pageInfo {
+      total
+      perPage
+      currentPage
+      lastPage
+      hasNextPage
+    }
+    threads(mediaCategoryId: \(id), sort: ID_DESC) {
+      id
+      title
+      replyCount
+      viewCount
+      replyCommentId
+      repliedAt
+      createdAt
+      categories {
+        id
+        name
+      }
+      user {
+        id
+        name
+        avatar {
+          large
+        }
+      }
+      replyUser {
+        id
+        name
+        avatar {
+          large
+        }
+      }
+    }
+  }
+}
+"""
+        
+        let graphQLData = ["query": query]
+        
+        do {
+            urlRequest.httpBody = try JSONSerialization.data(withJSONObject: graphQLData, options: [])
+        } catch {
+            print("Error serializing JSON: \(error.localizedDescription)")
+            return
+        }
+        // Create URLSession task
+        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+            if let error = error {
+                print("Error fetching data: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                print("Invalid response")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+            do {
+                let media = try JSONDecoder().decode(ThreadResponse.self, from: data)
+                self.animeDetailDataDelegate?.animeDetailThreadDataDelegate(threadData: media.data)
+                self.isFetchingData = false
             } catch {
                 print("Error parsing JSON: \(error.localizedDescription)")
             }
@@ -1156,3 +1376,23 @@ query {
         task.resume()
     }
 }
+//query($id:Int) {
+//  Media(id:$id) {
+//    id
+//    trends(sort: ID_DESC) {
+//      nodes {
+//        averageScore
+//        date
+//        trending
+//        popularity
+//      }
+//    }
+//    airingTrends: trends(releasing: true, sort: EPISODE_DESC) {
+//      nodes {
+//        averageScore
+//        inProgress
+//        episode
+//      }
+//    }
+//  }
+//}

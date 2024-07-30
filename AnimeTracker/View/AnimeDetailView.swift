@@ -33,6 +33,16 @@ class AnimeDetailView: UIView {
     var reviewView: ReviewsView! // overview, reviews
     var externalLinkView: ExternalLinkView! // overview
     var tagView: TagView! // overview
+    var rankingView: RankingView? {
+        didSet {
+            rankingView?.translatesAutoresizingMaskIntoConstraints = false
+        }
+    }
+    var threadView: ThreadsView? {
+        didSet {
+            threadView?.translatesAutoresizingMaskIntoConstraints = false
+        }
+    }
         
     var differentViewContainer: UIView!
         

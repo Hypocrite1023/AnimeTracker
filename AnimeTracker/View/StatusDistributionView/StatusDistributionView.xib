@@ -40,16 +40,16 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XAM-Pc-tsi">
-                    <rect key="frame" x="0.0" y="46" width="427" height="120"/>
+                    <rect key="frame" x="5" y="46" width="417" height="120"/>
                     <subviews>
                         <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UPs-wA-mmC">
-                            <rect key="frame" x="0.0" y="15" width="427" height="105"/>
+                            <rect key="frame" x="0.0" y="15" width="417" height="105"/>
                             <subviews>
                                 <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iQz-zu-oAf" userLabel="contentview">
-                                    <rect key="frame" x="0.0" y="0.0" width="380" height="100"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="370" height="100"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="TRm-PS-Qgi">
-                                            <rect key="frame" x="5" y="15" width="370" height="60"/>
+                                            <rect key="frame" x="0.0" y="15" width="370" height="60"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="llT-Mv-RVE">
                                                     <rect key="frame" x="0.0" y="0.0" width="70" height="60"/>
@@ -207,7 +207,7 @@
                                             </constraints>
                                         </stackView>
                                         <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="URz-vI-oco" userLabel="persent view">
-                                            <rect key="frame" x="0.0" y="85" width="380" height="15"/>
+                                            <rect key="frame" x="0.0" y="85" width="370" height="15"/>
                                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="15" id="m0Z-Td-Iyi"/>
@@ -220,10 +220,10 @@
                                         <constraint firstAttribute="height" constant="100" id="OWH-sT-5yG"/>
                                         <constraint firstItem="TRm-PS-Qgi" firstAttribute="top" relation="lessThanOrEqual" secondItem="iQz-zu-oAf" secondAttribute="top" priority="999" constant="15" id="dMO-Mz-M9n"/>
                                         <constraint firstAttribute="trailing" secondItem="URz-vI-oco" secondAttribute="trailing" id="hlC-Ha-YXe"/>
-                                        <constraint firstAttribute="trailing" secondItem="TRm-PS-Qgi" secondAttribute="trailing" constant="5" id="sWY-Wa-kul"/>
+                                        <constraint firstAttribute="trailing" secondItem="TRm-PS-Qgi" secondAttribute="trailing" id="sWY-Wa-kul"/>
                                         <constraint firstItem="URz-vI-oco" firstAttribute="leading" secondItem="iQz-zu-oAf" secondAttribute="leading" id="veZ-nr-yiH"/>
                                         <constraint firstItem="URz-vI-oco" firstAttribute="top" relation="greaterThanOrEqual" secondItem="TRm-PS-Qgi" secondAttribute="bottom" constant="15" id="xHf-kW-mMT"/>
-                                        <constraint firstItem="TRm-PS-Qgi" firstAttribute="leading" secondItem="iQz-zu-oAf" secondAttribute="leading" constant="5" id="yXe-pR-gu2"/>
+                                        <constraint firstItem="TRm-PS-Qgi" firstAttribute="leading" secondItem="iQz-zu-oAf" secondAttribute="leading" id="yXe-pR-gu2"/>
                                     </constraints>
                                 </view>
                             </subviews>
@@ -242,6 +242,7 @@
                     <constraints>
                         <constraint firstAttribute="trailing" secondItem="UPs-wA-mmC" secondAttribute="trailing" id="MWM-eV-63m"/>
                         <constraint firstAttribute="bottom" secondItem="UPs-wA-mmC" secondAttribute="bottom" id="Mpl-gR-K4c"/>
+                        <constraint firstItem="UPs-wA-mmC" firstAttribute="width" secondItem="XAM-Pc-tsi" secondAttribute="width" id="UfB-pR-Qi8"/>
                         <constraint firstItem="UPs-wA-mmC" firstAttribute="top" secondItem="XAM-Pc-tsi" secondAttribute="top" constant="15" id="iN2-ke-rZD"/>
                         <constraint firstItem="UPs-wA-mmC" firstAttribute="leading" secondItem="XAM-Pc-tsi" secondAttribute="leading" id="z7K-lW-NQQ"/>
                     </constraints>
@@ -253,9 +254,9 @@
                 <constraint firstItem="FLw-7l-h2W" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="5" id="6v2-dn-0md"/>
                 <constraint firstItem="FLw-7l-h2W" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="10" id="OKK-mw-2DE"/>
                 <constraint firstAttribute="trailing" secondItem="FLw-7l-h2W" secondAttribute="trailing" constant="5" id="Ska-cY-JFB"/>
-                <constraint firstItem="XAM-Pc-tsi" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="WgD-Le-fpz"/>
+                <constraint firstItem="XAM-Pc-tsi" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="5" id="WgD-Le-fpz"/>
                 <constraint firstItem="XAM-Pc-tsi" firstAttribute="top" secondItem="FLw-7l-h2W" secondAttribute="bottom" constant="15" id="cz6-JB-ZH8"/>
-                <constraint firstAttribute="trailing" secondItem="XAM-Pc-tsi" secondAttribute="trailing" id="swv-va-dMf"/>
+                <constraint firstAttribute="trailing" secondItem="XAM-Pc-tsi" secondAttribute="trailing" constant="5" id="swv-va-dMf"/>
                 <constraint firstAttribute="bottom" secondItem="XAM-Pc-tsi" secondAttribute="bottom" id="w62-cs-b51"/>
             </constraints>
             <nil key="simulatedTopBarMetrics"/>
@@ -266,7 +267,7 @@
     </objects>
     <resources>
         <systemColor name="secondaryLabelColor">
-            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

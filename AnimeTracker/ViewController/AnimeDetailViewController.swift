@@ -16,6 +16,7 @@ class AnimeDetailViewController: UIViewController {
     
     var animeMediaID: Int
     var animeDetailData: MediaResponse.MediaData.Media?
+    var animeRankingData: MediaRanking?
     var animeDetailView: AnimeDetailView!
     var currentTab: Int = 0
     // 0: overview
@@ -28,6 +29,9 @@ class AnimeDetailViewController: UIViewController {
     
     var lastFetchTime: TimeInterval = 0
     let debounceInterval: TimeInterval = 2 // 1 second debounce interval
+    
+    var threadViewPageControlMenuElement: [UIAction] = []
+    var selectedMenuElement: Int = 1
     
     init(animeFetchingDataManager: AnimeFetchData, mediaID: Int) {
         self.animeFetchingDataManager = animeFetchingDataManager
@@ -78,14 +82,24 @@ class AnimeDetailViewController: UIViewController {
         fetchingDataIndicator.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
     }
     private func handleFetchingDataChange(_ isFetching: Bool) {
-            if isFetching {
-                // Show loading indicator or disable UI elements
-                print("Fetching data started")
-            } else {
-                // Hide loading indicator or enable UI elements
-                print("Fetching data finished")
-            }
+        if isFetching {
+            // Show loading indicator or disable UI elements
+            print("Fetching data started")
+        } else {
+            // Hide loading indicator or enable UI elements
+            print("Fetching data finished")
         }
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        coordinator.animate(alongsideTransition: { _ in
+            if let _ = self.view.window?.windowScene {
+                self.view.frame = self.view.bounds
+                self.animeDetailView.frame = self.view.bounds
+            }
+        }, completion: nil)
+    }
     
 
     /*
@@ -101,6 +115,18 @@ class AnimeDetailViewController: UIViewController {
 }
 
 extension AnimeDetailViewController: AnimeDetailDataDelegate {
+    func animeDetailThreadDataDelegate(threadData: ThreadResponse.PageData) {
+        DispatchQueue.main.async {
+            self.setupAnimeThreadView(threadData, self.animeDetailView.threadView!, isUpdatingData: true)
+        }
+    }
+    
+    func animeDetailRankingDataDelegate(rankingData: MediaRanking.MediaData.Media) {
+        DispatchQueue.main.async {
+            self.setupAnimeRankingView(rankingData, self.animeDetailView.rankingView!, isUpdateData: true)
+        }
+    }
+    
     // MARK: - 得到新的staff資料 加入新資料並設定constraint
     func animeDetailStaffDataDelegate(staffData: MediaStaffPreview) {
         if let animeDetailData = self.animeDetailData {
@@ -138,7 +164,7 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
                     staffPreview.heightAnchor.constraint(equalToConstant: 83).isActive = true
                     tmpStaffPreview = staffPreview
                 }
-                self.animeFetchingDataManager.isFetchingData = false
+//                self.animeFetchingDataManager.isFetchingData = false
                 print("staff view finish")
             }
         }
@@ -282,19 +308,19 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
     
     @objc func showStatsView(sender: UIButton) {
         configureButtonsColor(sender: sender, buttonArr: [animeDetailView.animeBannerView.overviewButton, animeDetailView.animeBannerView.watchButton, animeDetailView.animeBannerView.charactersButton, animeDetailView.animeBannerView.staffButton, animeDetailView.animeBannerView.statsButton, animeDetailView.animeBannerView.socialButton])
+        setupAnimeStatsViewPage(animeDetailData: self.animeDetailData!)
         currentTab = 5
     }
     
     @objc func showSocialView(sender: UIButton) {
         configureButtonsColor(sender: sender, buttonArr: [animeDetailView.animeBannerView.overviewButton, animeDetailView.animeBannerView.watchButton, animeDetailView.animeBannerView.charactersButton, animeDetailView.animeBannerView.staffButton, animeDetailView.animeBannerView.statsButton, animeDetailView.animeBannerView.socialButton])
+        setupAnimeSocialViewPage(animeDetailData: self.animeDetailData!)
         currentTab = 6
     }
     // MARK: - setup overview after tap the overview button in bannerView(default will show overview)
     func setupAnimeOverviewPage(animeDetailData: MediaResponse.MediaData.Media) {
         for subview in animeDetailView.tmpScrollView.subviews {
-            if String(describing: type(of: subview)) != "_UIScrollViewScrollIndicator" {
-                subview.removeFromSuperview()
-            }
+            subview.removeFromSuperview()
         }
         let animeBannerView = animeDetailView.animeBannerView!
         let animeInformationScrollView = animeDetailView.animeInformationScrollView!
@@ -358,9 +384,7 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
     // MARK: - setup the characters view after click the character button in bannerView
     func setupAnimeCharatersViewPage(animeDetailData: MediaResponse.MediaData.Media) {
         for subview in animeDetailView.tmpScrollView.subviews {
-            if String(describing: type(of: subview)) != "_UIScrollViewScrollIndicator" {
-                subview.removeFromSuperview()
-            }
+            subview.removeFromSuperview()
         }
         let animeBannerView = animeDetailView.animeBannerView!
         let characterView = animeDetailView.characterView!
@@ -373,9 +397,7 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
     // MARK: - setup the watch view after click the watch button in bannerView
     func setupAnimeWatchViewPage(animeDetailData: MediaResponse.MediaData.Media) {
         for subview in animeDetailView.tmpScrollView.subviews {
-            if String(describing: type(of: subview)) != "_UIScrollViewScrollIndicator" {
-                subview.removeFromSuperview()
-            }
+            subview.removeFromSuperview()
         }
         let animeBannerView = animeDetailView.animeBannerView!
         let watchView = animeDetailView.watchView!
@@ -399,20 +421,43 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
     }
     // MARK: - setup the stats view after click the stats button in bannerView
     func setupAnimeStatsViewPage(animeDetailData: MediaResponse.MediaData.Media) {
+        animeFetchingDataManager.fetchRankingDataByMediaId(id: animeDetailData.id)
         for subview in animeDetailView.tmpScrollView.subviews {
-            if String(describing: type(of: subview)) != "_UIScrollViewScrollIndicator" {
-                subview.removeFromSuperview()
-            }
+            subview.removeFromSuperview()
         }
+        let animeBannerView = animeDetailView.animeBannerView!
+        animeDetailView.rankingView = RankingView()
+//        animeDetailView.rankingView!.translatesAutoresizingMaskIntoConstraints = false
+        let animeStatusDistributionView = animeDetailView.statusDistributionView!
+        let animeScoreDistributionView = animeDetailView.scoreDistributionView!
+
+        setupAnimeBannerView(animeBannerView, animeDetailData)
+        setupAnimeBannerViewConstraints(topAnchorView: animeDetailView.tmpScrollView, isLastView: false)
         
+        setupAnimeRankingView(nil, animeDetailView.rankingView!, isUpdateData: false)
+        setupAnimeRankingViewConstraints(topAnchorView: animeBannerView, isLastView: false)
+        
+        setupAnimeStatusDistributionView(animeDetailData, animeStatusDistributionView)
+        setupAnimeStatusDistributionViewConstraints(topAnchorView: animeDetailView.rankingView!, isLastView: false)
+        setupAnimeScoreDistributionView(animeDetailData, animeScoreDistributionView)
+        setupAnimeScoreDistributionViewConstraints(topAnchorView: animeStatusDistributionView, isLastView: true)
+        
+        animeFetchingDataManager.fetchRankingDataByMediaId(id: animeDetailData.id)
     }
     // MARK: - setup the social view after click the social button in bannerView
     func setupAnimeSocialViewPage(animeDetailData: MediaResponse.MediaData.Media) {
+        animeFetchingDataManager.fetchThreadDataByMediaId(id: animeDetailData.id, page: 1)
         for subview in animeDetailView.tmpScrollView.subviews {
-            if String(describing: type(of: subview)) != "_UIScrollViewScrollIndicator" {
-                subview.removeFromSuperview()
-            }
+           subview.removeFromSuperview()
         }
+        
+        let animeBannerView = animeDetailView.animeBannerView!
+        animeDetailView.threadView = ThreadsView()
+
+        setupAnimeBannerView(animeBannerView, animeDetailData)
+        setupAnimeBannerViewConstraints(topAnchorView: animeDetailView.tmpScrollView, isLastView: false)
+        setupAnimeThreadView(nil, animeDetailView.threadView!, isUpdatingData: false)
+        setupAnimeThreadViewConstraints(topAnchorView: animeBannerView, isLastView: true)
     }
     // MARK: - animeInformationView
     fileprivate func setupAnimeInformationScrollView(_ animeInformationScrollView: AnimeInformationView, _ animeDetailData: MediaResponse.MediaData.Media) {
@@ -664,8 +709,9 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
     // MARK: - animeStatusDistributionView constraints
     fileprivate func setupAnimeStatusDistributionViewConstraints(topAnchorView: UIView, isLastView: Bool) {
         animeDetailView.statusDistributionView.topAnchor.constraint(equalTo: topAnchorView.bottomAnchor, constant: 20).isActive = true
-        animeDetailView.statusDistributionView.leadingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.leadingAnchor, constant: 5).isActive = true
-        animeDetailView.statusDistributionView.trailingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.trailingAnchor, constant: -5).isActive = true
+        animeDetailView.statusDistributionView.leadingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.leadingAnchor).isActive = true
+        animeDetailView.statusDistributionView.widthAnchor.constraint(equalTo: animeDetailView.tmpScrollView.widthAnchor).isActive = true
+//        animeDetailView.statusDistributionView.trailingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.trailingAnchor, constant: -5).isActive = true
         if isLastView {
             animeDetailView.statusDistributionView.bottomAnchor.constraint(equalTo: animeDetailView.tmpScrollView.bottomAnchor).isActive = true
         }
@@ -727,7 +773,7 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
     fileprivate func setupAnimeScoreDistributionViewConstraints(topAnchorView: UIView, isLastView: Bool) {
         animeDetailView.scoreDistributionView.topAnchor.constraint(equalTo: topAnchorView.bottomAnchor, constant: 15).isActive = true
         animeDetailView.scoreDistributionView.leadingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.leadingAnchor).isActive = true
-        animeDetailView.scoreDistributionView.trailingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.trailingAnchor).isActive = true
+        animeDetailView.scoreDistributionView.widthAnchor.constraint(equalTo: animeDetailView.tmpScrollView.widthAnchor).isActive = true
         animeDetailView.scoreDistributionView.heightAnchor.constraint(equalToConstant: 175).isActive = true
         if isLastView {
             animeDetailView.scoreDistributionView.bottomAnchor.constraint(equalTo: animeDetailView.tmpScrollView.bottomAnchor).isActive = true
@@ -955,6 +1001,197 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
         }
     }
     
+    fileprivate func setupAnimeRankingView(_ rankingData: MediaRanking.MediaData.Media?, _ rankingView: RankingView, isUpdateData: Bool) {
+        if !isUpdateData {
+            animeDetailView.tmpScrollView.addSubview(rankingView)
+        } else {
+            if let rankingDataNotNil = rankingData {
+                var tmpRankingPreview: RankingPreview?
+                for (index, rankingData) in rankingDataNotNil.rankings.enumerated() {
+                    let rankingPreview = RankingPreview()
+                    rankingPreview.rankingImageView.image = UIImage(systemName: ((rankingData.type == "RATED") ? "star.fill" : "heart.fill"))
+                    rankingPreview.rankingImageView.tintColor = rankingData.type == "RATED" ? UIColor.systemYellow : UIColor.systemRed
+                    rankingPreview.rankingTitleLabel.text = "#\(rankingData.rank) \(rankingData.year == nil ? "" : String(rankingData.year!)) \(rankingData.season == nil ? "" : rankingData.season!) \(rankingData.context.capitalized)"
+                    rankingPreview.translatesAutoresizingMaskIntoConstraints = false
+                    rankingView.rankingContainerView.addSubview(rankingPreview)
+                    
+                    rankingPreview.leadingAnchor.constraint(equalTo: rankingView.rankingContainerView.leadingAnchor).isActive = true
+                    rankingPreview.trailingAnchor.constraint(equalTo: rankingView.rankingContainerView.trailingAnchor).isActive = true
+                    rankingPreview.heightAnchor.constraint(equalToConstant: 40).isActive = true
+                    
+                    if index == 0 {
+                        rankingPreview.topAnchor.constraint(equalTo: rankingView.rankingContainerView.topAnchor, constant: 10).isActive = true
+                    } else if index == rankingDataNotNil.rankings.count - 1 {
+                        rankingPreview.topAnchor.constraint(equalTo: tmpRankingPreview!.bottomAnchor, constant: 10).isActive = true
+                        rankingPreview.bottomAnchor.constraint(equalTo: rankingView.rankingContainerView.bottomAnchor).isActive = true
+                    } else {
+                        rankingPreview.topAnchor.constraint(equalTo: tmpRankingPreview!.bottomAnchor, constant: 10).isActive = true
+                    }
+                    tmpRankingPreview = rankingPreview
+                }
+            }
+        }
+        
+        
+    }
+    fileprivate func setupAnimeRankingViewConstraints(topAnchorView: UIView, isLastView: Bool) {
+        animeDetailView.rankingView?.topAnchor.constraint(equalTo: topAnchorView.bottomAnchor).isActive = true
+        animeDetailView.rankingView?.leadingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.leadingAnchor).isActive = true
+        animeDetailView.rankingView?.widthAnchor.constraint(equalTo: animeDetailView.tmpScrollView.widthAnchor).isActive = true
+        if isLastView {
+            animeDetailView.rankingView?.bottomAnchor.constraint(equalTo: animeDetailView.tmpScrollView.bottomAnchor).isActive = true
+        }
+    }
+    
+    fileprivate func setupAnimeThreadView(_ threadData: ThreadResponse.PageData?, _ threadView: ThreadsView, isUpdatingData: Bool) {
+        if !isUpdatingData {
+            animeDetailView.tmpScrollView.addSubview(threadView)
+            threadView.pageControlButton.showsMenuAsPrimaryAction = true
+        } else {
+            for threadPreview in threadView.threadsContainer.subviews {
+                threadPreview.removeFromSuperview()
+            }
+            
+            var tmpThreadPreview: ThreadPreview?
+            if let threadData = threadData {
+                print("thread data count", threadData.Page.threads.count)
+                for (index, thread) in threadData.Page.threads.enumerated() {
+                    let threadPreview = ThreadPreview()
+                    threadPreview.threadTitleLabel.text = thread.title
+                    threadPreview.viewCountLabel.text = "\(thread.viewCount)"
+                    threadPreview.discussCountLabel.text = "\(thread.replyCount)"
+                    threadPreview.userAvatarImageView.loadImage(from: thread.replyUser?.avatar.large)
+                    threadPreview.usernameLabel.text = thread.replyUser == nil ? "" : thread.replyUser?.name
+                    threadPreview.replyTimeLabel.text = AnimeDetailFunc.timePassed(from: thread.repliedAt)
+                    threadPreview.translatesAutoresizingMaskIntoConstraints = false
+                    
+                    if !thread.categories.isEmpty {
+                        let categoryScrollView = UIScrollView()
+                        categoryScrollView.translatesAutoresizingMaskIntoConstraints = false
+                        threadPreview.threadCategoryContainer.addSubview(categoryScrollView)
+                        categoryScrollView.topAnchor.constraint(equalTo: threadPreview.threadCategoryContainer.topAnchor).isActive = true
+                        categoryScrollView.leadingAnchor.constraint(equalTo: threadPreview.threadCategoryContainer.leadingAnchor).isActive = true
+                        categoryScrollView.trailingAnchor.constraint(equalTo: threadPreview.threadCategoryContainer.trailingAnchor).isActive = true
+                        categoryScrollView.bottomAnchor.constraint(equalTo: threadPreview.threadCategoryContainer.bottomAnchor).isActive = true
+                        let viewInCategoryScrollView = UIView()
+                        viewInCategoryScrollView.translatesAutoresizingMaskIntoConstraints = false
+                        categoryScrollView.addSubview(viewInCategoryScrollView)
+                        viewInCategoryScrollView.topAnchor.constraint(equalTo: categoryScrollView.contentLayoutGuide.topAnchor).isActive = true
+                        viewInCategoryScrollView.leadingAnchor.constraint(equalTo: categoryScrollView.contentLayoutGuide.leadingAnchor).isActive = true
+                        viewInCategoryScrollView.trailingAnchor.constraint(equalTo: categoryScrollView.contentLayoutGuide.trailingAnchor).isActive = true
+                        viewInCategoryScrollView.bottomAnchor.constraint(equalTo: categoryScrollView.contentLayoutGuide.bottomAnchor).isActive = true
+                        
+                        var tmpCategoryLabel: UILabelWithPadding?
+                        let sortedCategories = thread.categories.sorted(by: {$0.id < $1.id})
+                        for (categoryIndex, category) in sortedCategories.enumerated() {
+                            let categoryLabel = UILabelWithPadding(textInsets: UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5))
+                            categoryLabel.text = category.name
+                            categoryLabel.font = UIFont.systemFont(ofSize: 12)
+                            categoryLabel.backgroundColor = category.name == "Release Discussion" ? UIColor.systemPurple : UIColor.systemCyan
+                            categoryLabel.layer.cornerRadius = 10
+                            categoryLabel.clipsToBounds = true
+                            viewInCategoryScrollView.addSubview(categoryLabel)
+                            categoryLabel.translatesAutoresizingMaskIntoConstraints = false
+                            
+                            categoryLabel.topAnchor.constraint(equalTo: viewInCategoryScrollView.topAnchor).isActive = true
+                            categoryLabel.bottomAnchor.constraint(equalTo: viewInCategoryScrollView.bottomAnchor).isActive = true
+                            
+                            if categoryIndex == 0 {
+                                categoryLabel.leadingAnchor.constraint(equalTo: viewInCategoryScrollView.leadingAnchor).isActive = true
+                            }
+                            if categoryIndex == thread.categories.count - 1 {
+                                categoryLabel.trailingAnchor.constraint(equalTo: viewInCategoryScrollView.trailingAnchor).isActive = true
+                            }
+                            if categoryIndex != 0 {
+                                categoryLabel.leadingAnchor.constraint(equalTo: tmpCategoryLabel!.trailingAnchor, constant: 10).isActive = true
+                            }
+                            tmpCategoryLabel = categoryLabel
+                        }
+                    }
+                    threadView.threadsContainer.addSubview(threadPreview)
+                    
+                    threadPreview.leadingAnchor.constraint(equalTo: threadView.threadsContainer.leadingAnchor).isActive = true
+                    threadPreview.widthAnchor.constraint(equalTo: threadView.threadsContainer.widthAnchor).isActive = true
+                    threadPreview.heightAnchor.constraint(equalToConstant: 110).isActive = true
+
+                    if index == 0 {
+                        threadPreview.topAnchor.constraint(equalTo: threadView.threadsContainer.topAnchor).isActive = true
+                        if threadData.Page.threads.count == 1 {
+                            threadPreview.bottomAnchor.constraint(equalTo: threadView.threadsContainer.bottomAnchor).isActive = true
+                        }
+                    } else if index == threadData.Page.threads.count - 1 {
+                        threadPreview.topAnchor.constraint(equalTo: tmpThreadPreview!.bottomAnchor, constant: 10).isActive = true
+                        threadPreview.bottomAnchor.constraint(equalTo: threadView.threadsContainer.bottomAnchor).isActive = true
+                    } else {
+                        threadPreview.topAnchor.constraint(equalTo: tmpThreadPreview!.bottomAnchor, constant: 10).isActive = true
+                    }
+                    tmpThreadPreview = threadPreview
+                    
+                    threadPreview.isUserInteractionEnabled = true
+                    let tapGesture = ThreadPreviewTapGesture(target: self, action: #selector(threadPreviewTap))
+                    tapGesture.title = thread.title
+                    threadPreview.addGestureRecognizer(tapGesture)
+                }
+                
+                if threadData.Page.pageInfo.currentPage == 1 {
+                    for action in 1...threadData.Page.pageInfo.lastPage {
+                        let pageControlAction = UIAction(title: "\(action)", state: .off) { uiAction in
+                            self.animeFetchingDataManager.fetchThreadDataByMediaId(id: self.animeDetailData!.id, page: action)
+                            print("fetching thread page \(action)")
+                            self.animeDetailView.tmpScrollView.setContentOffset(CGPoint(x: self.animeDetailView.threadView!.frame.origin.x, y: self.animeDetailView.threadView!.frame.origin.y), animated: true)
+                            self.selectedMenuElement = action
+                        }
+                        threadViewPageControlMenuElement.append(pageControlAction)
+                    }
+                }
+//                let tmpAction = threadViewPageControlMenuElement[selectedMenuElement - 1] as? UIAction
+//                tmpAction?.state = .on
+//                let pageControlMenu = UIMenu(title: "\(threadData.Page.pageInfo.currentPage)", children: threadViewPageControlMenuElement)
+//                let pageControlMenu = UIMenu(options: .singleSelection, children: threadViewPageControlMenuElement)
+//                print(threadData.Page.pageInfo.currentPage, "current page")
+//                
+//                threadView.pageControlButton.menu = pageControlMenu
+                updateThreadPageControl()
+                threadView.pageControlButton.setTitle("\(threadData.Page.pageInfo.currentPage)", for: .normal)
+                
+            }
+            
+        }
+        
+    }
+    
+    @objc func threadPreviewTap(sender: ThreadPreviewTapGesture) {
+        print(sender.title)
+        guard let view = sender.view else { return }
+                
+        // Animate scaling effect
+        UIView.animate(withDuration: 0.1,
+                       animations: {
+                           view.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+                       },
+                       completion: { _ in
+                           UIView.animate(withDuration: 0.1) {
+                               view.transform = CGAffineTransform.identity
+                           }
+                       })
+    }
+    fileprivate func setupAnimeThreadViewConstraints(topAnchorView: UIView, isLastView: Bool) {
+        animeDetailView.threadView?.topAnchor.constraint(equalTo: topAnchorView.bottomAnchor).isActive = true
+        animeDetailView.threadView?.leadingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.leadingAnchor).isActive = true
+        animeDetailView.threadView?.widthAnchor.constraint(equalTo: animeDetailView.tmpScrollView.widthAnchor).isActive = true
+        if isLastView {
+            animeDetailView.threadView?.bottomAnchor.constraint(equalTo: animeDetailView.tmpScrollView.bottomAnchor).isActive = true
+        }
+    }
+    
+    func updateThreadPageControl() {
+        let actions = threadViewPageControlMenuElement.enumerated().map {
+            $1.state = ($0 + 1 == self.selectedMenuElement) ? .on : .off
+            return $1
+        }
+        animeDetailView.threadView?.pageControlButton.menu = UIMenu(title: "", children: actions)
+        animeDetailView.threadView?.pageControlButton.showsMenuAsPrimaryAction = true
+    }
 }
 
 extension AnimeDetailViewController: AnimeDescriptionDelegate {
@@ -1029,4 +1266,8 @@ extension AnimeDetailViewController: UIScrollViewDelegate {
         }
         
     }
+}
+
+class ThreadPreviewTapGesture: UITapGestureRecognizer {
+    var title = String()
 }
