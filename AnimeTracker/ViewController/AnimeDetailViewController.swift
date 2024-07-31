@@ -80,6 +80,29 @@ class AnimeDetailViewController: UIViewController {
         fetchingDataIndicator.isHidden = true
         fetchingDataIndicator.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         fetchingDataIndicator.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
+        
+//        let rightSwipeGesture = UIPanGestureRecognizer(target: self, action: #selector(rightSwipeToDismiss))
+//        self.view.addGestureRecognizer(rightSwipeGesture)
+    }
+    
+    @objc func rightSwipeToDismiss(gesture: UIPanGestureRecognizer) {
+        switch(gesture.state) {
+        case .began:
+            print("began", gesture.translation(in: gesture.view))
+        case .possible:
+            print("possible", gesture.translation(in: gesture.view))
+        case .changed:
+            print("changed", gesture.translation(in: gesture.view))
+        case .ended:
+            print("ended", gesture.translation(in: gesture.view))
+        case .cancelled:
+            print("cancelled", gesture.translation(in: gesture.view))
+        case .failed:
+            print("failed", gesture.translation(in: gesture.view))
+        @unknown default:
+            print("default", gesture.translation(in: gesture.view))
+        }
+//        print("right swipe", gesture.translation(in: gesture.view))
     }
     private func handleFetchingDataChange(_ isFetching: Bool) {
         if isFetching {
@@ -221,6 +244,7 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
         self.animeDetailData = media
 //        print(media.streamingEpisodes)
         DispatchQueue.main.async {
+            self.navigationItem.title = media.title.native
 //            self.animeDetailView?.setupAnimeInfoPage(animeDetailData: self.animeDetailData!)
             self.showOverviewView(sender: self.animeDetailView.animeBannerView.overviewButton)
         }
@@ -1129,6 +1153,7 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
                     
                     threadPreview.isUserInteractionEnabled = true
                     let tapGesture = ThreadPreviewTapGesture(target: self, action: #selector(threadPreviewTap))
+                    tapGesture.threadID = thread.id
                     tapGesture.title = thread.title
                     threadPreview.addGestureRecognizer(tapGesture)
                 }
@@ -1161,7 +1186,7 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
     }
     
     @objc func threadPreviewTap(sender: ThreadPreviewTapGesture) {
-        print(sender.title)
+        print(sender.threadID, sender.title)
         guard let view = sender.view else { return }
                 
         // Animate scaling effect
@@ -1269,5 +1294,8 @@ extension AnimeDetailViewController: UIScrollViewDelegate {
 }
 
 class ThreadPreviewTapGesture: UITapGestureRecognizer {
+    var threadID = 0
     var title = String()
 }
+
+

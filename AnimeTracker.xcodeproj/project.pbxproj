@@ -14,6 +14,7 @@
 		CD1AA0EB2C4A851900993AEB /* AnimeDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1AA0EA2C4A851900993AEB /* AnimeDetailViewController.swift */; };
 		CD1AA0ED2C4BA82D00993AEB /* AnimeDetailDataDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1AA0EC2C4BA82D00993AEB /* AnimeDetailDataDelegate.swift */; };
 		CD1AA0EF2C4BB30F00993AEB /* UILabelWithPadding.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1AA0EE2C4BB30F00993AEB /* UILabelWithPadding.swift */; };
+		CD2FF79C2C5925C400924687 /* RightSwipeDismissPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD2FF79B2C5925C400924687 /* RightSwipeDismissPresentationController.swift */; };
 		CD9D4E682C4D0126003492C1 /* AnimeDescriptionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D4E672C4D0126003492C1 /* AnimeDescriptionDelegate.swift */; };
 		CD9D4E6A2C4E4E6F003492C1 /* WatchViewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D4E692C4E4E6F003492C1 /* WatchViewCollectionViewCell.swift */; };
 		CD9D4E6C2C4E654A003492C1 /* AnimeStreamingDetailDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D4E6B2C4E654A003492C1 /* AnimeStreamingDetailDelegate.swift */; };
@@ -91,6 +92,7 @@
 		CD1AA0EA2C4A851900993AEB /* AnimeDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeDetailViewController.swift; sourceTree = "<group>"; };
 		CD1AA0EC2C4BA82D00993AEB /* AnimeDetailDataDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeDetailDataDelegate.swift; sourceTree = "<group>"; };
 		CD1AA0EE2C4BB30F00993AEB /* UILabelWithPadding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILabelWithPadding.swift; sourceTree = "<group>"; };
+		CD2FF79B2C5925C400924687 /* RightSwipeDismissPresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RightSwipeDismissPresentationController.swift; sourceTree = "<group>"; };
 		CD9D4E672C4D0126003492C1 /* AnimeDescriptionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeDescriptionDelegate.swift; sourceTree = "<group>"; };
 		CD9D4E692C4E4E6F003492C1 /* WatchViewCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchViewCollectionViewCell.swift; sourceTree = "<group>"; };
 		CD9D4E6B2C4E654A003492C1 /* AnimeStreamingDetailDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeStreamingDetailDelegate.swift; sourceTree = "<group>"; };
@@ -468,6 +470,7 @@
 				CDC14F392C4555D200BC14FA /* SearchPageViewController.swift */,
 				CD1AA0E12C49457F00993AEB /* TrendingPageViewController.swift */,
 				CD1AA0EA2C4A851900993AEB /* AnimeDetailViewController.swift */,
+				CD2FF79B2C5925C400924687 /* RightSwipeDismissPresentationController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -650,6 +653,7 @@
 				CDC14F252C453DBF00BC14FA /* ViewController.swift in Sources */,
 				CD9D4E6C2C4E654A003492C1 /* AnimeStreamingDetailDelegate.swift in Sources */,
 				CD9D4EBB2C54D66F003492C1 /* AnimeWatchPreviewContainer.swift in Sources */,
+				CD2FF79C2C5925C400924687 /* RightSwipeDismissPresentationController.swift in Sources */,
 				CD9D4E882C51596A003492C1 /* RelationView.swift in Sources */,
 				CD9D4E702C4FF2EE003492C1 /* AnimeInformationView.swift in Sources */,
 				CD9D4EC32C54E7CA003492C1 /* RecommendationsAnimePreview.swift in Sources */,

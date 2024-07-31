@@ -55,8 +55,10 @@ extension TrendingPageViewController: UICollectionViewDelegate, UICollectionView
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let animeData = self.animeFetchedData?.data.Page.media[indexPath.item] {
             let detailViewController = AnimeDetailViewController(animeFetchingDataManager: animeFetchManager, mediaID: animeData.id)
-            detailViewController.modalPresentationStyle = .formSheet
-            present(detailViewController, animated: true)
+//            detailViewController.modalPresentationStyle = .fullScreen
+//            detailViewController.transitioningDelegate = self
+            navigationController?.pushViewController(detailViewController, animated: true)
+//            present(detailViewController, animated: true)
         }
         collectionView.deselectItem(at: indexPath, animated: true)
     }
@@ -120,3 +122,9 @@ extension TrendingPageViewController: UIScrollViewDelegate {
         }
     }
 }
+
+//extension TrendingPageViewController: UIViewControllerTransitioningDelegate {
+//    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+//        return RightSwipeDismissPresentationController(presentedViewController: presented, presenting: presenting)
+//    }
+//}
