@@ -14,6 +14,7 @@
                 <outlet property="characterImageView" destination="40A-WB-3CB" id="FOW-uP-L1G"/>
                 <outlet property="characterNameLabel" destination="5CU-pj-UpC" id="YK4-ew-RYe"/>
                 <outlet property="characterRoleLabel" destination="zQL-Nb-gYv" id="CMG-Jh-tT0"/>
+                <outlet property="characterSideView" destination="VFK-qV-JN8" id="Hn4-k6-LAu"/>
                 <outlet property="contentView" destination="iN0-l3-epB" id="6Ic-Xc-ux8"/>
                 <outlet property="voiceActorCountryLabel" destination="ZvZ-VL-ZZH" id="Jju-ys-WLt"/>
                 <outlet property="voiceActorImageView" destination="dvS-su-o63" id="dCh-kP-YLl"/>
@@ -25,6 +26,10 @@
             <rect key="frame" x="0.0" y="0.0" width="393" height="83"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VFK-qV-JN8" userLabel="character side">
+                    <rect key="frame" x="0.0" y="0.0" width="196.66666666666666" height="83"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                </view>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="40A-WB-3CB">
                     <rect key="frame" x="0.0" y="0.0" width="65" height="83"/>
                     <constraints>
@@ -86,11 +91,15 @@
                 <constraint firstItem="40A-WB-3CB" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="I49-zS-2Zf"/>
                 <constraint firstItem="40A-WB-3CB" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="MAi-We-llh"/>
                 <constraint firstItem="4kZ-9L-mTm" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="5" id="OFo-9r-4Gc"/>
+                <constraint firstItem="VFK-qV-JN8" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="Vq2-6P-u64"/>
+                <constraint firstAttribute="bottom" secondItem="VFK-qV-JN8" secondAttribute="bottom" id="XG2-Du-kqS"/>
+                <constraint firstItem="VFK-qV-JN8" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" multiplier="0.5" id="Y21-pV-Oaq"/>
                 <constraint firstAttribute="bottom" secondItem="40A-WB-3CB" secondAttribute="bottom" id="YN4-zm-Tbw"/>
                 <constraint firstItem="dvS-su-o63" firstAttribute="leading" secondItem="4kZ-9L-mTm" secondAttribute="trailing" constant="5" id="bei-Z5-S9F"/>
                 <constraint firstItem="a3F-Zy-t0f" firstAttribute="leading" secondItem="40A-WB-3CB" secondAttribute="trailing" constant="5" id="cdV-Rf-otT"/>
                 <constraint firstAttribute="bottom" secondItem="a3F-Zy-t0f" secondAttribute="bottom" constant="5" id="cmj-Qa-pOY"/>
                 <constraint firstItem="dvS-su-o63" firstAttribute="leading" secondItem="a3F-Zy-t0f" secondAttribute="trailing" constant="5" id="fcO-Z7-MIm"/>
+                <constraint firstItem="VFK-qV-JN8" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="hSv-eK-dPT"/>
                 <constraint firstAttribute="bottom" secondItem="dvS-su-o63" secondAttribute="bottom" id="hXO-qP-bvj"/>
                 <constraint firstItem="dvS-su-o63" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="o4p-UX-4e0"/>
             </constraints>
@@ -102,7 +111,7 @@
     </objects>
     <resources>
         <systemColor name="secondaryLabelColor">
-            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

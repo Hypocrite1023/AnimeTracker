@@ -63,6 +63,7 @@ class AnimeDetailViewController: UIViewController {
             .store(in: &cancellables)
         
         self.animeFetchingDataManager.animeDetailDataDelegate = self
+        self.animeFetchingDataManager.animeCharacterDataDelegate = self
         animeFetchingDataManager.fetchAnimeByID(id: animeMediaID)
         animeDetailView = AnimeDetailView(frame: self.view.frame)
 //        animeDetailView.frame = self.view.frame
@@ -217,6 +218,10 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
                     characterPreview.voiceActorImageView.loadImage(from: edge.voiceActors.first?.image.large ?? "photo")
                     characterPreview.voiceActorNameLabel.text = edge.voiceActors.first?.name.userPreferred
                     characterPreview.voiceActorCountryLabel.text = edge.voiceActors.first?.language
+                    
+                    let characterSideGesture = CharacterTapGesture(target: self, action: #selector(self.loadCharacterData), characterID: edge.node.id)
+                    characterPreview.characterSideView.addGestureRecognizer(characterSideGesture)
+                    
                     characterPreview.translatesAutoresizingMaskIntoConstraints = false
                     self.animeDetailView.characterView.characterCollectionView.addSubview(characterPreview)
                     
@@ -602,6 +607,10 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
             characterPreview.voiceActorImageView.loadImage(from: edge.voiceActors.first?.image.large ?? "photo")
             characterPreview.voiceActorNameLabel.text = edge.voiceActors.first?.name.userPreferred
             characterPreview.voiceActorCountryLabel.text = edge.voiceActors.first?.language
+            
+            let characterSideGesture = CharacterTapGesture(target: self, action: #selector(loadCharacterData), characterID: edge.node.id)
+            characterPreview.characterSideView.addGestureRecognizer(characterSideGesture)
+            
             characterPreview.translatesAutoresizingMaskIntoConstraints = false
             characterView.characterCollectionView.addSubview(characterPreview)
             if index == 0 { // first
@@ -634,6 +643,10 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
 //            }
 //            
 //        }
+    }
+    @objc func loadCharacterData(sender: CharacterTapGesture) {
+        print(sender.characterID)
+        animeFetchingDataManager.fetchCharacterDetailByCharacterID(id: sender.characterID, page: 1)
     }
     // MARK: - animeCharacterView constraints
     fileprivate func setupAnimeCharacterViewConstraints(topAnchorView: UIView, isLastView: Bool) {
@@ -1291,6 +1304,19 @@ extension AnimeDetailViewController: UIScrollViewDelegate {
         }
         
     }
+}
+
+extension AnimeDetailViewController: AnimeCharacterDataDelegate {
+    func animeCharacterDataDelegate(characterData: CharacterDetail) {
+//        print(characterData)
+        DispatchQueue.main.async {
+            let newVC = UIStoryboard(name: "AnimeCharacterPage", bundle: nil).instantiateViewController(withIdentifier: "CharacterPage") as! AnimeCharacterPageViewController
+            newVC.characterData = characterData
+            self.navigationController?.pushViewController(newVC, animated: true)
+        }
+    }
+    
+    
 }
 
 class ThreadPreviewTapGesture: UITapGestureRecognizer {

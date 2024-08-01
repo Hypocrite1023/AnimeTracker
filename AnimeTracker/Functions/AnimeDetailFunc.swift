@@ -67,7 +67,7 @@ struct AnimeDetailFunc {
     }
     static func updateAnimeDescription(animeDescription: String) -> NSMutableAttributedString? {
         var finalAttributedString = NSMutableAttributedString()
-        let animeDescriptionAddFontSize = "<p style=\"font-size: 20px;\"><br>\(animeDescription)</p>"
+        let animeDescriptionAddFontSize = "<div style=\"font-size: 20px;\"><br>\(animeDescription)</div>"
         guard let data = animeDescriptionAddFontSize.data(using: .utf8) else { return nil }
         do {
             // Create attributed string from HTML

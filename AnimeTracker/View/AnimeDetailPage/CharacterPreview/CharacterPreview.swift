@@ -24,6 +24,7 @@ class CharacterPreview: UIView {
     @IBOutlet weak var voiceActorNameLabel: UILabel!
     @IBOutlet weak var characterRoleLabel: UILabel!
     @IBOutlet weak var voiceActorCountryLabel: UILabel!
+    @IBOutlet weak var characterSideView: UIView!
 
     
     override init(frame: CGRect) {

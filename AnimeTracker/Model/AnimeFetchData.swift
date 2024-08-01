@@ -34,240 +34,103 @@ struct AnimeSearchedOrTrending: Codable {
     }
 }
 
-
-let query = """
-query{
-    Media(id:$id,type:$type,isAdult:$isAdult){
-        id
-        title{
-            userPreferred
-            romaji
-            english
-            native
-        }
-        coverImage{
-            extraLarge
-            large
-        }
-        bannerImage
-        startDate{
-            year
-            month
-            day
-        }
-        endDate{
-            year
-            month
-            day
-        }
-        description
-        season
-        seasonYear
-        type
-        format
-        status(version:2)
-        episodes
-        duration
-        chapters
-        volumes
-        genres
-        synonyms
-        source(version:3)
-        isAdult
-        isLocked
-        meanScore
-        averageScore
-        popularity
-        favourites
-        isFavouriteBlocked
-        hashtag
-        countryOfOrigin
-        isLicensed
-        isFavourite
-        isRecommendationBlocked
-        isFavouriteBlocked
-        isReviewBlocked
-        nextAiringEpisode{
-            airingAt
-            timeUntilAiring
-            episode
-        }
-        relations{
-            edges{
-                id
-                relationType(version:2)
-                node{
-                    id
-                    title{
-                        userPreferred
+struct CharacterDetail: Decodable {
+    var data: CharacterData
+    
+    struct CharacterData: Decodable {
+        var Character: CharacterDataInData
+        
+        struct CharacterDataInData: Decodable {
+            let id: Int
+            let name: CharacterName
+            let image: CharacterImage
+            let favourites: Int
+            let isFavourite: Bool
+            let isFavouriteBlocked: Bool
+            let description: String?
+            let age: String?
+            let gender: String?
+            let bloodType: String?
+            let dateOfBirth: DateOfBirth
+            var media: Media?
+            
+            struct Media: Decodable {
+                let pageInfo: PageInfo
+                var edges: [Edge]
+                
+                
+                struct Edge: Decodable {
+                    let id: Int
+                    let characterRole: String
+                    var voiceActorRoles: [VoiceActorRoles]?
+                    let node: Node
+                    
+                    struct Node: Decodable {
+                        let id: Int
+                        let type: String?
+                        let isAdult: Bool
+                        let bannerImage: String?
+                        let title: Title
+                        let coverImage: MediaResponse.MediaData.Media.MediaCoverImage
+                        let startDate: StartDate
+                        let mediaListEntry: MediaListEntry?
+                        
+                        struct MediaListEntry: Decodable {
+                            let id: Int
+                            let status: String?
+                        }
+                        
+                        struct StartDate: Decodable {
+                            let year: Int
+                        }
+                        
+                        struct Title: Decodable {
+                            let userPreferred: String
+                        }
                     }
-                    format
-                    type
-                    status(version:2)
-                    bannerImage
-                    coverImage{
-                        large
+                    
+                    struct VoiceActorRoles: Decodable {
+                        let roleNotes: String?
+                        let voiceActor: MediaResponse.MediaData.Media.CharacterPreview.Edges.VoiceActors
+                        
                     }
                 }
-            }
-        }
-        characterPreview: characters(perPage: 6, sort:[ROLE, RELEVANCE, ID]) {
-            edges {
-                id
-                role
-                name
-                voiceActors(language: JAPANESE, sort: [RELEVANCE , ID]) {
-                    id
-                    name {
-                        userPreferred
-                    }
-                    language: languageV2
-                    image {
-                        large
-                    }
-                }
-                node {
-                    id
-                    name {
-                        userPreferred
-                    }
-                    image {
-                        large
-                    }
+                
+                struct PageInfo: Decodable {
+                    let total: Int
+                    let perPage: Int
+                    let currentPage: Int
+                    let lastPage: Int
+                    let hasNextPage: Bool
                 }
             }
-        }
-        staffPreview: staff(perPage: 8, sort: [RELEVANCE, ID]) {
-            edges {
-                id
-                role
-                node {
-                    id
-                    name {
-                        userPreferred
-                    }
-                    language: languageV2
-                    image {
-                        large
-                    }
-                }
+            
+            struct DateOfBirth: Decodable {
+                let year: Int?
+                let month: Int?
+                let day: Int?
             }
-        }
-        studios {
-            edges {
-                isMain
-                node {
-                    id
-                    name
-                }
+            
+            struct CharacterName: Decodable {
+                let first: String?
+                let middle: String?
+                let last: String?
+                let full: String?
+                let native: String?
+                let userPreferred: String
+                let alternative: [String]?
+                let alternativeSpoiler: [String]?
             }
-        }
-        reviewPreview:reviews(perPage:2,sort:[RATING_DESC,ID]){
-            pageInfo{
-                total
-            }
-            nodes{
-                id
-                summary
-                rating
-                ratingAmount
-                user{
-                    id
-                    name
-                    avatar{
-                        large
-                    }
-                }
-            }
-        }
-        recommendations(perPage:7,sort:[RATING_DESC,ID]){
-            pageInfo{
-                total
-            }
-            nodes{
-                id
-                rating
-                userRating
-                mediaRecommendation{
-                    id
-                    title{
-                        userPreferred
-                    }
-                    format
-                    type
-                    status(version:2)
-                    bannerImage
-                    coverImage{
-                        large
-                    }
-                }
-                user{
-                    id
-                    name
-                    avatar{
-                        large
-                    }
-                }
-            }
-        }
-        externalLinks{
-            id
-            site
-            url
-            type
-            language
-            color
-            icon
-            notes
-            isDisabled
-        }
-        streamingEpisodes{
-            site
-            title
-            thumbnail
-            url
-        }
-        trailer{
-            id
-            site
-        }
-        rankings{
-            id
-            rank
-            type
-            format
-            year
-            season
-            allTime
-            context
-        }
-        tags{
-            id
-            name
-            description
-            rank
-            isMediaSpoiler
-            isGeneralSpoiler
-            userId
-        }
-        mediaListEntry{
-            id
-            status
-            score
-        }
-        stats{
-            statusDistribution{
-                status
-                amount
-            }
-            scoreDistribution{
-                score
-                amount
+            
+            struct CharacterImage: Decodable {
+                let large: String
             }
         }
     }
+    
+    
 }
-"""
+
 struct ThreadResponse: Decodable {
     let data: PageData
     
@@ -691,6 +554,7 @@ class AnimeFetchData {
     let queryURL = URL(string: "https://graphql.anilist.co")!
     var animeDataDelegateManager: AnimeDataDelegate?
     var animeDetailDataDelegate: AnimeDetailDataDelegate?
+    var animeCharacterDataDelegate: AnimeCharacterDataDelegate?
     var trendingNextFetchPage = 1
     @Published var isFetchingData = false
     
@@ -1366,6 +1230,129 @@ query {
             do {
                 let media = try JSONDecoder().decode(ThreadResponse.self, from: data)
                 self.animeDetailDataDelegate?.animeDetailThreadDataDelegate(threadData: media.data)
+                self.isFetchingData = false
+            } catch {
+                print("Error parsing JSON: \(error.localizedDescription)")
+            }
+        }
+        
+        // Execute URLSession task
+        task.resume()
+    }
+    
+    func fetchCharacterDetailByCharacterID(id: Int, page: Int) {
+        isFetchingData = true
+        print(id)
+        var urlRequest = URLRequest(url: queryURL)
+        urlRequest.httpMethod = "post"
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let query = """
+query{
+  Character(id: \(id)) {
+    id
+    name {
+      first
+      middle
+      last
+      full
+      native
+      userPreferred
+      alternative
+      alternativeSpoiler
+    }
+    image{
+      large
+    }
+    favourites
+    isFavourite
+    isFavouriteBlocked
+    description(asHtml: true)
+    age
+    gender
+    bloodType
+    dateOfBirth {
+      year
+      month
+      day
+    }
+    media(page: \(page), sort: POPULARITY_DESC, onList: true)@include(if: true) {
+      pageInfo {
+        total
+        perPage
+        currentPage
+        lastPage
+        hasNextPage
+      }
+      edges {
+        id
+        characterRole
+        voiceActorRoles(sort:[RELEVANCE,ID]) {
+          roleNotes
+          voiceActor {
+            id
+            name {
+              userPreferred
+            }
+            image {
+              large
+            }
+            language:languageV2
+          }
+        }
+        node {
+          id
+          type
+          isAdult
+          bannerImage
+          title {
+            userPreferred
+          }
+          coverImage {
+            extraLarge
+          }
+          startDate {
+            year
+          }
+          mediaListEntry {
+            id
+            status
+          }
+        }
+      }
+    }
+  }
+}
+"""
+        
+        let graphQLData = ["query": query]
+        
+        do {
+            urlRequest.httpBody = try JSONSerialization.data(withJSONObject: graphQLData, options: [])
+        } catch {
+            print("Error serializing JSON: \(error.localizedDescription)")
+            return
+        }
+        // Create URLSession task
+        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+            if let error = error {
+                print("Error fetching data: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                print("Invalid response")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+            do {
+//                print(String(data: data, encoding: .utf8))
+                let media = try JSONDecoder().decode(CharacterDetail.self, from: data)
+                self.animeCharacterDataDelegate?.animeCharacterDataDelegate(characterData: media)
                 self.isFetchingData = false
             } catch {
                 print("Error parsing JSON: \(error.localizedDescription)")
