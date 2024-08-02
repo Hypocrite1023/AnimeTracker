@@ -8,546 +8,6 @@
 import Foundation
 import Combine
 
-struct AnimeSearchedOrTrending: Codable {
-    var data: Page
-    
-    struct Page: Codable {
-        var Page: PageInfoAndMedia
-    }
-    struct PageInfoAndMedia: Codable {
-        var media: [Anime]
-        let pageInfo: PageInfo
-    }
-    struct Anime: Codable {
-        let id: Int
-        let title: Title
-        let coverImage: CoverImage
-    }
-    struct PageInfo: Codable {
-        let hasNextPage: Bool
-    }
-    struct Title: Codable {
-        let native: String
-    }
-    struct CoverImage: Codable {
-        let extraLarge: String
-    }
-}
-
-struct CharacterDetail: Decodable {
-    var data: CharacterData
-    
-    struct CharacterData: Decodable {
-        var Character: CharacterDataInData
-        
-        struct CharacterDataInData: Decodable {
-            let id: Int
-            let name: CharacterName
-            let image: CharacterImage
-            let favourites: Int
-            let isFavourite: Bool
-            let isFavouriteBlocked: Bool
-            let description: String?
-            let age: String?
-            let gender: String?
-            let bloodType: String?
-            let dateOfBirth: DateOfBirth
-            var media: Media?
-            
-            struct Media: Decodable {
-                let pageInfo: PageInfo
-                var edges: [Edge]
-                
-                
-                struct Edge: Decodable {
-                    let id: Int
-                    let characterRole: String
-                    var voiceActorRoles: [VoiceActorRoles]?
-                    let node: Node
-                    
-                    struct Node: Decodable {
-                        let id: Int
-                        let type: String?
-                        let isAdult: Bool
-                        let bannerImage: String?
-                        let title: Title
-                        let coverImage: MediaResponse.MediaData.Media.MediaCoverImage
-                        let startDate: StartDate
-                        let mediaListEntry: MediaListEntry?
-                        
-                        struct MediaListEntry: Decodable {
-                            let id: Int
-                            let status: String?
-                        }
-                        
-                        struct StartDate: Decodable {
-                            let year: Int
-                        }
-                        
-                        struct Title: Decodable {
-                            let userPreferred: String
-                        }
-                    }
-                    
-                    struct VoiceActorRoles: Decodable {
-                        let roleNotes: String?
-                        let voiceActor: MediaResponse.MediaData.Media.CharacterPreview.Edges.VoiceActors
-                        
-                    }
-                }
-                
-                struct PageInfo: Decodable {
-                    let total: Int
-                    let perPage: Int
-                    let currentPage: Int
-                    let lastPage: Int
-                    let hasNextPage: Bool
-                }
-            }
-            
-            struct DateOfBirth: Decodable {
-                let year: Int?
-                let month: Int?
-                let day: Int?
-            }
-            
-            struct CharacterName: Decodable {
-                let first: String?
-                let middle: String?
-                let last: String?
-                let full: String?
-                let native: String?
-                let userPreferred: String
-                let alternative: [String]?
-                let alternativeSpoiler: [String]?
-            }
-            
-            struct CharacterImage: Decodable {
-                let large: String
-            }
-        }
-    }
-    
-    
-}
-
-struct ThreadResponse: Decodable {
-    let data: PageData
-    
-    struct PageData: Decodable {
-        let Page: Page
-        
-        struct Page: Decodable {
-            let pageInfo: PageInfo
-            let threads: [Thread]
-            
-            struct PageInfo: Decodable {
-                let total: Int
-                let perPage: Int
-                let currentPage: Int
-                let lastPage: Int
-                let hasNextPage: Bool
-            }
-            
-            struct Thread: Decodable {
-                let id: Int
-                let title: String
-                let replyCount: Int
-                let viewCount: Int
-                let replyCommentId: Int?
-                let repliedAt: Int64
-                let createdAt: Int64
-                let categories: [Category]
-                let user: User
-                let replyUser: User?
-                
-                struct Category: Decodable {
-                    let id: Int
-                    let name: String
-                }
-                
-                struct User: Decodable {
-                    let id: Int
-                    let name: String
-                    let avatar: Avatar
-                    
-                    struct Avatar: Decodable {
-                        let large: String
-                    }
-                }
-            }
-        }
-    }
-    
-    
-}
-
-struct MediaRanking: Decodable {
-    let data: MediaData
-
-    struct MediaData: Decodable {
-        let media: Media
-        
-        enum CodingKeys: String, CodingKey {
-            case media = "Media"
-        }
-        struct Media: Decodable {
-            let rankings: [Ranking]
-            
-            struct Ranking: Decodable {
-                let rank: Int
-                let type: String
-                let format: String
-                let year: Int?
-                let season: String?
-                let allTime: Bool?
-                let context: String
-            }
-        }
-    }
-}
-
-struct MediaStaffPreview: Decodable {
-    let data: MediaData
-
-    struct MediaData: Decodable {
-        let media: Media
-        
-        enum CodingKeys: String, CodingKey {
-            case media = "Media"
-        }
-        struct Media: Decodable {
-            let staffPreview: MediaResponse.MediaData.Media.StaffPreview
-        }
-    }
-}
-
-struct MediaCharacterPreview: Decodable {
-    let data: MediaData
-
-    struct MediaData: Decodable {
-        let media: Media
-        
-        enum CodingKeys: String, CodingKey {
-            case media = "Media"
-        }
-        struct Media: Decodable {
-            let characterPreview: MediaResponse.MediaData.Media.CharacterPreview
-        }
-    }
-}
-// MARK: - MediaResponse struct
-struct MediaResponse: Decodable {
-    let data: MediaData
-
-    struct MediaData: Decodable {
-        let media: Media
-
-        enum CodingKeys: String, CodingKey {
-            case media = "Media"
-        }
-
-        // airing, format, episodes, episode duration, status, start date, season, average score, mean score, popularity, favorites, studios, producers, source, hashtag, genres, romaji, english, native, synonyms
-        struct Media: Decodable {
-            let id: Int
-            let title: MediaTitle
-            let coverImage: MediaCoverImage
-            
-            let seasonYear: Int
-            let season: String
-            
-            let description: String
-            let streamingEpisodes: [StreamingEpisodes]
-            let bannerImage: String?
-            let nextAiringEpisode: NextAiringEpisode?
-            let format: String
-            let episodes: Int?
-            let duration: Int // min
-            let status: String
-            let startDate: StartDate
-            let averageScore: Int
-            let meanScore: Int
-            let popularity: Int
-            let favourites: Int
-            let studios: Studios // also contain producers
-            let source: String
-            let hashtag: String
-            let genres: [String]
-            let synonyms: [String]
-            let relations: Relations?
-            var characterPreview: CharacterPreview
-            var staffPreview: StaffPreview
-            let stats: Stats
-            let recommendations: Recommendations
-            let reviewPreview: ReviewPreview
-            let externalLinks: [ExternalLinks]
-            let tags: [Tag]
-            
-            struct Tag: Decodable {
-                let id: Int
-                let name: String
-                let description: String?
-                let rank: Int
-                let isMediaSpoiler: Bool
-                let isGeneralSpoiler: Bool
-                let userId: Int?
-            }
-            
-            struct ExternalLinks: Decodable {
-                let id: Int
-                let site: String
-                let url: String
-                let type: String
-                let language: String?
-                let color: String?
-                let icon: String?
-                let notes: String?
-                let isDisabled: Bool
-            }
-            
-            struct ReviewPreview: Decodable {
-                let pageInfo: PageInfo
-                let nodes: [Nodes]
-                
-                struct Nodes: Decodable {
-                    let id: Int
-                    let summary: String
-                    let rating: Int
-                    let ratingAmount: Int
-                    let user: User
-                    
-                    struct User: Decodable {
-                        let id: Int
-                        let name: String?
-                        let avatar: Avatar?
-                        
-                        struct Avatar: Decodable {
-                            let large: String
-                        }
-                    }
-                }
-                
-                struct PageInfo: Decodable {
-                    let total: Int
-                }
-            }
-            
-            struct Recommendations: Decodable {
-                let pageInfo: PageInfo
-                let nodes: [Nodes]
-                
-                struct Nodes: Decodable {
-                    let id: Int
-                    let rating: Int?
-                    let userRating: String?
-                    let mediaRecommendation: MediaRecommendation?
-                    let user: User
-                    
-                    struct User: Decodable {
-                        let id: Int
-                        let name: String?
-                        let avatar: Avatar?
-                        
-                        struct Avatar: Decodable {
-                            let large: String
-                        }
-                    }
-                    
-                    struct MediaRecommendation: Decodable {
-                        let id: Int
-                        let title: Title
-                        let format: String?
-                        let type: String?
-                        let status: String?
-                        let bannerImage: String?
-                        let coverImage: CoverImage?
-                        
-                        struct CoverImage: Decodable {
-                            let large: String
-                        }
-                        
-                        struct Title: Decodable {
-                            let userPreferred: String
-                        }
-                    }
-                }
-                
-                struct PageInfo: Decodable {
-                    let total: Int
-                }
-            }
-            
-            struct Stats: Decodable {
-                let statusDistribution: [StatusDistribution]
-                let scoreDistribution: [ScoreDistribution]
-                
-                struct ScoreDistribution: Decodable {
-                    let score: Int
-                    let amount: Int
-                }
-                
-                struct StatusDistribution: Decodable {
-                    let status: String
-                    let amount: Int
-                }
-            }
-            
-            struct StaffPreview: Decodable {
-                var pageInfo: PageInfo
-                var edges: [Edges]
-                
-                struct PageInfo: Decodable {
-                    var hasNextPage: Bool
-                    var currentPage: Int
-                }
-                
-                struct Edges: Decodable {
-                    let id: Int
-                    let role: String
-                    let node: Node
-                    
-                    struct Node: Decodable {
-                        let id: Int
-                        let name: Name
-                        let language: String
-                        let image: Image
-                        
-                        struct Name: Decodable {
-                            let userPreferred: String
-                            
-                        }
-                        
-                        struct Image: Decodable {
-                            let large: String
-                        }
-                    }
-                }
-                
-            }
-            
-            struct CharacterPreview: Decodable {
-                var pageInfo: PageInfo
-                var edges: [Edges]
-                
-                struct PageInfo: Decodable {
-                    var currentPage: Int
-                    var hasNextPage: Bool
-                }
-                
-                struct Edges: Decodable {
-                    let id: Int
-                    let role: String
-                    let voiceActors: [VoiceActors]
-                    let node: Node
-                    
-                    struct Node: Decodable {
-                        let id: Int
-                        let name: Name
-                        let image: Image
-                        
-                        struct Image: Decodable {
-                            let large: String
-                        }
-                        
-                        struct Name: Decodable {
-                            let userPreferred: String
-                        }
-                    }
-                    
-                    struct VoiceActors: Decodable {
-                        let id: Int
-                        let name: Name
-                        let language: String
-                        let image: Image
-                        
-                        struct Image: Decodable {
-                            let large: String
-                        }
-                        
-                        struct Name: Decodable {
-                            let userPreferred: String
-                        }
-                        
-                    }
-                }
-            }
-            
-            
-            struct Relations: Decodable {
-                let edges: [Edges]
-                
-                struct Edges: Decodable {
-                    let id: Int
-                    let relationType: String
-                    let node: Node
-                    
-                    struct Node: Decodable {
-                        let id: Int
-                        let title: Title
-                        let format: String?
-                        let type: String?
-                        let status: String?
-                        let bannerImage: String?
-                        let coverImage: CoverImage
-                        
-                        struct Title: Decodable {
-                            let userPreferred: String
-                        }
-                        struct CoverImage: Decodable {
-                            let large: String
-                        }
-                    }
-                    
-                }
-            }
-            
-            
-            
-            struct Studios: Decodable {
-                let edges: [Edges]
-                
-                struct Edges: Decodable {
-                    let isMain: Bool
-                    let node: Node
-                    
-                    struct Node: Decodable {
-                        let name: String
-                    }
-                }
-            }
-            
-            struct StartDate: Decodable {
-                let year: Int
-                let month: Int
-                let day: Int
-            }
-            
-            struct NextAiringEpisode: Decodable {
-                let airingAt: Int64
-                let timeUntilAiring: Int
-                let episode: Int
-            }
-
-            struct MediaTitle: Decodable {
-                let romaji: String?
-                let english: String?
-                let native: String?
-            }
-
-            struct MediaCoverImage: Decodable {
-                let extraLarge: String?
-            }
-            
-            struct StreamingEpisodes: Decodable {
-                let site: String
-                let title: String
-                let thumbnail: String
-                let url: String
-            }
-        }
-    }
-}
-
 class AnimeFetchData {
     // trending
     // anime image, anime title
@@ -555,6 +15,7 @@ class AnimeFetchData {
     var animeDataDelegateManager: AnimeDataDelegate?
     var animeDetailDataDelegate: AnimeDetailDataDelegate?
     var animeCharacterDataDelegate: AnimeCharacterDataDelegate?
+    var animeVoiceActorDataDelegate: AnimeVoiceActorDataDelegate?
     var trendingNextFetchPage = 1
     @Published var isFetchingData = false
     
@@ -1362,6 +823,172 @@ query{
         // Execute URLSession task
         task.resume()
     }
+    
+    func fetchVoiceActorDataByID(id: Int, page: Int) {
+        isFetchingData = true
+        print(id)
+        var urlRequest = URLRequest(url: queryURL)
+        urlRequest.httpMethod = "post"
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let query = """
+query {
+  Staff(id: \(id)) {
+    id
+    name {
+      first
+      middle
+      last
+      full
+      native
+      userPreferred
+      alternative
+    }
+    image {
+      large
+    }
+    description(asHtml:true)
+    favourites
+    isFavourite
+    isFavouriteBlocked
+    age
+    gender
+    yearsActive
+    homeTown
+    bloodType
+    primaryOccupations
+    dateOfBirth {
+      year
+      month
+      day
+    }
+    dateOfDeath {
+      year
+      month
+      day
+    }
+    language: languageV2
+    characterMedia(page: \(page), perPage: 50, sort: START_DATE_DESC, onList: false) @include (if: true) {
+      pageInfo {
+        total
+        perPage
+        currentPage
+        lastPage
+        hasNextPage
+      }
+      edges {
+        characterRole
+        characterName
+        node {
+          id
+          type
+          bannerImage
+          isAdult
+          title {
+            userPreferred
+          }
+          coverImage {
+            large
+          }
+          startDate {
+            year
+          }
+          mediaListEntry {
+            id
+            status
+          }
+        }
+        characters {
+          id
+          name {
+            userPreferred
+          }
+          image {
+            large
+          }
+        }
+      }
+    }
+    staffMedia(page: \(page), perPage: 10, sort: ID_DESC, onList: false) @include (if: true) {
+      pageInfo {
+        total
+        perPage
+        currentPage
+        lastPage
+        hasNextPage
+      }
+      edges {
+        staffRole
+        node {
+          id
+          type
+          isAdult
+          title {
+            userPreferred
+          }
+          coverImage {
+            large
+          }
+          mediaListEntry {
+            id
+            status
+          }
+        }
+      }
+    }
+  }
+}
+"""
+        
+        let graphQLData = ["query": query]
+        
+        do {
+            urlRequest.httpBody = try JSONSerialization.data(withJSONObject: graphQLData, options: [])
+        } catch {
+            print("Error serializing JSON: \(error.localizedDescription)")
+            return
+        }
+        // Create URLSession task
+        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+            if let error = error {
+                print("Error fetching data: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                print("Invalid response")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+            do {
+//                print(String(data: data, encoding: .utf8))
+                let media = try JSONDecoder().decode(VoiceActorDataResponse.self, from: data)
+                self.animeVoiceActorDataDelegate?.animeVoiceActorDataDelegate(voiceActorData: media.data.Staff)
+                self.isFetchingData = false
+            } catch {
+                print("Error parsing JSON: \(error.localizedDescription)")
+            }
+        }
+        
+        // Execute URLSession task
+        task.resume()
+    }
+}
+
+extension AnimeFetchData: GetAnimeCharacterDataDelegate {
+    func getAnimeCharacterData(id: Int, page: Int) {
+        fetchCharacterDetailByCharacterID(id: id, page: page)
+    }
+}
+
+extension AnimeFetchData: FetchAnimeVoiceActorData {
+    func fetchAnimeVoiceActorData(id: Int, page: Int) {
+        fetchVoiceActorDataByID(id: id, page: page)
+    }
 }
 //query($id:Int) {
 //  Media(id:$id) {
@@ -1383,3 +1010,6 @@ query{
 //    }
 //  }
 //}
+
+
+

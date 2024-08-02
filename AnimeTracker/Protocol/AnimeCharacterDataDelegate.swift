@@ -10,3 +10,7 @@ import Foundation
 protocol AnimeCharacterDataDelegate: AnyObject {
     func animeCharacterDataDelegate(characterData: CharacterDetail)
 }
+
+protocol GetAnimeCharacterDataDelegate: AnyObject {
+    func getAnimeCharacterData(id: Int, page: Int)
+}

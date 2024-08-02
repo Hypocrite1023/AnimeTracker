@@ -19,6 +19,7 @@
                 <outlet property="voiceActorCountryLabel" destination="ZvZ-VL-ZZH" id="Jju-ys-WLt"/>
                 <outlet property="voiceActorImageView" destination="dvS-su-o63" id="dCh-kP-YLl"/>
                 <outlet property="voiceActorNameLabel" destination="TC5-SE-naM" id="0dk-kt-Ejc"/>
+                <outlet property="voiceActorSideView" destination="dgm-2N-ZSC" id="Ok8-IF-vJm"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -28,6 +29,10 @@
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VFK-qV-JN8" userLabel="character side">
                     <rect key="frame" x="0.0" y="0.0" width="196.66666666666666" height="83"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dgm-2N-ZSC" userLabel="voice actor side">
+                    <rect key="frame" x="196.66666666666663" y="0.0" width="196.33333333333337" height="83"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                 </view>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="40A-WB-3CB">
@@ -87,12 +92,15 @@
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="dvS-su-o63" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="A07-Ul-Ixu"/>
+                <constraint firstAttribute="trailing" secondItem="dgm-2N-ZSC" secondAttribute="trailing" id="Err-fp-OgL"/>
                 <constraint firstItem="4kZ-9L-mTm" firstAttribute="leading" secondItem="40A-WB-3CB" secondAttribute="trailing" constant="5" id="FdA-cx-SDk"/>
                 <constraint firstItem="40A-WB-3CB" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="I49-zS-2Zf"/>
                 <constraint firstItem="40A-WB-3CB" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="MAi-We-llh"/>
                 <constraint firstItem="4kZ-9L-mTm" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="5" id="OFo-9r-4Gc"/>
+                <constraint firstAttribute="bottom" secondItem="dgm-2N-ZSC" secondAttribute="bottom" id="VfM-sd-yiM"/>
                 <constraint firstItem="VFK-qV-JN8" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="Vq2-6P-u64"/>
                 <constraint firstAttribute="bottom" secondItem="VFK-qV-JN8" secondAttribute="bottom" id="XG2-Du-kqS"/>
+                <constraint firstItem="dgm-2N-ZSC" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="XIL-Hg-OJs"/>
                 <constraint firstItem="VFK-qV-JN8" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" multiplier="0.5" id="Y21-pV-Oaq"/>
                 <constraint firstAttribute="bottom" secondItem="40A-WB-3CB" secondAttribute="bottom" id="YN4-zm-Tbw"/>
                 <constraint firstItem="dvS-su-o63" firstAttribute="leading" secondItem="4kZ-9L-mTm" secondAttribute="trailing" constant="5" id="bei-Z5-S9F"/>
@@ -102,6 +110,7 @@
                 <constraint firstItem="VFK-qV-JN8" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="hSv-eK-dPT"/>
                 <constraint firstAttribute="bottom" secondItem="dvS-su-o63" secondAttribute="bottom" id="hXO-qP-bvj"/>
                 <constraint firstItem="dvS-su-o63" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="o4p-UX-4e0"/>
+                <constraint firstItem="dgm-2N-ZSC" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" multiplier="0.5" id="tcN-DO-IKj"/>
             </constraints>
             <nil key="simulatedTopBarMetrics"/>
             <nil key="simulatedBottomBarMetrics"/>
