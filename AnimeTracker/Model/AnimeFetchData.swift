@@ -12,10 +12,11 @@ class AnimeFetchData {
     // trending
     // anime image, anime title
     let queryURL = URL(string: "https://graphql.anilist.co")!
-    var animeDataDelegateManager: AnimeDataDelegate?
-    var animeDetailDataDelegate: AnimeDetailDataDelegate?
-    var animeCharacterDataDelegate: AnimeCharacterDataDelegate?
-    var animeVoiceActorDataDelegate: AnimeVoiceActorDataDelegate?
+    weak var animeDataDelegateManager: AnimeDataDelegate?
+    weak var animeDetailDataDelegate: AnimeDetailDataDelegate?
+    weak var animeCharacterDataDelegate: AnimeCharacterDataDelegate?
+    weak var animeVoiceActorDataDelegate: AnimeVoiceActorDataDelegate?
+    weak var passMoreVoiceActorData: ReceiveMoreVoiceActorData?
     var trendingNextFetchPage = 1
     @Published var isFetchingData = false
     
@@ -977,6 +978,100 @@ query {
         // Execute URLSession task
         task.resume()
     }
+    
+    func fetchMoreVoiceActorDataByID(id: Int, page: Int) {
+        isFetchingData = true
+        print(id)
+        var urlRequest = URLRequest(url: queryURL)
+        urlRequest.httpMethod = "post"
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let query = """
+query {
+  Staff(id: \(id)) {
+    characterMedia(page: \(page), perPage: 50, sort: START_DATE_DESC, onList: false) @include (if: true) {
+      pageInfo {
+        total
+        perPage
+        currentPage
+        lastPage
+        hasNextPage
+      }
+      edges {
+        characterRole
+        characterName
+        node {
+          id
+          type
+          bannerImage
+          isAdult
+          title {
+            userPreferred
+          }
+          coverImage {
+            large
+          }
+          startDate {
+            year
+          }
+          mediaListEntry {
+            id
+            status
+          }
+        }
+        characters {
+          id
+          name {
+            userPreferred
+          }
+          image {
+            large
+          }
+        }
+      }
+    }
+  }
+}
+"""
+        
+        let graphQLData = ["query": query]
+        
+        do {
+            urlRequest.httpBody = try JSONSerialization.data(withJSONObject: graphQLData, options: [])
+        } catch {
+            print("Error serializing JSON: \(error.localizedDescription)")
+            return
+        }
+        // Create URLSession task
+        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+            if let error = error {
+                print("Error fetching data: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                print("Invalid response")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+            do {
+//                print(String(data: data, encoding: .utf8))
+                let media = try JSONDecoder().decode(VoiceActorData.self, from: data)
+                self.passMoreVoiceActorData?.updateVoiceActorData(voiceActorData: media.data.Staff.characterMedia)
+                self.isFetchingData = false
+            } catch {
+                print("Error parsing JSON: \(error.localizedDescription)")
+            }
+            
+        }
+        
+        // Execute URLSession task
+        task.resume()
+    }
 }
 
 extension AnimeFetchData: GetAnimeCharacterDataDelegate {
@@ -989,6 +1084,18 @@ extension AnimeFetchData: FetchAnimeVoiceActorData {
     func fetchAnimeVoiceActorData(id: Int, page: Int) {
         fetchVoiceActorDataByID(id: id, page: page)
     }
+}
+
+extension AnimeFetchData: FetchMoreVoiceActorData {
+    func passMoreVoiceActorData(voiceActorData: VoiceActorDataResponse.DataClass.StaffData.CharacterMedia) {
+        passMoreVoiceActorData?.updateVoiceActorData(voiceActorData: voiceActorData)
+    }
+    
+    func fetchMoreVoiceActorData(id: Int, page: Int) {
+        fetchMoreVoiceActorDataByID(id: id, page: page)
+    }
+    
+    
 }
 //query($id:Int) {
 //  Media(id:$id) {

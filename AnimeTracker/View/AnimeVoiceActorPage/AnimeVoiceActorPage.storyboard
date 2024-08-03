@@ -90,6 +90,7 @@
                         <outlet property="voiceActorImage" destination="id0-Zt-L3R" id="5Fs-05-axE"/>
                         <outlet property="voiceActorInfoView" destination="7cP-Wx-Iz1" id="QP1-Ky-1tv"/>
                         <outlet property="voiceActorName" destination="r3V-Ut-Q9g" id="SEE-BT-aKe"/>
+                        <outlet property="wholePageScollView" destination="xTz-IO-ffv" id="03n-ja-EkB"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

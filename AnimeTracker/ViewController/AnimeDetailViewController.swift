@@ -1323,6 +1323,8 @@ extension AnimeDetailViewController: AnimeVoiceActorDataDelegate {
         DispatchQueue.main.async {
             let newVC = UIStoryboard(name: "AnimeVoiceActorPage", bundle: nil).instantiateViewController(withIdentifier: "VoiceActorPage") as! AnimeVoiceActorViewController
             newVC.voiceActorDataResponse = voiceActorData
+            newVC.animeFetchManager = self.animeFetchingDataManager.self
+            self.animeFetchingDataManager.passMoreVoiceActorData = newVC.self
             self.navigationController?.pushViewController(newVC, animated: true)
         }
     }

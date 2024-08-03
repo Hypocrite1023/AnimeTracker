@@ -14,3 +14,12 @@ protocol FetchAnimeVoiceActorData: AnyObject {
 protocol AnimeVoiceActorDataDelegate: AnyObject {
     func animeVoiceActorDataDelegate(voiceActorData: VoiceActorDataResponse.DataClass.StaffData)
 }
+
+protocol FetchMoreVoiceActorData: AnyObject {
+    func fetchMoreVoiceActorData(id: Int, page: Int)
+    func passMoreVoiceActorData(voiceActorData: VoiceActorDataResponse.DataClass.StaffData.CharacterMedia)
+}
+
+protocol ReceiveMoreVoiceActorData: AnyObject {
+    func updateVoiceActorData(voiceActorData: VoiceActorDataResponse.DataClass.StaffData.CharacterMedia?)
+}
