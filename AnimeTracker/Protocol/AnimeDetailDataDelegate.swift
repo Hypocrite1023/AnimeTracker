@@ -8,9 +8,17 @@
 import Foundation
 
 protocol AnimeDetailDataDelegate: AnyObject {
-    func animeDetailDataDelegate(media: MediaResponse.MediaData.Media)
+//    func animeDetailDataDelegate(media: MediaResponse.MediaData.Media)
     func animeDetailCharacterDataDelegate(characterData: MediaCharacterPreview)
     func animeDetailStaffDataDelegate(staffData: MediaStaffPreview)
     func animeDetailRankingDataDelegate(rankingData: MediaRanking.MediaData.Media)
     func animeDetailThreadDataDelegate(threadData: ThreadResponse.PageData)
+}
+
+protocol AnimeOverViewDataDelegate: AnyObject {
+    func animeDetailDataDelegate(media: MediaResponse.MediaData.Media)
+}
+
+protocol FetchAnimeDetailDataByID: AnyObject {
+    func passAnimeID(animeID: Int)
 }

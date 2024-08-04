@@ -54,7 +54,7 @@ struct CharacterDetail: Decodable {
                         }
                         
                         struct StartDate: Decodable {
-                            let year: Int
+                            let year: Int?
                         }
                         
                         struct Title: Decodable {

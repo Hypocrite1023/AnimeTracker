@@ -13,6 +13,7 @@ class AnimeFetchData {
     // anime image, anime title
     let queryURL = URL(string: "https://graphql.anilist.co")!
     weak var animeDataDelegateManager: AnimeDataDelegate?
+    weak var animeOverViewDataDelegate: AnimeOverViewDataDelegate?
     weak var animeDetailDataDelegate: AnimeDetailDataDelegate?
     weak var animeCharacterDataDelegate: AnimeCharacterDataDelegate?
     weak var animeVoiceActorDataDelegate: AnimeVoiceActorDataDelegate?
@@ -394,7 +395,8 @@ query {
             do {
                 let media = try JSONDecoder().decode(MediaResponse.self, from: data)
 //                print(media.data.media.characterPreview.pageInfo.currentPage, "currentPage")
-                self.animeDetailDataDelegate?.animeDetailDataDelegate(media: media.data.media)
+//                self.animeDetailDataDelegate?.animeDetailDataDelegate(media: media.data.media)
+                self.animeOverViewDataDelegate?.animeDetailDataDelegate(media: media.data.media)
                 self.isFetchingData = false
             } catch {
                 print("Error parsing JSON: \(error.localizedDescription)")
@@ -1093,6 +1095,14 @@ extension AnimeFetchData: FetchMoreVoiceActorData {
     
     func fetchMoreVoiceActorData(id: Int, page: Int) {
         fetchMoreVoiceActorDataByID(id: id, page: page)
+    }
+    
+    
+}
+
+extension AnimeFetchData: FetchAnimeDetailDataByID {
+    func passAnimeID(animeID: Int) {
+        fetchAnimeByID(id: animeID)
     }
     
     

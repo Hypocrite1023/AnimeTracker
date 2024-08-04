@@ -23,8 +23,8 @@ struct MediaResponse: Decodable {
             let title: MediaTitle
             let coverImage: MediaCoverImage
             
-            let seasonYear: Int
-            let season: String
+            let seasonYear: Int?
+            let season: String?
             
             let description: String
             let streamingEpisodes: [StreamingEpisodes]
@@ -32,11 +32,11 @@ struct MediaResponse: Decodable {
             let nextAiringEpisode: NextAiringEpisode?
             let format: String
             let episodes: Int?
-            let duration: Int // min
+            let duration: Int? // minute
             let status: String
             let startDate: StartDate
-            let averageScore: Int
-            let meanScore: Int
+            let averageScore: Int?
+            let meanScore: Int?
             let popularity: Int
             let favourites: Int
             let studios: Studios // also contain producers
@@ -287,9 +287,9 @@ struct MediaResponse: Decodable {
             }
             
             struct StartDate: Decodable {
-                let year: Int
-                let month: Int
-                let day: Int
+                let year: Int?
+                let month: Int?
+                let day: Int?
             }
             
             struct NextAiringEpisode: Decodable {

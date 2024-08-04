@@ -6,22 +6,48 @@
 //
 
 import UIKit
+import Combine
 
 class TrendingPageViewController: UIViewController {
     
     @IBOutlet weak var trendingCollectionView: UICollectionView!
     var animeFetchManager = AnimeFetchData()
     var animeFetchedData: AnimeSearchedOrTrending?
+    
+    private var cancellables = Set<AnyCancellable>()
+    var fetchingDataIndicator = UIActivityIndicatorView(style: .large)
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        animeFetchManager.animeOverViewDataDelegate = self
         animeFetchManager.animeDataDelegateManager = self
         animeFetchManager.fetchAnimeByTrending(page: animeFetchManager.trendingNextFetchPage)
         animeFetchManager.isFetchingData = false
         trendingCollectionView.dataSource = self
         trendingCollectionView.delegate = self
+        
+        animeFetchManager.$isFetchingData
+            .receive(on: DispatchQueue.main)
+            .sink {
+                [weak self] isFetching in
+                self?.fetchingDataIndicator.isHidden = isFetching
+                if isFetching {
+                    print(";;;; is fetching data ;;;;;")
+                    self?.fetchingDataIndicator.startAnimating()
+                } else {
+                    print(";;;; end fetching data ;;;;;")
+                    self?.fetchingDataIndicator.stopAnimating()
+                }
+            }
+            .store(in: &cancellables)
+        
+        fetchingDataIndicator.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(fetchingDataIndicator)
+        fetchingDataIndicator.isHidden = true
+        fetchingDataIndicator.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        fetchingDataIndicator.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
     }
 
     /*
@@ -54,11 +80,9 @@ extension TrendingPageViewController: UICollectionViewDelegate, UICollectionView
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let animeData = self.animeFetchedData?.data.Page.media[indexPath.item] {
-            let detailViewController = AnimeDetailViewController(animeFetchingDataManager: animeFetchManager, mediaID: animeData.id)
-//            detailViewController.modalPresentationStyle = .fullScreen
-//            detailViewController.transitioningDelegate = self
-            navigationController?.pushViewController(detailViewController, animated: true)
-//            present(detailViewController, animated: true)
+            animeFetchManager.fetchAnimeByID(id: animeData.id)
+//            let detailViewController = AnimeDetailViewController(animeFetchingDataManager: animeFetchManager, mediaID: animeData.id)
+//            navigationController?.pushViewController(detailViewController, animated: true)
         }
         collectionView.deselectItem(at: indexPath, animated: true)
     }
@@ -121,6 +145,23 @@ extension TrendingPageViewController: UIScrollViewDelegate {
             }
         }
     }
+}
+
+extension TrendingPageViewController: AnimeOverViewDataDelegate {
+    func animeDetailDataDelegate(media: MediaResponse.MediaData.Media) {
+        DispatchQueue.main.async {
+            let vc = AnimeDetailViewController(animeFetchingDataManager: self.animeFetchManager, mediaID: media.id)
+            vc.animeDetailData = media
+            vc.navigationItem.title = media.title.native
+            vc.animeDetailView = AnimeDetailView(frame: self.view.frame)
+            vc.showOverviewView(sender: vc.animeDetailView.animeBannerView.overviewButton)
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+        print("load view")
+        
+    }
+    
+    
 }
 
 //extension TrendingPageViewController: UIViewControllerTransitioningDelegate {

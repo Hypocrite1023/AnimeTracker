@@ -19,8 +19,10 @@ class AnimeCharacterPageViewController: UIViewController {
     @IBOutlet weak var characterDescription: UILabel!
     @IBOutlet weak var mediaRelationContainer: UIView!
     @IBOutlet weak var languageSelection: UIButton!
+    @IBOutlet weak var wholePageScrollView: UIScrollView!
     
     var languageSelected = ""
+    weak var animeDetailManager: FetchAnimeDetailDataByID?
     
     var characterData: CharacterDetail? {
         didSet {
@@ -61,7 +63,8 @@ class AnimeCharacterPageViewController: UIViewController {
                     if voiceActorRoles.count != 0 {
                         for (innerIndex, voiceActor) in voiceActorRoles.enumerated() {
                             print(index, innerIndex)
-                            let relationView = MediaRelationView()
+                            let relationView = MediaRelationView(frame: .zero, animeID: relation.node.id, characterID: nil)
+                            relationView.animeIdDelegate = animeDetailManager.self
                             relationView.translatesAutoresizingMaskIntoConstraints = false
                             relationView.animeCoverImage.loadImage(from: relation.node.coverImage.extraLarge)
                             relationView.animeTitle.text = relation.node.title.userPreferred
@@ -121,7 +124,7 @@ class AnimeCharacterPageViewController: UIViewController {
                         }
                     } else {
                         print(relation)
-                        let relationView = MediaRelationView()
+                        let relationView = MediaRelationView(frame: .zero, animeID: relation.id, characterID: nil)
                         relationView.translatesAutoresizingMaskIntoConstraints = false
                         relationView.animeCoverImage.loadImage(from: relation.node.coverImage.extraLarge)
                         relationView.animeTitle.text = relation.node.title.userPreferred
@@ -159,6 +162,8 @@ class AnimeCharacterPageViewController: UIViewController {
         // Do any additional setup after loading the view.
 //        mediaRelationContainer.translatesAutoresizingMaskIntoConstraints = false
 //        mediaRelationContainer.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        navigationItem.title = ""
+        wholePageScrollView.delegate = self
         if let characterData = characterDataFiltered?.data.Character {
             navigationItem.title = characterData.name.native
             characterName.text = characterData.name.native
@@ -321,4 +326,16 @@ class AnimeCharacterPageViewController: UIViewController {
     }
     */
 
+}
+
+extension AnimeCharacterPageViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView == wholePageScrollView {
+            if scrollView.contentOffset.y > characterName.frame.maxY && navigationItem.title!.isEmpty{
+                navigationItem.title = characterName.text
+            } else if scrollView.contentOffset.y < characterName.frame.maxY && !navigationItem.title!.isEmpty {
+                navigationItem.title = ""
+            }
+        }
+    }
 }

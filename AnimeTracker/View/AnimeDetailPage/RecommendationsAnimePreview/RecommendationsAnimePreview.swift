@@ -21,12 +21,17 @@ class RecommendationsAnimePreview: UIView {
     @IBOutlet weak var coverImageView: UIImageView!
     @IBOutlet weak var animeTitle: UILabel!
     
-    override init(frame: CGRect) {
+    let animeID: Int?
+    weak var animeDataFetcher: FetchAnimeDetailDataByID?
+    
+    init(frame: CGRect, animeID: Int?) {
+        self.animeID = animeID
         super.init(frame: frame)
         commonInit()
     }
     
     required init?(coder: NSCoder) {
+        self.animeID = nil
         super.init(coder: coder)
         commonInit()
     }
@@ -37,6 +42,22 @@ class RecommendationsAnimePreview: UIView {
         addSubview(contentView)
         contentView.frame = self.bounds
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        let recommendationTapGesture = AnimeRecommendationTapGesture(target: self, action: #selector(loadRecommendation), animeID: self.animeID)
+        self.addGestureRecognizer(recommendationTapGesture)
     }
 
+    @objc func loadRecommendation(sender: AnimeRecommendationTapGesture) {
+        if let animeID = sender.animeID {
+            animeDataFetcher?.passAnimeID(animeID: animeID)
+        }
+    }
+}
+
+class AnimeRecommendationTapGesture: UITapGestureRecognizer {
+    let animeID: Int?
+    init(target: Any?, action: Selector?, animeID: Int?) {
+        self.animeID = animeID
+        super.init(target: target, action: action)
+    }
 }

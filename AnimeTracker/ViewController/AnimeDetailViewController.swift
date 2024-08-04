@@ -65,17 +65,9 @@ class AnimeDetailViewController: UIViewController {
         self.animeFetchingDataManager.animeDetailDataDelegate = self
         self.animeFetchingDataManager.animeCharacterDataDelegate = self
         self.animeFetchingDataManager.animeVoiceActorDataDelegate = self
-        animeFetchingDataManager.fetchAnimeByID(id: animeMediaID)
-        animeDetailView = AnimeDetailView(frame: self.view.frame)
-//        animeDetailView.frame = self.view.frame
         self.view.addSubview(animeDetailView)
         animeDetailView.tmpScrollView.delegate = self
         self.view.backgroundColor = .white
-//        self.setupConstraints()
-//        setupPortraitConstraint()
-//        setupLandscapeConstraint()
-//        setupInitialConstraint()
-//        self.setupButtonFunctions()
         print("view did load")
         fetchingDataIndicator.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(fetchingDataIndicator)
@@ -83,37 +75,7 @@ class AnimeDetailViewController: UIViewController {
         fetchingDataIndicator.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         fetchingDataIndicator.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
         
-//        let rightSwipeGesture = UIPanGestureRecognizer(target: self, action: #selector(rightSwipeToDismiss))
-//        self.view.addGestureRecognizer(rightSwipeGesture)
-    }
-    
-    @objc func rightSwipeToDismiss(gesture: UIPanGestureRecognizer) {
-        switch(gesture.state) {
-        case .began:
-            print("began", gesture.translation(in: gesture.view))
-        case .possible:
-            print("possible", gesture.translation(in: gesture.view))
-        case .changed:
-            print("changed", gesture.translation(in: gesture.view))
-        case .ended:
-            print("ended", gesture.translation(in: gesture.view))
-        case .cancelled:
-            print("cancelled", gesture.translation(in: gesture.view))
-        case .failed:
-            print("failed", gesture.translation(in: gesture.view))
-        @unknown default:
-            print("default", gesture.translation(in: gesture.view))
-        }
-//        print("right swipe", gesture.translation(in: gesture.view))
-    }
-    private func handleFetchingDataChange(_ isFetching: Bool) {
-        if isFetching {
-            // Show loading indicator or disable UI elements
-            print("Fetching data started")
-        } else {
-            // Hide loading indicator or enable UI elements
-            print("Fetching data finished")
-        }
+//        navigationController?.hidesBarsOnSwipe = true
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
@@ -125,17 +87,6 @@ class AnimeDetailViewController: UIViewController {
             }
         }, completion: nil)
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
 
@@ -246,16 +197,14 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
     }
     
     // MARK: - 得到 anime overview 的資料 設定overview page 的資訊及constraint
-    func animeDetailDataDelegate(media: MediaResponse.MediaData.Media) {
-        self.animeDetailData = media
-//        print(media.streamingEpisodes)
-        DispatchQueue.main.async {
-            self.navigationItem.title = media.title.native
-//            self.animeDetailView?.setupAnimeInfoPage(animeDetailData: self.animeDetailData!)
-            self.showOverviewView(sender: self.animeDetailView.animeBannerView.overviewButton)
-        }
-        print("load view")
-    }
+//    func animeDetailDataDelegate(media: MediaResponse.MediaData.Media) {
+//        self.animeDetailData = media
+//        DispatchQueue.main.async {
+//            self.navigationItem.title = media.title.native
+//            self.showOverviewView(sender: self.animeDetailView.animeBannerView.overviewButton)
+//        }
+//        print("load view")
+//    }
     // MARK: - animeBannerView
     fileprivate func setupAnimeBannerView(_ animeBannerView: AnimeBannerView, _ animeDetailData: MediaResponse.MediaData.Media) {
         animeDetailView.tmpScrollView.addSubview(animeBannerView)
@@ -505,10 +454,27 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
         }
         animeInformationScrollView.episodeDurationLabel.text = "\(animeDetailData.duration) mins"
         animeInformationScrollView.statusLabel.text = animeDetailData.status
-        animeInformationScrollView.startDateLabel.text = AnimeDetailFunc.startDateString(year: animeDetailData.startDate.year, month: animeDetailData.startDate.month, day: animeDetailData.startDate.day)
-        animeInformationScrollView.seasonLabel.text = "\(animeDetailData.season) \(animeDetailData.seasonYear)"
-        animeInformationScrollView.averageLabel.text = "\(animeDetailData.averageScore)%"
-        animeInformationScrollView.meanScoreLabel.text = "\(animeDetailData.meanScore)%"
+        if let year = animeDetailData.startDate.year, let month = animeDetailData.startDate.month, let day = animeDetailData.startDate.day {
+            animeInformationScrollView.startDateLabel.text = AnimeDetailFunc.startDateString(year: year, month: month, day: day)
+        } else {
+            animeInformationScrollView.startDateLabel.text = ""
+        }
+        if let season = animeDetailData.season, let seasonYear = animeDetailData.seasonYear {
+            animeInformationScrollView.seasonLabel.text = "\(season) \(seasonYear)"
+        } else {
+            animeInformationScrollView.seasonLabel.text = ""
+        }
+        if let averageScore = animeDetailData.averageScore {
+            animeInformationScrollView.averageLabel.text = "\(averageScore)%"
+        } else {
+            animeInformationScrollView.averageLabel.text = "%"
+        }
+        if let meanScore = animeDetailData.meanScore {
+            animeInformationScrollView.meanScoreLabel.text = "\(meanScore)%"
+        } else {
+            animeInformationScrollView.meanScoreLabel.text = ""
+        }
+        
         animeInformationScrollView.popularityLabel.text = "\(animeDetailData.popularity)"
         animeInformationScrollView.favoriteLabel.text = "\(animeDetailData.favourites)"
         animeInformationScrollView.studiosLabel.text = AnimeDetailFunc.getMainStudio(from: animeDetailData.studios)
@@ -860,7 +826,8 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
         animeDetailView.tmpScrollView.addSubview(recommendationsView)
         var tmpRecommendationsPreview: RecommendationsAnimePreview?
         for (index, recommendation) in animeDetailData.recommendations.nodes.enumerated() {
-            let recommendationsPreview = RecommendationsAnimePreview()
+            let recommendationsPreview = RecommendationsAnimePreview(frame: .zero, animeID: recommendation.mediaRecommendation?.id)
+            recommendationsPreview.animeDataFetcher = animeFetchingDataManager.self
             recommendationsPreview.translatesAutoresizingMaskIntoConstraints = false
             recommendationsPreview.animeTitle.text = recommendation.mediaRecommendation?.title.userPreferred
             if let coverImage = recommendation.mediaRecommendation?.coverImage?.large {
@@ -1258,6 +1225,16 @@ extension AnimeDetailViewController: UIScrollViewDelegate {
         }
 //        print("scroll")
         if scrollView == animeDetailView.tmpScrollView {
+//            print(scrollView.panGestureRecognizer.velocity(in: scrollView).y < 0  && (self.navigationController?.isNavigationBarHidden)!, scrollView.panGestureRecognizer.velocity(in: scrollView).y > 0 && !(self.navigationController?.isNavigationBarHidden)!, scrollView.panGestureRecognizer.velocity(in: scrollView).y)
+            if scrollView.panGestureRecognizer.velocity(in: scrollView).y < 0  && !(self.navigationController?.isNavigationBarHidden)! {
+//                self.navigationController?.navigationBar.isHidden = true
+                self.navigationController?.setNavigationBarHidden(true, animated: true)
+//                print("aaa")
+            } else if scrollView.panGestureRecognizer.velocity(in: scrollView).y > 0 && (self.navigationController?.isNavigationBarHidden)! {
+//                self.navigationController?.navigationBar.isHidden = false
+                self.navigationController?.setNavigationBarHidden(false, animated: true)
+            }
+            
             let offsetY = scrollView.contentOffset.y
             let contentHeight = scrollView.contentSize.height
             let frameHeight = scrollView.frame.size.height
@@ -1311,6 +1288,7 @@ extension AnimeDetailViewController: AnimeCharacterDataDelegate {
         DispatchQueue.main.async {
             let newVC = UIStoryboard(name: "AnimeCharacterPage", bundle: nil).instantiateViewController(withIdentifier: "CharacterPage") as! AnimeCharacterPageViewController
             newVC.characterData = characterData
+            newVC.animeDetailManager = self.animeFetchingDataManager.self
             self.navigationController?.pushViewController(newVC, animated: true)
         }
     }
@@ -1324,6 +1302,7 @@ extension AnimeDetailViewController: AnimeVoiceActorDataDelegate {
             let newVC = UIStoryboard(name: "AnimeVoiceActorPage", bundle: nil).instantiateViewController(withIdentifier: "VoiceActorPage") as! AnimeVoiceActorViewController
             newVC.voiceActorDataResponse = voiceActorData
             newVC.animeFetchManager = self.animeFetchingDataManager.self
+            newVC.characterDataFetcher = self.animeFetchingDataManager.self
             self.animeFetchingDataManager.passMoreVoiceActorData = newVC.self
             self.navigationController?.pushViewController(newVC, animated: true)
         }

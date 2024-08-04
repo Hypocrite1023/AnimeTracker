@@ -27,6 +27,8 @@ class AnimeVoiceActorViewController: UIViewController {
     let fetchDataTimeIntervalLimit: TimeInterval = 2
     
     weak var animeFetchManager: FetchMoreVoiceActorData?
+    weak var characterDataFetcher: GetAnimeCharacterDataDelegate?
+    weak var animeDetailManager: AnimeDetailDataDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -263,7 +265,8 @@ extension AnimeVoiceActorViewController: ReceiveMoreVoiceActorData {
                         tmpRelationViewLeadingAnchorView = newRelationScrollView.containerInScrollView
                     }
                     for (_, character) in edge.characters.enumerated() {
-                        let relationView = MediaRelationView()
+                        let relationView = MediaRelationView(frame: .zero, animeID: nil, characterID: character.id)
+                        relationView.characterIdDelegate = self
                         relationView.translatesAutoresizingMaskIntoConstraints = false
                         relationView.animeCoverImage.contentMode = .scaleAspectFill
                         relationView.animeCoverImage.loadImage(from: character.image.large)
@@ -321,7 +324,8 @@ extension AnimeVoiceActorViewController: ReceiveMoreVoiceActorData {
                     
                     
                     for (_, character) in edge.characters.enumerated() {
-                        let relationView = MediaRelationView()
+                        let relationView = MediaRelationView(frame: .zero, animeID: nil, characterID: character.id)
+                        relationView.characterIdDelegate = self
                         relationView.translatesAutoresizingMaskIntoConstraints = false
                         relationView.animeCoverImage.loadImage(from: character.image.large)
                         relationView.animeTitle.text = character.name.userPreferred
@@ -378,6 +382,15 @@ extension AnimeVoiceActorViewController: ReceiveMoreVoiceActorData {
             self.updateRelationData(voiceActorData)
         }
         
+    }
+    
+    
+}
+
+extension AnimeVoiceActorViewController: CharacterIdDelegate {
+    func passCharacterID(characterID: Int) {
+        print(characterID)
+        characterDataFetcher?.getAnimeCharacterData(id: characterID, page: 1)
     }
     
     

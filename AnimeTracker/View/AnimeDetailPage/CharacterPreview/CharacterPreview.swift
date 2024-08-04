@@ -66,10 +66,36 @@ class CharacterPreview: UIView {
     
     @objc func loadCharacterData(sender: CharacterTapGesture) {
         print(sender.characterID)
+        
+        guard let view = sender.view?.superview else { return }
+                
+        // Animate scaling effect
+        UIView.animate(withDuration: 0.1,
+                       animations: {
+                           view.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+                       },
+                       completion: { _ in
+                           UIView.animate(withDuration: 0.1) {
+                               view.transform = CGAffineTransform.identity
+                           }
+                       })
+        
         animeCharacterDataManager?.getAnimeCharacterData(id: sender.characterID, page: 1)
     }
     @objc func loadVoiceActorData(sender: VoiceActorTapGesture) {
         print(sender.voiceActorID)
+        guard let view = sender.view?.superview else { return }
+                
+        // Animate scaling effect
+        UIView.animate(withDuration: 0.1,
+                       animations: {
+                           view.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+                       },
+                       completion: { _ in
+                           UIView.animate(withDuration: 0.1) {
+                               view.transform = CGAffineTransform.identity
+                           }
+                       })
         voiceActorDataManager?.fetchAnimeVoiceActorData(id: sender.voiceActorID, page: 1)
     }
 }

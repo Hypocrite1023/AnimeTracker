@@ -189,6 +189,7 @@
                         <outlet property="characterName" destination="w79-CA-ygb" id="d6Q-IU-bqZ"/>
                         <outlet property="languageSelection" destination="baf-7d-wdX" id="I9i-S0-zZG"/>
                         <outlet property="mediaRelationContainer" destination="ohh-ao-F91" id="jEO-Ye-MSH"/>
+                        <outlet property="wholePageScrollView" destination="U8b-kh-FlE" id="gmY-yq-5fa"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
