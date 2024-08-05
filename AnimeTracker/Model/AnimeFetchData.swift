@@ -29,8 +29,8 @@ class AnimeFetchData {
         let query = """
             query {
               Page(page: 1, perPage: 50) {
-                media(type: ANIME, seasonYear: \(year), season: \(season)) {
-                  # id
+                media(type: ANIME, seasonYear: \(year), season: \(season), sort: POPULARITY_DESC) {
+                  id
                   title {
                     romaji
                     english
@@ -43,6 +43,7 @@ class AnimeFetchData {
                   # season
                 }
                 pageInfo {
+                  currentPage
                   hasNextPage
                 }
               }
@@ -107,6 +108,7 @@ class AnimeFetchData {
                   }
                 }
                 pageInfo {
+                  currentPage
                   hasNextPage
                 }
               }

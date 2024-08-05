@@ -41,7 +41,7 @@ struct MediaResponse: Decodable {
             let favourites: Int
             let studios: Studios // also contain producers
             let source: String
-            let hashtag: String
+            let hashtag: String?
             let genres: [String]
             let synonyms: [String]
             let relations: Relations?

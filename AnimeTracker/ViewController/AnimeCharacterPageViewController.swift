@@ -163,6 +163,7 @@ class AnimeCharacterPageViewController: UIViewController {
 //        mediaRelationContainer.translatesAutoresizingMaskIntoConstraints = false
 //        mediaRelationContainer.heightAnchor.constraint(equalToConstant: 200).isActive = true
         navigationItem.title = ""
+        navigationController?.setNavigationBarHidden(false, animated: true)
         wholePageScrollView.delegate = self
         if let characterData = characterDataFiltered?.data.Character {
             navigationItem.title = characterData.name.native

@@ -30,7 +30,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="wtW-MF-O5p" userLabel="Anime Banner">
-                    <rect key="frame" x="0.0" y="0.0" width="393" height="300"/>
+                    <rect key="frame" x="0.0" y="0.0" width="393" height="200"/>
                 </imageView>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="j5P-hp-ayo" userLabel="Anime Thumbnail">
                     <rect key="frame" x="20" y="175" width="120" height="150"/>
@@ -141,7 +141,7 @@
             <constraints>
                 <constraint firstItem="wtW-MF-O5p" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="4Uh-Xb-9Y0"/>
                 <constraint firstItem="HQp-72-xzI" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" id="9NF-JO-BO4"/>
-                <constraint firstItem="wtW-MF-O5p" firstAttribute="height" secondItem="iN0-l3-epB" secondAttribute="height" multiplier="0.6" id="CgJ-lK-fcj"/>
+                <constraint firstItem="wtW-MF-O5p" firstAttribute="height" secondItem="iN0-l3-epB" secondAttribute="height" multiplier="0.4" id="CgJ-lK-fcj"/>
                 <constraint firstItem="HQp-72-xzI" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="OIS-iv-ceo"/>
                 <constraint firstItem="wtW-MF-O5p" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="Sqy-Gm-ss7"/>
                 <constraint firstItem="j5P-hp-ayo" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="20" id="TxV-wC-ieg"/>

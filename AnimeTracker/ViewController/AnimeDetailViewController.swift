@@ -19,6 +19,8 @@ class AnimeDetailViewController: UIViewController {
     var animeRankingData: MediaRanking?
     var animeDetailView: AnimeDetailView!
     var currentTab: Int = 0
+    
+    let backgroundImageView = UIImageView()
     // 0: overview
     // 1: watch
     // 2: character
@@ -65,9 +67,28 @@ class AnimeDetailViewController: UIViewController {
         self.animeFetchingDataManager.animeDetailDataDelegate = self
         self.animeFetchingDataManager.animeCharacterDataDelegate = self
         self.animeFetchingDataManager.animeVoiceActorDataDelegate = self
+        
+        
+//        self.view.backgroundColor = .red
+        
+//        let backgroundImageView = UIImageView()
+        backgroundImageView.loadImage(from: animeDetailData?.bannerImage)
+        backgroundImageView.contentMode = .scaleAspectFill
+        backgroundImageView.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(backgroundImageView)
+        backgroundImageView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+        backgroundImageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
+        backgroundImageView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
+        backgroundImageView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        
+        let blurrEffect = UIBlurEffect(style: .light)
+        let blurrEffectView = UIVisualEffectView(effect: blurrEffect)
+        blurrEffectView.frame = self.view.frame
+        self.view.addSubview(blurrEffectView)
+        
         self.view.addSubview(animeDetailView)
         animeDetailView.tmpScrollView.delegate = self
-        self.view.backgroundColor = .white
+//        self.view.backgroundColor = .white
         print("view did load")
         fetchingDataIndicator.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(fetchingDataIndicator)
@@ -76,6 +97,19 @@ class AnimeDetailViewController: UIViewController {
         fetchingDataIndicator.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
         
 //        navigationController?.hidesBarsOnSwipe = true
+        
+        
+//        let vibrancyEffect = UIVibrancyEffect(blurEffect: blurrEffect)
+//        let vibrancyEffectView = UIVisualEffectView(effect: vibrancyEffect)
+//        blurrEffectView.contentView.addSubview(vibrancyEffectView)
+
+        let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(swipeAction))
+        swipeGesture.direction = .right
+        self.view.addGestureRecognizer(swipeGesture)
+        
+        let backButton = UIBarButtonItem(title: nil, style: .plain, target: self, action: #selector(swipeAction))
+        backButton.image = UIImage(systemName: "chevron.backward")
+        navigationItem.leftBarButtonItem = backButton
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
@@ -86,6 +120,12 @@ class AnimeDetailViewController: UIViewController {
                 self.animeDetailView.frame = self.view.bounds
             }
         }, completion: nil)
+    }
+    
+    @objc func swipeAction(sender: UISwipeGestureRecognizer?) {
+        print("right swipe")
+        backgroundImageView.removeFromSuperview()
+        navigationController?.popViewController(animated: true)
     }
 
 }
@@ -207,8 +247,28 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
 //    }
     // MARK: - animeBannerView
     fileprivate func setupAnimeBannerView(_ animeBannerView: AnimeBannerView, _ animeDetailData: MediaResponse.MediaData.Media) {
+        
+        
+        
+        
         animeDetailView.tmpScrollView.addSubview(animeBannerView)
+        
         animeBannerView.animeBanner.loadImage(from: animeDetailData.bannerImage ?? "photo")
+        animeBannerView.animeBanner.contentMode = .scaleAspectFill
+        
+//        let blurrEffect = UIBlurEffect(style: .light)
+//        let blurrEffectView = UIVisualEffectView(effect: blurrEffect)
+//        blurrEffectView.frame = animeBannerView.animeBanner.frame
+//        animeBannerView.animeBanner.insertSubview(blurrEffectView, aboveSubview: animeBannerView.animeBanner)
+//        
+//        let subImage = UIImageView()
+//        subImage.contentMode = .scaleAspectFit
+//        subImage.frame = animeBannerView.animeBanner.frame
+//        subImage.loadImage(from: animeDetailData.bannerImage ?? "photo")
+//        animeBannerView.animeBanner.insertSubview(subImage, aboveSubview: blurrEffectView)
+        
+        
+        
         animeBannerView.animeThumbnail.loadImage(from: animeDetailData.coverImage.extraLarge!)
         animeBannerView.animeTitleLabel.text = animeDetailData.title.native
         
@@ -452,7 +512,11 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
         } else {
             animeInformationScrollView.episodeLabel.text = ""
         }
-        animeInformationScrollView.episodeDurationLabel.text = "\(animeDetailData.duration) mins"
+        if let duration = animeDetailData.duration {
+            animeInformationScrollView.episodeDurationLabel.text = "\(duration) mins"
+        } else {
+            animeInformationScrollView.episodeDurationLabel.text = ""
+        }
         animeInformationScrollView.statusLabel.text = animeDetailData.status
         if let year = animeDetailData.startDate.year, let month = animeDetailData.startDate.month, let day = animeDetailData.startDate.day {
             animeInformationScrollView.startDateLabel.text = AnimeDetailFunc.startDateString(year: year, month: month, day: day)
@@ -922,7 +986,8 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
         animeDetailView.tmpScrollView.addSubview(externalLinkView)
         var tmpExternalLinkPreview: ExternalLinkPreview?
         for (index, externalLink) in animeDetailData.externalLinks.enumerated() {
-            let externalLinkPreview = ExternalLinkPreview()
+            let externalLinkPreview = ExternalLinkPreview(frame: .zero, url: externalLink.url, siteName: externalLink.site)
+            externalLinkPreview.openURLDelegate = self
             externalLinkPreview.translatesAutoresizingMaskIntoConstraints = false
             if let externalLinkIcon = externalLink.icon {
                 externalLinkPreview.externalLinkIcon.loadImage(from: externalLinkIcon)
@@ -1220,19 +1285,43 @@ extension AnimeDetailViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let now = Date().timeIntervalSince1970
 
+        if scrollView.panGestureRecognizer.velocity(in: scrollView).y < -100  && !(self.navigationController?.isNavigationBarHidden)! {
+//                self.navigationController?.navigationBar.isHidden = true
+            self.navigationController?.setNavigationBarHidden(true, animated: true)
+//                print("aaa")
+        } else if scrollView.panGestureRecognizer.velocity(in: scrollView).y > 100 && (self.navigationController?.isNavigationBarHidden)! {
+//                self.navigationController?.navigationBar.isHidden = false
+            self.navigationController?.setNavigationBarHidden(false, animated: true)
+        }
+        
+//        switch(scrollView.panGestureRecognizer.state) {
+//        case .began:
+//            print("began", scrollView.panGestureRecognizer.translation(in: scrollView).x)
+//        case .changed:
+//            print("changed", scrollView.panGestureRecognizer.translation(in: scrollView).x)
+//        case .ended:
+//            print("ended", scrollView.panGestureRecognizer.translation(in: scrollView).x)
+//        case .possible:
+//            print("possible", scrollView.panGestureRecognizer.translation(in: scrollView).x)
+//        case .cancelled:
+//            print("cancelled", scrollView.panGestureRecognizer.translation(in: scrollView).x)
+//        case .failed:
+//            print("failed", scrollView.panGestureRecognizer.translation(in: scrollView).x)
+//        @unknown default:
+//            print("default")
+//        }
         if now - lastFetchTime < debounceInterval {
             return
         }
 //        print("scroll")
         if scrollView == animeDetailView.tmpScrollView {
 //            print(scrollView.panGestureRecognizer.velocity(in: scrollView).y < 0  && (self.navigationController?.isNavigationBarHidden)!, scrollView.panGestureRecognizer.velocity(in: scrollView).y > 0 && !(self.navigationController?.isNavigationBarHidden)!, scrollView.panGestureRecognizer.velocity(in: scrollView).y)
-            if scrollView.panGestureRecognizer.velocity(in: scrollView).y < 0  && !(self.navigationController?.isNavigationBarHidden)! {
-//                self.navigationController?.navigationBar.isHidden = true
-                self.navigationController?.setNavigationBarHidden(true, animated: true)
-//                print("aaa")
-            } else if scrollView.panGestureRecognizer.velocity(in: scrollView).y > 0 && (self.navigationController?.isNavigationBarHidden)! {
-//                self.navigationController?.navigationBar.isHidden = false
-                self.navigationController?.setNavigationBarHidden(false, animated: true)
+//            print(scrollView.panGestureRecognizer.velocity(in: scrollView).y)
+            
+            
+
+            if scrollView.panGestureRecognizer.velocity(in: scrollView).x > 100 {
+//                print(">100")
             }
             
             let offsetY = scrollView.contentOffset.y
@@ -1306,6 +1395,29 @@ extension AnimeDetailViewController: AnimeVoiceActorDataDelegate {
             self.animeFetchingDataManager.passMoreVoiceActorData = newVC.self
             self.navigationController?.pushViewController(newVC, animated: true)
         }
+    }
+    
+    
+}
+
+extension AnimeDetailViewController: OpenUrlDelegate {
+    func openURL(siteName: String?, siteURL: String?) {
+        if let siteName = siteName, let siteURL = siteURL {
+            let alertController = UIAlertController(title: "Open \(siteName)\n(\(siteURL))\n through Safari?", message: "Will exit this App and open the Safari.", preferredStyle: .alert)
+            let yesAction = UIAlertAction(title: "YES", style: .destructive) { action in
+                if let url = URL(string: siteURL) {
+                    UIApplication.shared.open(url)
+                }
+                
+            }
+            let noAction = UIAlertAction(title: "NO", style: .cancel)
+            alertController.addAction(yesAction)
+            alertController.addAction(noAction)
+            present(alertController, animated: true)
+            
+        }
+            
+        
     }
     
     

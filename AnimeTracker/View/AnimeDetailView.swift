@@ -45,10 +45,11 @@ class AnimeDetailView: UIView {
     }
         
     var differentViewContainer: UIView!
-        
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .white
+//        self.backgroundColor = .white
+        
         setupAnimeInfoPage()
     }
     
@@ -61,7 +62,8 @@ class AnimeDetailView: UIView {
         
         tmpScrollView = UIScrollView()
         tmpScrollView.translatesAutoresizingMaskIntoConstraints = false
-        tmpScrollView.backgroundColor = #colorLiteral(red: 0.9306586385, green: 0.9455893636, blue: 0.9625305533, alpha: 1)
+//        tmpScrollView.backgroundColor = #colorLiteral(red: 0.9306586385, green: 0.9455893636, blue: 0.9625305533, alpha: 1)
+        tmpScrollView.backgroundColor = .clear
         self.addSubview(tmpScrollView)
         
         animeBannerView = AnimeBannerView()

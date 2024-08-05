@@ -33,7 +33,7 @@ class AnimeVoiceActorViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        
+        navigationController?.setNavigationBarHidden(false, animated: true)
         setupPage()
         wholePageScollView.delegate = self
         // Do any additional setup after loading the view.
