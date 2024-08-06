@@ -34,6 +34,10 @@ class AnimeDetailViewController: UIViewController {
     
     var threadViewPageControlMenuElement: [UIAction] = []
     var selectedMenuElement: Int = 1
+    private var showFloatingBtnMenu = false
+    
+    weak var navigateDelegate: NavigateDelegate?
+    
     
     init(animeFetchingDataManager: AnimeFetchData, mediaID: Int) {
         self.animeFetchingDataManager = animeFetchingDataManager
@@ -110,6 +114,7 @@ class AnimeDetailViewController: UIViewController {
         let backButton = UIBarButtonItem(title: nil, style: .plain, target: self, action: #selector(swipeAction))
         backButton.image = UIImage(systemName: "chevron.backward")
         navigationItem.leftBarButtonItem = backButton
+        
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
@@ -278,7 +283,30 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
         animeBannerView.staffButton.addTarget(self, action: #selector(showStaffView), for: .touchUpInside)
         animeBannerView.statsButton.addTarget(self, action: #selector(showStatsView), for: .touchUpInside)
         animeBannerView.socialButton.addTarget(self, action: #selector(showSocialView), for: .touchUpInside)
+        
+        self.view.addSubview(animeDetailView.floatingButton)
+        animeDetailView.floatingButton.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -30).isActive = true
+        animeDetailView.floatingButton.centerYAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -80).isActive = true
+        animeDetailView.floatingButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        animeDetailView.floatingButton.widthAnchor.constraint(equalToConstant: 60).isActive = true
+        
+        let floatingButtonTapGesture = UITapGestureRecognizer(target: self, action: #selector(showMenu))
+        animeDetailView.floatingButton.addGestureRecognizer(floatingButtonTapGesture)
+        
+        self.view.addSubview(animeDetailView.floatingButtonMenu)
+        animeDetailView.floatingButtonMenu.leadingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 20).isActive = true
+        animeDetailView.floatingButtonMenu.topAnchor.constraint(equalTo: animeDetailView.floatingButton.topAnchor, constant: -20).isActive = true
+        animeDetailView.floatingButtonMenu.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        animeDetailView.floatingButtonMenu.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        
+        animeDetailView.floatingButtonMenu.navigateDelegate = self
 
+    }
+    @objc func showMenu(sender: UITapGestureRecognizer) {
+        showFloatingBtnMenu.toggle()
+        UIView.animate(withDuration: 0.3) {
+            self.animeDetailView.floatingButtonMenu.transform = CGAffineTransform(translationX: (self.showFloatingBtnMenu ? -(self.animeDetailView.floatingButtonMenu.frame.minX - self.animeDetailView.floatingButton.frame.minX + 20 + self.animeDetailView.floatingButtonMenu.frame.width) : 0), y: 0)
+        }
     }
     // MARK: - animeBannerView constraints
     fileprivate func setupAnimeBannerViewConstraints(topAnchorView: UIView, isLastView: Bool) {
@@ -1284,6 +1312,8 @@ extension AnimeDetailViewController: AnimeStreamingDetailDelegate {
 extension AnimeDetailViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let now = Date().timeIntervalSince1970
+        
+        animeDetailView.floatingButton.alpha = 0.5
 
         if scrollView.panGestureRecognizer.velocity(in: scrollView).y < -100  && !(self.navigationController?.isNavigationBarHidden)! {
 //                self.navigationController?.navigationBar.isHidden = true
@@ -1418,6 +1448,16 @@ extension AnimeDetailViewController: OpenUrlDelegate {
         }
             
         
+    }
+    
+    
+}
+
+extension AnimeDetailViewController: NavigateDelegate {
+    func navigateTo(page: Int) {
+        self.backgroundImageView.removeFromSuperview()
+        navigationController?.popToRootViewController(animated: true)
+        navigateDelegate?.navigateTo(page: page)
     }
     
     

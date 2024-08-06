@@ -46,6 +46,9 @@ class AnimeDetailView: UIView {
         
     var differentViewContainer: UIView!
     
+    var floatingButton: UIView!
+    var floatingButtonMenu: FloatingButtonMenu!
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
 //        self.backgroundColor = .white
@@ -119,6 +122,26 @@ class AnimeDetailView: UIView {
         tagView = TagView()
         tagView.translatesAutoresizingMaskIntoConstraints = false
 //        tmpScrollView.addSubview(tagView)
+        
+        floatingButton = UIView()
+        let floatingButtonImage = UIImageView()
+        floatingButtonImage.translatesAutoresizingMaskIntoConstraints = false
+        floatingButtonImage.image = UIImage(systemName: "line.3.horizontal.circle.fill")
+        floatingButtonImage.contentMode = .scaleAspectFit
+        floatingButtonImage.backgroundColor = .white
+        floatingButtonImage.layer.cornerRadius = 30
+        floatingButtonImage.clipsToBounds = true
+        floatingButton.addSubview(floatingButtonImage)
+        floatingButtonImage.topAnchor.constraint(equalTo: floatingButton.topAnchor).isActive = true
+        floatingButtonImage.leadingAnchor.constraint(equalTo: floatingButton.leadingAnchor).isActive = true
+        floatingButtonImage.trailingAnchor.constraint(equalTo: floatingButton.trailingAnchor).isActive = true
+        floatingButtonImage.bottomAnchor.constraint(equalTo: floatingButton.bottomAnchor).isActive = true
+        
+
+        floatingButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        floatingButtonMenu = FloatingButtonMenu()
+        floatingButtonMenu.translatesAutoresizingMaskIntoConstraints = false
         
     }
     deinit {

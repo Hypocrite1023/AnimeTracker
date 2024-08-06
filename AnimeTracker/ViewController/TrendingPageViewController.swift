@@ -48,6 +48,19 @@ class TrendingPageViewController: UIViewController {
         fetchingDataIndicator.isHidden = true
         fetchingDataIndicator.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         fetchingDataIndicator.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
+//        self.tabBarController?.selectedViewController = tabBarController?.viewControllers?[1]
+//        print(tabBarController?.selectedIndex)
+//        self.tabBarController?.selectedIndex = 1
+//        print(tabBarController?.viewControllers?.description)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+//        self.tabBarController?.selectedIndex = 1
+    }
+    
+    deinit {
+        print("TrendingPageViewController deinit")
     }
 
     /*
@@ -155,10 +168,19 @@ extension TrendingPageViewController: AnimeOverViewDataDelegate {
             vc.navigationItem.title = media.title.native
             vc.animeDetailView = AnimeDetailView(frame: self.view.frame)
             vc.showOverviewView(sender: vc.animeDetailView.animeBannerView.overviewButton)
+            vc.navigateDelegate = self
             self.navigationController?.pushViewController(vc, animated: true)
         }
         print("load view")
         
+    }
+    
+    
+}
+
+extension TrendingPageViewController: NavigateDelegate {
+    func navigateTo(page: Int) {
+        tabBarController?.selectedIndex = page
     }
     
     

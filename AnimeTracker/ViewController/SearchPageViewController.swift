@@ -22,6 +22,7 @@ class SearchPageViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        print("load search page")
         apiManager.animeDataDelegateManager = self
         apiManager.animeOverViewDataDelegate = self
         
@@ -68,6 +69,10 @@ class SearchPageViewController: UIViewController {
             apiManager.fetchAnimeBySearch(year: yearStr, season: seasonUpperCase)
         }
 //        fetchImages()
+    }
+    
+    deinit {
+        print("SearchingPageViewController deinit")
     }
     
     @objc func seasonButtonTap(sender: UIButton) {
@@ -224,9 +229,18 @@ extension SearchPageViewController: AnimeOverViewDataDelegate {
             vc.navigationItem.title = media.title.native
             vc.animeDetailView = AnimeDetailView(frame: self.view.frame)
             vc.showOverviewView(sender: vc.animeDetailView.animeBannerView.overviewButton)
+            vc.navigateDelegate = self
             self.navigationController?.pushViewController(vc, animated: true)
         }
         
+    }
+    
+    
+}
+
+extension SearchPageViewController: NavigateDelegate {
+    func navigateTo(page: Int) {
+        tabBarController?.selectedIndex = page
     }
     
     

@@ -33,6 +33,8 @@
 		CD2FF7C32C5CDAE200924687 /* AnimeVoiceActorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD2FF7C22C5CDAE200924687 /* AnimeVoiceActorViewController.swift */; };
 		CD2FF7C62C5D0DED00924687 /* RelationScrollView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD2FF7C52C5D0DED00924687 /* RelationScrollView.xib */; };
 		CD2FF7C82C5D0ECD00924687 /* RelationScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD2FF7C72C5D0ECD00924687 /* RelationScrollView.swift */; };
+		CD646CCA2C61C44D00541793 /* FloatingButtonMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD646CC92C61C44D00541793 /* FloatingButtonMenu.xib */; };
+		CD646CCC2C61CB4000541793 /* FloatingButtonMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD646CCB2C61CB4000541793 /* FloatingButtonMenu.swift */; };
 		CD8DD5CA2C60987C00E0D7A2 /* OpenURLDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8DD5C92C60987C00E0D7A2 /* OpenURLDelegate.swift */; };
 		CD9D4E682C4D0126003492C1 /* AnimeDescriptionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D4E672C4D0126003492C1 /* AnimeDescriptionDelegate.swift */; };
 		CD9D4E6A2C4E4E6F003492C1 /* WatchViewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D4E692C4E4E6F003492C1 /* WatchViewCollectionViewCell.swift */; };
@@ -130,6 +132,8 @@
 		CD2FF7C22C5CDAE200924687 /* AnimeVoiceActorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeVoiceActorViewController.swift; sourceTree = "<group>"; };
 		CD2FF7C52C5D0DED00924687 /* RelationScrollView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RelationScrollView.xib; sourceTree = "<group>"; };
 		CD2FF7C72C5D0ECD00924687 /* RelationScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelationScrollView.swift; sourceTree = "<group>"; };
+		CD646CC92C61C44D00541793 /* FloatingButtonMenu.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FloatingButtonMenu.xib; sourceTree = "<group>"; };
+		CD646CCB2C61CB4000541793 /* FloatingButtonMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingButtonMenu.swift; sourceTree = "<group>"; };
 		CD8DD5C92C60987C00E0D7A2 /* OpenURLDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenURLDelegate.swift; sourceTree = "<group>"; };
 		CD9D4E672C4D0126003492C1 /* AnimeDescriptionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeDescriptionDelegate.swift; sourceTree = "<group>"; };
 		CD9D4E692C4E4E6F003492C1 /* WatchViewCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchViewCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -593,6 +597,8 @@
 				CDE22E442C47C39500080BAD /* SearchingAnimeCollectionViewCell.swift */,
 				CD9D4E692C4E4E6F003492C1 /* WatchViewCollectionViewCell.swift */,
 				CD1AA0E82C4A72B200993AEB /* AnimeDetailView.swift */,
+				CD646CC92C61C44D00541793 /* FloatingButtonMenu.xib */,
+				CD646CCB2C61CB4000541793 /* FloatingButtonMenu.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -725,6 +731,7 @@
 				CDC14F282C453DBF00BC14FA /* Base in Resources */,
 				CD2FF7C12C5CCCA600924687 /* AnimeVoiceActorPage.storyboard in Resources */,
 				CDA141F62C57CDDD00708A8B /* ThreadsView.xib in Resources */,
+				CD646CCA2C61C44D00541793 /* FloatingButtonMenu.xib in Resources */,
 				CDA141F12C57C5DE00708A8B /* ThreadPreview.xib in Resources */,
 				CDA141E52C579F6000708A8B /* RankingView.xib in Resources */,
 				CD1AA0E72C49547100993AEB /* Simulator Screenshot - iPhone 15 Pro - 2024-07-18 at 21.47.05.png in Resources */,
@@ -746,6 +753,7 @@
 				CD1AA0E92C4A72B200993AEB /* AnimeDetailView.swift in Sources */,
 				CD1AA0EF2C4BB30F00993AEB /* UILabelWithPadding.swift in Sources */,
 				CD1AA0ED2C4BA82D00993AEB /* AnimeDetailDataDelegate.swift in Sources */,
+				CD646CCC2C61CB4000541793 /* FloatingButtonMenu.swift in Sources */,
 				CD9D4E762C510245003492C1 /* AnimeBannerView.swift in Sources */,
 				CD9D4EA72C525094003492C1 /* StaffCollectionView.swift in Sources */,
 				CD2FF7B42C5CB98800924687 /* ThreadResponse.swift in Sources */,
