@@ -36,3 +36,15 @@
 >> frame layout guide的用途：
 >> 如果在scroll view中想讓某個view不要離開畫面，便可以利用這個屬性
 
+> 2024.08.06
+>> 自己寫code需要更細心，今天寫浮動按鈕跳轉頁面，我想說明明tabBarController selectedIndex是設定正確的，但每次跳到的頁面都是同一頁，問了chatgpt也不知道哪裡有問題  
+後來發現原來是我設定的page不對，越簡單的code越需要細心啊
+'''
+let goToTrendingPageGesture = FloatingButtonTapGesture(target: self, action: #selector(navigateTo), navigateTo: 0)
+trendingBtn.addGestureRecognizer(goToTrendingPageGesture)
+let goToSearchingPageGesture = FloatingButtonTapGesture(target: self, action: #selector(navigateTo), navigateTo: 1)
+searchingBtn.addGestureRecognizer(goToSearchingPageGesture)
+let goToFavoritePageGesture = FloatingButtonTapGesture(target: self, action: #selector(navigateTo), navigateTo: 2)
+favoriteBtn.addGestureRecognizer(goToFavoritePageGesture)
+'''
+

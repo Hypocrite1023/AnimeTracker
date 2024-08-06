@@ -46,7 +46,7 @@ class FloatingButtonMenu: UIView {
         trendingBtn.addGestureRecognizer(goToTrendingPageGesture)
         let goToSearchingPageGesture = FloatingButtonTapGesture(target: self, action: #selector(navigateTo), navigateTo: 1)
         searchingBtn.addGestureRecognizer(goToSearchingPageGesture)
-        let goToFavoritePageGesture = FloatingButtonTapGesture(target: self, action: #selector(navigateTo), navigateTo:2)
+        let goToFavoritePageGesture = FloatingButtonTapGesture(target: self, action: #selector(navigateTo), navigateTo: 2)
         favoriteBtn.addGestureRecognizer(goToFavoritePageGesture)
     }
     @objc func navigateTo(sender: FloatingButtonTapGesture) {
