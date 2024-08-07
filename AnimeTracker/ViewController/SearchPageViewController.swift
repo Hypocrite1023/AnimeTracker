@@ -14,7 +14,7 @@ class SearchPageViewController: UIViewController {
     @IBOutlet weak var trendingAnimeCollectionView: UICollectionView?
     var yearTableView: UITableView!
     var seasonTableView: UITableView!
-    let apiManager = AnimeFetchData()
+//    let apiManager = AnimeDataFetcher()
 //    var images: [UIImage?] = Array(repeating: nil, count: 10)
     var animeData: AnimeSearchedOrTrending?
 
@@ -23,8 +23,8 @@ class SearchPageViewController: UIViewController {
 
         // Do any additional setup after loading the view.
         print("load search page")
-        apiManager.animeDataDelegateManager = self
-        apiManager.animeOverViewDataDelegate = self
+        AnimeDataFetcher.shared.animeDataDelegateManager = self
+        AnimeDataFetcher.shared.animeOverViewDataDelegate = self
         
         yearButton.setTitle(PickerData.yearPickerOption.last?.description, for: .normal)
         yearButton.addTarget(self, action: #selector(yearButtonTap), for: .touchUpInside)
@@ -66,7 +66,7 @@ class SearchPageViewController: UIViewController {
         trendingAnimeCollectionView?.delegate = self
         trendingAnimeCollectionView?.register(SearchingAnimeCollectionViewCell.self, forCellWithReuseIdentifier: "searchCell")
         if let seasonUpperCase = PickerData.seasonPickerOption.first?.uppercased(), let yearStr = PickerData.yearPickerOption.last?.description {
-            apiManager.fetchAnimeBySearch(year: yearStr, season: seasonUpperCase)
+            AnimeDataFetcher.shared.fetchAnimeBySearch(year: yearStr, season: seasonUpperCase)
         }
 //        fetchImages()
     }
@@ -150,7 +150,7 @@ extension SearchPageViewController: UITableViewDataSource, UITableViewDelegate {
             tableView.isHidden = true
             let seasonUpperCase = PickerData.seasonPickerOption[indexPath.row].uppercased()
             if let yearStr = yearButton.titleLabel?.text?.description {
-                apiManager.fetchAnimeBySearch(year: yearStr, season: seasonUpperCase)
+                AnimeDataFetcher.shared.fetchAnimeBySearch(year: yearStr, season: seasonUpperCase)
             }
         } else if tableView == yearTableView {
             yearButton.setTitle(PickerData.yearPickerOption[indexPath.row].description, for: .normal)
@@ -158,7 +158,7 @@ extension SearchPageViewController: UITableViewDataSource, UITableViewDelegate {
             tableView.isHidden = true
             let yearStr = PickerData.yearPickerOption[indexPath.row].description
             if let seasonUpperCase = seasonButton.titleLabel?.text?.uppercased() {
-                apiManager.fetchAnimeBySearch(year: yearStr, season: seasonUpperCase)
+                AnimeDataFetcher.shared.fetchAnimeBySearch(year: yearStr, season: seasonUpperCase)
             }
         }
         
@@ -204,7 +204,7 @@ extension SearchPageViewController: UICollectionViewDataSource, UICollectionView
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let animeID = self.animeData?.data.Page.media[indexPath.item].id {
-            apiManager.fetchAnimeByID(id: animeID)
+            AnimeDataFetcher.shared.fetchAnimeByID(id: animeID)
         }
     }
     
@@ -224,12 +224,12 @@ extension SearchPageViewController: AnimeDataDelegate {
 extension SearchPageViewController: AnimeOverViewDataDelegate {
     func animeDetailDataDelegate(media: MediaResponse.MediaData.Media) {
         DispatchQueue.main.async {
-            let vc = AnimeDetailViewController(animeFetchingDataManager: self.apiManager, mediaID: media.id)
+            let vc = AnimeDetailViewController(mediaID: media.id)
             vc.animeDetailData = media
             vc.navigationItem.title = media.title.native
             vc.animeDetailView = AnimeDetailView(frame: self.view.frame)
             vc.showOverviewView(sender: vc.animeDetailView.animeBannerView.overviewButton)
-            vc.navigateDelegate = self
+            vc.fastNavigate = self.tabBarController as? NavigateDelegate
             self.navigationController?.pushViewController(vc, animated: true)
         }
         

@@ -11,7 +11,7 @@ import Combine
 class TrendingPageViewController: UIViewController {
     
     @IBOutlet weak var trendingCollectionView: UICollectionView!
-    var animeFetchManager = AnimeFetchData()
+//    var animeFetchManager = AnimeDataFetcher()
     var animeFetchedData: AnimeSearchedOrTrending?
     
     private var cancellables = Set<AnyCancellable>()
@@ -21,14 +21,14 @@ class TrendingPageViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        animeFetchManager.animeOverViewDataDelegate = self
-        animeFetchManager.animeDataDelegateManager = self
-        animeFetchManager.fetchAnimeByTrending(page: animeFetchManager.trendingNextFetchPage)
-        animeFetchManager.isFetchingData = false
+        AnimeDataFetcher.shared.animeOverViewDataDelegate = self
+        AnimeDataFetcher.shared.animeDataDelegateManager = self
+        AnimeDataFetcher.shared.fetchAnimeByTrending(page: AnimeDataFetcher.shared.trendingNextFetchPage)
+        AnimeDataFetcher.shared.isFetchingData = false
         trendingCollectionView.dataSource = self
         trendingCollectionView.delegate = self
         
-        animeFetchManager.$isFetchingData
+        AnimeDataFetcher.shared.$isFetchingData
             .receive(on: DispatchQueue.main)
             .sink {
                 [weak self] isFetching in
@@ -93,7 +93,7 @@ extension TrendingPageViewController: UICollectionViewDelegate, UICollectionView
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let animeData = self.animeFetchedData?.data.Page.media[indexPath.item] {
-            animeFetchManager.fetchAnimeByID(id: animeData.id)
+            AnimeDataFetcher.shared.fetchAnimeByID(id: animeData.id)
 //            let detailViewController = AnimeDetailViewController(animeFetchingDataManager: animeFetchManager, mediaID: animeData.id)
 //            navigationController?.pushViewController(detailViewController, animated: true)
         }
@@ -136,7 +136,7 @@ extension TrendingPageViewController: AnimeDataDelegate {
                     self.trendingCollectionView.insertItems(at: indexPaths)
                 }, completion: nil)
             }
-            animeFetchManager.isFetchingData = false
+            AnimeDataFetcher.shared.isFetchingData = false
         }
     }
     
@@ -150,10 +150,10 @@ extension TrendingPageViewController: UIScrollViewDelegate {
 //        print("offsetY: \(offsetY)", "contentHeight: \(contentHeight)", "frameHeight: \(frameHeight)")
         if offsetY > contentHeight - frameHeight {
             if let animeFetchedData = animeFetchedData {
-                print(animeFetchManager.isFetchingData.description)
-                if animeFetchedData.data.Page.pageInfo.hasNextPage && !animeFetchManager.isFetchingData {
+                print(AnimeDataFetcher.shared.isFetchingData.description)
+                if animeFetchedData.data.Page.pageInfo.hasNextPage && !AnimeDataFetcher.shared.isFetchingData {
                     print("fetch data")
-                    animeFetchManager.fetchAnimeByTrending(page: animeFetchManager.trendingNextFetchPage)
+                    AnimeDataFetcher.shared.fetchAnimeByTrending(page: AnimeDataFetcher.shared.trendingNextFetchPage)
                 }
             }
         }
@@ -163,24 +163,16 @@ extension TrendingPageViewController: UIScrollViewDelegate {
 extension TrendingPageViewController: AnimeOverViewDataDelegate {
     func animeDetailDataDelegate(media: MediaResponse.MediaData.Media) {
         DispatchQueue.main.async {
-            let vc = AnimeDetailViewController(animeFetchingDataManager: self.animeFetchManager, mediaID: media.id)
+            let vc = AnimeDetailViewController(mediaID: media.id)
             vc.animeDetailData = media
             vc.navigationItem.title = media.title.native
             vc.animeDetailView = AnimeDetailView(frame: self.view.frame)
             vc.showOverviewView(sender: vc.animeDetailView.animeBannerView.overviewButton)
-            vc.navigateDelegate = self
+            vc.fastNavigate = self.tabBarController.self as? any NavigateDelegate
             self.navigationController?.pushViewController(vc, animated: true)
         }
         print("load view")
         
-    }
-    
-    
-}
-
-extension TrendingPageViewController: NavigateDelegate {
-    func navigateTo(page: Int) {
-        tabBarController?.selectedIndex = page
     }
     
     

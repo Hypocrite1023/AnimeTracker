@@ -8,10 +8,11 @@
 import Foundation
 import Combine
 
-class AnimeFetchData {
-    // trending
-    // anime image, anime title
-    let queryURL = URL(string: "https://graphql.anilist.co")!
+class AnimeDataFetcher {
+    
+    static let shared = AnimeDataFetcher()
+    
+    var queryURL: URL!
     weak var animeDataDelegateManager: AnimeDataDelegate?
     weak var animeOverViewDataDelegate: AnimeOverViewDataDelegate?
     weak var animeDetailDataDelegate: AnimeDetailDataDelegate?
@@ -20,6 +21,10 @@ class AnimeFetchData {
     weak var passMoreVoiceActorData: ReceiveMoreVoiceActorData?
     var trendingNextFetchPage = 1
     @Published var isFetchingData = false
+    
+    private init() {
+        self.queryURL = URL(string: "https://graphql.anilist.co")!
+    }
     
     func fetchAnimeBySearch(year: String, season: String) {
         var urlRequest = URLRequest(url: queryURL)
@@ -1078,19 +1083,19 @@ query {
     }
 }
 
-extension AnimeFetchData: GetAnimeCharacterDataDelegate {
+extension AnimeDataFetcher: GetAnimeCharacterDataDelegate {
     func getAnimeCharacterData(id: Int, page: Int) {
         fetchCharacterDetailByCharacterID(id: id, page: page)
     }
 }
 
-extension AnimeFetchData: FetchAnimeVoiceActorData {
+extension AnimeDataFetcher: FetchAnimeVoiceActorData {
     func fetchAnimeVoiceActorData(id: Int, page: Int) {
         fetchVoiceActorDataByID(id: id, page: page)
     }
 }
 
-extension AnimeFetchData: FetchMoreVoiceActorData {
+extension AnimeDataFetcher: FetchMoreVoiceActorData {
     func passMoreVoiceActorData(voiceActorData: VoiceActorDataResponse.DataClass.StaffData.CharacterMedia) {
         passMoreVoiceActorData?.updateVoiceActorData(voiceActorData: voiceActorData)
     }
@@ -1102,7 +1107,7 @@ extension AnimeFetchData: FetchMoreVoiceActorData {
     
 }
 
-extension AnimeFetchData: FetchAnimeDetailDataByID {
+extension AnimeDataFetcher: FetchAnimeDetailDataByID {
     func passAnimeID(animeID: Int) {
         fetchAnimeByID(id: animeID)
     }

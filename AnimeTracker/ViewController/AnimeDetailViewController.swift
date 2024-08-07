@@ -10,7 +10,7 @@ import Combine
 
 class AnimeDetailViewController: UIViewController {
     
-    var animeFetchingDataManager: AnimeFetchData
+//    var animeFetchingDataManager: AnimeDataFetcher
     private var cancellables = Set<AnyCancellable>()
     var fetchingDataIndicator = UIActivityIndicatorView(style: .large)
     
@@ -34,13 +34,10 @@ class AnimeDetailViewController: UIViewController {
     
     var threadViewPageControlMenuElement: [UIAction] = []
     var selectedMenuElement: Int = 1
-    private var showFloatingBtnMenu = false
     
-    weak var navigateDelegate: NavigateDelegate?
-    
-    
-    init(animeFetchingDataManager: AnimeFetchData, mediaID: Int) {
-        self.animeFetchingDataManager = animeFetchingDataManager
+    weak var fastNavigate: NavigateDelegate?
+        
+    init(mediaID: Int) {
         self.animeMediaID = mediaID
         super.init(nibName: nil, bundle: nil)
     }
@@ -53,7 +50,22 @@ class AnimeDetailViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        animeFetchingDataManager.$isFetchingData
+//        animeFetchingDataManager.$isFetchingData
+//            .receive(on: DispatchQueue.main)
+//            .sink {
+//                [weak self] isFetching in
+//                self?.fetchingDataIndicator.isHidden = isFetching
+//                if isFetching {
+//                    print(";;;; is fetching data ;;;;;")
+//                    self?.fetchingDataIndicator.startAnimating()
+//                } else {
+//                    print(";;;; end fetching data ;;;;;")
+//                    self?.fetchingDataIndicator.stopAnimating()
+//                }
+//            }
+//            .store(in: &cancellables)
+        
+        AnimeDataFetcher.shared.$isFetchingData
             .receive(on: DispatchQueue.main)
             .sink {
                 [weak self] isFetching in
@@ -68,10 +80,12 @@ class AnimeDetailViewController: UIViewController {
             }
             .store(in: &cancellables)
         
-        self.animeFetchingDataManager.animeDetailDataDelegate = self
-        self.animeFetchingDataManager.animeCharacterDataDelegate = self
-        self.animeFetchingDataManager.animeVoiceActorDataDelegate = self
-        
+//        self.animeFetchingDataManager.animeDetailDataDelegate = self
+//        self.animeFetchingDataManager.animeCharacterDataDelegate = self
+//        self.animeFetchingDataManager.animeVoiceActorDataDelegate = self
+        AnimeDataFetcher.shared.animeDetailDataDelegate = self
+        AnimeDataFetcher.shared.animeCharacterDataDelegate = self
+        AnimeDataFetcher.shared.animeVoiceActorDataDelegate = self
         
 //        self.view.backgroundColor = .red
         
@@ -115,6 +129,8 @@ class AnimeDetailViewController: UIViewController {
         backButton.image = UIImage(systemName: "chevron.backward")
         navigationItem.leftBarButtonItem = backButton
         
+        FloatingButtonManager.shared.addToView(toView: self.view)
+        FloatingButtonManager.shared.floatingButtonMenu.navigateDelegate = self
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
@@ -209,8 +225,8 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
                 var tmpCharacterPreview: CharacterPreview? = latsCharacterPreview as? CharacterPreview
                 for (index, edge) in characterData.data.media.characterPreview.edges.enumerated() {
                     let characterPreview = CharacterPreview(frame: .zero, characterID: edge.node.id, voiceActorID: edge.voiceActors.first?.id ?? nil)
-                    characterPreview.animeCharacterDataManager = self.animeFetchingDataManager.self
-                    characterPreview.voiceActorDataManager = self.animeFetchingDataManager.self
+                    characterPreview.animeCharacterDataManager = AnimeDataFetcher.shared.self
+                    characterPreview.voiceActorDataManager = AnimeDataFetcher.shared.self
                     
                     characterPreview.characterImageView.loadImage(from: edge.node.image.large)
                     characterPreview.characterNameLabel.text = edge.node.name.userPreferred
@@ -284,29 +300,7 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
         animeBannerView.statsButton.addTarget(self, action: #selector(showStatsView), for: .touchUpInside)
         animeBannerView.socialButton.addTarget(self, action: #selector(showSocialView), for: .touchUpInside)
         
-        self.view.addSubview(animeDetailView.floatingButton)
-        animeDetailView.floatingButton.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -30).isActive = true
-        animeDetailView.floatingButton.centerYAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -80).isActive = true
-        animeDetailView.floatingButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
-        animeDetailView.floatingButton.widthAnchor.constraint(equalToConstant: 60).isActive = true
-        
-        let floatingButtonTapGesture = UITapGestureRecognizer(target: self, action: #selector(showMenu))
-        animeDetailView.floatingButton.addGestureRecognizer(floatingButtonTapGesture)
-        
-        self.view.addSubview(animeDetailView.floatingButtonMenu)
-        animeDetailView.floatingButtonMenu.leadingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 20).isActive = true
-        animeDetailView.floatingButtonMenu.topAnchor.constraint(equalTo: animeDetailView.floatingButton.topAnchor, constant: -20).isActive = true
-        animeDetailView.floatingButtonMenu.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        animeDetailView.floatingButtonMenu.widthAnchor.constraint(equalToConstant: 200).isActive = true
-        
-        animeDetailView.floatingButtonMenu.navigateDelegate = self
 
-    }
-    @objc func showMenu(sender: UITapGestureRecognizer) {
-        showFloatingBtnMenu.toggle()
-        UIView.animate(withDuration: 0.3) {
-            self.animeDetailView.floatingButtonMenu.transform = CGAffineTransform(translationX: (self.showFloatingBtnMenu ? -(self.animeDetailView.floatingButtonMenu.frame.minX - self.animeDetailView.floatingButton.frame.minX + 20 + self.animeDetailView.floatingButtonMenu.frame.width) : 0), y: 0)
-        }
     }
     // MARK: - animeBannerView constraints
     fileprivate func setupAnimeBannerViewConstraints(topAnchorView: UIView, isLastView: Bool) {
@@ -488,7 +482,7 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
     }
     // MARK: - setup the stats view after click the stats button in bannerView
     func setupAnimeStatsViewPage(animeDetailData: MediaResponse.MediaData.Media) {
-        animeFetchingDataManager.fetchRankingDataByMediaId(id: animeDetailData.id)
+        AnimeDataFetcher.shared.fetchRankingDataByMediaId(id: animeDetailData.id)
         for subview in animeDetailView.tmpScrollView.subviews {
             subview.removeFromSuperview()
         }
@@ -509,11 +503,11 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
         setupAnimeScoreDistributionView(animeDetailData, animeScoreDistributionView)
         setupAnimeScoreDistributionViewConstraints(topAnchorView: animeStatusDistributionView, isLastView: true)
         
-        animeFetchingDataManager.fetchRankingDataByMediaId(id: animeDetailData.id)
+        AnimeDataFetcher.shared.fetchRankingDataByMediaId(id: animeDetailData.id)
     }
     // MARK: - setup the social view after click the social button in bannerView
     func setupAnimeSocialViewPage(animeDetailData: MediaResponse.MediaData.Media) {
-        animeFetchingDataManager.fetchThreadDataByMediaId(id: animeDetailData.id, page: 1)
+        AnimeDataFetcher.shared.fetchThreadDataByMediaId(id: animeDetailData.id, page: 1)
         for subview in animeDetailView.tmpScrollView.subviews {
            subview.removeFromSuperview()
         }
@@ -661,8 +655,8 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
         for (index, edge) in animeDetailData.characterPreview.edges.enumerated() {
             let characterPreview = CharacterPreview(frame: .zero, characterID: edge.node.id, voiceActorID: edge.voiceActors.first?.id ?? nil)
             
-            characterPreview.animeCharacterDataManager = animeFetchingDataManager.self
-            characterPreview.voiceActorDataManager = animeFetchingDataManager.self
+            characterPreview.animeCharacterDataManager = AnimeDataFetcher.shared.self
+            characterPreview.voiceActorDataManager = AnimeDataFetcher.shared.self
             
             characterPreview.characterImageView.loadImage(from: edge.node.image.large)
             characterPreview.characterNameLabel.text = edge.node.name.userPreferred
@@ -919,7 +913,7 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
         var tmpRecommendationsPreview: RecommendationsAnimePreview?
         for (index, recommendation) in animeDetailData.recommendations.nodes.enumerated() {
             let recommendationsPreview = RecommendationsAnimePreview(frame: .zero, animeID: recommendation.mediaRecommendation?.id)
-            recommendationsPreview.animeDataFetcher = animeFetchingDataManager.self
+            recommendationsPreview.animeDataFetcher = AnimeDataFetcher.shared.self
             recommendationsPreview.translatesAutoresizingMaskIntoConstraints = false
             recommendationsPreview.animeTitle.text = recommendation.mediaRecommendation?.title.userPreferred
             if let coverImage = recommendation.mediaRecommendation?.coverImage?.large {
@@ -1233,7 +1227,7 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
                 if threadData.Page.pageInfo.currentPage == 1 {
                     for action in 1...threadData.Page.pageInfo.lastPage {
                         let pageControlAction = UIAction(title: "\(action)", state: .off) { uiAction in
-                            self.animeFetchingDataManager.fetchThreadDataByMediaId(id: self.animeDetailData!.id, page: action)
+                            AnimeDataFetcher.shared.fetchThreadDataByMediaId(id: self.animeDetailData!.id, page: action)
                             print("fetching thread page \(action)")
                             self.animeDetailView.tmpScrollView.setContentOffset(CGPoint(x: self.animeDetailView.threadView!.frame.origin.x, y: self.animeDetailView.threadView!.frame.origin.y), animated: true)
                             self.selectedMenuElement = action
@@ -1310,10 +1304,18 @@ extension AnimeDetailViewController: AnimeStreamingDetailDelegate {
 }
 
 extension AnimeDetailViewController: UIScrollViewDelegate {
+//    func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
+//        animeDetailView.floatingButton.alpha = 0.5
+//    }
+//    
+//    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+//        animeDetailView.floatingButton.alpha = 1
+//    }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let now = Date().timeIntervalSince1970
         
-        animeDetailView.floatingButton.alpha = 0.5
+        
 
         if scrollView.panGestureRecognizer.velocity(in: scrollView).y < -100  && !(self.navigationController?.isNavigationBarHidden)! {
 //                self.navigationController?.navigationBar.isHidden = true
@@ -1327,6 +1329,7 @@ extension AnimeDetailViewController: UIScrollViewDelegate {
 //        switch(scrollView.panGestureRecognizer.state) {
 //        case .began:
 //            print("began", scrollView.panGestureRecognizer.translation(in: scrollView).x)
+//            animeDetailView.floatingButton.alpha = 0.5
 //        case .changed:
 //            print("changed", scrollView.panGestureRecognizer.translation(in: scrollView).x)
 //        case .ended:
@@ -1335,8 +1338,10 @@ extension AnimeDetailViewController: UIScrollViewDelegate {
 //            print("possible", scrollView.panGestureRecognizer.translation(in: scrollView).x)
 //        case .cancelled:
 //            print("cancelled", scrollView.panGestureRecognizer.translation(in: scrollView).x)
+//            animeDetailView.floatingButton.alpha = 1
 //        case .failed:
 //            print("failed", scrollView.panGestureRecognizer.translation(in: scrollView).x)
+//            animeDetailView.floatingButton.alpha = 1
 //        @unknown default:
 //            print("default")
 //        }
@@ -1365,21 +1370,21 @@ extension AnimeDetailViewController: UIScrollViewDelegate {
             case 2:
                 if let canLoadMoreData = animeDetailView.characterView.canLoadMoreData {
                     if offsetY > contentHeight - frameHeight {
-                        if animeDetailData!.characterPreview.pageInfo.hasNextPage && !animeFetchingDataManager.isFetchingData {
+                        if animeDetailData!.characterPreview.pageInfo.hasNextPage && !AnimeDataFetcher.shared.isFetchingData {
                             print("fetch data")
-                            animeFetchingDataManager.fetchCharacterPreviewByMediaId(id: animeDetailData!.id, page: animeDetailData!.characterPreview.pageInfo.currentPage + 1)
+                            AnimeDataFetcher.shared.fetchCharacterPreviewByMediaId(id: animeDetailData!.id, page: animeDetailData!.characterPreview.pageInfo.currentPage + 1)
                         }
                         
                     }
                 }
                 break
             case 3:
-                if !animeFetchingDataManager.isFetchingData {
+                if !AnimeDataFetcher.shared.isFetchingData {
                     if offsetY > contentHeight - frameHeight {
                         if animeDetailData!.staffPreview.pageInfo.hasNextPage {
                             lastFetchTime = now
                             print("fetch data staff \((animeDetailData?.staffPreview.pageInfo.currentPage)! + 1)")
-                            animeFetchingDataManager.fetchStaffPreviewByMediaId(id: animeDetailData!.id, page: animeDetailData!.staffPreview.pageInfo.currentPage + 1)
+                            AnimeDataFetcher.shared.fetchStaffPreviewByMediaId(id: animeDetailData!.id, page: animeDetailData!.staffPreview.pageInfo.currentPage + 1)
                         }
                         
                     }
@@ -1407,7 +1412,7 @@ extension AnimeDetailViewController: AnimeCharacterDataDelegate {
         DispatchQueue.main.async {
             let newVC = UIStoryboard(name: "AnimeCharacterPage", bundle: nil).instantiateViewController(withIdentifier: "CharacterPage") as! AnimeCharacterPageViewController
             newVC.characterData = characterData
-            newVC.animeDetailManager = self.animeFetchingDataManager.self
+            newVC.animeDetailManager = AnimeDataFetcher.shared.self
             self.navigationController?.pushViewController(newVC, animated: true)
         }
     }
@@ -1420,9 +1425,9 @@ extension AnimeDetailViewController: AnimeVoiceActorDataDelegate {
         DispatchQueue.main.async {
             let newVC = UIStoryboard(name: "AnimeVoiceActorPage", bundle: nil).instantiateViewController(withIdentifier: "VoiceActorPage") as! AnimeVoiceActorViewController
             newVC.voiceActorDataResponse = voiceActorData
-            newVC.animeFetchManager = self.animeFetchingDataManager.self
-            newVC.characterDataFetcher = self.animeFetchingDataManager.self
-            self.animeFetchingDataManager.passMoreVoiceActorData = newVC.self
+            newVC.animeFetchManager = AnimeDataFetcher.shared.self
+            newVC.characterDataFetcher = AnimeDataFetcher.shared.self
+            AnimeDataFetcher.shared.passMoreVoiceActorData = newVC.self
             self.navigationController?.pushViewController(newVC, animated: true)
         }
     }
@@ -1455,9 +1460,9 @@ extension AnimeDetailViewController: OpenUrlDelegate {
 
 extension AnimeDetailViewController: NavigateDelegate {
     func navigateTo(page: Int) {
-        self.backgroundImageView.removeFromSuperview()
+        backgroundImageView.removeFromSuperview()
         navigationController?.popToRootViewController(animated: true)
-        navigateDelegate?.navigateTo(page: page)
+        fastNavigate?.navigateTo(page: page)
     }
     
     

@@ -37,6 +37,8 @@ class AnimeVoiceActorViewController: UIViewController {
         setupPage()
         wholePageScollView.delegate = self
         // Do any additional setup after loading the view.
+        FloatingButtonManager.shared.addToView(toView: self.view)
+        FloatingButtonManager.shared.bringFloatingButtonToFront(in: self.view)
     }
     
     fileprivate func setupPage() {

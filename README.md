@@ -38,7 +38,7 @@
 
 > 2024.08.06
 >> 自己寫code需要更細心，今天寫浮動按鈕跳轉頁面，我想說明明tabBarController selectedIndex是設定正確的，但每次跳到的頁面都是同一頁，問了chatgpt也不知道哪裡有問題  
-後來發現原來是我設定的page不對，越簡單的code越需要細心啊
+後來發現原來是我設定的page不對，越簡單的code越需要細心啊  
 '''
 let goToTrendingPageGesture = FloatingButtonTapGesture(target: self, action: #selector(navigateTo), navigateTo: 0)
 trendingBtn.addGestureRecognizer(goToTrendingPageGesture)

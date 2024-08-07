@@ -202,6 +202,8 @@ class AnimeCharacterPageViewController: UIViewController {
             }
             
         }
+        FloatingButtonManager.shared.addToView(toView: self.view)
+        FloatingButtonManager.shared.bringFloatingButtonToFront(in: self.view)
     }
     
     func updateLanguageSelection() {

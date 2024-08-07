@@ -23,6 +23,8 @@ class FloatingButtonMenu: UIView {
     @IBOutlet weak var favoriteBtn: UIView!
     
     weak var navigateDelegate: NavigateDelegate?
+    
+    static var isShow: Bool = false
 
     
     override init(frame: CGRect) {
@@ -51,6 +53,8 @@ class FloatingButtonMenu: UIView {
     }
     @objc func navigateTo(sender: FloatingButtonTapGesture) {
         navigateDelegate?.navigateTo(page: sender.navigateTo)
+        FloatingButtonMenu.isShow = false
+        self.transform = CGAffineTransform(translationX: 0, y: 0)
     }
 }
 
