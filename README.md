@@ -39,12 +39,16 @@
 > 2024.08.06
 >> 自己寫code需要更細心，今天寫浮動按鈕跳轉頁面，我想說明明tabBarController selectedIndex是設定正確的，但每次跳到的頁面都是同一頁，問了chatgpt也不知道哪裡有問題  
 後來發現原來是我設定的page不對，越簡單的code越需要細心啊  
-'''
+```
 let goToTrendingPageGesture = FloatingButtonTapGesture(target: self, action: #selector(navigateTo), navigateTo: 0)
 trendingBtn.addGestureRecognizer(goToTrendingPageGesture)
 let goToSearchingPageGesture = FloatingButtonTapGesture(target: self, action: #selector(navigateTo), navigateTo: 1)
 searchingBtn.addGestureRecognizer(goToSearchingPageGesture)
 let goToFavoritePageGesture = FloatingButtonTapGesture(target: self, action: #selector(navigateTo), navigateTo: 2)
 favoriteBtn.addGestureRecognizer(goToFavoritePageGesture)
-'''
+```
+> 2024.08.07
+>> 使用singleton pattern: 當同個物件會在整個project中不斷地使用．使用singleton pattern的物件只能有一個實例，被呼叫才會create
+>> Sandbox: rsync.samba(3701) deny(1) file-write-create /Users/rex/Library/Developer/Xcode/DerivedData/AnimeTracker-djkxbuuynisxwxgyttsguaxwcvps/Build/Products/Debug-iphonesimulator/AnimeTracker.app/Frameworks/openssl_grpc.framework/_CodeSignature  
+>>> User Script Sandboxing Yes -> No  
 

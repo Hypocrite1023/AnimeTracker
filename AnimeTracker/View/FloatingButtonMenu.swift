@@ -54,7 +54,7 @@ class FloatingButtonMenu: UIView {
     @objc func navigateTo(sender: FloatingButtonTapGesture) {
         navigateDelegate?.navigateTo(page: sender.navigateTo)
         FloatingButtonMenu.isShow = false
-        self.transform = CGAffineTransform(translationX: 0, y: 0)
+        self.transform = .identity
     }
 }
 

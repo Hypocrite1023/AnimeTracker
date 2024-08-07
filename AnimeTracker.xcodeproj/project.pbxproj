@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		064724EF74FD01F36D6E2B4F /* Pods_AnimeTracker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EF066C15013076581D9308E /* Pods_AnimeTracker.framework */; };
 		CD1AA0E22C49457F00993AEB /* TrendingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1AA0E12C49457F00993AEB /* TrendingPageViewController.swift */; };
 		CD1AA0E52C49475D00993AEB /* UIImageViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1AA0E42C49475D00993AEB /* UIImageViewExtension.swift */; };
 		CD1AA0E72C49547100993AEB /* Simulator Screenshot - iPhone 15 Pro - 2024-07-18 at 21.47.05.png in Resources */ = {isa = PBXBuildFile; fileRef = CD1AA0E62C49547100993AEB /* Simulator Screenshot - iPhone 15 Pro - 2024-07-18 at 21.47.05.png */; };
@@ -39,6 +40,7 @@
 		CD646CD42C63507000541793 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD646CD32C63507000541793 /* TabBarViewController.swift */; };
 		CD6FB73F2C635BEC006455D6 /* NavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6FB73E2C635BEC006455D6 /* NavigationViewController.swift */; };
 		CD6FB7412C63601E006455D6 /* FloatingButtonManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6FB7402C63601E006455D6 /* FloatingButtonManager.swift */; };
+		CD6FB7432C63C752006455D6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CD6FB7422C63C752006455D6 /* GoogleService-Info.plist */; };
 		CD8DD5CA2C60987C00E0D7A2 /* OpenURLDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8DD5C92C60987C00E0D7A2 /* OpenURLDelegate.swift */; };
 		CD9D4E682C4D0126003492C1 /* AnimeDescriptionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D4E672C4D0126003492C1 /* AnimeDescriptionDelegate.swift */; };
 		CD9D4E6A2C4E4E6F003492C1 /* WatchViewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D4E692C4E4E6F003492C1 /* WatchViewCollectionViewCell.swift */; };
@@ -110,6 +112,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		07699B9B52E92D5AB8B9520E /* Pods-AnimeTracker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AnimeTracker.release.xcconfig"; path = "Target Support Files/Pods-AnimeTracker/Pods-AnimeTracker.release.xcconfig"; sourceTree = "<group>"; };
+		8EF066C15013076581D9308E /* Pods_AnimeTracker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AnimeTracker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9FC9250BE48481FE9A6EBF98 /* Pods-AnimeTracker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AnimeTracker.debug.xcconfig"; path = "Target Support Files/Pods-AnimeTracker/Pods-AnimeTracker.debug.xcconfig"; sourceTree = "<group>"; };
 		CD1AA0E12C49457F00993AEB /* TrendingPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendingPageViewController.swift; sourceTree = "<group>"; };
 		CD1AA0E42C49475D00993AEB /* UIImageViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageViewExtension.swift; sourceTree = "<group>"; };
 		CD1AA0E62C49547100993AEB /* Simulator Screenshot - iPhone 15 Pro - 2024-07-18 at 21.47.05.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Simulator Screenshot - iPhone 15 Pro - 2024-07-18 at 21.47.05.png"; path = "../../../Desktop/Simulator Screenshot - iPhone 15 Pro - 2024-07-18 at 21.47.05.png"; sourceTree = "<group>"; };
@@ -142,6 +147,7 @@
 		CD646CD32C63507000541793 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		CD6FB73E2C635BEC006455D6 /* NavigationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewController.swift; sourceTree = "<group>"; };
 		CD6FB7402C63601E006455D6 /* FloatingButtonManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingButtonManager.swift; sourceTree = "<group>"; };
+		CD6FB7422C63C752006455D6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CD8DD5C92C60987C00E0D7A2 /* OpenURLDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenURLDelegate.swift; sourceTree = "<group>"; };
 		CD9D4E672C4D0126003492C1 /* AnimeDescriptionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeDescriptionDelegate.swift; sourceTree = "<group>"; };
 		CD9D4E692C4E4E6F003492C1 /* WatchViewCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchViewCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -220,12 +226,30 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				064724EF74FD01F36D6E2B4F /* Pods_AnimeTracker.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4BD0FD07C1F42FF6706D6F82 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8EF066C15013076581D9308E /* Pods_AnimeTracker.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		4F4A73DB012A822DDAC6B03E /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				9FC9250BE48481FE9A6EBF98 /* Pods-AnimeTracker.debug.xcconfig */,
+				07699B9B52E92D5AB8B9520E /* Pods-AnimeTracker.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		CD1AA0E32C49473F00993AEB /* Extension */ = {
 			isa = PBXGroup;
 			children = (
@@ -551,6 +575,8 @@
 				CDE22E492C480F4100080BAD /* Demo */,
 				CDC14F1F2C453DBF00BC14FA /* AnimeTracker */,
 				CDC14F1E2C453DBF00BC14FA /* Products */,
+				4F4A73DB012A822DDAC6B03E /* Pods */,
+				4BD0FD07C1F42FF6706D6F82 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -565,6 +591,7 @@
 		CDC14F1F2C453DBF00BC14FA /* AnimeTracker */ = {
 			isa = PBXGroup;
 			children = (
+				CD6FB7422C63C752006455D6 /* GoogleService-Info.plist */,
 				CD9D4E772C513ADD003492C1 /* Functions */,
 				CD1AA0E32C49473F00993AEB /* Extension */,
 				CDE22E462C47F89400080BAD /* Protocol */,
@@ -662,9 +689,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CDC14F312C453DC000BC14FA /* Build configuration list for PBXNativeTarget "AnimeTracker" */;
 			buildPhases = (
+				361692C3A9A2EEFD42C7985B /* [CP] Check Pods Manifest.lock */,
 				CDC14F192C453DBF00BC14FA /* Sources */,
 				CDC14F1A2C453DBF00BC14FA /* Frameworks */,
 				CDC14F1B2C453DBF00BC14FA /* Resources */,
+				AAD891B7180D4B24000DD62F /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -724,6 +753,7 @@
 				CD9D4EB42C54D300003492C1 /* AnimeWatchPreview.xib in Resources */,
 				CD9D4E6E2C4FEE46003492C1 /* AnimeInformationView.xib in Resources */,
 				CDC14F2A2C453DC000BC14FA /* Assets.xcassets in Resources */,
+				CD6FB7432C63C752006455D6 /* GoogleService-Info.plist in Resources */,
 				CD9D4E842C515695003492C1 /* RelationPreview.xib in Resources */,
 				CD9D4E7B2C51445B003492C1 /* AnimeDescriptionView.xib in Resources */,
 				CD9D4EB92C54D501003492C1 /* AnimeWatchPreviewContainer.xib in Resources */,
@@ -754,6 +784,48 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		361692C3A9A2EEFD42C7985B /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-AnimeTracker-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AAD891B7180D4B24000DD62F /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AnimeTracker/Pods-AnimeTracker-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AnimeTracker/Pods-AnimeTracker-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AnimeTracker/Pods-AnimeTracker-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		CDC14F192C453DBF00BC14FA /* Sources */ = {
@@ -901,7 +973,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -964,7 +1036,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -985,6 +1057,7 @@
 		};
 		CDC14F322C453DC000BC14FA /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9FC9250BE48481FE9A6EBF98 /* Pods-AnimeTracker.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -1017,6 +1090,7 @@
 		};
 		CDC14F332C453DC000BC14FA /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 07699B9B52E92D5AB8B9520E /* Pods-AnimeTracker.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
