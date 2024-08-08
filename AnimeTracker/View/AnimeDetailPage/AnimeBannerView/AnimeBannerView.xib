@@ -4,6 +4,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -17,6 +18,8 @@
                 <outlet property="buttonScrollView" destination="HQp-72-xzI" id="YoX-f6-Td1"/>
                 <outlet property="charactersButton" destination="l1n-RG-f36" id="d9X-JF-trD"/>
                 <outlet property="contentView" destination="iN0-l3-epB" id="l0W-nk-g4E"/>
+                <outlet property="favouriteButton" destination="mU0-zY-KaW" id="ur9-Ia-NmX"/>
+                <outlet property="notifyButton" destination="del-Br-6AC" id="WYi-6V-dkA"/>
                 <outlet property="overviewButton" destination="U7P-Vx-yqS" id="kJL-vA-DEl"/>
                 <outlet property="socialButton" destination="haa-wV-dfe" id="4En-vV-a3f"/>
                 <outlet property="staffButton" destination="P8a-Jx-dhU" id="MJh-br-xcg"/>
@@ -135,13 +138,40 @@
                     <viewLayoutGuide key="contentLayoutGuide" id="2OW-qm-sVO"/>
                     <viewLayoutGuide key="frameLayoutGuide" id="8Jo-Kh-TCE"/>
                 </scrollView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mU0-zY-KaW">
+                    <rect key="frame" x="160" y="290.66666666666669" width="41.666666666666657" height="34.333333333333314"/>
+                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="10" maxY="0.0"/>
+                    <state key="normal" title="Add To Favorite">
+                        <imageReference key="image" image="star.fill" catalog="system" symbolScale="small"/>
+                    </state>
+                    <buttonConfiguration key="configuration" style="tinted" imagePadding="10">
+                        <imageReference key="image" image="star.fill" catalog="system" symbolScale="small"/>
+                        <preferredSymbolConfiguration key="preferredSymbolConfigurationForImage"/>
+                    </buttonConfiguration>
+                    <connections>
+                        <action selector="favoriteConfig:" destination="-1" eventType="touchUpInside" id="rM6-Wl-pQj"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="del-Br-6AC">
+                    <rect key="frame" x="211.66666666666666" y="290" width="40" height="35"/>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="tinted">
+                        <imageReference key="image" image="bell.fill" catalog="system" symbolScale="small"/>
+                    </buttonConfiguration>
+                    <connections>
+                        <action selector="notifyConfig:" destination="-1" eventType="touchUpInside" id="2uC-zk-QaP"/>
+                    </connections>
+                </button>
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="wtW-MF-O5p" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="4Uh-Xb-9Y0"/>
+                <constraint firstItem="del-Br-6AC" firstAttribute="bottom" secondItem="j5P-hp-ayo" secondAttribute="bottom" id="8qT-kT-gth"/>
                 <constraint firstItem="HQp-72-xzI" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" id="9NF-JO-BO4"/>
                 <constraint firstItem="wtW-MF-O5p" firstAttribute="height" secondItem="iN0-l3-epB" secondAttribute="height" multiplier="0.4" id="CgJ-lK-fcj"/>
+                <constraint firstItem="mU0-zY-KaW" firstAttribute="leading" secondItem="j5P-hp-ayo" secondAttribute="trailing" constant="20" id="FS3-CU-P1M"/>
+                <constraint firstItem="mU0-zY-KaW" firstAttribute="bottom" secondItem="j5P-hp-ayo" secondAttribute="bottom" id="IHk-mH-9jW"/>
                 <constraint firstItem="HQp-72-xzI" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="OIS-iv-ceo"/>
                 <constraint firstItem="wtW-MF-O5p" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="Sqy-Gm-ss7"/>
                 <constraint firstItem="j5P-hp-ayo" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="20" id="TxV-wC-ieg"/>
@@ -151,6 +181,7 @@
                 <constraint firstItem="HQp-72-xzI" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="ne6-kZ-2ON"/>
                 <constraint firstItem="WOp-xZ-jzn" firstAttribute="top" secondItem="j5P-hp-ayo" secondAttribute="bottom" constant="10" id="v7b-mg-vvF"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="wtW-MF-O5p" secondAttribute="trailing" id="vvC-J4-qED"/>
+                <constraint firstItem="del-Br-6AC" firstAttribute="leading" secondItem="mU0-zY-KaW" secondAttribute="trailing" constant="10" id="wKM-tz-k4V"/>
             </constraints>
             <nil key="simulatedTopBarMetrics"/>
             <nil key="simulatedBottomBarMetrics"/>
@@ -159,6 +190,8 @@
         </view>
     </objects>
     <resources>
+        <image name="bell.fill" catalog="system" width="123" height="128"/>
+        <image name="star.fill" catalog="system" width="128" height="116"/>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

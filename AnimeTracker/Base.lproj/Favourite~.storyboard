@@ -144,7 +144,7 @@
                     <connections>
                         <segue destination="oDg-0y-TsI" kind="relationship" relationship="viewControllers" id="6HN-vG-Qyb"/>
                         <segue destination="HsS-3k-s7b" kind="relationship" relationship="viewControllers" id="eQl-W0-aqq"/>
-                        <segue destination="UdN-rD-u0b" kind="relationship" relationship="viewControllers" id="j6B-m8-lRy"/>
+                        <segue destination="84G-cn-fb2" kind="relationship" relationship="viewControllers" id="c6I-3s-hJ9"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="whE-ux-tAc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -171,21 +171,21 @@
             </objects>
             <point key="canvasLocation" x="148" y="-396"/>
         </scene>
-        <!--Favorite-->
-        <scene sceneID="ybf-iD-jng">
+        <!--Item-->
+        <scene sceneID="iuW-wf-wRh">
             <objects>
-                <viewController id="UdN-rD-u0b" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="FvE-eW-Rde">
+                <viewController id="84G-cn-fb2" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="uUn-Y4-dYZ">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <viewLayoutGuide key="safeArea" id="Y1Z-MF-Z43"/>
+                        <viewLayoutGuide key="safeArea" id="wYv-TO-ANy"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Favorite" image="star.fill" catalog="system" id="mkP-GU-efO"/>
+                    <tabBarItem key="tabBarItem" title="Item" id="cbr-Kw-dOv"/>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="6UC-Bc-wtc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1Cq-Nb-6wa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="763" y="-336"/>
+            <point key="canvasLocation" x="83" y="31"/>
         </scene>
         <!--Register View Controller-->
         <scene sceneID="xma-by-FI7">
@@ -297,7 +297,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="star.fill" catalog="system" width="128" height="116"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

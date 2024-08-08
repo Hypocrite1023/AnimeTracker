@@ -7,6 +7,8 @@
 
 import UIKit
 import Combine
+import FirebaseAuth
+
 
 class TrendingPageViewController: UIViewController {
     
@@ -94,6 +96,7 @@ extension TrendingPageViewController: UICollectionViewDelegate, UICollectionView
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let animeData = self.animeFetchedData?.data.Page.media[indexPath.item] {
             AnimeDataFetcher.shared.fetchAnimeByID(id: animeData.id)
+            
 //            let detailViewController = AnimeDetailViewController(animeFetchingDataManager: animeFetchManager, mediaID: animeData.id)
 //            navigationController?.pushViewController(detailViewController, animated: true)
         }
@@ -169,8 +172,10 @@ extension TrendingPageViewController: AnimeOverViewDataDelegate {
             vc.animeDetailView = AnimeDetailView(frame: self.view.frame)
             vc.showOverviewView(sender: vc.animeDetailView.animeBannerView.overviewButton)
             vc.fastNavigate = self.tabBarController.self as? any NavigateDelegate
+            
             self.navigationController?.pushViewController(vc, animated: true)
         }
+        
         print("load view")
         
     }

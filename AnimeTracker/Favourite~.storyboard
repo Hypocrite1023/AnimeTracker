@@ -144,7 +144,7 @@
                     <connections>
                         <segue destination="oDg-0y-TsI" kind="relationship" relationship="viewControllers" id="6HN-vG-Qyb"/>
                         <segue destination="HsS-3k-s7b" kind="relationship" relationship="viewControllers" id="eQl-W0-aqq"/>
-                        <segue destination="UdN-rD-u0b" kind="relationship" relationship="viewControllers" id="j6B-m8-lRy"/>
+                        <segue destination="bJh-6e-uLo" kind="relationship" relationship="viewControllers" id="TH0-2v-1fx"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="whE-ux-tAc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -171,21 +171,21 @@
             </objects>
             <point key="canvasLocation" x="148" y="-396"/>
         </scene>
-        <!--Favorite-->
-        <scene sceneID="ybf-iD-jng">
+        <!--Favourite-->
+        <scene sceneID="8wx-dT-Hkh">
             <objects>
-                <viewController id="UdN-rD-u0b" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="FvE-eW-Rde">
+                <viewController id="bJh-6e-uLo" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="NPY-hk-FQe">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <viewLayoutGuide key="safeArea" id="Y1Z-MF-Z43"/>
+                        <viewLayoutGuide key="safeArea" id="bzz-Ac-0RC"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Favorite" image="star.fill" catalog="system" id="mkP-GU-efO"/>
+                    <tabBarItem key="tabBarItem" title="Favourite" image="star.fill" catalog="system" id="vPI-SP-qEK"/>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="6UC-Bc-wtc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="o0I-eq-HsV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="763" y="-336"/>
+            <point key="canvasLocation" x="22" y="66"/>
         </scene>
         <!--Register View Controller-->
         <scene sceneID="xma-by-FI7">

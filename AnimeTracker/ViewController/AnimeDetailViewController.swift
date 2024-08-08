@@ -7,6 +7,8 @@
 
 import UIKit
 import Combine
+import FirebaseAuth
+import FirebaseFirestoreInternal
 
 class AnimeDetailViewController: UIViewController {
     
@@ -36,7 +38,8 @@ class AnimeDetailViewController: UIViewController {
     var selectedMenuElement: Int = 1
     
     weak var fastNavigate: NavigateDelegate?
-        
+    
+    
     init(mediaID: Int) {
         self.animeMediaID = mediaID
         super.init(nibName: nil, bundle: nil)
@@ -131,6 +134,7 @@ class AnimeDetailViewController: UIViewController {
         
         FloatingButtonManager.shared.addToView(toView: self.view)
         FloatingButtonManager.shared.floatingButtonMenu.navigateDelegate = self
+        
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
@@ -300,7 +304,17 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
         animeBannerView.statsButton.addTarget(self, action: #selector(showStatsView), for: .touchUpInside)
         animeBannerView.socialButton.addTarget(self, action: #selector(showSocialView), for: .touchUpInside)
         
-
+//        animeBannerView.isFavorite = isFavorite
+//        animeBannerView.isNotify = isNotify
+        animeBannerView.favoriteActionDelegate = self
+        
+        if let userUID = Auth.auth().currentUser?.uid, let animeID = self.animeDetailData?.id {
+            print(userUID)
+            FirebaseStoreFunc.shared.getAnimeRecord(userUID: userUID, animeID: animeID) { favorite, notify, error in
+                print("isFavorite", favorite, "isNotify", notify)
+                animeBannerView.updateFavoriteAndNotifyBtn(isFavorite: favorite, isNotify: notify)
+            }
+        }
     }
     // MARK: - animeBannerView constraints
     fileprivate func setupAnimeBannerViewConstraints(topAnchorView: UIView, isLastView: Bool) {
@@ -1463,6 +1477,25 @@ extension AnimeDetailViewController: NavigateDelegate {
         backgroundImageView.removeFromSuperview()
         navigationController?.popToRootViewController(animated: true)
         fastNavigate?.navigateTo(page: page)
+    }
+    
+    
+}
+
+
+
+extension AnimeDetailViewController: FavoriteAndNotifyActionDelegate {
+    func configFavoriteAndNotify(favorite: Bool, notify: Bool) {
+        print("animeID:", self.animeDetailData?.id, "userUID", Auth.auth().currentUser?.uid)
+        if let animeID = self.animeDetailData?.id, let userUID = Auth.auth().currentUser?.uid {
+            FirebaseStoreFunc.shared.addAnimeRecord(userUID: userUID, animeID: animeID, isFavorite: favorite, isNotify: notify) { success, error in
+                if let error = error {
+                    print(error.localizedDescription)
+                } else if success {
+                    print("Add data success")
+                }
+            }
+        }
     }
     
     

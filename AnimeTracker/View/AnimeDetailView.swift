@@ -20,7 +20,11 @@ class AnimeDetailView: UIView {
     // overview, watch, characters, staff, reviews(不是每個都有), stats, social
     var tmpScrollView: UIScrollView! // all
     
-    var animeBannerView: AnimeBannerView! // all
+    var animeBannerView: AnimeBannerView! {
+        didSet {
+            animeBannerView.translatesAutoresizingMaskIntoConstraints = false
+        }
+    }// all
     var animeInformationScrollView: AnimeInformationView! // overview
     var animeDescriptionView: AnimeDescriptionView! // overview
     var relationView: RelationView! // overview
@@ -69,7 +73,7 @@ class AnimeDetailView: UIView {
         self.addSubview(tmpScrollView)
         
         animeBannerView = AnimeBannerView()
-        animeBannerView.translatesAutoresizingMaskIntoConstraints = false
+//        animeBannerView.translatesAutoresizingMaskIntoConstraints = false
 //        tmpScrollView.addSubview(animeBannerView)
         
         

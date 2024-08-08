@@ -28,6 +28,26 @@ class AnimeBannerView: UIView {
     @IBOutlet weak var staffButton: UIButton!
     @IBOutlet weak var statsButton: UIButton!
     @IBOutlet weak var socialButton: UIButton!
+    @IBOutlet weak var favouriteButton: UIButton! {
+        didSet {
+            favouriteButton.setPreferredSymbolConfiguration(UIImage.SymbolConfiguration(scale: .small), forImageIn: .normal)
+            favouriteButton.setImage(UIImage(systemName: "star.fill")?.withRenderingMode(.alwaysTemplate), for: .normal)
+            favouriteButton.tintColor = isFavorite ? .systemYellow : .lightGray
+        }
+    }
+    @IBOutlet weak var notifyButton: UIButton! {
+        didSet {
+            notifyButton.setPreferredSymbolConfiguration(UIImage.SymbolConfiguration(scale: .small), forImageIn: .normal)
+            notifyButton.setImage(UIImage(systemName: "bell.fill")?.withRenderingMode(.alwaysTemplate), for: .normal)
+            notifyButton.tintColor = isFavorite ? .systemBlue : .lightGray
+        }
+    }
+    
+    var isFavorite: Bool = false
+    var isNotify: Bool = false
+    
+    
+    weak var favoriteActionDelegate: FavoriteAndNotifyActionDelegate?
 
     @IBAction func overviewButtonTap(_ sender: UIButton) {
         sender.setTitleColor(.blue.withAlphaComponent(0.9), for: .normal)
@@ -38,6 +58,8 @@ class AnimeBannerView: UIView {
     }
     override init(frame: CGRect) {
         super.init(frame: frame)
+//        self.isFavourite = isFavorite
+//        self.isNotify = isNotify
         commonInit()
     }
     
@@ -52,5 +74,31 @@ class AnimeBannerView: UIView {
         addSubview(contentView)
         contentView.frame = self.bounds
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        
     }
+    @IBAction func favoriteConfig(_ sender: UIButton) {
+        isFavorite.toggle()
+        favouriteButton.tintColor = isFavorite ? .systemYellow : .lightGray
+        favoriteActionDelegate?.configFavoriteAndNotify(favorite: isFavorite, notify: isNotify)
+    }
+    @IBAction func notifyConfig(_ sender: UIButton) {
+        isNotify.toggle()
+        notifyButton.tintColor = isNotify ? .systemBlue : .lightGray
+        favoriteActionDelegate?.configFavoriteAndNotify(favorite: isFavorite, notify: isNotify)
+    }
+    
+    func updateFavoriteAndNotifyBtn(isFavorite: Bool?, isNotify: Bool?) {
+        print("update")
+        self.isFavorite = isFavorite ?? false
+        self.isNotify = isNotify ?? false
+        DispatchQueue.main.async {
+            self.favouriteButton.tintColor = self.isFavorite ? .systemYellow : .lightGray
+            self.notifyButton.tintColor = self.isNotify ? .systemBlue : .lightGray
+        }
+    }
+}
+
+protocol FavoriteAndNotifyActionDelegate: AnyObject {
+    func configFavoriteAndNotify(favorite: Bool, notify: Bool)
 }

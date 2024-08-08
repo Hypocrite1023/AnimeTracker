@@ -41,6 +41,9 @@
 		CD6FB73F2C635BEC006455D6 /* NavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6FB73E2C635BEC006455D6 /* NavigationViewController.swift */; };
 		CD6FB7412C63601E006455D6 /* FloatingButtonManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6FB7402C63601E006455D6 /* FloatingButtonManager.swift */; };
 		CD6FB7432C63C752006455D6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CD6FB7422C63C752006455D6 /* GoogleService-Info.plist */; };
+		CD6FB7452C63DC99006455D6 /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6FB7442C63DC99006455D6 /* RegisterViewController.swift */; };
+		CD6FB7472C644914006455D6 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6FB7462C644914006455D6 /* LoginViewController.swift */; };
+		CD7EF8BF2C64CE0B00DCBF7E /* FirebaseStoreFunc.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7EF8BE2C64CE0B00DCBF7E /* FirebaseStoreFunc.swift */; };
 		CD8DD5CA2C60987C00E0D7A2 /* OpenURLDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8DD5C92C60987C00E0D7A2 /* OpenURLDelegate.swift */; };
 		CD9D4E682C4D0126003492C1 /* AnimeDescriptionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D4E672C4D0126003492C1 /* AnimeDescriptionDelegate.swift */; };
 		CD9D4E6A2C4E4E6F003492C1 /* WatchViewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D4E692C4E4E6F003492C1 /* WatchViewCollectionViewCell.swift */; };
@@ -106,6 +109,7 @@
 		CDC14F382C4554F500BC14FA /* PickerData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC14F372C4554F500BC14FA /* PickerData.swift */; };
 		CDC14F3A2C4555D200BC14FA /* SearchPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC14F392C4555D200BC14FA /* SearchPageViewController.swift */; };
 		CDC14F3C2C46A7C200BC14FA /* AnimeDataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC14F3B2C46A7C200BC14FA /* AnimeDataFetcher.swift */; };
+		CDDE2CB62C6466340016647B /* FavouritePageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDE2CB52C6466340016647B /* FavouritePageViewController.swift */; };
 		CDE22E452C47C39500080BAD /* SearchingAnimeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE22E442C47C39500080BAD /* SearchingAnimeCollectionViewCell.swift */; };
 		CDE22E482C47F8B600080BAD /* AnimeDataDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE22E472C47F8B600080BAD /* AnimeDataDelegate.swift */; };
 		CDE22E4B2C480F7400080BAD /* Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56.png in Resources */ = {isa = PBXBuildFile; fileRef = CDE22E4A2C480F7400080BAD /* Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56.png */; };
@@ -148,6 +152,9 @@
 		CD6FB73E2C635BEC006455D6 /* NavigationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewController.swift; sourceTree = "<group>"; };
 		CD6FB7402C63601E006455D6 /* FloatingButtonManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingButtonManager.swift; sourceTree = "<group>"; };
 		CD6FB7422C63C752006455D6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		CD6FB7442C63DC99006455D6 /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
+		CD6FB7462C644914006455D6 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		CD7EF8BE2C64CE0B00DCBF7E /* FirebaseStoreFunc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseStoreFunc.swift; sourceTree = "<group>"; };
 		CD8DD5C92C60987C00E0D7A2 /* OpenURLDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenURLDelegate.swift; sourceTree = "<group>"; };
 		CD9D4E672C4D0126003492C1 /* AnimeDescriptionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeDescriptionDelegate.swift; sourceTree = "<group>"; };
 		CD9D4E692C4E4E6F003492C1 /* WatchViewCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchViewCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -215,6 +222,7 @@
 		CDC14F372C4554F500BC14FA /* PickerData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerData.swift; sourceTree = "<group>"; };
 		CDC14F392C4555D200BC14FA /* SearchPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPageViewController.swift; sourceTree = "<group>"; };
 		CDC14F3B2C46A7C200BC14FA /* AnimeDataFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeDataFetcher.swift; sourceTree = "<group>"; };
+		CDDE2CB52C6466340016647B /* FavouritePageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavouritePageViewController.swift; sourceTree = "<group>"; };
 		CDE22E442C47C39500080BAD /* SearchingAnimeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchingAnimeCollectionViewCell.swift; sourceTree = "<group>"; };
 		CDE22E472C47F8B600080BAD /* AnimeDataDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeDataDelegate.swift; sourceTree = "<group>"; };
 		CDE22E4A2C480F7400080BAD /* Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56.png"; path = "../../../Desktop/Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56.png"; sourceTree = "<group>"; };
@@ -357,6 +365,7 @@
 			isa = PBXGroup;
 			children = (
 				CD9D4E782C513B07003492C1 /* AnimeDetailFunc.swift */,
+				CD7EF8BE2C64CE0B00DCBF7E /* FirebaseStoreFunc.swift */,
 			);
 			path = Functions;
 			sourceTree = "<group>";
@@ -622,6 +631,9 @@
 				CD646CD32C63507000541793 /* TabBarViewController.swift */,
 				CD6FB73E2C635BEC006455D6 /* NavigationViewController.swift */,
 				CD6FB7402C63601E006455D6 /* FloatingButtonManager.swift */,
+				CD6FB7442C63DC99006455D6 /* RegisterViewController.swift */,
+				CD6FB7462C644914006455D6 /* LoginViewController.swift */,
+				CDDE2CB52C6466340016647B /* FavouritePageViewController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -859,6 +871,7 @@
 				CD9D4EC32C54E7CA003492C1 /* RecommendationsAnimePreview.swift in Sources */,
 				CD2FF7BC2C5CBA0400924687 /* MediaResponse.swift in Sources */,
 				CD2FF7A72C5B840500924687 /* AnimeCharacterPageViewController.swift in Sources */,
+				CDDE2CB62C6466340016647B /* FavouritePageViewController.swift in Sources */,
 				CDA141F82C57CEC000708A8B /* ThreadsView.swift in Sources */,
 				CD9D4EE52C551E10003492C1 /* TagPreview.swift in Sources */,
 				CD2FF7C82C5D0ECD00924687 /* RelationScrollView.swift in Sources */,
@@ -891,9 +904,12 @@
 				CD9D4E792C513B07003492C1 /* AnimeDetailFunc.swift in Sources */,
 				CDE22E452C47C39500080BAD /* SearchingAnimeCollectionViewCell.swift in Sources */,
 				CD9D4E6A2C4E4E6F003492C1 /* WatchViewCollectionViewCell.swift in Sources */,
+				CD6FB7452C63DC99006455D6 /* RegisterViewController.swift in Sources */,
 				CDC14F232C453DBF00BC14FA /* SceneDelegate.swift in Sources */,
 				CDC14F382C4554F500BC14FA /* PickerData.swift in Sources */,
 				CD2FF7AC2C5B984D00924687 /* MediaRelationView.swift in Sources */,
+				CD7EF8BF2C64CE0B00DCBF7E /* FirebaseStoreFunc.swift in Sources */,
+				CD6FB7472C644914006455D6 /* LoginViewController.swift in Sources */,
 				CDC14F3A2C4555D200BC14FA /* SearchPageViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

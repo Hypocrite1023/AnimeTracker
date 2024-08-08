@@ -48,7 +48,7 @@ let goToFavoritePageGesture = FloatingButtonTapGesture(target: self, action: #se
 favoriteBtn.addGestureRecognizer(goToFavoritePageGesture)
 ```
 > 2024.08.07
->> 使用singleton pattern: 當同個物件會在整個project中不斷地使用．使用singleton pattern的物件只能有一個實例，被呼叫才會create
+>> 使用singleton pattern: 當同個物件會在整個project中不斷地使用．使用singleton pattern的物件只能有一個實例，被呼叫才會create  
 >> Sandbox: rsync.samba(3701) deny(1) file-write-create /Users/rex/Library/Developer/Xcode/DerivedData/AnimeTracker-djkxbuuynisxwxgyttsguaxwcvps/Build/Products/Debug-iphonesimulator/AnimeTracker.app/Frameworks/openssl_grpc.framework/_CodeSignature  
 >>> User Script Sandboxing Yes -> No  
 

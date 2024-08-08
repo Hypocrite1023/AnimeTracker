@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class TabBarViewController: UITabBarController {
     
@@ -15,6 +16,10 @@ class TabBarViewController: UITabBarController {
 
         // Do any additional setup after loading the view.
 //        FloatingButtonManager.shared.floatingButtonMenu.navigateDelegate = self
+        print(Auth.auth().currentUser?.displayName)
+        if let userName = Auth.auth().currentUser?.displayName {
+            navigationItem.title = "Hello, \(userName)"
+        }
     }
 
     /*
