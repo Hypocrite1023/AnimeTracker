@@ -44,6 +44,12 @@
 		CD6FB7452C63DC99006455D6 /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6FB7442C63DC99006455D6 /* RegisterViewController.swift */; };
 		CD6FB7472C644914006455D6 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6FB7462C644914006455D6 /* LoginViewController.swift */; };
 		CD7EF8BF2C64CE0B00DCBF7E /* FirebaseStoreFunc.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7EF8BE2C64CE0B00DCBF7E /* FirebaseStoreFunc.swift */; };
+		CD7EF8C22C64F43300DCBF7E /* Favorite.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CD7EF8C02C64F43300DCBF7E /* Favorite.storyboard */; };
+		CD7EF8C42C64F77F00DCBF7E /* FavoriteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7EF8C32C64F77F00DCBF7E /* FavoriteTableViewCell.swift */; };
+		CD7EF8CA2C66456700DCBF7E /* AnimeNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7EF8C92C66456700DCBF7E /* AnimeNotification.swift */; };
+		CD7EF8CC2C66FB2B00DCBF7E /* AnimeTimeLineTableView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CD7EF8CB2C66FB2B00DCBF7E /* AnimeTimeLineTableView.storyboard */; };
+		CD7EF8CE2C66FB9100DCBF7E /* AnimeTimeLineTableViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7EF8CD2C66FB9100DCBF7E /* AnimeTimeLineTableViewViewController.swift */; };
+		CD7EF8D22C67960800DCBF7E /* AnimeTimeLineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7EF8CF2C67960800DCBF7E /* AnimeTimeLineTableViewCell.swift */; };
 		CD8DD5CA2C60987C00E0D7A2 /* OpenURLDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8DD5C92C60987C00E0D7A2 /* OpenURLDelegate.swift */; };
 		CD9D4E682C4D0126003492C1 /* AnimeDescriptionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D4E672C4D0126003492C1 /* AnimeDescriptionDelegate.swift */; };
 		CD9D4E6A2C4E4E6F003492C1 /* WatchViewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D4E692C4E4E6F003492C1 /* WatchViewCollectionViewCell.swift */; };
@@ -109,7 +115,7 @@
 		CDC14F382C4554F500BC14FA /* PickerData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC14F372C4554F500BC14FA /* PickerData.swift */; };
 		CDC14F3A2C4555D200BC14FA /* SearchPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC14F392C4555D200BC14FA /* SearchPageViewController.swift */; };
 		CDC14F3C2C46A7C200BC14FA /* AnimeDataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC14F3B2C46A7C200BC14FA /* AnimeDataFetcher.swift */; };
-		CDDE2CB62C6466340016647B /* FavouritePageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDE2CB52C6466340016647B /* FavouritePageViewController.swift */; };
+		CDDE2CB62C6466340016647B /* FavoritePageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDE2CB52C6466340016647B /* FavoritePageViewController.swift */; };
 		CDE22E452C47C39500080BAD /* SearchingAnimeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE22E442C47C39500080BAD /* SearchingAnimeCollectionViewCell.swift */; };
 		CDE22E482C47F8B600080BAD /* AnimeDataDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE22E472C47F8B600080BAD /* AnimeDataDelegate.swift */; };
 		CDE22E4B2C480F7400080BAD /* Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56.png in Resources */ = {isa = PBXBuildFile; fileRef = CDE22E4A2C480F7400080BAD /* Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56.png */; };
@@ -155,6 +161,12 @@
 		CD6FB7442C63DC99006455D6 /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		CD6FB7462C644914006455D6 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		CD7EF8BE2C64CE0B00DCBF7E /* FirebaseStoreFunc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseStoreFunc.swift; sourceTree = "<group>"; };
+		CD7EF8C12C64F43300DCBF7E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Favorite.storyboard; sourceTree = "<group>"; };
+		CD7EF8C32C64F77F00DCBF7E /* FavoriteTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteTableViewCell.swift; sourceTree = "<group>"; };
+		CD7EF8C92C66456700DCBF7E /* AnimeNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeNotification.swift; sourceTree = "<group>"; };
+		CD7EF8CB2C66FB2B00DCBF7E /* AnimeTimeLineTableView.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AnimeTimeLineTableView.storyboard; sourceTree = "<group>"; };
+		CD7EF8CD2C66FB9100DCBF7E /* AnimeTimeLineTableViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeTimeLineTableViewViewController.swift; sourceTree = "<group>"; };
+		CD7EF8CF2C67960800DCBF7E /* AnimeTimeLineTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeTimeLineTableViewCell.swift; sourceTree = "<group>"; };
 		CD8DD5C92C60987C00E0D7A2 /* OpenURLDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenURLDelegate.swift; sourceTree = "<group>"; };
 		CD9D4E672C4D0126003492C1 /* AnimeDescriptionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeDescriptionDelegate.swift; sourceTree = "<group>"; };
 		CD9D4E692C4E4E6F003492C1 /* WatchViewCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchViewCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -222,7 +234,7 @@
 		CDC14F372C4554F500BC14FA /* PickerData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerData.swift; sourceTree = "<group>"; };
 		CDC14F392C4555D200BC14FA /* SearchPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPageViewController.swift; sourceTree = "<group>"; };
 		CDC14F3B2C46A7C200BC14FA /* AnimeDataFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeDataFetcher.swift; sourceTree = "<group>"; };
-		CDDE2CB52C6466340016647B /* FavouritePageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavouritePageViewController.swift; sourceTree = "<group>"; };
+		CDDE2CB52C6466340016647B /* FavoritePageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritePageViewController.swift; sourceTree = "<group>"; };
 		CDE22E442C47C39500080BAD /* SearchingAnimeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchingAnimeCollectionViewCell.swift; sourceTree = "<group>"; };
 		CDE22E472C47F8B600080BAD /* AnimeDataDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeDataDelegate.swift; sourceTree = "<group>"; };
 		CDE22E4A2C480F7400080BAD /* Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56.png"; path = "../../../Desktop/Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56.png"; sourceTree = "<group>"; };
@@ -366,6 +378,7 @@
 			children = (
 				CD9D4E782C513B07003492C1 /* AnimeDetailFunc.swift */,
 				CD7EF8BE2C64CE0B00DCBF7E /* FirebaseStoreFunc.swift */,
+				CD7EF8C92C66456700DCBF7E /* AnimeNotification.swift */,
 			);
 			path = Functions;
 			sourceTree = "<group>";
@@ -611,7 +624,9 @@
 				CDC14F222C453DBF00BC14FA /* SceneDelegate.swift */,
 				CDC14F242C453DBF00BC14FA /* ViewController.swift */,
 				CD646CD02C629B6800541793 /* Trending.storyboard */,
+				CD7EF8C02C64F43300DCBF7E /* Favorite.storyboard */,
 				CD646CCD2C629B3A00541793 /* Searching.storyboard */,
+				CD7EF8CB2C66FB2B00DCBF7E /* AnimeTimeLineTableView.storyboard */,
 				CDC14F262C453DBF00BC14FA /* Main.storyboard */,
 				CDC14F292C453DC000BC14FA /* Assets.xcassets */,
 				CDC14F2B2C453DC000BC14FA /* LaunchScreen.storyboard */,
@@ -633,7 +648,8 @@
 				CD6FB7402C63601E006455D6 /* FloatingButtonManager.swift */,
 				CD6FB7442C63DC99006455D6 /* RegisterViewController.swift */,
 				CD6FB7462C644914006455D6 /* LoginViewController.swift */,
-				CDDE2CB52C6466340016647B /* FavouritePageViewController.swift */,
+				CDDE2CB52C6466340016647B /* FavoritePageViewController.swift */,
+				CD7EF8CD2C66FB9100DCBF7E /* AnimeTimeLineTableViewViewController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -650,6 +666,8 @@
 				CD1AA0E82C4A72B200993AEB /* AnimeDetailView.swift */,
 				CD646CC92C61C44D00541793 /* FloatingButtonMenu.xib */,
 				CD646CCB2C61CB4000541793 /* FloatingButtonMenu.swift */,
+				CD7EF8C32C64F77F00DCBF7E /* FavoriteTableViewCell.swift */,
+				CD7EF8CF2C67960800DCBF7E /* AnimeTimeLineTableViewCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -758,6 +776,7 @@
 				CD9D4EE32C551D1C003492C1 /* TagPreview.xib in Resources */,
 				CD9D4EAF2C53A587003492C1 /* ScoreDistributionView.xib in Resources */,
 				CDA141EA2C57A6BB00708A8B /* RankingPreview.xib in Resources */,
+				CD7EF8CC2C66FB2B00DCBF7E /* AnimeTimeLineTableView.storyboard in Resources */,
 				CD9D4EA52C524FF4003492C1 /* StaffCollectionView.xib in Resources */,
 				CD9D4ED72C550A64003492C1 /* ExternalLinkPreview.xib in Resources */,
 				CD9D4EA02C524E2F003492C1 /* StaffPreview.xib in Resources */,
@@ -786,6 +805,7 @@
 				CD646CD22C629B6800541793 /* Trending.storyboard in Resources */,
 				CDC14F282C453DBF00BC14FA /* Base in Resources */,
 				CD2FF7C12C5CCCA600924687 /* AnimeVoiceActorPage.storyboard in Resources */,
+				CD7EF8C22C64F43300DCBF7E /* Favorite.storyboard in Resources */,
 				CDA141F62C57CDDD00708A8B /* ThreadsView.xib in Resources */,
 				CD646CCA2C61C44D00541793 /* FloatingButtonMenu.xib in Resources */,
 				CDA141F12C57C5DE00708A8B /* ThreadPreview.xib in Resources */,
@@ -871,7 +891,7 @@
 				CD9D4EC32C54E7CA003492C1 /* RecommendationsAnimePreview.swift in Sources */,
 				CD2FF7BC2C5CBA0400924687 /* MediaResponse.swift in Sources */,
 				CD2FF7A72C5B840500924687 /* AnimeCharacterPageViewController.swift in Sources */,
-				CDDE2CB62C6466340016647B /* FavouritePageViewController.swift in Sources */,
+				CDDE2CB62C6466340016647B /* FavoritePageViewController.swift in Sources */,
 				CDA141F82C57CEC000708A8B /* ThreadsView.swift in Sources */,
 				CD9D4EE52C551E10003492C1 /* TagPreview.swift in Sources */,
 				CD2FF7C82C5D0ECD00924687 /* RelationScrollView.swift in Sources */,
@@ -880,6 +900,7 @@
 				CD6FB7412C63601E006455D6 /* FloatingButtonManager.swift in Sources */,
 				CDC14F3C2C46A7C200BC14FA /* AnimeDataFetcher.swift in Sources */,
 				CD2FF7B82C5CB9CD00924687 /* MediaStaffPreview.swift in Sources */,
+				CD7EF8CE2C66FB9100DCBF7E /* AnimeTimeLineTableViewViewController.swift in Sources */,
 				CD8DD5CA2C60987C00E0D7A2 /* OpenURLDelegate.swift in Sources */,
 				CD9D4E682C4D0126003492C1 /* AnimeDescriptionDelegate.swift in Sources */,
 				CD9D4E9D2C524097003492C1 /* CharacterCollectionView.swift in Sources */,
@@ -901,10 +922,13 @@
 				CD9D4EA22C524F1E003492C1 /* StaffPreview.swift in Sources */,
 				CD2FF7B62C5CB9A500924687 /* MediaRanking.swift in Sources */,
 				CD9D4EE02C551CB4003492C1 /* TagView.swift in Sources */,
+				CD7EF8C42C64F77F00DCBF7E /* FavoriteTableViewCell.swift in Sources */,
 				CD9D4E792C513B07003492C1 /* AnimeDetailFunc.swift in Sources */,
 				CDE22E452C47C39500080BAD /* SearchingAnimeCollectionViewCell.swift in Sources */,
 				CD9D4E6A2C4E4E6F003492C1 /* WatchViewCollectionViewCell.swift in Sources */,
 				CD6FB7452C63DC99006455D6 /* RegisterViewController.swift in Sources */,
+				CD7EF8D22C67960800DCBF7E /* AnimeTimeLineTableViewCell.swift in Sources */,
+				CD7EF8CA2C66456700DCBF7E /* AnimeNotification.swift in Sources */,
 				CDC14F232C453DBF00BC14FA /* SceneDelegate.swift in Sources */,
 				CDC14F382C4554F500BC14FA /* PickerData.swift in Sources */,
 				CD2FF7AC2C5B984D00924687 /* MediaRelationView.swift in Sources */,
@@ -931,6 +955,14 @@
 				CD646CD12C629B6800541793 /* Base */,
 			);
 			name = Trending.storyboard;
+			sourceTree = "<group>";
+		};
+		CD7EF8C02C64F43300DCBF7E /* Favorite.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CD7EF8C12C64F43300DCBF7E /* Base */,
+			);
+			name = Favorite.storyboard;
 			sourceTree = "<group>";
 		};
 		CDC14F262C453DBF00BC14FA /* Main.storyboard */ = {

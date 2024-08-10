@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Y6W-OH-hqX">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Timeline-->
+        <scene sceneID="s0d-6b-0kx">
+            <objects>
+                <viewController title="Timeline" id="Y6W-OH-hqX" customClass="AnimeTimeLineTableViewViewController" customModule="AnimeTracker" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="5EZ-qb-Rvc">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="X0a-cq-GCR">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="AnimeTimeLineTableViewCell" rowHeight="151" id="aip-u8-Mjf" customClass="AnimeTimeLineTableViewCell" customModule="AnimeTracker" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="50" width="393" height="151"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="aip-u8-Mjf" id="Z4f-1s-pUL">
+                                            <rect key="frame" x="0.0" y="0.0" width="393" height="151"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="IOp-jV-eZG">
+                                                    <rect key="frame" x="0.0" y="0.0" width="119" height="151"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="119" id="Wt6-Mf-Sne"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7w9-J3-wXH">
+                                                    <rect key="frame" x="129" y="125.33333333333333" width="254" height="15.666666666666671"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="15.67" id="zpC-Rv-hpO"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                    <color key="textColor" systemColor="secondaryLabelColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cFh-is-pIn">
+                                                    <rect key="frame" x="129" y="10" width="254" height="105.33333333333333"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="7w9-J3-wXH" firstAttribute="top" secondItem="cFh-is-pIn" secondAttribute="bottom" constant="10" id="6QN-2B-Faz"/>
+                                                <constraint firstItem="7w9-J3-wXH" firstAttribute="leading" secondItem="IOp-jV-eZG" secondAttribute="trailing" constant="10" id="6wh-ic-Zi4"/>
+                                                <constraint firstItem="cFh-is-pIn" firstAttribute="top" secondItem="Z4f-1s-pUL" secondAttribute="top" constant="10" id="7Jb-Az-Tex"/>
+                                                <constraint firstAttribute="bottom" secondItem="IOp-jV-eZG" secondAttribute="bottom" id="ACH-gs-xXk"/>
+                                                <constraint firstAttribute="bottom" secondItem="7w9-J3-wXH" secondAttribute="bottom" constant="10" id="ACf-zE-haQ"/>
+                                                <constraint firstAttribute="trailing" secondItem="cFh-is-pIn" secondAttribute="trailing" constant="10" id="U4U-jv-XAG"/>
+                                                <constraint firstItem="IOp-jV-eZG" firstAttribute="top" secondItem="Z4f-1s-pUL" secondAttribute="top" id="XSS-o6-vVV"/>
+                                                <constraint firstItem="cFh-is-pIn" firstAttribute="leading" secondItem="IOp-jV-eZG" secondAttribute="trailing" constant="10" id="fVs-JU-iMf"/>
+                                                <constraint firstAttribute="trailing" secondItem="7w9-J3-wXH" secondAttribute="trailing" constant="10" id="y7H-2G-m2V"/>
+                                                <constraint firstItem="IOp-jV-eZG" firstAttribute="leading" secondItem="Z4f-1s-pUL" secondAttribute="leading" id="yHp-YJ-g0H"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="airingLeftTimeLabel" destination="7w9-J3-wXH" id="MIM-VO-gVm"/>
+                                            <outlet property="animeCoverImageView" destination="IOp-jV-eZG" id="tvj-q4-nRX"/>
+                                            <outlet property="animeTitleLabel" destination="cFh-is-pIn" id="adq-fP-cFS"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="X0a-cq-GCR" firstAttribute="top" secondItem="5EZ-qb-Rvc" secondAttribute="top" id="74p-Sk-GCK"/>
+                            <constraint firstItem="X0a-cq-GCR" firstAttribute="leading" secondItem="5EZ-qb-Rvc" secondAttribute="leading" id="WE5-yE-PKh"/>
+                            <constraint firstAttribute="bottom" secondItem="X0a-cq-GCR" secondAttribute="bottom" id="bem-8t-Rby"/>
+                            <constraint firstAttribute="trailing" secondItem="X0a-cq-GCR" secondAttribute="trailing" id="xfy-1k-Ycv"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Timeline" image="calendar.day.timeline.left" catalog="system" id="JCH-10-S4M"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="animeTimeLineTableView" destination="X0a-cq-GCR" id="tgN-rI-dQf"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="130.53435114503816" y="-27.464788732394368"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="calendar.day.timeline.left" catalog="system" width="128" height="91"/>
+        <systemColor name="secondaryLabelColor">
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

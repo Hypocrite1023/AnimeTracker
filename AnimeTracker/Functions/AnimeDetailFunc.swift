@@ -158,4 +158,17 @@ struct AnimeDetailFunc {
             }
         }
     }
+    static func airingTime(from timestamp: TimeInterval) -> String {
+        let date = Date(timeIntervalSinceNow: timestamp)
+        print(date)
+        let calendar = Calendar.current
+        
+        let components = calendar.dateComponents([.day, .hour, .minute, .second], from: Date.now, to: date)
+        
+        guard let days = components.day, let hours = components.hour, let minutes = components.minute else {
+            return "Invalid timestamp"
+        }
+        
+        return "Will Airing after: \(days)d \(hours)h \(minutes)m"
+    }
 }

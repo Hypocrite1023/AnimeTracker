@@ -1,21 +1,22 @@
 //
-//  FavouritePageViewController.swift
+//  AnimeTimeLineTableViewCell.swift
 //  AnimeTracker
 //
-//  Created by 邱翊均 on 2024/8/8.
+//  Created by 邱翊均 on 2024/8/10.
 //
 
 import UIKit
-import FirebaseFirestore
 
-class FavouritePageViewController: UIViewController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
-    }
+class AnimeTimeLineTableViewCell: UITableViewCell {
+    @IBOutlet weak var animeTitleLabel: UILabel!
+    @IBOutlet weak var airingLeftTimeLabel: UILabel!
+    @IBOutlet weak var animeCoverImageView: UIImageView!
     
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        // Initialization code
+    }
+
 
     /*
     // MARK: - Navigation

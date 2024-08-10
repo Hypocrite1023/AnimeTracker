@@ -45,6 +45,7 @@ class AnimeBannerView: UIView {
     
     var isFavorite: Bool = false
     var isNotify: Bool = false
+    var status: String = "FINISHED"
     
     
     weak var favoriteActionDelegate: FavoriteAndNotifyActionDelegate?
@@ -80,19 +81,25 @@ class AnimeBannerView: UIView {
     @IBAction func favoriteConfig(_ sender: UIButton) {
         isFavorite.toggle()
         favouriteButton.tintColor = isFavorite ? .systemYellow : .lightGray
-        favoriteActionDelegate?.configFavoriteAndNotify(favorite: isFavorite, notify: isNotify)
+        favoriteActionDelegate?.configFavoriteAndNotify(favorite: isFavorite, notify: isNotify, status: status)
     }
     @IBAction func notifyConfig(_ sender: UIButton) {
         isNotify.toggle()
         notifyButton.tintColor = isNotify ? .systemBlue : .lightGray
-        favoriteActionDelegate?.configFavoriteAndNotify(favorite: isFavorite, notify: isNotify)
+        favoriteActionDelegate?.configFavoriteAndNotify(favorite: isFavorite, notify: isNotify, status: status)
     }
     
-    func updateFavoriteAndNotifyBtn(isFavorite: Bool?, isNotify: Bool?) {
+    func updateFavoriteAndNotifyBtn(isFavorite: Bool?, isNotify: Bool?, status: String?) {
         print("update")
         self.isFavorite = isFavorite ?? false
         self.isNotify = isNotify ?? false
+        self.status = status ?? "FINISHED"
         DispatchQueue.main.async {
+            if status == "RELEASING" {
+                self.notifyButton.isHidden = false
+            } else {
+                self.notifyButton.isHidden = true
+            }
             self.favouriteButton.tintColor = self.isFavorite ? .systemYellow : .lightGray
             self.notifyButton.tintColor = self.isNotify ? .systemBlue : .lightGray
         }
@@ -100,5 +107,5 @@ class AnimeBannerView: UIView {
 }
 
 protocol FavoriteAndNotifyActionDelegate: AnyObject {
-    func configFavoriteAndNotify(favorite: Bool, notify: Bool)
+    func configFavoriteAndNotify(favorite: Bool, notify: Bool, status: String)
 }

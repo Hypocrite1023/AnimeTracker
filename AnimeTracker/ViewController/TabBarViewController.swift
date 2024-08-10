@@ -7,20 +7,51 @@
 
 import UIKit
 import FirebaseAuth
+import UserNotifications
 
 class TabBarViewController: UITabBarController {
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-//        FloatingButtonManager.shared.floatingButtonMenu.navigateDelegate = self
-        print(Auth.auth().currentUser?.displayName)
+        let logoutAction = UIAction(title: "Logout", image: UIImage(systemName: "figure.walk")) { action in
+            do {
+                try Auth.auth().signOut()
+                let loginPage = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginPage")
+                self.navigationController?.setViewControllers([loginPage], animated: true)
+            } catch {
+                print(error)
+            }
+        }
+
+        let secondAction = UIAction(title: "Second Action", image: UIImage(systemName: "heart")) { action in
+            print("Second action selected")
+        }
+        let menu = UIMenu(title: "Options", children: [logoutAction, secondAction])
         if let userName = Auth.auth().currentUser?.displayName {
             navigationItem.title = "Hello, \(userName)"
+            
+            navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "person.circle"), menu: menu)
         }
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        requestNotificationPermission()
+    }
+    
+    func requestNotificationPermission() {
+        let center = UNUserNotificationCenter.current()
+        center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if granted {
+                print("Notification permission granted.")
+            } else {
+                print("Notification permission denied.")
+            }
+        }
+    }
+    
 
     /*
     // MARK: - Navigation

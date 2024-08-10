@@ -6,13 +6,62 @@
 //
 
 import UIKit
+import Combine
+import FirebaseAuth
 
 class NavigationViewController: UINavigationController {
 
+    private var cancellables = Set<AnyCancellable>()
+    var fetchingDataIndicator = UIActivityIndicatorView(style: .large)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        
+        AnimeDataFetcher.shared.$isFetchingData
+            .receive(on: DispatchQueue.main)
+            .sink {
+                [weak self] isFetching in
+                self?.fetchingDataIndicator.isHidden = isFetching
+                if isFetching {
+                    print(";;;; is fetching data ;;;;;")
+                    self?.fetchingDataIndicator.startAnimating()
+                } else {
+                    print(";;;; end fetching data ;;;;;")
+                    self?.fetchingDataIndicator.stopAnimating()
+                }
+            }
+            .store(in: &cancellables)
+        
+        fetchingDataIndicator.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(fetchingDataIndicator)
+        fetchingDataIndicator.isHidden = true
+        fetchingDataIndicator.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        fetchingDataIndicator.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
+        
+//        clearAllUserDefaults()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        print("view did appear")
+        if let _ = Auth.auth().currentUser {
+            print("login success")
+            let mainPage = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TabBarController")
+            self.viewControllers = [mainPage]
+        } else {
+            print("need login")
+            let loginPage = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginPage")
+            self.viewControllers = [loginPage]
+        }
+    }
+    
+    func clearAllUserDefaults() {
+        let defaults = UserDefaults.standard
+        let domain = Bundle.main.bundleIdentifier!
+        defaults.removePersistentDomain(forName: domain)
+        defaults.synchronize()
     }
 
     /*

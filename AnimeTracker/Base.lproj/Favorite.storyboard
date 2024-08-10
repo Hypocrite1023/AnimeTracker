@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="UdN-rD-u0b">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Favorite-->
+        <scene sceneID="ybf-iD-jng">
+            <objects>
+                <viewController id="UdN-rD-u0b" customClass="FavoritePageViewController" customModule="AnimeTracker" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="FvE-eW-Rde">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="UBI-sT-MHq">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="FavoriteAnimeTableViewCell" rowHeight="200" id="Ff8-HO-ALF" customClass="FavoriteTableViewCell" customModule="AnimeTracker" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="50" width="393" height="200"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Ff8-HO-ALF" id="aar-lY-eAU">
+                                            <rect key="frame" x="0.0" y="0.0" width="393" height="200"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="I5J-4U-A0U">
+                                                    <rect key="frame" x="0.0" y="0.0" width="151" height="200"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="151" id="GAl-5V-IC8"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="18" translatesAutoresizingMaskIntoConstraints="NO" id="x6h-t4-ihS">
+                                                    <rect key="frame" x="161" y="149.66666666666666" width="119" height="34.333333333333343"/>
+                                                    <subviews>
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DWq-Li-2UO">
+                                                            <rect key="frame" x="0.0" y="0.0" width="52" height="34.333333333333336"/>
+                                                            <state key="normal" title="Button"/>
+                                                            <buttonConfiguration key="configuration" style="tinted" image="star.fill" catalog="system"/>
+                                                            <connections>
+                                                                <action selector="isFavoriteBtnClick:" destination="Ff8-HO-ALF" eventType="touchUpInside" id="ZSH-zx-Ueo"/>
+                                                            </connections>
+                                                        </button>
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f9q-mH-lrD">
+                                                            <rect key="frame" x="70" y="0.0" width="49" height="34.333333333333336"/>
+                                                            <state key="normal" title="Button"/>
+                                                            <buttonConfiguration key="configuration" style="tinted" image="bell.fill" catalog="system"/>
+                                                            <connections>
+                                                                <action selector="isNotifyBtnClick:" destination="Ff8-HO-ALF" eventType="touchUpInside" id="qVJ-6e-umA"/>
+                                                            </connections>
+                                                        </button>
+                                                    </subviews>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="34.329999999999998" id="Gpi-Nr-A4E"/>
+                                                    </constraints>
+                                                </stackView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r8i-AE-2I8">
+                                                    <rect key="frame" x="156" y="10" width="232" height="129.66666666666666"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="r8i-AE-2I8" firstAttribute="leading" secondItem="I5J-4U-A0U" secondAttribute="trailing" constant="5" id="3we-Rh-d7k"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="x6h-t4-ihS" secondAttribute="bottom" constant="5" id="AM4-44-ODN"/>
+                                                <constraint firstItem="r8i-AE-2I8" firstAttribute="top" secondItem="aar-lY-eAU" secondAttribute="top" constant="10" id="C3S-am-Vk9"/>
+                                                <constraint firstAttribute="bottom" secondItem="I5J-4U-A0U" secondAttribute="bottom" id="Izv-Lg-jGk"/>
+                                                <constraint firstItem="I5J-4U-A0U" firstAttribute="top" secondItem="aar-lY-eAU" secondAttribute="top" id="K3t-O0-6M7"/>
+                                                <constraint firstItem="x6h-t4-ihS" firstAttribute="top" secondItem="r8i-AE-2I8" secondAttribute="bottom" constant="10" id="Q9c-ny-pT7"/>
+                                                <constraint firstItem="I5J-4U-A0U" firstAttribute="leading" secondItem="aar-lY-eAU" secondAttribute="leading" id="brO-gt-0LI"/>
+                                                <constraint firstAttribute="trailing" secondItem="r8i-AE-2I8" secondAttribute="trailing" constant="5" id="dxe-Rv-Inu"/>
+                                                <constraint firstItem="x6h-t4-ihS" firstAttribute="leading" secondItem="I5J-4U-A0U" secondAttribute="trailing" constant="10" id="mJG-4e-teU"/>
+                                                <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="x6h-t4-ihS" secondAttribute="trailing" constant="10" id="sfA-Rd-soU"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="animeCoverImageView" destination="I5J-4U-A0U" id="TPK-1d-B0f"/>
+                                            <outlet property="animeTitleLabel" destination="r8i-AE-2I8" id="nVg-Fy-lB0"/>
+                                            <outlet property="isFavoriteBtn" destination="DWq-Li-2UO" id="FxC-cy-Qd7"/>
+                                            <outlet property="isNotifyBtn" destination="f9q-mH-lrD" id="8D2-m6-nmz"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="Y1Z-MF-Z43"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="UBI-sT-MHq" firstAttribute="top" secondItem="FvE-eW-Rde" secondAttribute="top" id="7WE-7b-N6N"/>
+                            <constraint firstItem="UBI-sT-MHq" firstAttribute="leading" secondItem="FvE-eW-Rde" secondAttribute="leading" id="mFU-fg-4X2"/>
+                            <constraint firstAttribute="trailing" secondItem="UBI-sT-MHq" secondAttribute="trailing" id="mcm-g3-l5h"/>
+                            <constraint firstAttribute="bottom" secondItem="UBI-sT-MHq" secondAttribute="bottom" id="ypY-Ac-AN0"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Favorite" image="star.fill" catalog="system" id="mkP-GU-efO"/>
+                    <connections>
+                        <outlet property="favoriteTableView" destination="UBI-sT-MHq" id="Icr-bG-vye"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="6UC-Bc-wtc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="762.59541984732823" y="-336.61971830985919"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="bell.fill" catalog="system" width="123" height="128"/>
+        <image name="star.fill" catalog="system" width="128" height="116"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

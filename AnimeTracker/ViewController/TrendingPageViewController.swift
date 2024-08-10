@@ -30,30 +30,6 @@ class TrendingPageViewController: UIViewController {
         trendingCollectionView.dataSource = self
         trendingCollectionView.delegate = self
         
-        AnimeDataFetcher.shared.$isFetchingData
-            .receive(on: DispatchQueue.main)
-            .sink {
-                [weak self] isFetching in
-                self?.fetchingDataIndicator.isHidden = isFetching
-                if isFetching {
-                    print(";;;; is fetching data ;;;;;")
-                    self?.fetchingDataIndicator.startAnimating()
-                } else {
-                    print(";;;; end fetching data ;;;;;")
-                    self?.fetchingDataIndicator.stopAnimating()
-                }
-            }
-            .store(in: &cancellables)
-        
-        fetchingDataIndicator.translatesAutoresizingMaskIntoConstraints = false
-        self.view.addSubview(fetchingDataIndicator)
-        fetchingDataIndicator.isHidden = true
-        fetchingDataIndicator.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        fetchingDataIndicator.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
-//        self.tabBarController?.selectedViewController = tabBarController?.viewControllers?[1]
-//        print(tabBarController?.selectedIndex)
-//        self.tabBarController?.selectedIndex = 1
-//        print(tabBarController?.viewControllers?.description)
     }
     
     override func viewDidAppear(_ animated: Bool) {

@@ -8,6 +8,86 @@
 import Foundation
 import Combine
 
+struct SimpleAnimeData: Codable {
+    let data: DataResponse
+    
+    struct DataResponse: Codable {
+        let Media: SimpleMedia
+        
+        struct SimpleMedia: Codable {
+            let title: Title
+            let coverImage: CoverImage
+            let status: String
+            
+            struct Title: Codable {
+                let native: String
+                let romaji: String?
+                let english: String?
+            }
+            struct CoverImage: Codable {
+                let large: String
+            }
+        }
+    }
+}
+
+struct SimpleEpisodeData: Codable {
+    let data: DataResponse
+    
+    struct DataResponse: Codable {
+        let Media: SimpleMedia
+        
+        struct SimpleMedia: Codable {
+            let id: Int
+            let title: Title
+            let nextAiringEpisode: NextAiringEpisode?
+            let episodes: Int?
+            let coverImage: CoverImage
+            
+            struct Title: Codable {
+                let native: String
+                let romaji: String?
+                let english: String?
+            }
+            
+            struct NextAiringEpisode: Codable {
+                let episode: Int
+                let timeUntilAiring: Int
+            }
+            
+            struct CoverImage: Codable {
+                let large: String
+            }
+        }
+    }
+}
+
+struct AnimeTimeLineInfo: Codable {
+    let data: DataResponse
+    
+    struct DataResponse: Codable {
+        let Media: SimpleMedia
+        
+        struct SimpleMedia: Codable {
+            let id: Int
+            let title: Title
+            let nextAiringEpisode: NextAiringEpisode?
+            let episodes: Int?
+            
+            struct Title: Codable {
+                let native: String
+                let romaji: String?
+                let english: String?
+            }
+            
+            struct NextAiringEpisode: Codable {
+                let episode: Int
+                let timeUntilAiring: Int
+            }
+        }
+    }
+}
+
 class AnimeDataFetcher {
     
     static let shared = AnimeDataFetcher()
@@ -1071,6 +1151,199 @@ query {
 //                print(String(data: data, encoding: .utf8))
                 let media = try JSONDecoder().decode(VoiceActorData.self, from: data)
                 self.passMoreVoiceActorData?.updateVoiceActorData(voiceActorData: media.data.Staff.characterMedia)
+                self.isFetchingData = false
+            } catch {
+                print("Error parsing JSON: \(error.localizedDescription)")
+            }
+            
+        }
+        
+        // Execute URLSession task
+        task.resume()
+    }
+    
+    func fetchAnimeSimpleDataByID(id: Int, completion: @escaping (SimpleAnimeData?) -> Void) {
+        isFetchingData = true
+        print(id)
+        var urlRequest = URLRequest(url: queryURL)
+        urlRequest.httpMethod = "post"
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let query = """
+query {
+  Media(id: \(id)) {
+    title {
+      native
+      romaji
+      english
+    }
+    coverImage {
+      large
+    }
+    status
+  }
+}
+"""
+        
+        let graphQLData = ["query": query]
+        
+        do {
+            urlRequest.httpBody = try JSONSerialization.data(withJSONObject: graphQLData, options: [])
+        } catch {
+            print("Error serializing JSON: \(error.localizedDescription)")
+            return
+        }
+        // Create URLSession task
+        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+            if let error = error {
+                print("Error fetching data: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                print("Invalid response")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+            do {
+//                print(String(data: data, encoding: .utf8))
+                let media = try JSONDecoder().decode(SimpleAnimeData.self, from: data)
+                completion(media)
+                self.isFetchingData = false
+            } catch {
+                print("Error parsing JSON: \(error.localizedDescription)")
+            }
+            
+        }
+        
+        // Execute URLSession task
+        task.resume()
+    }
+    
+    func fetchAnimeEpisodeDataByID(id: Int, completion: @escaping (SimpleEpisodeData?) -> Void) {
+        isFetchingData = true
+        print(id)
+        var urlRequest = URLRequest(url: queryURL)
+        urlRequest.httpMethod = "post"
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let query = """
+query {
+  Media(id: \(id)) {
+    id
+    title {
+      native
+      romaji
+      english
+    }
+    nextAiringEpisode {
+      episode
+      timeUntilAiring
+    }
+    episodes
+    coverImage {
+      large
+    }
+  }
+}
+"""
+        
+        let graphQLData = ["query": query]
+        
+        do {
+            urlRequest.httpBody = try JSONSerialization.data(withJSONObject: graphQLData, options: [])
+        } catch {
+            print("Error serializing JSON: \(error.localizedDescription)")
+            return
+        }
+        // Create URLSession task
+        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+            if let error = error {
+                print("Error fetching data: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                print("Invalid response")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+            do {
+//                print(String(data: data, encoding: .utf8))
+                let media = try JSONDecoder().decode(SimpleEpisodeData.self, from: data)
+                completion(media)
+                self.isFetchingData = false
+            } catch {
+                print("Error parsing JSON: \(error.localizedDescription)")
+            }
+            
+        }
+        
+        // Execute URLSession task
+        task.resume()
+    }
+    
+    func fetchAnimeTimeLineInfoByID(id: Int, completion: @escaping (AnimeTimeLineInfo?) -> Void) {
+        isFetchingData = true
+        print(id)
+        var urlRequest = URLRequest(url: queryURL)
+        urlRequest.httpMethod = "post"
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let query = """
+query {
+  Media(id: \(id)) {
+    id
+    title {
+      native
+      romaji
+      english
+    }
+    nextAiringEpisode {
+      episode
+      timeUntilAiring
+    }
+    episodes
+  }
+}
+"""
+        
+        let graphQLData = ["query": query]
+        
+        do {
+            urlRequest.httpBody = try JSONSerialization.data(withJSONObject: graphQLData, options: [])
+        } catch {
+            print("Error serializing JSON: \(error.localizedDescription)")
+            return
+        }
+        // Create URLSession task
+        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+            if let error = error {
+                print("Error fetching data: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                print("Invalid response")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+            do {
+//                print(String(data: data, encoding: .utf8))
+                let media = try JSONDecoder().decode(AnimeTimeLineInfo.self, from: data)
+                completion(media)
                 self.isFetchingData = false
             } catch {
                 print("Error parsing JSON: \(error.localizedDescription)")

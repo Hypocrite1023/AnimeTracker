@@ -13,8 +13,6 @@ import FirebaseFirestoreInternal
 class AnimeDetailViewController: UIViewController {
     
 //    var animeFetchingDataManager: AnimeDataFetcher
-    private var cancellables = Set<AnyCancellable>()
-    var fetchingDataIndicator = UIActivityIndicatorView(style: .large)
     
     var animeMediaID: Int
     var animeDetailData: MediaResponse.MediaData.Media?
@@ -68,20 +66,6 @@ class AnimeDetailViewController: UIViewController {
 //            }
 //            .store(in: &cancellables)
         
-        AnimeDataFetcher.shared.$isFetchingData
-            .receive(on: DispatchQueue.main)
-            .sink {
-                [weak self] isFetching in
-                self?.fetchingDataIndicator.isHidden = isFetching
-                if isFetching {
-                    print(";;;; is fetching data ;;;;;")
-                    self?.fetchingDataIndicator.startAnimating()
-                } else {
-                    print(";;;; end fetching data ;;;;;")
-                    self?.fetchingDataIndicator.stopAnimating()
-                }
-            }
-            .store(in: &cancellables)
         
 //        self.animeFetchingDataManager.animeDetailDataDelegate = self
 //        self.animeFetchingDataManager.animeCharacterDataDelegate = self
@@ -111,11 +95,6 @@ class AnimeDetailViewController: UIViewController {
         animeDetailView.tmpScrollView.delegate = self
 //        self.view.backgroundColor = .white
         print("view did load")
-        fetchingDataIndicator.translatesAutoresizingMaskIntoConstraints = false
-        self.view.addSubview(fetchingDataIndicator)
-        fetchingDataIndicator.isHidden = true
-        fetchingDataIndicator.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        fetchingDataIndicator.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
         
 //        navigationController?.hidesBarsOnSwipe = true
         
@@ -310,9 +289,9 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
         
         if let userUID = Auth.auth().currentUser?.uid, let animeID = self.animeDetailData?.id {
             print(userUID)
-            FirebaseStoreFunc.shared.getAnimeRecord(userUID: userUID, animeID: animeID) { favorite, notify, error in
-                print("isFavorite", favorite, "isNotify", notify)
-                animeBannerView.updateFavoriteAndNotifyBtn(isFavorite: favorite, isNotify: notify)
+            FirebaseStoreFunc.shared.getAnimeRecord(userUID: userUID, animeID: animeID) { favorite, notify, _, error in
+                print("isFavorite", favorite, "isNotify", notify, "status", self.animeDetailData?.status)
+                animeBannerView.updateFavoriteAndNotifyBtn(isFavorite: favorite, isNotify: notify, status: self.animeDetailData?.status)
             }
         }
     }
@@ -1485,17 +1464,27 @@ extension AnimeDetailViewController: NavigateDelegate {
 
 
 extension AnimeDetailViewController: FavoriteAndNotifyActionDelegate {
-    func configFavoriteAndNotify(favorite: Bool, notify: Bool) {
+    func configFavoriteAndNotify(favorite: Bool, notify: Bool, status: String) {
         print("animeID:", self.animeDetailData?.id, "userUID", Auth.auth().currentUser?.uid)
         if let animeID = self.animeDetailData?.id, let userUID = Auth.auth().currentUser?.uid {
-            FirebaseStoreFunc.shared.addAnimeRecord(userUID: userUID, animeID: animeID, isFavorite: favorite, isNotify: notify) { success, error in
+            FirebaseStoreFunc.shared.addAnimeRecord(userUID: userUID, animeID: animeID, isFavorite: favorite, isNotify: notify, status: status) { success, error in
                 if let error = error {
                     print(error.localizedDescription)
                 } else if success {
                     print("Add data success")
                 }
             }
+            if notify {
+                AnimeDataFetcher.shared.fetchAnimeEpisodeDataByID(id: animeID) { episodeData in
+                    if let nextAiringEpisode = episodeData?.data.Media.nextAiringEpisode, let episodes = episodeData?.data.Media.episodes, let animeTitle = episodeData?.data.Media.title.native {
+                        AnimeNotification.shared.setupAllEpisodeNotification(animeID: animeID, animeTitle: animeTitle, nextAiringEpsode: nextAiringEpisode.episode, nextAiringInterval: TimeInterval(nextAiringEpisode.timeUntilAiring), totalEpisode: episodes)
+                    }
+                }
+            } else {
+                AnimeNotification.shared.removeAllEpisodeNotification(for: animeID)
+            }
         }
+        
     }
     
     
