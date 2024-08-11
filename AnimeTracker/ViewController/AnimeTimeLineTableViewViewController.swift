@@ -20,15 +20,15 @@ class AnimeTimeLineTableViewViewController: UIViewController {
     // animeTitle, animeCoverImage, timeLeftToAiring, animeID, Ep,
     @IBOutlet weak var animeTimeLineTableView: UITableView!
     
-    let serialQueue = DispatchQueue(label: "episodeDatasQueue")
-    var episodeDatas = [SimpleEpisodeData]()
+//    let serialQueue = DispatchQueue(label: "episodeDatasQueue")
+    var episodeDatas = [SimpleEpisodeData.DataResponse.SimpleMedia]()
     var animeTimeLineData = [AnimeTimeLineData]()
 
-    func appendToArray(_ newElement: SimpleEpisodeData) {
-        serialQueue.async {
-            self.episodeDatas.append(newElement)
-        }
-    }
+//    func appendToArray(_ newElements: [SimpleEpisodeData.DataResponse.SimpleMedia]) {
+//        serialQueue.async {
+//            self.episodeDatas += newElements
+//        }
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,44 +37,17 @@ class AnimeTimeLineTableViewViewController: UIViewController {
         animeTimeLineTableView.dataSource = self
         animeTimeLineTableView.delegate = self
 //        animeTimeLineTableView.register(AnimeTimeLineTableViewCell.self, forCellReuseIdentifier: "AnimeTimeLineTableViewCell")
-    }
-    
-    fileprivate func loadFavoriteAndReleasingEpisodeData(_ userUID: String, completion: @escaping () -> Void) {
-        self.episodeDatas.removeAll()
-        FirebaseStoreFunc.shared.loadUserFavoriteAndReleasing(userUID: userUID, perFetch: 20) { snapshot, error in
-            var dataFetched = 0
-            if let documents = snapshot {
-                for document in documents {
-                    let animeID = document.documentID
-                    print(animeID)
-                    if let animeIDInt = Int(animeID) {
-                        AnimeDataFetcher.shared.fetchAnimeEpisodeDataByID(id: animeIDInt) { episodeData in
-                            if let episodeData = episodeData {
-                                self.appendToArray(episodeData)
-                                dataFetched += 1
-                                if dataFetched == documents.count {
-                                    completion()
-                                }
-                            }
-                        }
-                    }
-                    
-                }
-            }
-        }
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
         
         if let userUID = Auth.auth().currentUser?.uid {
             loadFavoriteAndReleasingEpisodeData(userUID) {
+                print("completion")
                 for episodeData in self.episodeDatas {
-                    if let nextAiringEpisode = episodeData.data.Media.nextAiringEpisode?.episode, let totalEpisode = episodeData.data.Media.episodes, let nextAiringTime = episodeData.data.Media.nextAiringEpisode?.timeUntilAiring {
+                    print(episodeData)
+                    if let nextAiringEpisode = episodeData.nextAiringEpisode?.episode, let totalEpisode = episodeData.episodes, let nextAiringTime = episodeData.nextAiringEpisode?.timeUntilAiring {
                         for (index, episode) in (nextAiringEpisode...totalEpisode).enumerated() {
 //                            print(episodeData.data.Media.title.native, episode, (index + 1) * nextAiringTime)
                             print(index)
-                            self.animeTimeLineData.append(AnimeTimeLineData(animeTitle: "\(episodeData.data.Media.title.native) Ep.\(episode)", animeCoverImage: episodeData.data.Media.coverImage.large, airingLeft: TimeInterval(nextAiringTime + (604800 * index))))
+                            self.animeTimeLineData.append(AnimeTimeLineData(animeTitle: "\(episodeData.title.native) Ep.\(episode)", animeCoverImage: episodeData.coverImage.large, airingLeft: TimeInterval(nextAiringTime + (604800 * index))))
                         }
                     }
                     
@@ -89,6 +62,30 @@ class AnimeTimeLineTableViewViewController: UIViewController {
                 }
             }
         }
+    }
+    
+    fileprivate func loadFavoriteAndReleasingEpisodeData(_ userUID: String, completion: @escaping () -> Void) {
+        self.episodeDatas.removeAll()
+        self.animeTimeLineData.removeAll()
+        FirebaseStoreFunc.shared.loadUserFavoriteAndReleasing(userUID: userUID, perFetch: 20) { snapshot, error in
+            var dataFetched = 0
+            if let documents = snapshot {
+                let animeIDs = documents.compactMap({ Int($0.documentID) })
+                AnimeDataFetcher.shared.fetchAnimeEpisodeDataByIDs(id: animeIDs) { episodeData in
+//                    print(episodeData.compactMap({$0}))
+                    self.episodeDatas += episodeData.compactMap({$0})
+//                    self.appendToArray(episodeData.compactMap({$0}))
+                    completion()
+                    
+                }
+            }
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        
+        
         
     }
     

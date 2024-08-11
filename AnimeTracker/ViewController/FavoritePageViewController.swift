@@ -20,6 +20,7 @@ class FavoritePageViewController: UIViewController {
     @IBOutlet weak var favoriteTableView: UITableView!
     
     var favoriteAnimeList: [FavoriteAnime] = []
+    var tableViewData: [SimpleAnimeData.DataResponse.SimpleMedia] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,12 +28,6 @@ class FavoritePageViewController: UIViewController {
         // Do any additional setup after loading the view.
         favoriteTableView.dataSource = self
         favoriteTableView.delegate = self
-    }
-    
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
-        favoriteAnimeList.removeAll()
         if let userUID = Auth.auth().currentUser?.uid {
             FirebaseStoreFunc.shared.loadUserFavorite(userUID: userUID, perFetch: 10) { snapshot, error in
                 if let error = error {
@@ -46,17 +41,34 @@ class FavoritePageViewController: UIViewController {
                         let status = data?["status"] as? String
                         self.favoriteAnimeList.append(FavoriteAnime(animeID: Int(animeID) ?? 0, isFavorite: isFavorite ?? false, isNotify: isNotify ?? false, status: status ?? ""))
                     }
-                    DispatchQueue.main.async {
-                        self.favoriteTableView.reloadData()
-                        print("reload data")
+                    let animeIdList = self.favoriteAnimeList.map({$0.animeID})
+                    print("animeIdList", animeIdList)
+                    AnimeDataFetcher.shared.fetchAnimeSimpleDataByIDs(id: animeIdList) { simpleAnimeData in
+                        self.tableViewData = simpleAnimeData.compactMap({$0})
+//                        print(simpleAnimeData)
+                        DispatchQueue.main.async {
+                            self.favoriteTableView.reloadData()
+                            print("reload data")
+                        }
                     }
+                    
 //                    print(self.favoriteAnimeList)
                 }
             }
         }
         
+        
     }
-
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        print("favorite page appear")
+//        favoriteAnimeList.removeAll()
+        
+        
+    }
+    
     /*
     // MARK: - Navigation
 
@@ -71,25 +83,17 @@ class FavoritePageViewController: UIViewController {
 
 extension FavoritePageViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        favoriteAnimeList.count
+        tableViewData.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "FavoriteAnimeTableViewCell") as! FavoriteTableViewCell
-        AnimeDataFetcher.shared.fetchAnimeSimpleDataByID(id: favoriteAnimeList[indexPath.row].animeID) { simpleAnimeData in
-            if let data = simpleAnimeData?.data.Media {
-                cell.animeID = self.favoriteAnimeList[indexPath.row].animeID
-                cell.animeCoverImageView.loadImage(from: data.coverImage.large)
-                cell.favoriteAndNotifyConfig = self
-                cell.configNotify = self
-                DispatchQueue.main.async {
-                    cell.animeTitleLabel.text = data.title.native
-                }
-                cell.configBtnColor(isFavorite: self.favoriteAnimeList[indexPath.row].isFavorite, isNotify: self.favoriteAnimeList[indexPath.row].isNotify, status: data.status)
-                print(data.title.native, self.favoriteAnimeList[indexPath.row].isFavorite, self.favoriteAnimeList[indexPath.row].isNotify, self.favoriteAnimeList[indexPath.row].status)
-            }
-            
-        }
+        cell.animeID = favoriteAnimeList[indexPath.row].animeID
+        cell.animeCoverImageView.loadImage(from: tableViewData[indexPath.row].coverImage.large)
+        cell.animeTitleLabel.text = tableViewData[indexPath.row].title.native
+        cell.configNotify = self
+        cell.favoriteAndNotifyConfig = self
+        cell.configBtnColor(isFavorite: favoriteAnimeList[indexPath.row].isFavorite, isNotify: favoriteAnimeList[indexPath.row].isNotify, status: favoriteAnimeList[indexPath.row].status)
         return cell
     }
     
@@ -99,6 +103,7 @@ extension FavoritePageViewController: UITableViewDelegate, UITableViewDataSource
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         AnimeDataFetcher.shared.fetchAnimeByID(id: favoriteAnimeList[indexPath.row].animeID)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }
 
