@@ -1259,7 +1259,7 @@ query {
         }
         
         query = "{ \(query) }"
-        print(query)
+//        print(query)
         
         let graphQLData = ["query": query]
         

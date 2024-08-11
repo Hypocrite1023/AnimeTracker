@@ -35,6 +35,8 @@ class FirebaseStoreFunc {
         static let STATUSSTR = "status"
     }
     
+    var userFavoriteLastFetchDocument: DocumentSnapshot?
+    
     let db = Firestore.firestore()
     private init() {
         
@@ -107,11 +109,36 @@ class FirebaseStoreFunc {
     
     func loadUserFavorite(userUID: String, perFetch: Int, completion: @escaping ([DocumentSnapshot]?, Error?) -> Void) {
         let userRef = db.collection(FireStoreKeyString.USERSCOLLECTION).document(userUID).collection(FireStoreKeyString.WATCHEDANIME)
-        userRef.whereField(FireStoreKeyString.FAVORITESTR, isEqualTo: true).limit(to: 20).getDocuments { snapshot, error in
-            if let error = error {
-                completion(nil, error)
-            } else {
-                completion(snapshot?.documents, nil)
+//        userRef.whereField(FireStoreKeyString.FAVORITESTR, isEqualTo: true).limit(to: perFetch).getDocuments { snapshot, error in
+//            if let error = error {
+//                completion(nil, error)
+//            } else {
+//                completion(snapshot?.documents, nil)
+//            }
+//        }
+        if let userFavoriteLastFetchDocument = userFavoriteLastFetchDocument {
+            userRef.start(afterDocument: userFavoriteLastFetchDocument).whereField(FireStoreKeyString.FAVORITESTR, isEqualTo: true).limit(to: perFetch).getDocuments { snapshot, error in
+                if let error = error {
+                    completion(nil, error)
+                } else {
+                    if snapshot?.documents.last != nil {
+                        self.userFavoriteLastFetchDocument = snapshot?.documents.last
+                    }
+                    completion(snapshot?.documents, nil)
+                }
+                print("not first fetch")
+            }
+        } else {
+            userRef.whereField(FireStoreKeyString.FAVORITESTR, isEqualTo: true).limit(to: perFetch).getDocuments { snapshot, error in
+                if let error = error {
+                    completion(nil, error)
+                } else {
+                    if snapshot?.documents.last != nil {
+                        self.userFavoriteLastFetchDocument = snapshot?.documents.last
+                    }
+                    completion(snapshot?.documents, nil)
+                }
+                print("first fetch")
             }
         }
     }

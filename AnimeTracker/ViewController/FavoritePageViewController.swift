@@ -9,102 +9,189 @@ import UIKit
 import FirebaseFirestore
 import FirebaseAuth
 
-struct FavoriteAnime {
+struct FavoriteAnime: Hashable {
+    static func == (lhs: FavoriteAnime, rhs: FavoriteAnime) -> Bool {
+        lhs.animeID == rhs.animeID
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(animeID)
+    }
+    
     let animeID: Int
     let isFavorite: Bool
     let isNotify: Bool
     let status: String
+    var animeData: SimpleAnimeData.DataResponse.SimpleMedia?
+}
+
+enum StatusSection: CaseIterable {
+    case releasing
+    case finished
+    
+    var sectionText: String {
+        switch(self) {
+        case .releasing: return "releasing".uppercased()
+        case .finished: return "finished".uppercased()
+        }
+    }
 }
 
 class FavoritePageViewController: UIViewController {
     @IBOutlet weak var favoriteTableView: UITableView!
     
     var favoriteAnimeList: [FavoriteAnime] = []
+//    var tmpFavoriteAnimeList: [FavoriteAnime] = []
     var tableViewData: [SimpleAnimeData.DataResponse.SimpleMedia] = []
+//    var tmpTableViewData: [SimpleAnimeData.DataResponse.SimpleMedia] = []
+    var isEnableLoadMoreData: Bool = false
+    
+    var tableViewDataSource: UITableViewDiffableDataSource<StatusSection, FavoriteAnime>?
+    var tableViewSnapShot = NSDiffableDataSourceSnapshot<StatusSection, FavoriteAnime>()
+    var isEnableFetchData: Bool = false
+    var isTableDataInitial = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("favorite page view did load")
 
         // Do any additional setup after loading the view.
-        favoriteTableView.dataSource = self
+        configDataSource()
+        applyInitialSnapShot()
         favoriteTableView.delegate = self
+    }
+        
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        print("favorite page appear")
+        self.isEnableFetchData = true
+//        favoriteAnimeList.removeAll()
+    }
+    
+    func configDataSource() {
+        tableViewDataSource = UITableViewDiffableDataSource(tableView: favoriteTableView, cellProvider: { tableView, indexPath, itemIdentifier in
+            let cell = tableView.dequeueReusableCell(withIdentifier: "FavoriteAnimeTableViewCell", for: indexPath) as! FavoriteTableViewCell
+            cell.animeCoverImageView.loadImage(from: itemIdentifier.animeData?.coverImage.large)
+            cell.animeID = itemIdentifier.animeID
+            cell.animeTitleLabel.text = itemIdentifier.animeData?.title.native
+            cell.configNotify = self
+            cell.favoriteAndNotifyConfig = self
+            cell.configBtnColor(isFavorite: itemIdentifier.isFavorite, isNotify: itemIdentifier.isNotify, status: itemIdentifier.status)
+            
+            return cell
+        })
+    }
+    
+    fileprivate func loadUserFavoriteAnimeList(perFetch: Int, completion: @escaping ([FavoriteAnime]?) -> Void) {
+        print(FirebaseStoreFunc.shared.userFavoriteLastFetchDocument)
+        isEnableFetchData = false
         if let userUID = Auth.auth().currentUser?.uid {
-            FirebaseStoreFunc.shared.loadUserFavorite(userUID: userUID, perFetch: 10) { snapshot, error in
+            FirebaseStoreFunc.shared.loadUserFavorite(userUID: userUID, perFetch: perFetch) { snapshot, error in
+                var tmpFavoriteAnimeList: [FavoriteAnime] = []
                 if let error = error {
                     print(error.localizedDescription)
                 } else if let documents = snapshot {
                     for document in documents {
                         let data = document.data()
                         let animeID = document.documentID
+                        print(animeID, "animeID")
                         let isFavorite = data?["isFavorite"] as? Bool
                         let isNotify = data?["isNotify"] as? Bool
                         let status = data?["status"] as? String
-                        self.favoriteAnimeList.append(FavoriteAnime(animeID: Int(animeID) ?? 0, isFavorite: isFavorite ?? false, isNotify: isNotify ?? false, status: status ?? ""))
+                        tmpFavoriteAnimeList.append(FavoriteAnime(animeID: Int(animeID) ?? 0, isFavorite: isFavorite ?? false, isNotify: isNotify ?? false, status: status ?? "", animeData: nil))
                     }
-                    let animeIdList = self.favoriteAnimeList.map({$0.animeID})
+                    let animeIdList = tmpFavoriteAnimeList.map({$0.animeID})
+                    self.favoriteAnimeList += tmpFavoriteAnimeList
                     print("animeIdList", animeIdList)
-                    AnimeDataFetcher.shared.fetchAnimeSimpleDataByIDs(id: animeIdList) { simpleAnimeData in
-                        self.tableViewData = simpleAnimeData.compactMap({$0})
-//                        print(simpleAnimeData)
-                        DispatchQueue.main.async {
-                            self.favoriteTableView.reloadData()
-                            print("reload data")
+                    if animeIdList != [] {
+                        AnimeDataFetcher.shared.fetchAnimeSimpleDataByIDs(id: animeIdList) { simpleAnimeData in
+                            
+                            for (index, data) in simpleAnimeData.enumerated() {
+                                tmpFavoriteAnimeList[index].animeData = data
+                            }
+                            completion(tmpFavoriteAnimeList)
                         }
                     }
-                    
-//                    print(self.favoriteAnimeList)
                 }
             }
         }
-        
-        
     }
     
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
-        print("favorite page appear")
-//        favoriteAnimeList.removeAll()
+    func applyInitialSnapShot() {
+        tableViewSnapShot = NSDiffableDataSourceSnapshot<StatusSection, FavoriteAnime>()
+        tableViewSnapShot.appendSections([.releasing, .finished])
         
-        
+        loadUserFavoriteAnimeList(perFetch: 4) { favoriteAnime in
+            if let favoriteAnime = favoriteAnime {
+                if favoriteAnime != [] {
+                    for anime in favoriteAnime {
+                        if anime.status == "RELEASING" {
+                            self.tableViewSnapShot.appendItems([anime], toSection: .releasing)
+                        } else if anime.status == "FINISHED" {
+                            self.tableViewSnapShot.appendItems([anime], toSection: .finished)
+                        }
+                    }
+                    self.tableViewDataSource?.apply(self.tableViewSnapShot, animatingDifferences: true)
+                    self.isEnableFetchData = true
+                    self.isTableDataInitial = true
+                }
+            }
+        }
     }
     
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    func updateSnapShot() {
+//        var tableViewSnapShot = NSDiffableDataSourceSnapshot<StatusSection, FavoriteAnime>()
+//        tableViewSnapShot.appendSections([.releasing])
+        
+        loadUserFavoriteAnimeList(perFetch: 4) { favoriteAnime in
+            if let favoriteAnime = favoriteAnime {
+                if favoriteAnime != [] {
+                    for anime in favoriteAnime {
+                        if anime.status == "RELEASING" {
+                            self.tableViewSnapShot.appendItems([anime], toSection: .releasing)
+                        } else if anime.status == "FINISHED" {
+                            self.tableViewSnapShot.appendItems([anime], toSection: .finished)
+                        }
+                    }
+                    self.tableViewDataSource?.apply(self.tableViewSnapShot, animatingDifferences: true)
+                    self.isEnableFetchData = true
+                }
+            }
+        }
     }
-    */
-
 }
 
-extension FavoritePageViewController: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        tableViewData.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "FavoriteAnimeTableViewCell") as! FavoriteTableViewCell
-        cell.animeID = favoriteAnimeList[indexPath.row].animeID
-        cell.animeCoverImageView.loadImage(from: tableViewData[indexPath.row].coverImage.large)
-        cell.animeTitleLabel.text = tableViewData[indexPath.row].title.native
-        cell.configNotify = self
-        cell.favoriteAndNotifyConfig = self
-        cell.configBtnColor(isFavorite: favoriteAnimeList[indexPath.row].isFavorite, isNotify: favoriteAnimeList[indexPath.row].isNotify, status: favoriteAnimeList[indexPath.row].status)
-        return cell
-    }
-    
+extension FavoritePageViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 200
     }
     
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView == favoriteTableView {
+            if (scrollView.contentOffset.y + scrollView.frame.height) > scrollView.contentSize.height + 60 && isEnableFetchData && isTableDataInitial {
+                print("scroll to bottom fetch data")
+                updateSnapShot()
+            }
+        }
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        AnimeDataFetcher.shared.fetchAnimeByID(id: favoriteAnimeList[indexPath.row].animeID)
+        AnimeDataFetcher.shared.fetchAnimeByID(id: tableViewSnapShot.itemIdentifiers[indexPath.row].animeID)
         tableView.deselectRow(at: indexPath, animated: true)
     }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 40
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = UITableViewHeaderFooterView(reuseIdentifier: "HeaderView")
+        headerView.textLabel?.text = StatusSection.allCases[section].sectionText
+        headerView.textLabel?.textColor = .black
+        return headerView
+    }
+    
+    
 }
 
 extension FavoritePageViewController: ConfigFavoriteAndNotifyWithAnimeID {
