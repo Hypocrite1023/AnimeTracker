@@ -7,21 +7,83 @@
 
 import UIKit
 
+enum AnimeFormat: CaseIterable {
+    case TVSHOW, MOVIE, TVSHORT, SPECIAL, OVA, ONA, MUSIC
+    
+    var stringValue: String {
+        switch(self) {
+            
+        case .TVSHOW:
+            return "TV Show"
+        case .MOVIE:
+            return "Movie"
+        case .TVSHORT:
+            return "TV Short"
+        case .SPECIAL:
+            return "Special"
+        case .OVA:
+            return "OVA"
+        case .ONA:
+            return "ONA"
+        case .MUSIC:
+            return "Music"
+        }
+    }
+}
+
 class SearchPageViewController: UIViewController {
     
+    // Search
+    @IBOutlet weak var serchAnimeTitleTextField: UITextField!
+    @IBOutlet weak var genresButton: UIButton!
     @IBOutlet weak var yearButton: UIButton!
     @IBOutlet weak var seasonButton: UIButton!
+    @IBOutlet weak var formatButton: UIButton!
+    @IBOutlet weak var sortButton: UIButton!
+    @IBOutlet weak var airingStatusButton: UIButton!
+    @IBOutlet weak var streamingOnButton: UIButton!
+    @IBOutlet weak var countryOfOriginButton: UIButton!
+    @IBOutlet weak var sourceMaterialButton: UIButton!
+    @IBOutlet weak var doujinSwitch: UISwitch!
+    
+    
     @IBOutlet weak var trendingAnimeCollectionView: UICollectionView?
+    
+    var expandedHeightConstraint: NSLayoutConstraint!
+    var foldedHeightConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var configScrollView: UIScrollView!
+    @IBAction func expandConfig(_ sender: Any) {
+        let isHidden = configScrollView.isHidden
+            
+        if isHidden {
+            foldedHeightConstraint.isActive = false
+            expandedHeightConstraint.isActive = true
+        } else {
+            expandedHeightConstraint.isActive = false
+            foldedHeightConstraint.isActive = true
+        }
+        UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
+        }
+        configScrollView.isHidden.toggle()
+    }
     var yearTableView: UITableView!
     var seasonTableView: UITableView!
 //    let apiManager = AnimeDataFetcher()
 //    var images: [UIImage?] = Array(repeating: nil, count: 10)
     var animeData: AnimeSearchedOrTrending?
+    
+    var genres: [String] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        expandedHeightConstraint = configScrollView.heightAnchor.constraint(equalToConstant: 60)
+            foldedHeightConstraint = configScrollView.heightAnchor.constraint(equalToConstant: 0)
+        configScrollView.isHidden = true
+        foldedHeightConstraint.isActive = true
         print("load search page")
         AnimeDataFetcher.shared.animeDataDelegateManager = self
         AnimeDataFetcher.shared.animeOverViewDataDelegate = self
@@ -68,7 +130,33 @@ class SearchPageViewController: UIViewController {
         if let seasonUpperCase = PickerData.seasonPickerOption.first?.uppercased(), let yearStr = PickerData.yearPickerOption.last?.description {
             AnimeDataFetcher.shared.fetchAnimeBySearch(year: yearStr, season: seasonUpperCase)
         }
-//        fetchImages()
+        
+        let formatMenuActions = AnimeFormat.allCases.map({
+            return UIAction(title: $0.stringValue) { action in
+                print(action.title)
+                self.formatButton.setTitle(action.title, for: .normal)
+            }
+        })
+        formatButton.menu = UIMenu(title: "format", children: formatMenuActions)
+        formatButton.setTitle("select", for: .normal)
+        
+        genresButton.setTitle("select", for: .normal)
+        AnimeDataFetcher.shared.loadEssentialData { essentialData in
+            self.genres = essentialData.GenreCollection
+            let genresMenuActions = self.genres.map({
+                return UIAction(title: $0) { action in
+                    self.genresButton.setTitle(action.title, for: .normal)
+                }
+            })
+            DispatchQueue.main.async {
+                self.genresButton.menu = UIMenu(title: "Genres", children: genresMenuActions)
+            }
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
     }
     
     deinit {

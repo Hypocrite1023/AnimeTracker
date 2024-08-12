@@ -206,6 +206,11 @@ class AnimeCharacterPageViewController: UIViewController {
         FloatingButtonManager.shared.bringFloatingButtonToFront(in: self.view)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.isHidden = false
+    }
+    
     func updateLanguageSelection() {
         
 //        animeDetailView.threadView?.pageControlButton.menu = UIMenu(title: "", children: actions)

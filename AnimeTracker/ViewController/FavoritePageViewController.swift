@@ -65,6 +65,7 @@ class FavoritePageViewController: UIViewController {
         super.viewWillAppear(true)
         print("favorite page appear")
         self.isEnableFetchData = true
+        navigationController?.navigationBar.isHidden = false
 //        favoriteAnimeList.removeAll()
     }
     
@@ -83,7 +84,7 @@ class FavoritePageViewController: UIViewController {
     }
     
     fileprivate func loadUserFavoriteAnimeList(perFetch: Int, completion: @escaping ([FavoriteAnime]?) -> Void) {
-        print(FirebaseStoreFunc.shared.userFavoriteLastFetchDocument)
+//        print(FirebaseStoreFunc.shared.userFavoriteLastFetchDocument)
         isEnableFetchData = false
         if let userUID = Auth.auth().currentUser?.uid {
             FirebaseStoreFunc.shared.loadUserFavorite(userUID: userUID, perFetch: perFetch) { snapshot, error in
@@ -121,7 +122,7 @@ class FavoritePageViewController: UIViewController {
         tableViewSnapShot = NSDiffableDataSourceSnapshot<StatusSection, FavoriteAnime>()
         tableViewSnapShot.appendSections([.releasing, .finished])
         
-        loadUserFavoriteAnimeList(perFetch: 4) { favoriteAnime in
+        loadUserFavoriteAnimeList(perFetch: 20) { favoriteAnime in
             if let favoriteAnime = favoriteAnime {
                 if favoriteAnime != [] {
                     for anime in favoriteAnime {
@@ -143,7 +144,7 @@ class FavoritePageViewController: UIViewController {
 //        var tableViewSnapShot = NSDiffableDataSourceSnapshot<StatusSection, FavoriteAnime>()
 //        tableViewSnapShot.appendSections([.releasing])
         
-        loadUserFavoriteAnimeList(perFetch: 4) { favoriteAnime in
+        loadUserFavoriteAnimeList(perFetch: 20) { favoriteAnime in
             if let favoriteAnime = favoriteAnime {
                 if favoriteAnime != [] {
                     for anime in favoriteAnime {

@@ -41,6 +41,11 @@ class AnimeVoiceActorViewController: UIViewController {
         FloatingButtonManager.shared.bringFloatingButtonToFront(in: self.view)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.isHidden = false
+    }
+    
     fileprivate func setupPage() {
         if let voiceActorDataResponse = voiceActorDataResponse {
             navigationItem.title = ""
