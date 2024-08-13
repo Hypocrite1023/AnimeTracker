@@ -101,7 +101,12 @@ struct EssentialDataCollection: Codable {
     let data: EssentialData
     
     struct EssentialData: Codable {
-        let GenreCollection: [String]
+        let genreCollection: [String]
+        let externalLinkSourceCollection: [ExternalLinkSourceCollection]
+        
+        struct ExternalLinkSourceCollection: Codable {
+            let site: String
+        }
     }
 }
 
@@ -1525,7 +1530,10 @@ query {
         
         let query = """
 query {
-  GenreCollection
+  genreCollection: GenreCollection
+  externalLinkSourceCollection: ExternalLinkSourceCollection(type: STREAMING, mediaType: ANIME) {
+    site
+  }
 }
 """
         

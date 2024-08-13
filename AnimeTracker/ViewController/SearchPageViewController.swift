@@ -31,6 +31,177 @@ enum AnimeFormat: CaseIterable {
     }
 }
 
+enum AnimeSort: CaseIterable {
+    case Title, Popularity, AverageScore, Trending, Favorites, DateAdded, ReleaseDate
+    
+    var stringValue: String {
+        switch(self) {
+            
+        case .Title:
+            "Title"
+        case .Popularity:
+            "Popularity"
+        case .AverageScore:
+            "Average Score"
+        case .Trending:
+            "Trending"
+        case .Favorites:
+            "Favorites"
+        case .DateAdded:
+            "Date Added"
+        case .ReleaseDate:
+            "Release Date"
+        }
+    }
+}
+
+enum AnimeAiringStatus: CaseIterable {
+    case Airing, Finished, NotYetAired, Cancelled
+    
+    var stringValue: String {
+        switch self {
+            
+        case .Airing:
+            "Airing"
+        case .Finished:
+            "Finished"
+        case .NotYetAired:
+            "Not Yet Aired"
+        case .Cancelled:
+            "Cancelled"
+        }
+    }
+}
+
+enum AnimeCountryOfOrigin: String, CaseIterable {
+    case Japan = "Japan"
+    case Taiwan = "Taiwan"
+    case SouthKorea = "South Korea"
+    case China = "China"
+    
+    var stringValue: String {
+        switch self {
+            
+        case .Japan:
+            "Japan"
+        case .Taiwan:
+            "Taiwan"
+        case .SouthKorea:
+            "South Korea"
+        case .China:
+            "China"
+        }
+    }
+    
+    var apiUse: String {
+        switch self {
+        case .Japan:
+            "JP"
+        case .Taiwan:
+            "TW"
+        case .SouthKorea:
+            "KR"
+        case .China:
+            "CN"
+        }
+    }
+    
+    init?(fromString string: String) {
+        if let country = AnimeCountryOfOrigin(rawValue: string) {
+            self = country
+        } else {
+            return nil
+        }
+    }
+    
+}
+
+enum AnimeSourceMaterial: String, CaseIterable {
+    case Original = "Original"
+    case Manga = "Manga"
+    case LightNovel = "Light Novel"
+    case WebNovel = "Web Novel"
+    case Novel = "Novel"
+    case Anime = "Anime"
+    case VisualNovel = "Visual Novel"
+    case VideoGame = "Video Game"
+    case Doujinshi = "Doujinshi"
+    case Comic = "Comic"
+    case LiveAction = "Live Action"
+    case Game = "Game"
+    case MultimediaProject = "Multimedia Project"
+    
+    init?(from string: String) {
+        if let source = AnimeSourceMaterial(rawValue: string) {
+            self = source
+        } else {
+            return nil
+        }
+    }
+    
+    var stringValue: String {
+        switch self {
+        case .Original:
+            "Original"
+        case .Manga:
+            "Manga"
+        case .LightNovel:
+            "Light Novel"
+        case .WebNovel:
+            "Web Novel"
+        case .Novel:
+            "Novel"
+        case .Anime:
+            "Anime"
+        case .VisualNovel:
+            "Visual Novel"
+        case .VideoGame:
+            "Video Game"
+        case .Doujinshi:
+            "Doujinshi"
+        case .Comic:
+            "Comic"
+        case .LiveAction:
+            "Live Action"
+        case .Game:
+            "Game"
+        case .MultimediaProject:
+            "Multimedia Project"
+        }
+    }
+    
+    var apiUse: String {
+        switch self {
+        case .Original:
+            "Original"
+        case .Manga:
+            "Manga"
+        case .LightNovel:
+            "Light_Novel"
+        case .WebNovel:
+            "Web_Novel"
+        case .Novel:
+            "Novel"
+        case .Anime:
+            "Anime"
+        case .VisualNovel:
+            "Visual_Novel"
+        case .VideoGame:
+            "Video_Game"
+        case .Doujinshi:
+            "Doujinshi"
+        case .Comic:
+            "Comic"
+        case .LiveAction:
+            "Live_Action"
+        case .Game:
+            "Game"
+        case .MultimediaProject:
+            "Multimedia_Project"
+        }
+    }
+}
+
 class SearchPageViewController: UIViewController {
     
     // Search
@@ -75,6 +246,14 @@ class SearchPageViewController: UIViewController {
     var animeData: AnimeSearchedOrTrending?
     
     var genres: [String] = []
+    var selectedGenreSet: Set<String> = Set<String>()
+    var selectedFormatSet: Set<String> = Set<String>()
+    var selectedSort: String = ""
+    var selectedAiringStatusSet: Set<String> = Set<String>()
+    var selectedStreamingOnSet: Set<String> = Set<String>()
+    var selectedCountrySet: Set<String> = Set<String>()
+    var selectedSourceSet: Set<String> = Set<String>()
+    var showDoujin: Bool = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -131,26 +310,86 @@ class SearchPageViewController: UIViewController {
             AnimeDataFetcher.shared.fetchAnimeBySearch(year: yearStr, season: seasonUpperCase)
         }
         
-        let formatMenuActions = AnimeFormat.allCases.map({
-            return UIAction(title: $0.stringValue) { action in
-                print(action.title)
-                self.formatButton.setTitle(action.title, for: .normal)
+        formatButton.setTitle("Select Formats", for: .normal)
+        updateMultipleSelectionButtonMenu(button: formatButton, stringArr: AnimeFormat.allCases.map({$0.stringValue}), selectedSet: selectedFormatSet, defaultString: "Select Formats") { set in
+            self.selectedFormatSet = set
+        }
+        
+        genresButton.setTitle("Select Genres", for: .normal)
+        streamingOnButton.setTitle("Streaming On", for: .normal)
+        
+        AnimeDataFetcher.shared.loadEssentialData { essentialData in
+            self.updateMultipleSelectionButtonMenu(button: self.genresButton, stringArr: essentialData.genreCollection, selectedSet: self.selectedGenreSet, defaultString: "Select Genres") { set in
+                self.selectedGenreSet = set
+            }
+            
+            self.updateMultipleSelectionButtonMenu(button: self.streamingOnButton, stringArr: essentialData.externalLinkSourceCollection.map({$0.site}), selectedSet: self.selectedStreamingOnSet, defaultString: "Streaming On") { set in
+                self.selectedStreamingOnSet = set
+            }
+        }
+        
+        sortButton.setTitle("Select Sort", for: .normal)
+        self.updateSortMenu()
+        
+        airingStatusButton.setTitle("Select Airing Status", for: .normal)
+        updateMultipleSelectionButtonMenu(button: airingStatusButton, stringArr: AnimeAiringStatus.allCases.map({$0.stringValue}), selectedSet: selectedAiringStatusSet, defaultString: "Select Airing Status") { set in
+            self.selectedAiringStatusSet = set
+        }
+        
+        countryOfOriginButton.setTitle("Country", for: .normal)
+        updateMultipleSelectionButtonMenu(button: countryOfOriginButton, stringArr: AnimeCountryOfOrigin.allCases.map({$0.stringValue}), selectedSet: selectedCountrySet, defaultString: "Country") { set in
+            self.selectedCountrySet = set
+        }
+        
+        sourceMaterialButton.setTitle("Source", for: .normal)
+        updateMultipleSelectionButtonMenu(button: sourceMaterialButton, stringArr: AnimeSourceMaterial.allCases.map({$0.stringValue}), selectedSet: selectedSourceSet, defaultString: "Source") { set in
+            self.selectedSourceSet = set
+        }
+        
+        doujinSwitch.isOn = showDoujin
+        doujinSwitch.addTarget(self, action: #selector(changeDoujinBoolStatus), for: .valueChanged)
+    }
+    
+    @objc func changeDoujinBoolStatus(sender: UISwitch) {
+        self.showDoujin = sender.isOn
+        print("showDoujin", showDoujin)
+    }
+    
+    private func updateMultipleSelectionButtonMenu(button: UIButton, stringArr: [String], selectedSet: Set<String>, defaultString: String, updateSet: @escaping (Set<String>) -> Void) {
+        var mutableSet = selectedSet
+        let menuActions = stringArr.map { str in
+            UIAction(title: str, state: selectedSet.contains(str) ? .on : .off) { action in
+                if mutableSet.contains(str) {
+                    mutableSet.remove(str)
+                } else {
+                    mutableSet.insert(str)
+                }
+                // Update the button title
+                button.setTitle(mutableSet.isEmpty ? defaultString : mutableSet.joined(separator: ", "), for: .normal)
+                updateSet(mutableSet)
+                // Recreate the menu to reflect the updated selection state
+                self.updateMultipleSelectionButtonMenu(button: button, stringArr: stringArr, selectedSet: mutableSet, defaultString: defaultString, updateSet: updateSet)
+            }
+        }
+
+        // Update the menu on the main thread
+        DispatchQueue.main.async {
+            button.menu = UIMenu(title: defaultString, options: .displayInline, children: menuActions)
+            button.showsMenuAsPrimaryAction = true
+        }
+    }
+    
+    
+    private func updateSortMenu() {
+        let sortMenuActions = AnimeSort.allCases.map({
+            return UIAction(title: $0.stringValue, state: selectedSort == $0.stringValue ? .on : .off) { action in
+                self.selectedSort = action.title
+                self.sortButton.setTitle(action.title, for: .normal)
+                self.updateSortMenu()
             }
         })
-        formatButton.menu = UIMenu(title: "format", children: formatMenuActions)
-        formatButton.setTitle("select", for: .normal)
-        
-        genresButton.setTitle("select", for: .normal)
-        AnimeDataFetcher.shared.loadEssentialData { essentialData in
-            self.genres = essentialData.GenreCollection
-            let genresMenuActions = self.genres.map({
-                return UIAction(title: $0) { action in
-                    self.genresButton.setTitle(action.title, for: .normal)
-                }
-            })
-            DispatchQueue.main.async {
-                self.genresButton.menu = UIMenu(title: "Genres", children: genresMenuActions)
-            }
+        DispatchQueue.main.async {
+            self.sortButton.menu = UIMenu(title: "Select Sort", options: .displayInline, children: sortMenuActions)
         }
     }
     
@@ -171,14 +410,6 @@ class SearchPageViewController: UIViewController {
         yearTableView.isHidden = false
     }
     
-//    func fetchImages() {
-//        let urls = Array(repeating: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx107372-4N3N0xVgI8go.jpg", count: 50)
-//
-//        for (index, urlString) in urls.enumerated() {
-//            print(index, urlString)
-//            downloadImage(url: urlString, index: index)
-//        }
-//    }
 
     /*
     // MARK: - Navigation
