@@ -143,11 +143,9 @@ class AnimeDataFetcher {
                     english
                     native
                   }
-                  # episodes
                   coverImage {
                     extraLarge
                   }
-                  # season
                 }
                 pageInfo {
                   currentPage
@@ -1565,6 +1563,74 @@ query {
 //                print(String(data: data, encoding: .utf8))
                 let media = try JSONDecoder().decode(EssentialDataCollection.self, from: data)
                 completion(media.data)
+                self.isFetchingData = false
+            } catch {
+                print("Error parsing JSON: \(error.localizedDescription)")
+            }
+            
+        }
+        
+        // Execute URLSession task
+        task.resume()
+    }
+    
+    func searchAnime(title: String, genres: [String], format: [String], sort: String, airingStatus: [String], streamingOn: [String], country: String, sourceMaterial: [String], doujin: Bool, year: Int?, season: String, page: Int, completion: @escaping (AnimeSearchedOrTrending) -> Void) {
+        isFetchingData = true
+        var urlRequest = URLRequest(url: queryURL)
+        urlRequest.httpMethod = "post"
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        print(genres.isEmpty)
+        let query = """
+query {
+    Page(page: \(page + 1), perPage: 50) {
+        pageInfo {
+            hasNextPage
+            currentPage
+        }
+        media(isAdult: false, type: ANIME\(title == "" ? "": ", search: \"\(title)\"")\(genres.isEmpty ? "" : ", genre_in: \(genres)")\(format.isEmpty ? "" : ", format_in: [\(format.joined(separator: ", "))]"), sort: \(sort == "" ? "POPULARITY_DESC" : sort)\(airingStatus.isEmpty ? "" : ", status_in: [\(airingStatus.joined(separator: ", "))]")\(streamingOn.isEmpty ? "" : ", licensedBy_in: \(streamingOn)")\(country == "" ? "" : ", countryOfOrigin: \(country)")\(sourceMaterial.isEmpty ? "" : ", source_in: [\(sourceMaterial.joined(separator: ", "))]"), isLicensed: \(!doujin)\(year == nil ? "" : ", seasonYear: \(year!)")\(season == "" ? "" : ", season: \(season.uppercased())")) {
+            id
+            title {
+                romaji
+                english
+                native
+            }
+            coverImage {
+                extraLarge
+            }
+        }
+    }
+}
+"""
+        print(query)
+        
+        let graphQLData = ["query": query]
+        
+        do {
+            urlRequest.httpBody = try JSONSerialization.data(withJSONObject: graphQLData, options: [])
+        } catch {
+            print("Error serializing JSON: \(error.localizedDescription)")
+            return
+        }
+        // Create URLSession task
+        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+            if let error = error {
+                print("Error fetching data: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                print("Invalid response")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+            do {
+//                print(String(data: data, encoding: .utf8))
+                let media = try JSONDecoder().decode(AnimeSearchedOrTrending.self, from: data)
+                completion(media)
                 self.isFetchingData = false
             } catch {
                 print("Error parsing JSON: \(error.localizedDescription)")

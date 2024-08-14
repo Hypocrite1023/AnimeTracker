@@ -62,7 +62,13 @@ extension TrendingPageViewController: UICollectionViewDelegate, UICollectionView
         if let animeAllData = animeFetchedData {
             let animeData = animeAllData.data.Page.media[indexPath.item]
             print(animeData.title.native)
-            cell.setup(title: animeData.title.native, imageURL: animeData.coverImage.extraLarge)
+            if let animeTitle = animeData.title.native {
+                cell.setup(title: animeTitle, imageURL: animeData.coverImage.extraLarge)
+            } else if let animeTitle = animeData.title.english {
+                cell.setup(title: animeTitle, imageURL: animeData.coverImage.extraLarge)
+            } else if let animeTitle = animeData.title.romaji {
+                cell.setup(title: animeTitle, imageURL: animeData.coverImage.extraLarge)
+            }
         } else {
             cell.setup(title: "", imageURL: nil)
         }

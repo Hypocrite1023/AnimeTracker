@@ -7,8 +7,14 @@
 
 import UIKit
 
-enum AnimeFormat: CaseIterable {
-    case TVSHOW, MOVIE, TVSHORT, SPECIAL, OVA, ONA, MUSIC
+enum AnimeFormat: String, CaseIterable {
+    case TVSHOW = "TV Show"
+    case MOVIE = "Movie"
+    case TVSHORT = "TV Short"
+    case SPECIAL = "Special"
+    case OVA = "OVA"
+    case ONA = "ONA"
+    case MUSIC = "Music"
     
     var stringValue: String {
         switch(self) {
@@ -29,11 +35,44 @@ enum AnimeFormat: CaseIterable {
             return "Music"
         }
     }
+    
+    var apiUse: String {
+        switch self {
+            
+        case .TVSHOW:
+            "TV"
+        case .MOVIE:
+            "MOVIE"
+        case .TVSHORT:
+            "TV_SHORT"
+        case .SPECIAL:
+            "SPECIAL"
+        case .OVA:
+            "OVA"
+        case .ONA:
+            "ONA"
+        case .MUSIC:
+            "MUSIC"
+        }
+    }
+    
+    init?(str: String) {
+        if let format = AnimeFormat(rawValue: str) {
+            self = format
+        } else {
+            return nil
+        }
+    }
 }
 
-enum AnimeSort: CaseIterable {
-    case Title, Popularity, AverageScore, Trending, Favorites, DateAdded, ReleaseDate
-    
+enum AnimeSort: String, CaseIterable {
+    case Title = "Title"
+    case Popularity = "Popularity"
+    case AverageScore = "Average Score"
+    case Trending = "Trending"
+    case Favorites = "Favorites"
+    case DateAdded = "Date Added"
+    case ReleaseDate = "Release Date"
     var stringValue: String {
         switch(self) {
             
@@ -53,10 +92,40 @@ enum AnimeSort: CaseIterable {
             "Release Date"
         }
     }
+    
+    var apiUse: String {
+        switch self {
+            
+        case .Title:
+            "TITLE_NATIVE"
+        case .Popularity:
+            "POPULARITY_DESC"
+        case .AverageScore:
+            "SCORE_DESC"
+        case .Trending:
+            "TRENDING_DESC"
+        case .Favorites:
+            "FAVOURITES_DESC"
+        case .DateAdded:
+            "UPDATED_AT"
+        case .ReleaseDate:
+            "START_DATE_DESC"
+        }
+    }
+    init?(str: String) {
+        if let sort = AnimeSort(rawValue: str) {
+            self = sort
+        } else {
+            return nil
+        }
+    }
 }
 
-enum AnimeAiringStatus: CaseIterable {
-    case Airing, Finished, NotYetAired, Cancelled
+enum AnimeAiringStatus: String, CaseIterable {
+    case Airing = "Airing"
+    case Finished = "Finished"
+    case NotYetAired = "Not Yet Aired"
+    case Cancelled = "Cancelled"
     
     var stringValue: String {
         switch self {
@@ -70,6 +139,23 @@ enum AnimeAiringStatus: CaseIterable {
         case .Cancelled:
             "Cancelled"
         }
+    }
+    var apiUse: String {
+        switch self {
+            
+        case .Airing:
+            "RELEASING"
+        case .Finished:
+            "FINISHED"
+        case .NotYetAired:
+            "NOT_YET_RELEASED"
+        case .Cancelled:
+            "CANCELLED"
+        }
+    }
+    
+    init?(str: String) {
+        self = AnimeAiringStatus(rawValue: str)!
     }
 }
 
@@ -173,31 +259,31 @@ enum AnimeSourceMaterial: String, CaseIterable {
     var apiUse: String {
         switch self {
         case .Original:
-            "Original"
+            "ORIGINAL"
         case .Manga:
-            "Manga"
+            "MANGA"
         case .LightNovel:
-            "Light_Novel"
+            "LIGHT_NOVEL"
         case .WebNovel:
-            "Web_Novel"
+            "WEB_NOVEL"
         case .Novel:
-            "Novel"
+            "NOVEL"
         case .Anime:
-            "Anime"
+            "ANIME"
         case .VisualNovel:
-            "Visual_Novel"
+            "VISUAL_NOVEL"
         case .VideoGame:
-            "Video_Game"
+            "VIDEO_GAME"
         case .Doujinshi:
-            "Doujinshi"
+            "DOUJINSHI"
         case .Comic:
-            "Comic"
+            "COMIC"
         case .LiveAction:
-            "Live_Action"
+            "LIVE_ACTION"
         case .Game:
-            "Game"
+            "GAME"
         case .MultimediaProject:
-            "Multimedia_Project"
+            "MULTIMEDIA_PROJECT"
         }
     }
 }
@@ -205,7 +291,7 @@ enum AnimeSourceMaterial: String, CaseIterable {
 class SearchPageViewController: UIViewController {
     
     // Search
-    @IBOutlet weak var serchAnimeTitleTextField: UITextField!
+    @IBOutlet weak var searchAnimeTitleTextField: UITextField!
     @IBOutlet weak var genresButton: UIButton!
     @IBOutlet weak var yearButton: UIButton!
     @IBOutlet weak var seasonButton: UIButton!
@@ -239,22 +325,69 @@ class SearchPageViewController: UIViewController {
         }
         configScrollView.isHidden.toggle()
     }
-    var yearTableView: UITableView!
-    var seasonTableView: UITableView!
-//    let apiManager = AnimeDataFetcher()
-//    var images: [UIImage?] = Array(repeating: nil, count: 10)
+    
     var animeData: AnimeSearchedOrTrending?
     
-    var genres: [String] = []
-    var selectedGenreSet: Set<String> = Set<String>()
-    var selectedFormatSet: Set<String> = Set<String>()
-    var selectedSort: String = ""
-    var selectedAiringStatusSet: Set<String> = Set<String>()
-    var selectedStreamingOnSet: Set<String> = Set<String>()
-    var selectedCountrySet: Set<String> = Set<String>()
-    var selectedSourceSet: Set<String> = Set<String>()
-    var showDoujin: Bool = false
+    var genres: [String] = [] {
+        didSet {
+            dataCurrentPage = 0
+        }
+    }
+    var selectedGenreSet: Set<String> = Set<String>() {
+        didSet {
+            dataCurrentPage = 0
+        }
+    }
+    var selectedFormatSet: Set<String> = Set<String>() {
+        didSet {
+            dataCurrentPage = 0
+        }
+    }
+    var selectedSort: String = "" {
+        didSet {
+            dataCurrentPage = 0
+        }
+    }
+    var selectedAiringStatusSet: Set<String> = Set<String>() {
+        didSet {
+            dataCurrentPage = 0
+        }
+    }
+    var selectedStreamingOnSet: Set<String> = Set<String>() {
+        didSet {
+            dataCurrentPage = 0
+        }
+    }
+    var selectedCountry: String = "" {
+        didSet {
+            dataCurrentPage = 0
+        }
+    }
+    var selectedSourceSet: Set<String> = Set<String>() {
+        didSet {
+            dataCurrentPage = 0
+        }
+    }
+    var showDoujin: Bool = false {
+        didSet {
+            dataCurrentPage = 0
+        }
+    }
+    var selectedSeasonYear: Int? {
+        didSet {
+            dataCurrentPage = 0
+        }
+    }
+    var selectedSeason: String = "" {
+        didSet {
+            dataCurrentPage = 0
+        }
+    }
 
+    var lastTimeReloadData: Date?
+    var dataCurrentPage = 0
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -267,52 +400,16 @@ class SearchPageViewController: UIViewController {
         AnimeDataFetcher.shared.animeDataDelegateManager = self
         AnimeDataFetcher.shared.animeOverViewDataDelegate = self
         
-        yearButton.setTitle(PickerData.yearPickerOption.last?.description, for: .normal)
-        yearButton.addTarget(self, action: #selector(yearButtonTap), for: .touchUpInside)
         
-        yearTableView = UITableView()
-        yearTableView.isHidden = true
-        self.view.addSubview(yearTableView)
-        yearTableView.register(UITableViewCell.self, forCellReuseIdentifier: "yearCell")
-        yearTableView?.translatesAutoresizingMaskIntoConstraints = false
-        yearTableView?.delegate = self
-        yearTableView?.dataSource = self
-        
-        NSLayoutConstraint.activate([
-            yearTableView.centerXAnchor.constraint(equalTo: yearButton.centerXAnchor),
-            yearTableView.topAnchor.constraint(equalTo: yearButton.bottomAnchor),
-            yearTableView.heightAnchor.constraint(equalToConstant: 200),
-            yearTableView.widthAnchor.constraint(equalTo: yearButton.widthAnchor)
-        ])
-        
-        seasonButton.setTitle(PickerData.seasonPickerOption.first, for: .normal)
-        seasonButton?.addTarget(self, action: #selector(seasonButtonTap), for: .touchUpInside)
-        
-        seasonTableView = UITableView()
-        seasonTableView.isHidden = true
-        self.view.addSubview(seasonTableView)
-        seasonTableView.register(UITableViewCell.self, forCellReuseIdentifier: "seasonCell")
-        seasonTableView?.translatesAutoresizingMaskIntoConstraints = false
-        seasonTableView?.delegate = self
-        seasonTableView?.dataSource = self
-        
-        NSLayoutConstraint.activate([
-            seasonTableView.centerXAnchor.constraint(equalTo: seasonButton.centerXAnchor),
-            seasonTableView.topAnchor.constraint(equalTo: seasonButton.bottomAnchor),
-            seasonTableView.heightAnchor.constraint(equalToConstant: 200),
-            seasonTableView.widthAnchor.constraint(equalTo: seasonButton.widthAnchor)
-        ])
         
         trendingAnimeCollectionView?.dataSource = self
         trendingAnimeCollectionView?.delegate = self
         trendingAnimeCollectionView?.register(SearchingAnimeCollectionViewCell.self, forCellWithReuseIdentifier: "searchCell")
-        if let seasonUpperCase = PickerData.seasonPickerOption.first?.uppercased(), let yearStr = PickerData.yearPickerOption.last?.description {
-            AnimeDataFetcher.shared.fetchAnimeBySearch(year: yearStr, season: seasonUpperCase)
-        }
         
         formatButton.setTitle("Select Formats", for: .normal)
         updateMultipleSelectionButtonMenu(button: formatButton, stringArr: AnimeFormat.allCases.map({$0.stringValue}), selectedSet: selectedFormatSet, defaultString: "Select Formats") { set in
             self.selectedFormatSet = set
+            self.searchChangeLoadData()
         }
         
         genresButton.setTitle("Select Genres", for: .normal)
@@ -321,12 +418,20 @@ class SearchPageViewController: UIViewController {
         AnimeDataFetcher.shared.loadEssentialData { essentialData in
             self.updateMultipleSelectionButtonMenu(button: self.genresButton, stringArr: essentialData.genreCollection, selectedSet: self.selectedGenreSet, defaultString: "Select Genres") { set in
                 self.selectedGenreSet = set
+                self.searchChangeLoadData()
             }
             
             self.updateMultipleSelectionButtonMenu(button: self.streamingOnButton, stringArr: essentialData.externalLinkSourceCollection.map({$0.site}), selectedSet: self.selectedStreamingOnSet, defaultString: "Streaming On") { set in
                 self.selectedStreamingOnSet = set
+                self.searchChangeLoadData()
             }
         }
+        
+        yearButton.setTitle("Year", for: .normal)
+        self.updateYearSelectionMenu()
+        
+        seasonButton.setTitle("Season", for: .normal)
+        self.updateSeasonSelectionMenu()
         
         sortButton.setTitle("Select Sort", for: .normal)
         self.updateSortMenu()
@@ -334,24 +439,27 @@ class SearchPageViewController: UIViewController {
         airingStatusButton.setTitle("Select Airing Status", for: .normal)
         updateMultipleSelectionButtonMenu(button: airingStatusButton, stringArr: AnimeAiringStatus.allCases.map({$0.stringValue}), selectedSet: selectedAiringStatusSet, defaultString: "Select Airing Status") { set in
             self.selectedAiringStatusSet = set
+            self.searchChangeLoadData()
         }
         
         countryOfOriginButton.setTitle("Country", for: .normal)
-        updateMultipleSelectionButtonMenu(button: countryOfOriginButton, stringArr: AnimeCountryOfOrigin.allCases.map({$0.stringValue}), selectedSet: selectedCountrySet, defaultString: "Country") { set in
-            self.selectedCountrySet = set
-        }
+        updateCountrySelectionMenu()
         
         sourceMaterialButton.setTitle("Source", for: .normal)
         updateMultipleSelectionButtonMenu(button: sourceMaterialButton, stringArr: AnimeSourceMaterial.allCases.map({$0.stringValue}), selectedSet: selectedSourceSet, defaultString: "Source") { set in
             self.selectedSourceSet = set
+            self.searchChangeLoadData()
         }
         
         doujinSwitch.isOn = showDoujin
         doujinSwitch.addTarget(self, action: #selector(changeDoujinBoolStatus), for: .valueChanged)
+        
+        searchAnimeTitleTextField.delegate = self
     }
     
     @objc func changeDoujinBoolStatus(sender: UISwitch) {
         self.showDoujin = sender.isOn
+        searchChangeLoadData()
         print("showDoujin", showDoujin)
     }
     
@@ -364,9 +472,11 @@ class SearchPageViewController: UIViewController {
                 } else {
                     mutableSet.insert(str)
                 }
+                
                 // Update the button title
                 button.setTitle(mutableSet.isEmpty ? defaultString : mutableSet.joined(separator: ", "), for: .normal)
                 updateSet(mutableSet)
+                
                 // Recreate the menu to reflect the updated selection state
                 self.updateMultipleSelectionButtonMenu(button: button, stringArr: stringArr, selectedSet: mutableSet, defaultString: defaultString, updateSet: updateSet)
             }
@@ -383,13 +493,77 @@ class SearchPageViewController: UIViewController {
     private func updateSortMenu() {
         let sortMenuActions = AnimeSort.allCases.map({
             return UIAction(title: $0.stringValue, state: selectedSort == $0.stringValue ? .on : .off) { action in
-                self.selectedSort = action.title
-                self.sortButton.setTitle(action.title, for: .normal)
+//                self.selectedSort = action.title
+                if self.selectedSort == action.title {
+                    self.selectedSort = ""
+                    self.sortButton.setTitle("Select Sort", for: .normal)
+                } else {
+                    self.selectedSort = action.title
+                    self.sortButton.setTitle(action.title, for: .normal)
+                }
+                self.searchChangeLoadData()
                 self.updateSortMenu()
             }
         })
         DispatchQueue.main.async {
             self.sortButton.menu = UIMenu(title: "Select Sort", options: .displayInline, children: sortMenuActions)
+        }
+    }
+    
+    private func updateCountrySelectionMenu() {
+        let countryMenuActions = AnimeCountryOfOrigin.allCases.map({
+            return UIAction(title: $0.stringValue, state: selectedCountry == $0.stringValue ? .on : .off) { action in
+                if self.selectedCountry == action.title {
+                    self.selectedCountry = ""
+                    self.countryOfOriginButton.setTitle("Country", for: .normal)
+                } else {
+                    self.selectedCountry = action.title
+                    self.countryOfOriginButton.setTitle(action.title, for: .normal)
+                }
+                self.searchChangeLoadData()
+                self.updateCountrySelectionMenu()
+            }
+        })
+        DispatchQueue.main.async {
+            self.countryOfOriginButton.menu = UIMenu(title: "Country", options: .displayInline, children: countryMenuActions)
+        }
+    }
+    
+    private func updateYearSelectionMenu() {
+        let yearMenuActions = PickerData.yearPickerOption.map({
+            return UIAction(title: $0.description, state: selectedCountry == $0.description ? .on : .off) { action in
+                if self.selectedSeasonYear?.description == action.title {
+                    self.selectedSeasonYear = nil
+                    self.yearButton.setTitle("Year", for: .normal)
+                } else {
+                    self.selectedSeasonYear = Int(action.title)
+                    self.yearButton.setTitle(action.title, for: .normal)
+                }
+                self.searchChangeLoadData()
+                self.updateYearSelectionMenu()
+            }
+        })
+        DispatchQueue.main.async {
+            self.yearButton.menu = UIMenu(title: "Year", options: .displayInline, children: yearMenuActions)
+        }
+    }
+    
+    private func updateSeasonSelectionMenu() {
+        let seasonMenuActions = PickerData.seasonPickerOption.map({
+            return UIAction(title: $0.description, state: selectedCountry == $0.description ? .on : .off) { action in
+                if self.selectedSeason == action.title {
+                    self.selectedSeason = ""
+                    self.seasonButton.setTitle("Season", for: .normal)
+                } else {
+                    self.selectedSeason = action.title
+                    self.seasonButton.setTitle(action.title, for: .normal)
+                }
+                self.searchChangeLoadData()
+                self.updateSeasonSelectionMenu()
+            }
+        })
+        DispatchQueue.main.async {
+            self.seasonButton.menu = UIMenu(title: "Season", options: .displayInline, children: seasonMenuActions)
         }
     }
     
@@ -402,13 +576,6 @@ class SearchPageViewController: UIViewController {
         print("SearchingPageViewController deinit")
     }
     
-    @objc func seasonButtonTap(sender: UIButton) {
-        seasonTableView.isHidden = false
-    }
-    
-    @objc func yearButtonTap(sender: UIButton) {
-        yearTableView.isHidden = false
-    }
     
 
     /*
@@ -422,67 +589,41 @@ class SearchPageViewController: UIViewController {
     */
 
 }
-// MARK: - UIPickerViewDelegate, UIPickerViewDataSource
-extension SearchPageViewController: UIPickerViewDelegate, UIPickerViewDataSource {
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return PickerData.yearPickerOption.count
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return "\(PickerData.yearPickerOption[row])"
-    }
-}
-// MARK: - UITableViewDataSource, UITableViewDelegate
-extension SearchPageViewController: UITableViewDataSource, UITableViewDelegate {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        var numberOfRowsInSection = 0
-        if tableView == seasonTableView {
-            numberOfRowsInSection = PickerData.seasonPickerOption.count
-        } else if tableView == yearTableView {
-            numberOfRowsInSection = PickerData.yearPickerOption.count
-        }
-        return numberOfRowsInSection
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        var cell = UITableViewCell()
-        if tableView == seasonTableView {
-            cell = tableView.dequeueReusableCell(withIdentifier: "seasonCell", for: indexPath)
-            cell.textLabel?.text = PickerData.seasonPickerOption[indexPath.row]
-            return cell
-        } else if tableView == yearTableView {
-            cell = tableView.dequeueReusableCell(withIdentifier: "yearCell", for: indexPath)
-            cell.textLabel?.text = "\(PickerData.yearPickerOption[indexPath.row])"
-            return cell
-        }
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if tableView == seasonTableView {
-            seasonButton.setTitle(PickerData.seasonPickerOption[indexPath.row], for: .normal)
-            tableView.deselectRow(at: indexPath, animated: true)
-            tableView.isHidden = true
-            let seasonUpperCase = PickerData.seasonPickerOption[indexPath.row].uppercased()
-            if let yearStr = yearButton.titleLabel?.text?.description {
-                AnimeDataFetcher.shared.fetchAnimeBySearch(year: yearStr, season: seasonUpperCase)
+
+extension SearchPageViewController: UITextFieldDelegate {
+    fileprivate func searchChangeLoadData() {
+        print("load data")
+        AnimeDataFetcher.shared.searchAnime(title: searchAnimeTitleTextField.text ?? "", genres: selectedGenreSet.map({$0}), format: selectedFormatSet.compactMap({AnimeFormat(str: $0)?.apiUse}), sort: AnimeSort(str: selectedSort)?.apiUse ?? "", airingStatus: selectedAiringStatusSet.map({AnimeAiringStatus(rawValue: $0)!.apiUse}), streamingOn: selectedStreamingOnSet.map({$0}), country: AnimeCountryOfOrigin(fromString: selectedCountry)?.apiUse ?? "", sourceMaterial: selectedSourceSet.map({AnimeSourceMaterial(from: $0)!.apiUse}), doujin: showDoujin, year: selectedSeasonYear, season: selectedSeason, page: dataCurrentPage) { animeData in
+            
+            if animeData.data.Page.pageInfo.currentPage == 1 {
+                self.animeData = animeData
+            } else {
+                self.animeData?.data.Page.media += animeData.data.Page.media
+                self.animeData?.data.Page.pageInfo.hasNextPage = animeData.data.Page.pageInfo.hasNextPage
             }
-        } else if tableView == yearTableView {
-            yearButton.setTitle(PickerData.yearPickerOption[indexPath.row].description, for: .normal)
-            tableView.deselectRow(at: indexPath, animated: true)
-            tableView.isHidden = true
-            let yearStr = PickerData.yearPickerOption[indexPath.row].description
-            if let seasonUpperCase = seasonButton.titleLabel?.text?.uppercased() {
-                AnimeDataFetcher.shared.fetchAnimeBySearch(year: yearStr, season: seasonUpperCase)
+            
+            DispatchQueue.main.async {
+                self.trendingAnimeCollectionView?.reloadData()
+                if self.dataCurrentPage == 0 {
+                    UIView.animate(withDuration: 0.5) {
+                        self.trendingAnimeCollectionView?.contentOffset.y = 0
+                    }
+                }
             }
         }
         
+        
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == searchAnimeTitleTextField {
+            searchChangeLoadData()
+        }
+        textField.resignFirstResponder()
+        return true
     }
 }
+
 // MARK: - UICollectionViewDataSource, UICollectionDelegate
 extension SearchPageViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
@@ -490,14 +631,20 @@ extension SearchPageViewController: UICollectionViewDataSource, UICollectionView
         return 1
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return animeData?.data.Page.media.count ?? 50
+        return animeData?.data.Page.media.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "searchCell", for: indexPath) as! SearchingAnimeCollectionViewCell
         if let animeAllData = self.animeData {
             let animeOneData = animeAllData.data.Page.media[indexPath.item]
-            cell.setup(title: animeOneData.title.native, imageURL: animeOneData.coverImage.extraLarge)
+            if let animeTitle = animeOneData.title.native {
+                cell.setup(title: animeTitle, imageURL: animeOneData.coverImage.extraLarge)
+            } else if let animeTitle = animeOneData.title.english {
+                cell.setup(title: animeTitle, imageURL: animeOneData.coverImage.extraLarge)
+            } else if let animeTitle = animeOneData.title.romaji {
+                cell.setup(title: animeTitle, imageURL: animeOneData.coverImage.extraLarge)
+            }
         } else {
             cell.setup(title: "", imageURL: nil)
         }
@@ -524,6 +671,22 @@ extension SearchPageViewController: UICollectionViewDataSource, UICollectionView
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let animeID = self.animeData?.data.Page.media[indexPath.item].id {
             AnimeDataFetcher.shared.fetchAnimeByID(id: animeID)
+        }
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if let lastTimeReloadData = lastTimeReloadData {
+            if Date.now.timeIntervalSince(lastTimeReloadData) < 2 {
+                print(lastTimeReloadData.timeIntervalSinceNow)
+                return
+            }
+        }
+        if scrollView == trendingAnimeCollectionView {
+            if scrollView.contentOffset.y + scrollView.frame.height + 60 > scrollView.contentSize.height && (self.animeData?.data.Page.pageInfo.hasNextPage ?? false) {
+                lastTimeReloadData = Date.now
+                self.dataCurrentPage += 1
+                searchChangeLoadData()
+            }
         }
     }
     

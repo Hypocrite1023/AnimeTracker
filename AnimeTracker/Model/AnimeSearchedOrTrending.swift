@@ -23,7 +23,9 @@ struct AnimeSearchedOrTrending: Codable {
                 let coverImage: CoverImage
                 
                 struct Title: Codable {
-                    let native: String
+                    let native: String?
+                    let english: String?
+                    let romaji: String?
                 }
                 struct CoverImage: Codable {
                     let extraLarge: String
@@ -31,7 +33,7 @@ struct AnimeSearchedOrTrending: Codable {
             }
             struct PageInfo: Codable {
                 var currentPage: Int
-                let hasNextPage: Bool
+                var hasNextPage: Bool
             }
         }
     }
