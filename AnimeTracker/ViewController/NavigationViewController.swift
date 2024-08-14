@@ -46,10 +46,16 @@ class NavigationViewController: UINavigationController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         print("view did appear")
-        if let _ = Auth.auth().currentUser {
-            print("login success")
-            let mainPage = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TabBarController")
-            self.viewControllers = [mainPage]
+        if let verified = Auth.auth().currentUser?.isEmailVerified {
+            if verified {
+                print("login success")
+                let mainPage = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TabBarController")
+                self.viewControllers = [mainPage]
+            } else {
+                print("need login")
+                let loginPage = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginPage")
+                self.viewControllers = [loginPage]
+            }
         } else {
             print("need login")
             let loginPage = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginPage")

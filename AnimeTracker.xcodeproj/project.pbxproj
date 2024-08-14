@@ -51,6 +51,7 @@
 		CD7EF8CE2C66FB9100DCBF7E /* AnimeTimeLineTableViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7EF8CD2C66FB9100DCBF7E /* AnimeTimeLineTableViewViewController.swift */; };
 		CD7EF8D22C67960800DCBF7E /* AnimeTimeLineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7EF8CF2C67960800DCBF7E /* AnimeTimeLineTableViewCell.swift */; };
 		CD8DD5CA2C60987C00E0D7A2 /* OpenURLDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8DD5C92C60987C00E0D7A2 /* OpenURLDelegate.swift */; };
+		CD9D02EF2C6CEA6900FD9141 /* ResetPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D02EE2C6CEA6900FD9141 /* ResetPasswordViewController.swift */; };
 		CD9D4E682C4D0126003492C1 /* AnimeDescriptionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D4E672C4D0126003492C1 /* AnimeDescriptionDelegate.swift */; };
 		CD9D4E6A2C4E4E6F003492C1 /* WatchViewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D4E692C4E4E6F003492C1 /* WatchViewCollectionViewCell.swift */; };
 		CD9D4E6C2C4E654A003492C1 /* AnimeStreamingDetailDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D4E6B2C4E654A003492C1 /* AnimeStreamingDetailDelegate.swift */; };
@@ -168,6 +169,7 @@
 		CD7EF8CD2C66FB9100DCBF7E /* AnimeTimeLineTableViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeTimeLineTableViewViewController.swift; sourceTree = "<group>"; };
 		CD7EF8CF2C67960800DCBF7E /* AnimeTimeLineTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeTimeLineTableViewCell.swift; sourceTree = "<group>"; };
 		CD8DD5C92C60987C00E0D7A2 /* OpenURLDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenURLDelegate.swift; sourceTree = "<group>"; };
+		CD9D02EE2C6CEA6900FD9141 /* ResetPasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPasswordViewController.swift; sourceTree = "<group>"; };
 		CD9D4E672C4D0126003492C1 /* AnimeDescriptionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeDescriptionDelegate.swift; sourceTree = "<group>"; };
 		CD9D4E692C4E4E6F003492C1 /* WatchViewCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchViewCollectionViewCell.swift; sourceTree = "<group>"; };
 		CD9D4E6B2C4E654A003492C1 /* AnimeStreamingDetailDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeStreamingDetailDelegate.swift; sourceTree = "<group>"; };
@@ -650,6 +652,7 @@
 				CD6FB7462C644914006455D6 /* LoginViewController.swift */,
 				CDDE2CB52C6466340016647B /* FavoritePageViewController.swift */,
 				CD7EF8CD2C66FB9100DCBF7E /* AnimeTimeLineTableViewViewController.swift */,
+				CD9D02EE2C6CEA6900FD9141 /* ResetPasswordViewController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -891,6 +894,7 @@
 				CD9D4EC32C54E7CA003492C1 /* RecommendationsAnimePreview.swift in Sources */,
 				CD2FF7BC2C5CBA0400924687 /* MediaResponse.swift in Sources */,
 				CD2FF7A72C5B840500924687 /* AnimeCharacterPageViewController.swift in Sources */,
+				CD9D02EF2C6CEA6900FD9141 /* ResetPasswordViewController.swift in Sources */,
 				CDDE2CB62C6466340016647B /* FavoritePageViewController.swift in Sources */,
 				CDA141F82C57CEC000708A8B /* ThreadsView.swift in Sources */,
 				CD9D4EE52C551E10003492C1 /* TagPreview.swift in Sources */,

@@ -18,6 +18,8 @@ class TrendingPageViewController: UIViewController {
     
     private var cancellables = Set<AnyCancellable>()
     var fetchingDataIndicator = UIActivityIndicatorView(style: .large)
+    
+    var lastFetchData: Date?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -129,6 +131,12 @@ extension TrendingPageViewController: AnimeDataDelegate {
 }
 extension TrendingPageViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if let lastTimeFetchData = lastFetchData {
+            if Date.now.timeIntervalSince(lastTimeFetchData) < 2 {
+                return
+            }
+                
+        }
         let offsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height
         let frameHeight = scrollView.frame.size.height
@@ -136,8 +144,9 @@ extension TrendingPageViewController: UIScrollViewDelegate {
         if offsetY > contentHeight - frameHeight {
             if let animeFetchedData = animeFetchedData {
                 print(AnimeDataFetcher.shared.isFetchingData.description)
-                if animeFetchedData.data.Page.pageInfo.hasNextPage && !AnimeDataFetcher.shared.isFetchingData {
+                if animeFetchedData.data.Page.pageInfo.hasNextPage {
                     print("fetch data")
+                    lastFetchData = Date.now
                     AnimeDataFetcher.shared.fetchAnimeByTrending(page: AnimeDataFetcher.shared.trendingNextFetchPage)
                 }
             }

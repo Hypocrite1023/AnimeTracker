@@ -7,6 +7,7 @@
 
 import Foundation
 import UserNotifications
+import FirebaseAuth
 
 struct EpisodeAndNotificationID {
     let episode: Int
@@ -72,5 +73,35 @@ class AnimeNotification {
             }
         }
         UserDefaults.standard.removeObject(forKey: "\(animeID)")
+    }
+    
+    func removeAllNotification() {
+        if let userUID = Auth.auth().currentUser?.uid {
+            FirebaseStoreFunc.shared.loadUserNotificationAnime(userUID: userUID) { document, error in
+                if let document = document {
+                    let animeIDs = document.map({$0.documentID})
+                    for animeID in animeIDs {
+                        self.removeAllEpisodeNotification(for: Int(animeID)!)
+                    }
+                }
+            }
+        }
+    }
+    
+    func checkNotification() {
+        if let userUID = Auth.auth().currentUser?.uid {
+            FirebaseStoreFunc.shared.loadUserNotificationAnime(userUID: userUID) { document, error in
+                if let document = document {
+                    let animeIDs = document.map({$0.documentID})
+                    for animeID in animeIDs {
+                        AnimeDataFetcher.shared.fetchAnimeEpisodeDataByID(id: Int(animeID)!) { episodeData in
+                            if let nextAiringEpisode = episodeData?.data.Media.nextAiringEpisode, let episodes = episodeData?.data.Media.episodes, let animeTitle = episodeData?.data.Media.title.native {
+                                AnimeNotification.shared.setupAllEpisodeNotification(animeID: Int(animeID)!, animeTitle: animeTitle, nextAiringEpsode: nextAiringEpisode.episode, nextAiringInterval: TimeInterval(nextAiringEpisode.timeUntilAiring), totalEpisode: episodes)
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -41,25 +41,29 @@ class AnimeTimeLineTableViewViewController: UIViewController {
         if let userUID = Auth.auth().currentUser?.uid {
             loadFavoriteAndReleasingEpisodeData(userUID) {
                 print("completion")
-                for episodeData in self.episodeDatas {
-                    print(episodeData)
-                    if let nextAiringEpisode = episodeData.nextAiringEpisode?.episode, let totalEpisode = episodeData.episodes, let nextAiringTime = episodeData.nextAiringEpisode?.timeUntilAiring {
-                        for (index, episode) in (nextAiringEpisode...totalEpisode).enumerated() {
-//                            print(episodeData.data.Media.title.native, episode, (index + 1) * nextAiringTime)
-                            print(index)
-                            self.animeTimeLineData.append(AnimeTimeLineData(animeTitle: "\(episodeData.title.native) Ep.\(episode)", animeCoverImage: episodeData.coverImage.large, airingLeft: TimeInterval(nextAiringTime + (604800 * index))))
+                if !self.episodeDatas.isEmpty {
+                    for episodeData in self.episodeDatas {
+                        print(episodeData)
+                        
+                        if let nextAiringEpisode = episodeData.nextAiringEpisode?.episode, let totalEpisode = episodeData.episodes, let nextAiringTime = episodeData.nextAiringEpisode?.timeUntilAiring {
+                            for (index, episode) in (nextAiringEpisode...totalEpisode).enumerated() {
+    //                            print(episodeData.data.Media.title.native, episode, (index + 1) * nextAiringTime)
+                                print(index)
+                                self.animeTimeLineData.append(AnimeTimeLineData(animeTitle: "\(episodeData.title.native) Ep.\(episode)", animeCoverImage: episodeData.coverImage.large, airingLeft: TimeInterval(nextAiringTime + (604800 * index))))
+                            }
                         }
                     }
-                    
+                    self.animeTimeLineData.sort { lhs, rhs in
+                        lhs.airingLeft < rhs.airingLeft
+                    }
+                    print(self.animeTimeLineData)
+                    DispatchQueue.main.async {
+                        print("reloadData")
+                        self.animeTimeLineTableView.reloadData()
+                    }
                 }
-                self.animeTimeLineData.sort { lhs, rhs in
-                    lhs.airingLeft < rhs.airingLeft
-                }
-                print(self.animeTimeLineData)
-                DispatchQueue.main.async {
-                    print("reloadData")
-                    self.animeTimeLineTableView.reloadData()
-                }
+                
+                
             }
         }
     }
@@ -68,15 +72,18 @@ class AnimeTimeLineTableViewViewController: UIViewController {
         self.episodeDatas.removeAll()
         self.animeTimeLineData.removeAll()
         FirebaseStoreFunc.shared.loadUserFavoriteAndReleasing(userUID: userUID, perFetch: 20) { snapshot, error in
-            var dataFetched = 0
             if let documents = snapshot {
                 let animeIDs = documents.compactMap({ Int($0.documentID) })
-                AnimeDataFetcher.shared.fetchAnimeEpisodeDataByIDs(id: animeIDs) { episodeData in
-//                    print(episodeData.compactMap({$0}))
-                    self.episodeDatas += episodeData.compactMap({$0})
-//                    self.appendToArray(episodeData.compactMap({$0}))
+                if !animeIDs.isEmpty {
+                    AnimeDataFetcher.shared.fetchAnimeEpisodeDataByIDs(id: animeIDs) { episodeData in
+    //                    print(episodeData.compactMap({$0}))
+                        self.episodeDatas += episodeData.compactMap({$0})
+    //                    self.appendToArray(episodeData.compactMap({$0}))
+                        completion()
+                        
+                    }
+                } else {
                     completion()
-                    
                 }
             }
         }

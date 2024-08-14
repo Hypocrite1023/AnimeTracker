@@ -57,10 +57,22 @@ class LoginViewController: UIViewController {
             }
             
             self.view.endEditing(true)
-            
-            let mainPage = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TabBarController")
-//            self.navigationController?.pushViewController(mainPage, animated: true)
-            self.navigationController?.setViewControllers([mainPage], animated: true)
+            if let verified = Auth.auth().currentUser?.isEmailVerified {
+                if verified {
+                    let mainPage = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TabBarController")
+        //            self.navigationController?.pushViewController(mainPage, animated: true)
+                    self.navigationController?.setViewControllers([mainPage], animated: true)
+                    AnimeNotification.shared.checkNotification()
+                } else {
+                    let errorAlertController = UIAlertController(title: "You haven't completed the email verification yet.", message: "Go to your mail box and click the verifiction link.", preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "OK", style: .cancel) { action in
+                        self.dismiss(animated: true)
+                    }
+                    errorAlertController.addAction(okAction)
+                    
+                    self.present(errorAlertController, animated: true)
+                }
+            }
         }
     }
     

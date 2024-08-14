@@ -17,6 +17,8 @@ class TabBarViewController: UITabBarController {
         // Do any additional setup after loading the view.
         let logoutAction = UIAction(title: "Logout", image: UIImage(systemName: "figure.walk")) { action in
             do {
+                AnimeNotification.shared.removeAllNotification()
+                print("remove all notification.")
                 try Auth.auth().signOut()
                 let loginPage = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginPage")
                 self.navigationController?.setViewControllers([loginPage], animated: true)
@@ -39,6 +41,7 @@ class TabBarViewController: UITabBarController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         requestNotificationPermission()
+        print("check notification.")
     }
     
     func requestNotificationPermission() {

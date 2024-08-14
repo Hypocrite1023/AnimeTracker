@@ -80,9 +80,28 @@ class RegisterViewController: UIViewController {
             }
             
             self.view.endEditing(true)
+            Auth.auth().currentUser?.sendEmailVerification(completion: { error in
+                if let error = error {
+                    let alertController = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "OK", style: .cancel)
+                    alertController.addAction(okAction)
+                    self.present(alertController, animated: true)
+                } else {
+                    let emailVerificationAlertController = UIAlertController(title: "Email verification", message: "The verification mail have sent to your email, please check the mail and complete the sign up.", preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "OK", style: .cancel) { action in
+                        self.dismiss(animated: true)
+                        self.navigationController?.popViewController(animated: true)
+                        return
+                    }
+                    emailVerificationAlertController.addAction(okAction)
+                    self.present(emailVerificationAlertController, animated: true)
+                }
+            })
             
-            let mainPage = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TabBarController")
-            self.navigationController?.setViewControllers([mainPage], animated: true)
+            
+            
+//            let mainPage = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TabBarController")
+//            self.navigationController?.setViewControllers([mainPage], animated: true)
         }
     }
     

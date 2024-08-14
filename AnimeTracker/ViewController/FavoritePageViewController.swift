@@ -51,6 +51,8 @@ class FavoritePageViewController: UIViewController {
     var isEnableFetchData: Bool = false
     var isTableDataInitial = false
     
+    var lastTimeFetchData = Date.now
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         print("favorite page view did load")
@@ -66,6 +68,9 @@ class FavoritePageViewController: UIViewController {
         print("favorite page appear")
         self.isEnableFetchData = true
         navigationController?.navigationBar.isHidden = false
+        if isTableDataInitial {
+            applyInitialSnapShot()
+        }
 //        favoriteAnimeList.removeAll()
     }
     
@@ -104,7 +109,7 @@ class FavoritePageViewController: UIViewController {
                     let animeIdList = tmpFavoriteAnimeList.map({$0.animeID})
                     self.favoriteAnimeList += tmpFavoriteAnimeList
                     print("animeIdList", animeIdList)
-                    if animeIdList != [] {
+                    if !animeIdList.isEmpty {
                         AnimeDataFetcher.shared.fetchAnimeSimpleDataByIDs(id: animeIdList) { simpleAnimeData in
                             
                             for (index, data) in simpleAnimeData.enumerated() {
@@ -124,7 +129,7 @@ class FavoritePageViewController: UIViewController {
         
         loadUserFavoriteAnimeList(perFetch: 20) { favoriteAnime in
             if let favoriteAnime = favoriteAnime {
-                if favoriteAnime != [] {
+                if !favoriteAnime.isEmpty {
                     for anime in favoriteAnime {
                         if anime.status == "RELEASING" {
                             self.tableViewSnapShot.appendItems([anime], toSection: .releasing)
@@ -133,11 +138,12 @@ class FavoritePageViewController: UIViewController {
                         }
                     }
                     self.tableViewDataSource?.apply(self.tableViewSnapShot, animatingDifferences: true)
-                    self.isEnableFetchData = true
                     self.isTableDataInitial = true
                 }
+                self.isEnableFetchData = true
             }
         }
+        
     }
     
     func updateSnapShot() {
@@ -155,10 +161,10 @@ class FavoritePageViewController: UIViewController {
                         }
                     }
                     self.tableViewDataSource?.apply(self.tableViewSnapShot, animatingDifferences: true)
-                    self.isEnableFetchData = true
                 }
             }
         }
+        self.isEnableFetchData = true
     }
 }
 
@@ -168,9 +174,18 @@ extension FavoritePageViewController: UITableViewDelegate {
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if Date.now.timeIntervalSince(lastTimeFetchData) < 2 {
+            return
+        }
+        
         if scrollView == favoriteTableView {
-            if (scrollView.contentOffset.y + scrollView.frame.height) > scrollView.contentSize.height + 60 && isEnableFetchData && isTableDataInitial {
-                print("scroll to bottom fetch data")
+//            if (scrollView.contentOffset.y + scrollView.frame.height) > scrollView.contentSize.height + 60 && isEnableFetchData && isTableDataInitial {
+//                lastTimeFetchData = Date.now
+//                print("scroll to bottom fetch data")
+//                updateSnapShot()
+//            }
+            if scrollView.contentOffset.y < -30 && isEnableFetchData && isTableDataInitial {
+                lastTimeFetchData = Date.now
                 updateSnapShot()
             }
         }
