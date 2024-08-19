@@ -18,6 +18,7 @@ class ResetPasswordViewController: UIViewController {
     }
     
     @IBAction func resetPassword(_ sender: UIButton) {
+        print("reset")
         guard let emailAddr = emailTextField.text, emailAddr != "" else {
             let alertController = UIAlertController(title: "Email address cannot be null.", message: "Please retype your email address.", preferredStyle: .alert)
             let okayAction = UIAlertAction(title: "OK", style: .cancel) { action in

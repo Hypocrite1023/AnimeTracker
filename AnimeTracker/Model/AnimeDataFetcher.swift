@@ -110,6 +110,51 @@ struct EssentialDataCollection: Codable {
     }
 }
 
+struct StaffDetailData: Codable {
+    let data: StaffData
+    
+    struct StaffData: Codable {
+        let staff: Staff
+        
+        struct Staff: Codable {
+            let id: Int
+            let name: Name
+            let primaryOccupations: [String]
+            let image: StaffImage
+            let description: String
+            let staffMedia: StaffMedia
+            
+            struct StaffImage: Codable {
+                let large: String
+            }
+            struct StaffMedia: Codable {
+                let edges: [Edge]
+                struct Edge: Codable {
+                    let staffRole: String
+                    let node: Node
+                    struct Node: Codable {
+                        let id: Int
+                        let coverImage: CoverImage
+                        let title: Title
+                        let type: String
+                        
+                        struct Title: Codable {
+                            let native: String
+                        }
+                        struct CoverImage: Codable {
+                            let large: String
+                        }
+                    }
+                }
+            }
+            struct Name: Codable {
+                let native: String
+                let userPreferred: String
+            }
+        }
+    }
+}
+
 class AnimeDataFetcher {
     
     static let shared = AnimeDataFetcher()
@@ -1641,6 +1686,86 @@ query {
         // Execute URLSession task
         task.resume()
     }
+    
+    func fetchStaffDetailByID(id: Int, completion: @escaping (StaffDetailData.StaffData.Staff?) -> Void) {
+        isFetchingData = true
+        print(id)
+        var urlRequest = URLRequest(url: queryURL)
+        urlRequest.httpMethod = "post"
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let query = """
+query {
+    staff: Staff(id: \(id)) {
+    id
+    name {
+      native
+      userPreferred
+    }
+    primaryOccupations
+    image {
+      large
+    }
+    description(asHtml: true)
+    staffMedia {
+      edges {
+        staffRole
+        node {
+          id
+          coverImage {
+            large
+          }
+          title {
+            native
+          }
+          type
+        }
+      }
+    }
+    
+  }
+}
+"""
+        
+        let graphQLData = ["query": query]
+        
+        do {
+            urlRequest.httpBody = try JSONSerialization.data(withJSONObject: graphQLData, options: [])
+        } catch {
+            print("Error serializing JSON: \(error.localizedDescription)")
+            return
+        }
+        // Create URLSession task
+        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+            if let error = error {
+                print("Error fetching data: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                print("Invalid response")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+            do {
+//                print(String(data: data, encoding: .utf8))
+                let media = try JSONDecoder().decode(StaffDetailData.self, from: data)
+                completion(media.data.staff)
+                self.isFetchingData = false
+            } catch {
+                print("Error parsing JSON: \(error.localizedDescription)")
+            }
+            
+        }
+        
+        // Execute URLSession task
+        task.resume()
+    }
+
 }
 
 extension AnimeDataFetcher: GetAnimeCharacterDataDelegate {

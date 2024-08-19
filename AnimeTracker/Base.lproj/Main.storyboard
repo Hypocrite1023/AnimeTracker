@@ -72,7 +72,7 @@
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="filled" title="Reset"/>
                                         <connections>
-                                            <action selector="resetPassword:" destination="8Sb-Hj-5M0" eventType="touchUpInside" id="ap9-zR-u0N"/>
+                                            <action selector="resetPassword:" destination="fWg-JM-Og7" eventType="touchUpInside" id="n08-FQ-uDG"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -95,7 +95,6 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Jog-0W-twK" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <exit id="8Sb-Hj-5M0" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="-2369" y="360"/>
         </scene>

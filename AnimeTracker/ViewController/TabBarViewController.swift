@@ -36,12 +36,13 @@ class TabBarViewController: UITabBarController {
             
             navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "person.circle"), menu: menu)
         }
+        requestNotificationPermission()
+        print("check notification.")
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        requestNotificationPermission()
-        print("check notification.")
+        
     }
     
     func requestNotificationPermission() {

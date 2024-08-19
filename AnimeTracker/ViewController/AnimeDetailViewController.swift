@@ -165,7 +165,7 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
                 var tmpStaffPreview: StaffPreview? = lastStaffPreview as? StaffPreview
                 
                 for (index, edge) in staffData.data.media.staffPreview.edges.enumerated() {
-                    let staffPreview = StaffPreview()
+                    let staffPreview = StaffPreview(frame: .zero, staffID: edge.node.id, fetchStaffDataDelegate: self)
                     staffPreview.staffImageView.loadImage(from: edge.node.image.large)
                     staffPreview.staffNameLabel.text = edge.node.name.userPreferred
                     staffPreview.staffRoleLabel.text = edge.role
@@ -711,7 +711,7 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
         animeDetailView.tmpScrollView.addSubview(staffView)
         var tmpStaffPreview: StaffPreview?
         for (index, edge) in animeDetailData.staffPreview.edges.enumerated() {
-            let staffPreview = StaffPreview()
+            let staffPreview = StaffPreview(frame: .zero, staffID: edge.node.id, fetchStaffDataDelegate: self)
             staffPreview.staffImageView.loadImage(from: edge.node.image.large)
             staffPreview.staffNameLabel.text = edge.node.name.userPreferred
             staffPreview.staffRoleLabel.text = edge.role
@@ -1045,6 +1045,17 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
             animeDetailView.externalLinkView.bottomAnchor.constraint(equalTo: animeDetailView.tmpScrollView.bottomAnchor).isActive = true
         }
     }
+    @objc func showSpoiler(sender: UITapGestureRecognizer) {
+        print(sender.view.debugDescription)
+        guard let blurEffectView = sender.view else {
+            return
+        }
+        
+        UIView.animate(withDuration: 0.3) {
+            blurEffectView.isHidden = true
+        }
+//        sender.view.isHidden
+    }
     // MARK: - animeTagView
     fileprivate func setupAnimeTagView(_ animeDetailData: MediaResponse.MediaData.Media, _ tagView: TagView) {
         animeDetailView.tmpScrollView.addSubview(tagView)
@@ -1053,7 +1064,8 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
             let tagPreview = TagPreview()
             tagPreview.tagName.text = tag.name
             tagPreview.tagPercent.text = "\(tag.rank) %"
-            tagPreview.isHidden = tag.isMediaSpoiler
+            
+//            tagPreview.isHidden = tag.isMediaSpoiler
             tagPreview.translatesAutoresizingMaskIntoConstraints = false
             tagView.tagsContainer.addSubview(tagPreview)
             
@@ -1069,6 +1081,34 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
                 }
             } else {
                 tagPreview.topAnchor.constraint(equalTo: tmpTagPreview!.bottomAnchor, constant: 10).isActive = true
+            }
+            if tag.isMediaSpoiler {
+                let blurEffect = UIBlurEffect(style: .light)
+                let blurEffectView = UIVisualEffectView(effect: blurEffect)
+                print(tagPreview.bounds.size)
+                tagPreview.addSubview(blurEffectView)
+                blurEffectView.translatesAutoresizingMaskIntoConstraints = false
+                blurEffectView.leadingAnchor.constraint(equalTo: tagPreview.leadingAnchor).isActive = true
+                blurEffectView.trailingAnchor.constraint(equalTo: tagPreview.trailingAnchor).isActive = true
+                blurEffectView.heightAnchor.constraint(equalTo: tagPreview.heightAnchor).isActive = true
+                let eyeSlashImg = UIImageView(image: UIImage(systemName: "eye.slash.fill"))
+                eyeSlashImg.tintColor = .secondaryLabel
+//                eyeSlashImg.translatesAutoresizingMaskIntoConstraints = false
+//                blurEffectView.contentView.addSubview(eyeSlashImg)
+                let spoilerText = UILabel()
+                spoilerText.text = "Spoiler Tag"
+                spoilerText.textColor = .secondaryLabel
+                spoilerText.font = UIFont.boldSystemFont(ofSize: 14)
+                let spoilerTemplateView = UIStackView(arrangedSubviews: [eyeSlashImg, spoilerText])
+                spoilerTemplateView.axis = .horizontal
+                spoilerTemplateView.spacing = 10
+                spoilerTemplateView.translatesAutoresizingMaskIntoConstraints = false
+                blurEffectView.contentView.addSubview(spoilerTemplateView)
+                spoilerTemplateView.centerXAnchor.constraint(equalTo: blurEffectView.centerXAnchor).isActive = true
+                spoilerTemplateView.centerYAnchor.constraint(equalTo: blurEffectView.centerYAnchor).isActive = true
+                
+                let tapToShow = UITapGestureRecognizer(target: self, action: #selector(showSpoiler))
+                blurEffectView.addGestureRecognizer(tapToShow)
             }
             tmpTagPreview = tagPreview
         }
@@ -1485,6 +1525,21 @@ extension AnimeDetailViewController: FavoriteAndNotifyActionDelegate {
             }
         }
         
+    }
+    
+    
+}
+
+extension AnimeDetailViewController: FetchStaffDataDelegate {
+    func fetchStaffDetailData(staffID: Int) {
+        AnimeDataFetcher.shared.fetchStaffDetailByID(id: staffID) { staff in
+            DispatchQueue.main.async {
+                let vc = UIStoryboard(name: "StaffDetailView", bundle: nil).instantiateViewController(withIdentifier: "StaffDetailView") as! StaffDetailViewController
+                vc.staffData = staff
+                vc.fastNavigate = self.tabBarController.self as? any NavigateDelegate
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
+        }
     }
     
     
