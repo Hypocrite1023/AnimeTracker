@@ -16,8 +16,6 @@ class AnimeVoiceActorViewController: UIViewController {
     @IBOutlet weak var wholePageScollView: UIScrollView!
     
     var yearSet: Set<Int> = Set<Int>()
-    var relationScrollViews: [RelationScrollView] = []
-    var relationViewTrailingAnchorView: [NSLayoutConstraint] = []
     var relationScrollViewBottomAnchor: NSLayoutConstraint?
     
     var voiceActorDataResponse: VoiceActorDataResponse.DataClass.StaffData?
@@ -29,6 +27,10 @@ class AnimeVoiceActorViewController: UIViewController {
     weak var animeFetchManager: FetchMoreVoiceActorData?
     weak var characterDataFetcher: GetAnimeCharacterDataDelegate?
     weak var animeDetailManager: AnimeDetailDataDelegate?
+    
+    var relationScrollViewCollection: [RelationScrollView] = []
+    var voiceActorDataEachYear: [String: [VoiceActorDataResponse.DataClass.StaffData.CharacterMedia.Edge]] = [String: [VoiceActorDataResponse.DataClass.StaffData.CharacterMedia.Edge]]()
+    var collectionviewCollection: [UICollectionView] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,17 +56,6 @@ class AnimeVoiceActorViewController: UIViewController {
             voiceActorImage.loadImage(from: voiceActorDataResponse.image.large)
             
             var tmpTopAnchorView: UIView! = voiceActorInfoView
-//            if let voiceActorFavourites = voiceActorDataResponse.favourites {
-//                // Use voiceActorFavourites here
-//            }
-//            
-//            if let voiceActorIsFavourite = voiceActorDataResponse.isFavourite {
-//                // Use voiceActorIsFavourite here
-//            }
-//            
-//            if let voiceActorIsFavouriteBlocked = voiceActorDataResponse.isFavouriteBlocked {
-//                // Use voiceActorIsFavouriteBlocked here
-//            }
             
             if let voiceActorDateOfBirth = voiceActorDataResponse.dateOfBirth {
                 // Use voiceActorDateOfBirth here
@@ -233,153 +224,67 @@ extension AnimeVoiceActorViewController: UIScrollViewDelegate {
 
 extension AnimeVoiceActorViewController: ReceiveMoreVoiceActorData {
     fileprivate func updateRelationData(_ voiceActorData: VoiceActorDataResponse.DataClass.StaffData.CharacterMedia?) {
-        var tmpTopAnchorView = relationScrollViews.last ?? relationContainer
-        var relationViewIndex = 0
-        var tmpRelationViewLeadingAnchorView: UIView! = relationScrollViews.last?.containerInScrollView.subviews.last ?? relationContainer
-        var tmpRelationScrollViewTrailingAnchor: NSLayoutConstraint?
-        if let voiceActorDataResponseCharacterMedia = voiceActorData?.edges {
-            relationViewTrailingAnchorView.last?.isActive = false
-            if relationViewTrailingAnchorView.count > 0 {
-                relationViewTrailingAnchorView.remove(at: relationViewTrailingAnchorView.count - 1)
-            }
+        if relationScrollViewCollection.count != 0 {
             relationScrollViewBottomAnchor?.isActive = false
-            for (_, edge) in voiceActorDataResponseCharacterMedia.enumerated() {
-                if let year = edge.node.startDate.year {
-                    if !yearSet.contains(year) {
-                        if relationScrollViews.count != 0 {
-                            tmpRelationScrollViewTrailingAnchor = tmpRelationViewLeadingAnchorView.trailingAnchor.constraint(equalTo: relationScrollViews.last!.containerInScrollView.trailingAnchor)
-                            relationViewTrailingAnchorView.append(tmpRelationScrollViewTrailingAnchor!)
-                            tmpRelationScrollViewTrailingAnchor?.isActive = true
-                            print("trailing active")
+        }
+        if let voiceActorData = voiceActorData?.edges {
+            for (index, data) in voiceActorData.enumerated() {
+                if let year = data.node.startDate.year {
+                    if !yearSet.contains(year) { // add additional collection view
+                        let newRelationScrollView = RelationScrollView()
+                        newRelationScrollView.yearLabel.text = "\(year)"
+                        newRelationScrollView.translatesAutoresizingMaskIntoConstraints = false
+                        self.relationContainer.addSubview(newRelationScrollView)
+                        newRelationScrollView.heightAnchor.constraint(equalToConstant: 261).isActive = true
+                        newRelationScrollView.leadingAnchor.constraint(equalTo: relationContainer.leadingAnchor).isActive = true
+                        newRelationScrollView.trailingAnchor.constraint(equalTo: relationContainer.trailingAnchor).isActive = true
+                        if relationScrollViewCollection.count == 0 {
+                            newRelationScrollView.topAnchor.constraint(equalTo: relationContainer.topAnchor).isActive = true
+                        } else {
+                            newRelationScrollView.topAnchor.constraint(equalTo: relationScrollViewCollection.last!.bottomAnchor, constant: 20).isActive = true
                         }
-                        
-                        relationViewIndex = 0
+                        relationScrollViewCollection.append(newRelationScrollView)
+                        let collectionViewLayout: UICollectionViewFlowLayout = {
+                            let layout = UICollectionViewFlowLayout()
+                            layout.scrollDirection = .horizontal
+                            layout.minimumLineSpacing = 10
+                            layout.minimumInteritemSpacing = 10
+                            layout.itemSize = CGSize(width: 120, height: 240)
+                            return layout
+                        }()
+                        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
+                        collectionView.translatesAutoresizingMaskIntoConstraints = false
+                        newRelationScrollView.collectionViewContainer.addSubview(collectionView)
+                        collectionView.topAnchor.constraint(equalTo: newRelationScrollView.collectionViewContainer.topAnchor).isActive = true
+                        collectionView.bottomAnchor.constraint(equalTo: newRelationScrollView.collectionViewContainer.bottomAnchor).isActive = true
+                        collectionView.leadingAnchor.constraint(equalTo: newRelationScrollView.collectionViewContainer.leadingAnchor).isActive = true
+                        collectionView.trailingAnchor.constraint(equalTo: newRelationScrollView.collectionViewContainer.trailingAnchor).isActive = true
+                        collectionView.dataSource = self
+                        collectionView.delegate = self
+                        collectionView.tag = year
+                        collectionView.register(UINib(nibName: "RelationPreviewCollectionViewCell", bundle: nil).self, forCellWithReuseIdentifier: "voiceActorRelationCollectionView\(collectionView.tag)")
+                        collectionviewCollection.append(collectionView)
+                        voiceActorDataEachYear["\(year)"] = []
+                        voiceActorDataEachYear["\(year)"]?.append(data)
                         yearSet.insert(year)
-                        let newRelationScrollView = RelationScrollView()
-                        newRelationScrollView.yearLabel.text = year.description
-                        newRelationScrollView.translatesAutoresizingMaskIntoConstraints = false
-                        relationContainer.addSubview(newRelationScrollView)
-                        newRelationScrollView.leadingAnchor.constraint(equalTo: relationContainer.leadingAnchor).isActive = true
-                        newRelationScrollView.widthAnchor.constraint(equalTo: relationContainer.widthAnchor).isActive = true
-                        newRelationScrollView.heightAnchor.constraint(equalToConstant: 250).isActive = true
-                        if relationScrollViews.count == 0 {
-                            newRelationScrollView.topAnchor.constraint(equalTo: tmpTopAnchorView!.topAnchor).isActive = true
-                        } else {
-                            newRelationScrollView.topAnchor.constraint(equalTo: relationScrollViews.last!.bottomAnchor).isActive = true
-                        }
-                        relationScrollViews.append(newRelationScrollView)
-                        tmpTopAnchorView = newRelationScrollView
-                        tmpRelationViewLeadingAnchorView = newRelationScrollView.containerInScrollView
-                    }
-                    for (_, character) in edge.characters.enumerated() {
-                        let relationView = MediaRelationView(frame: .zero, animeID: nil, characterID: character.id)
-                        relationView.characterIdDelegate = self
-                        relationView.translatesAutoresizingMaskIntoConstraints = false
-                        relationView.animeCoverImage.contentMode = .scaleAspectFill
-                        relationView.animeCoverImage.loadImage(from: character.image.large)
-                        relationView.animeTitle.text = character.name.userPreferred
-                        relationView.relationVoiceActor.text = edge.node.title.userPreferred
-                        
-                        let voiceActorImageView = UIImageView()
-                        voiceActorImageView.contentMode = .scaleAspectFit
-                        voiceActorImageView.translatesAutoresizingMaskIntoConstraints = false
-                        voiceActorImageView.loadImage(from: edge.node.coverImage.large)
-                        relationView.addSubview(voiceActorImageView)
-                        voiceActorImageView.heightAnchor.constraint(equalTo: relationView.heightAnchor, multiplier: 0.33).isActive = true
-                        voiceActorImageView.widthAnchor.constraint(equalTo: relationView.widthAnchor, multiplier: 0.33).isActive = true
-                        voiceActorImageView.trailingAnchor.constraint(equalTo: relationView.trailingAnchor).isActive = true
-                        voiceActorImageView.topAnchor.constraint(equalTo: relationView.topAnchor).isActive = true
-                        
-                        relationScrollViews.last!.containerInScrollView.addSubview(relationView)
-                        
-                        relationView.topAnchor.constraint(equalTo: relationScrollViews.last!.containerInScrollView.topAnchor).isActive = true
-                        relationView.heightAnchor.constraint(equalTo: relationScrollViews.last!.containerInScrollView.heightAnchor).isActive = true
-                        relationView.widthAnchor.constraint(equalToConstant: 120).isActive = true
-//                        print(relationViewIndex, "------")
-                        if relationViewIndex == 0 {
-                            if relationScrollViews.last!.containerInScrollView.subviews.count == 1 {
-                                relationView.leadingAnchor.constraint(equalTo: relationScrollViews.last!.containerInScrollView.leadingAnchor).isActive = true
-                            } else {
-                                relationView.leadingAnchor.constraint(equalTo: tmpRelationViewLeadingAnchorView.trailingAnchor).isActive = true
-                            }
-                        } else {
-                            relationView.leadingAnchor.constraint(equalTo: tmpRelationViewLeadingAnchorView.trailingAnchor, constant: 10).isActive = true
-                        }
-                        tmpRelationViewLeadingAnchorView = relationView
-                        relationViewIndex += 1
-                    }
-                } else {
-                    if !yearSet.contains(0) {
-                        
-                        let newRelationScrollView = RelationScrollView()
-                        newRelationScrollView.yearLabel.text = "TBA"
-                        newRelationScrollView.translatesAutoresizingMaskIntoConstraints = false
-                        relationContainer.addSubview(newRelationScrollView)
-                        newRelationScrollView.leadingAnchor.constraint(equalTo: relationContainer.leadingAnchor).isActive = true
-                        newRelationScrollView.widthAnchor.constraint(equalTo: relationContainer.widthAnchor).isActive = true
-                        newRelationScrollView.heightAnchor.constraint(equalToConstant: 250).isActive = true
-                        if relationScrollViews.count == 0 {
-                            newRelationScrollView.topAnchor.constraint(equalTo: tmpTopAnchorView!.topAnchor).isActive = true
-                        } else {
-                            newRelationScrollView.topAnchor.constraint(equalTo: relationScrollViews.last!.bottomAnchor, constant: 10).isActive = true
-                        }
-                        relationScrollViews.append(newRelationScrollView)
-                        
-                        tmpTopAnchorView = newRelationScrollView
-                        yearSet.insert(0)
-                    }
-                    
-                    
-                    for (_, character) in edge.characters.enumerated() {
-                        let relationView = MediaRelationView(frame: .zero, animeID: nil, characterID: character.id)
-                        relationView.characterIdDelegate = self
-                        relationView.translatesAutoresizingMaskIntoConstraints = false
-                        relationView.animeCoverImage.loadImage(from: character.image.large)
-                        relationView.animeTitle.text = character.name.userPreferred
-                        relationView.relationVoiceActor.text = edge.node.title.userPreferred
-                        
-                        let voiceActorImageView = UIImageView()
-                        voiceActorImageView.contentMode = .scaleAspectFit
-                        voiceActorImageView.translatesAutoresizingMaskIntoConstraints = false
-                        voiceActorImageView.loadImage(from: edge.node.coverImage.large)
-                        relationView.addSubview(voiceActorImageView)
-                        voiceActorImageView.heightAnchor.constraint(equalTo: relationView.heightAnchor, multiplier: 0.33).isActive = true
-                        voiceActorImageView.widthAnchor.constraint(equalTo: relationView.widthAnchor, multiplier: 0.33).isActive = true
-                        voiceActorImageView.trailingAnchor.constraint(equalTo: relationView.trailingAnchor).isActive = true
-                        voiceActorImageView.topAnchor.constraint(equalTo: relationView.topAnchor).isActive = true
-                        
-                        relationScrollViews.last!.containerInScrollView.addSubview(relationView)
-                        
-                        relationView.topAnchor.constraint(equalTo: relationScrollViews.last!.containerInScrollView.topAnchor).isActive = true
-                        relationView.heightAnchor.constraint(equalTo: relationScrollViews.last!.containerInScrollView.heightAnchor).isActive = true
-                        relationView.widthAnchor.constraint(equalToConstant: 120).isActive = true
-//                        print(relationViewIndex, "------")
-                        if relationViewIndex == 0 {
-                            if relationScrollViews.last!.containerInScrollView.subviews.count == 1 {
-                                relationView.leadingAnchor.constraint(equalTo: relationScrollViews.last!.containerInScrollView.leadingAnchor).isActive = true
-                            } else {
-                                relationView.leadingAnchor.constraint(equalTo: tmpRelationViewLeadingAnchorView.trailingAnchor).isActive = true
-                            }
-                            
-                        } else {
-                            relationView.leadingAnchor.constraint(equalTo: tmpRelationViewLeadingAnchorView.trailingAnchor, constant: 10).isActive = true
-                        }
-                        tmpRelationViewLeadingAnchorView = relationView
-                        relationViewIndex += 1
+                    } else {
+                        voiceActorDataEachYear["\(year)"]?.append(data)
                     }
                 }
             }
-            tmpRelationScrollViewTrailingAnchor = tmpRelationViewLeadingAnchorView.trailingAnchor.constraint(equalTo: relationScrollViews.last!.containerInScrollView.trailingAnchor)
-            tmpRelationScrollViewTrailingAnchor?.isActive = true
-            relationViewTrailingAnchorView.append(tmpRelationScrollViewTrailingAnchor!)
-            tmpRelationScrollViewTrailingAnchor?.isActive = true
-            if let lastrelationScrollView = relationScrollViews.last {
-                relationScrollViewBottomAnchor = lastrelationScrollView.bottomAnchor.constraint(equalTo: relationContainer.bottomAnchor)
+            if relationScrollViewCollection.count != 0 {
+                relationScrollViewBottomAnchor = relationScrollViewCollection.last!.bottomAnchor.constraint(equalTo: relationContainer.bottomAnchor)
                 relationScrollViewBottomAnchor?.isActive = true
-                
+            }
+        }
+        DispatchQueue.main.async {
+            self.collectionviewCollection.forEach { collectionView in
+                print(self.voiceActorDataEachYear["\(collectionView.tag)"])
+                collectionView.reloadData()
             }
         }
     }
+
     
     func updateVoiceActorData(voiceActorData: VoiceActorDataResponse.DataClass.StaffData.CharacterMedia?) {
         voiceActorDataResponse?.characterMedia?.pageInfo.currentPage = voiceActorData?.pageInfo.currentPage ?? 0
@@ -392,6 +297,33 @@ extension AnimeVoiceActorViewController: ReceiveMoreVoiceActorData {
     }
     
     
+}
+
+extension AnimeVoiceActorViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return voiceActorDataEachYear[String(collectionView.tag)]?.count ?? 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let data = voiceActorDataEachYear[String(collectionView.tag)]?[indexPath.item]
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "voiceActorRelationCollectionView\(collectionView.tag)", for: indexPath) as! RelationPreviewCollectionViewCell
+        cell.characterImage.loadImage(from: data?.characters.first?.image.large)
+        cell.animeTitle.text = data?.node.title.userPreferred
+        cell.characterName.text = data?.characters.first?.name.userPreferred
+        cell.animeImage.loadImage(from: data?.node.coverImage.large)
+        return cell
+    }
+    
+    
+}
+
+extension AnimeVoiceActorViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let characterID = voiceActorDataEachYear["\(collectionView.tag)"]?[indexPath.item].characters.first?.id {
+            AnimeDataFetcher.shared.getAnimeCharacterData(id: characterID, page: 1)
+        }
+        
+    }
 }
 
 extension AnimeVoiceActorViewController: CharacterIdDelegate {

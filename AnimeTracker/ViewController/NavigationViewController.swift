@@ -12,6 +12,8 @@ import FirebaseAuth
 class NavigationViewController: UINavigationController {
 
     private var cancellables = Set<AnyCancellable>()
+    
+    // when fetching data it will show
     var fetchingDataIndicator = UIActivityIndicatorView(style: .large)
     
     override func viewDidLoad() {
@@ -46,6 +48,7 @@ class NavigationViewController: UINavigationController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         print("view did appear")
+        // check the user is email verify
         if let verified = Auth.auth().currentUser?.isEmailVerified {
             if verified {
                 print("login success")

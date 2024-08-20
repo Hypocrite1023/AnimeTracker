@@ -42,6 +42,9 @@ class StaffDetailViewController: UIViewController {
         staffName.text = staffData?.name.native
         staffNickName.text = staffData?.primaryOccupations.joined(separator: ", ")
         staffCoverImage.loadImage(from: staffData?.image.large)
+        if let description = staffData?.description {
+            print(AnimeDetailFunc.extractLinks(from: description))
+        }
         staffInfo.attributedText = AnimeDetailFunc.updateAnimeDescription(animeDescription: staffData?.description ?? "")
         
         FloatingButtonManager.shared.addToView(toView: self.view)

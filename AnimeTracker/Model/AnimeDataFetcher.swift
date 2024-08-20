@@ -1706,7 +1706,7 @@ query {
     image {
       large
     }
-    description(asHtml: true)
+    description(asHtml: false)
     staffMedia {
       edges {
         staffRole

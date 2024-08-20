@@ -10,37 +10,34 @@ import FirebaseAuth
 
 class ResetPasswordViewController: UIViewController {
 
-    @IBOutlet weak var emailTextField: UITextField!
+    @IBOutlet weak var emailTextField: UITextField! // user email address textfield
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
     }
     
+    fileprivate func setupAlertController(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .cancel)
+        alertController.addAction(okAction)
+        self.present(alertController, animated: true)
+    }
+    
     @IBAction func resetPassword(_ sender: UIButton) {
         print("reset")
-        guard let emailAddr = emailTextField.text, emailAddr != "" else {
-            let alertController = UIAlertController(title: "Email address cannot be null.", message: "Please retype your email address.", preferredStyle: .alert)
-            let okayAction = UIAlertAction(title: "OK", style: .cancel) { action in
-                self.dismiss(animated: true)
-            }
-            alertController.addAction(okayAction)
-            self.present(alertController, animated: true)
+        guard let emailAddr = emailTextField.text, emailAddr != "" else { // check email address field not null
+            setupAlertController(title: "Email address cannot be null.", message: "Please type your email address.")
             return
         }
         Auth.auth().sendPasswordReset(withEmail: emailAddr) { error in
             if let error = error {
-                let alertController = UIAlertController(title: "Some Error Occur.", message: error.localizedDescription, preferredStyle: .alert)
-                let okayAction = UIAlertAction(title: "OK", style: .cancel) { action in
-                    self.dismiss(animated: true)
-                }
-                alertController.addAction(okayAction)
-                self.present(alertController, animated: true)
+                self.setupAlertController(title: "Reset Password Error", message: error.localizedDescription)
             } else {
                 let alertController = UIAlertController(title: "We have sent you a reset password email, please check your mail box.", message: nil, preferredStyle: .alert)
                 let okayAction = UIAlertAction(title: "OK", style: .cancel) { action in
                     self.dismiss(animated: true)
-                    self.navigationController?.popViewController(animated: true)
+                    self.navigationController?.popViewController(animated: true) // pop to login page
                 }
                 alertController.addAction(okayAction)
                 self.present(alertController, animated: true)

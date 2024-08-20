@@ -171,4 +171,29 @@ struct AnimeDetailFunc {
         
         return "Will Airing after: \(days)d \(hours)h \(minutes)m"
     }
+    
+    static func extractLinks(from text: String) -> [(text: String, link: String)] {
+        var results: [(text: String, link: String)] = []
+        
+        // Regular expression pattern to match [text](link)
+        let pattern = #"\[(.*?)\]\((.*?)\)"#
+        
+        do {
+            let regex = try NSRegularExpression(pattern: pattern, options: [])
+            let matches = regex.matches(in: text, options: [], range: NSRange(location: 0, length: text.utf16.count))
+            
+            for match in matches {
+                if let textRange = Range(match.range(at: 1), in: text),
+                   let linkRange = Range(match.range(at: 2), in: text) {
+                    let extractedText = String(text[textRange])
+                    let extractedLink = String(text[linkRange])
+                    results.append((text: extractedText, link: extractedLink))
+                }
+            }
+        } catch {
+            print("Invalid regex: \(error.localizedDescription)")
+        }
+        
+        return results
+    }
 }

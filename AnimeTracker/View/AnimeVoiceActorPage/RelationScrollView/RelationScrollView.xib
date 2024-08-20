@@ -11,7 +11,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RelationScrollView" customModule="AnimeTracker" customModuleProvider="target">
             <connections>
-                <outlet property="containerInScrollView" destination="dWL-Xa-8rO" id="WRA-E2-NHr"/>
+                <outlet property="collectionViewContainer" destination="iDR-CJ-Tgx" id="Yux-HQ-Xzp"/>
                 <outlet property="contentView" destination="iN0-l3-epB" id="7Cr-mc-wy6"/>
                 <outlet property="yearLabel" destination="dtj-vN-bF8" id="qO4-om-8hR"/>
             </connections>
@@ -30,35 +30,21 @@
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lfl-OI-JbG">
-                    <rect key="frame" x="0.0" y="40.333333333333343" width="393" height="256.66666666666663"/>
-                    <subviews>
-                        <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dWL-Xa-8rO" userLabel="View in scroll view">
-                            <rect key="frame" x="0.0" y="0.0" width="393" height="256.66666666666669"/>
-                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        </view>
-                    </subviews>
-                    <constraints>
-                        <constraint firstItem="dWL-Xa-8rO" firstAttribute="trailing" secondItem="Ith-gI-KH4" secondAttribute="trailing" id="8R5-wC-lZi"/>
-                        <constraint firstItem="dWL-Xa-8rO" firstAttribute="top" secondItem="Ith-gI-KH4" secondAttribute="top" id="Hnf-0F-KOa"/>
-                        <constraint firstItem="dWL-Xa-8rO" firstAttribute="leading" secondItem="Ith-gI-KH4" secondAttribute="leading" id="U2o-0w-doG"/>
-                        <constraint firstItem="dWL-Xa-8rO" firstAttribute="height" secondItem="wvS-BQ-w7j" secondAttribute="height" id="XAj-nL-wTA"/>
-                        <constraint firstItem="dWL-Xa-8rO" firstAttribute="bottom" secondItem="Ith-gI-KH4" secondAttribute="bottom" id="Xdo-Vo-l5t"/>
-                    </constraints>
-                    <viewLayoutGuide key="contentLayoutGuide" id="Ith-gI-KH4"/>
-                    <viewLayoutGuide key="frameLayoutGuide" id="wvS-BQ-w7j"/>
-                </scrollView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iDR-CJ-Tgx" userLabel="collection view container">
+                    <rect key="frame" x="0.0" y="35.333333333333343" width="393" height="261.66666666666663"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
-                <constraint firstItem="lfl-OI-JbG" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="1qj-mi-INO"/>
-                <constraint firstItem="lfl-OI-JbG" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="4JV-9o-lJa"/>
+                <constraint firstAttribute="trailing" secondItem="iDR-CJ-Tgx" secondAttribute="trailing" id="0ff-tl-sDN"/>
+                <constraint firstItem="iDR-CJ-Tgx" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="44p-1J-fq7"/>
+                <constraint firstItem="iDR-CJ-Tgx" firstAttribute="top" secondItem="dtj-vN-bF8" secondAttribute="bottom" constant="5" id="7lp-Tq-LM0"/>
                 <constraint firstItem="dtj-vN-bF8" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="10" id="BeR-k1-MnD"/>
-                <constraint firstItem="lfl-OI-JbG" firstAttribute="top" secondItem="dtj-vN-bF8" secondAttribute="bottom" constant="10" id="ZfC-9i-U1S"/>
+                <constraint firstAttribute="bottom" secondItem="iDR-CJ-Tgx" secondAttribute="bottom" id="Wrp-av-bzX"/>
                 <constraint firstAttribute="trailing" secondItem="dtj-vN-bF8" secondAttribute="trailing" id="edD-T2-E3f"/>
                 <constraint firstItem="dtj-vN-bF8" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="iyf-Yu-Wc5"/>
-                <constraint firstAttribute="bottom" secondItem="lfl-OI-JbG" secondAttribute="bottom" id="rXv-Dd-DE0"/>
             </constraints>
             <nil key="simulatedTopBarMetrics"/>
             <nil key="simulatedBottomBarMetrics"/>

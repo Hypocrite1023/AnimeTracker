@@ -15,28 +15,27 @@ class TabBarViewController: UITabBarController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        
+        // logout
         let logoutAction = UIAction(title: "Logout", image: UIImage(systemName: "figure.walk")) { action in
             do {
-                AnimeNotification.shared.removeAllNotification()
+                AnimeNotification.shared.removeAllNotification() // remove all notification that record in user default
                 print("remove all notification.")
                 try Auth.auth().signOut()
                 let loginPage = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginPage")
-                self.navigationController?.setViewControllers([loginPage], animated: true)
+                self.navigationController?.setViewControllers([loginPage], animated: true) // navigate to login page
             } catch {
                 print(error)
             }
         }
-
-        let secondAction = UIAction(title: "Second Action", image: UIImage(systemName: "heart")) { action in
-            print("Second action selected")
-        }
-        let menu = UIMenu(title: "Options", children: [logoutAction, secondAction])
+        
+        let menu = UIMenu(title: "Options", children: [logoutAction])
         if let userName = Auth.auth().currentUser?.displayName {
             navigationItem.title = "Hello, \(userName)"
             
             navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "person.circle"), menu: menu)
         }
-        requestNotificationPermission()
+        requestNotificationPermission() // request notification permission
         print("check notification.")
     }
     

@@ -63,7 +63,6 @@ extension TrendingPageViewController: UICollectionViewDelegate, UICollectionView
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trendingCell", for: indexPath) as! SearchingAnimeCollectionViewCell
         if let animeAllData = animeFetchedData {
             let animeData = animeAllData.data.Page.media[indexPath.item]
-            print(animeData.title.native)
             if let animeTitle = animeData.title.native {
                 cell.setup(title: animeTitle, imageURL: animeData.coverImage.extraLarge)
             } else if let animeTitle = animeData.title.english {

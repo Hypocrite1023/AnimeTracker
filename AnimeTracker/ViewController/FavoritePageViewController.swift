@@ -138,12 +138,11 @@ class FavoritePageViewController: UIViewController {
                         }
                     }
                     self.tableViewDataSource?.apply(self.tableViewSnapShot, animatingDifferences: true)
-                    self.isTableDataInitial = true
                 }
                 self.isEnableFetchData = true
             }
         }
-        
+        self.isTableDataInitial = true
     }
     
     func updateSnapShot() {

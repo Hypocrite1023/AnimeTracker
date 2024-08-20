@@ -55,6 +55,8 @@
 		CD9D02F12C6F51E000FD9141 /* StaffDetailView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CD9D02F02C6F51E000FD9141 /* StaffDetailView.storyboard */; };
 		CD9D02F32C6F5AD600FD9141 /* StaffCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D02F22C6F5AD600FD9141 /* StaffCollectionViewCell.swift */; };
 		CD9D02F52C6F5B7B00FD9141 /* StaffDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D02F42C6F5B7B00FD9141 /* StaffDetailViewController.swift */; };
+		CD9D02FF2C74D7C400FD9141 /* RelationPreviewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D02FD2C74D7C400FD9141 /* RelationPreviewCollectionViewCell.swift */; };
+		CD9D03002C74D7C400FD9141 /* RelationPreviewCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD9D02FE2C74D7C400FD9141 /* RelationPreviewCollectionViewCell.xib */; };
 		CD9D4E682C4D0126003492C1 /* AnimeDescriptionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D4E672C4D0126003492C1 /* AnimeDescriptionDelegate.swift */; };
 		CD9D4E6A2C4E4E6F003492C1 /* WatchViewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D4E692C4E4E6F003492C1 /* WatchViewCollectionViewCell.swift */; };
 		CD9D4E6C2C4E654A003492C1 /* AnimeStreamingDetailDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D4E6B2C4E654A003492C1 /* AnimeStreamingDetailDelegate.swift */; };
@@ -112,7 +114,6 @@
 		CDA141F82C57CEC000708A8B /* ThreadsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA141F72C57CEC000708A8B /* ThreadsView.swift */; };
 		CDC14F212C453DBF00BC14FA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC14F202C453DBF00BC14FA /* AppDelegate.swift */; };
 		CDC14F232C453DBF00BC14FA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC14F222C453DBF00BC14FA /* SceneDelegate.swift */; };
-		CDC14F252C453DBF00BC14FA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC14F242C453DBF00BC14FA /* ViewController.swift */; };
 		CDC14F282C453DBF00BC14FA /* Base in Resources */ = {isa = PBXBuildFile; fileRef = CDC14F272C453DBF00BC14FA /* Base */; };
 		CDC14F2A2C453DC000BC14FA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDC14F292C453DC000BC14FA /* Assets.xcassets */; };
 		CDC14F2D2C453DC000BC14FA /* Base in Resources */ = {isa = PBXBuildFile; fileRef = CDC14F2C2C453DC000BC14FA /* Base */; };
@@ -176,6 +177,8 @@
 		CD9D02F02C6F51E000FD9141 /* StaffDetailView.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = StaffDetailView.storyboard; sourceTree = "<group>"; };
 		CD9D02F22C6F5AD600FD9141 /* StaffCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaffCollectionViewCell.swift; sourceTree = "<group>"; };
 		CD9D02F42C6F5B7B00FD9141 /* StaffDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaffDetailViewController.swift; sourceTree = "<group>"; };
+		CD9D02FD2C74D7C400FD9141 /* RelationPreviewCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelationPreviewCollectionViewCell.swift; sourceTree = "<group>"; };
+		CD9D02FE2C74D7C400FD9141 /* RelationPreviewCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RelationPreviewCollectionViewCell.xib; sourceTree = "<group>"; };
 		CD9D4E672C4D0126003492C1 /* AnimeDescriptionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeDescriptionDelegate.swift; sourceTree = "<group>"; };
 		CD9D4E692C4E4E6F003492C1 /* WatchViewCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchViewCollectionViewCell.swift; sourceTree = "<group>"; };
 		CD9D4E6B2C4E654A003492C1 /* AnimeStreamingDetailDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeStreamingDetailDelegate.swift; sourceTree = "<group>"; };
@@ -234,7 +237,6 @@
 		CDC14F1D2C453DBF00BC14FA /* AnimeTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AnimeTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDC14F202C453DBF00BC14FA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CDC14F222C453DBF00BC14FA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		CDC14F242C453DBF00BC14FA /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		CDC14F272C453DBF00BC14FA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		CDC14F292C453DC000BC14FA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CDC14F2C2C453DC000BC14FA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -348,6 +350,7 @@
 		CD2FF7BF2C5CCC5100924687 /* AnimeVoiceActorPage */ = {
 			isa = PBXGroup;
 			children = (
+				CD9D02F82C74CE0400FD9141 /* RelationPreview */,
 				CD2FF7C42C5D0DC500924687 /* RelationScrollView */,
 				CD2FF7C02C5CCCA600924687 /* AnimeVoiceActorPage.storyboard */,
 			);
@@ -361,6 +364,15 @@
 				CD2FF7C72C5D0ECD00924687 /* RelationScrollView.swift */,
 			);
 			path = RelationScrollView;
+			sourceTree = "<group>";
+		};
+		CD9D02F82C74CE0400FD9141 /* RelationPreview */ = {
+			isa = PBXGroup;
+			children = (
+				CD9D02FD2C74D7C400FD9141 /* RelationPreviewCollectionViewCell.swift */,
+				CD9D02FE2C74D7C400FD9141 /* RelationPreviewCollectionViewCell.xib */,
+			);
+			path = RelationPreview;
 			sourceTree = "<group>";
 		};
 		CD9D4E712C50F8AB003492C1 /* AnimeInformationView */ = {
@@ -630,12 +642,11 @@
 				CDC14F342C45543500BC14FA /* ViewController */,
 				CDC14F202C453DBF00BC14FA /* AppDelegate.swift */,
 				CDC14F222C453DBF00BC14FA /* SceneDelegate.swift */,
-				CDC14F242C453DBF00BC14FA /* ViewController.swift */,
-				CD646CD02C629B6800541793 /* Trending.storyboard */,
-				CD7EF8C02C64F43300DCBF7E /* Favorite.storyboard */,
-				CD646CCD2C629B3A00541793 /* Searching.storyboard */,
-				CD7EF8CB2C66FB2B00DCBF7E /* AnimeTimeLineTableView.storyboard */,
 				CDC14F262C453DBF00BC14FA /* Main.storyboard */,
+				CD646CD02C629B6800541793 /* Trending.storyboard */,
+				CD646CCD2C629B3A00541793 /* Searching.storyboard */,
+				CD7EF8C02C64F43300DCBF7E /* Favorite.storyboard */,
+				CD7EF8CB2C66FB2B00DCBF7E /* AnimeTimeLineTableView.storyboard */,
 				CD9D02F02C6F51E000FD9141 /* StaffDetailView.storyboard */,
 				CDC14F292C453DC000BC14FA /* Assets.xcassets */,
 				CDC14F2B2C453DC000BC14FA /* LaunchScreen.storyboard */,
@@ -647,20 +658,20 @@
 		CDC14F342C45543500BC14FA /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
-				CDC14F392C4555D200BC14FA /* SearchPageViewController.swift */,
+				CD6FB73E2C635BEC006455D6 /* NavigationViewController.swift */,
+				CD6FB7462C644914006455D6 /* LoginViewController.swift */,
+				CD6FB7442C63DC99006455D6 /* RegisterViewController.swift */,
+				CD9D02EE2C6CEA6900FD9141 /* ResetPasswordViewController.swift */,
+				CD646CD32C63507000541793 /* TabBarViewController.swift */,
 				CD1AA0E12C49457F00993AEB /* TrendingPageViewController.swift */,
+				CDC14F392C4555D200BC14FA /* SearchPageViewController.swift */,
+				CDDE2CB52C6466340016647B /* FavoritePageViewController.swift */,
+				CD7EF8CD2C66FB9100DCBF7E /* AnimeTimeLineTableViewViewController.swift */,
 				CD1AA0EA2C4A851900993AEB /* AnimeDetailViewController.swift */,
 				CD2FF7A62C5B840500924687 /* AnimeCharacterPageViewController.swift */,
 				CD2FF7C22C5CDAE200924687 /* AnimeVoiceActorViewController.swift */,
-				CD646CD32C63507000541793 /* TabBarViewController.swift */,
-				CD6FB73E2C635BEC006455D6 /* NavigationViewController.swift */,
-				CD6FB7402C63601E006455D6 /* FloatingButtonManager.swift */,
-				CD6FB7442C63DC99006455D6 /* RegisterViewController.swift */,
-				CD6FB7462C644914006455D6 /* LoginViewController.swift */,
-				CDDE2CB52C6466340016647B /* FavoritePageViewController.swift */,
-				CD7EF8CD2C66FB9100DCBF7E /* AnimeTimeLineTableViewViewController.swift */,
-				CD9D02EE2C6CEA6900FD9141 /* ResetPasswordViewController.swift */,
 				CD9D02F42C6F5B7B00FD9141 /* StaffDetailViewController.swift */,
+				CD6FB7402C63601E006455D6 /* FloatingButtonManager.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -823,6 +834,7 @@
 				CD646CCA2C61C44D00541793 /* FloatingButtonMenu.xib in Resources */,
 				CDA141F12C57C5DE00708A8B /* ThreadPreview.xib in Resources */,
 				CDA141E52C579F6000708A8B /* RankingView.xib in Resources */,
+				CD9D03002C74D7C400FD9141 /* RelationPreviewCollectionViewCell.xib in Resources */,
 				CD1AA0E72C49547100993AEB /* Simulator Screenshot - iPhone 15 Pro - 2024-07-18 at 21.47.05.png in Resources */,
 				CD2FF7AA2C5B96D100924687 /* MediaRelationView.xib in Resources */,
 			);
@@ -892,11 +904,11 @@
 				CD6FB73F2C635BEC006455D6 /* NavigationViewController.swift in Sources */,
 				CD9D4ED92C550B85003492C1 /* ExternalLinkPreview.swift in Sources */,
 				CD9D4EB62C54D449003492C1 /* AnimeWatchPreview.swift in Sources */,
-				CDC14F252C453DBF00BC14FA /* ViewController.swift in Sources */,
 				CD9D4E6C2C4E654A003492C1 /* AnimeStreamingDetailDelegate.swift in Sources */,
 				CD9D4EBB2C54D66F003492C1 /* AnimeWatchPreviewContainer.swift in Sources */,
 				CD9D02F32C6F5AD600FD9141 /* StaffCollectionViewCell.swift in Sources */,
 				CD2FF7AE2C5CB93000924687 /* VoiceActorDataResponse.swift in Sources */,
+				CD9D02FF2C74D7C400FD9141 /* RelationPreviewCollectionViewCell.swift in Sources */,
 				CD2FF7A12C5B804F00924687 /* AnimeCharacterDataDelegate.swift in Sources */,
 				CD2FF7C32C5CDAE200924687 /* AnimeVoiceActorViewController.swift in Sources */,
 				CD9D4E882C51596A003492C1 /* RelationView.swift in Sources */,

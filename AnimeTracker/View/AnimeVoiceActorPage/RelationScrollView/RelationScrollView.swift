@@ -18,7 +18,7 @@ class RelationScrollView: UIView {
     */
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var yearLabel: UILabel!
-    @IBOutlet weak var containerInScrollView: UIView!
+    @IBOutlet weak var collectionViewContainer: UIView!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
