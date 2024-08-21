@@ -51,4 +51,22 @@ favoriteBtn.addGestureRecognizer(goToFavoritePageGesture)
 >> 使用singleton pattern: 當同個物件會在整個project中不斷地使用．使用singleton pattern的物件只能有一個實例，被呼叫才會create  
 >> Sandbox: rsync.samba(3701) deny(1) file-write-create /Users/rex/Library/Developer/Xcode/DerivedData/AnimeTracker-djkxbuuynisxwxgyttsguaxwcvps/Build/Products/Debug-iphonesimulator/AnimeTracker.app/Frameworks/openssl_grpc.framework/_CodeSignature  
 >>> User Script Sandboxing Yes -> No  
-
+  
+> 2024.08.21  
+>> 傳遞非同步資料該使用delegate or escape closure?  
+>>> 我一開始寫的時候因為對escape closure還不熟，所以在傳遞從非同步的資料都是使用delegate，但後來需要傳遞的資料種類越來越多，每種傳遞的資料都需要寫一個protocol  
+>>> 有時候又會忘記設定delegate的對象，後來對escape closure比較熟後，只要是非同步資料的傳遞我都喜歡使用escape closure，因為簡單而且不會忘記寫delegate的對象  
+>> 當character preview 被 tap，要通知viewController使用api來獲得資料並在獲得資料後更新UI  
+>> 使用delegate(利用protocol):  
+>>> 1. character preview(UIView)透過UITapGestureRecognizer知道他被點了  
+>>> 2. 透過delegate通知viewController要拿資料(MVC，view不處理資料)  
+>>> 3. viewController透過AnimeDataFetcher拿到資料(需要實現相關的protocol)  
+>>> 4. AnimeDataFetcher再透過delegate傳資料到viewController  
+>>> 5. viewController拿到資料並更新UI  
+>> 使用completion handler(escaping closure):  
+>>> 1. character preview(UIView)透過UITapGestureRecognizer知道他被點了  
+>>> 2. 透過delegate通知viewController要拿資料(MVC，view不處理資料)  
+>>> 3. viewController透過AnimeDataFetcher拿到資料再經由completion handler更新UI  
+>>>> 從上面例子可以看到 delegate 會比 completion handler 使用上來的複雜一點，不過當一次抓的資料種類比較多，使用delegate可以為不同的資料加入不同的function，
+比如說我同時獲得了character和voice actor的資料，這兩種資料更新的UI是不同的，這時候就可以透過不同的function處理，使用completion handler時，處理不同資料的程式碼
+都混再一起，所以使用delegate程式碼的結構會比較清楚  

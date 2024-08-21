@@ -51,27 +51,8 @@ class AnimeDetailViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-//        animeFetchingDataManager.$isFetchingData
-//            .receive(on: DispatchQueue.main)
-//            .sink {
-//                [weak self] isFetching in
-//                self?.fetchingDataIndicator.isHidden = isFetching
-//                if isFetching {
-//                    print(";;;; is fetching data ;;;;;")
-//                    self?.fetchingDataIndicator.startAnimating()
-//                } else {
-//                    print(";;;; end fetching data ;;;;;")
-//                    self?.fetchingDataIndicator.stopAnimating()
-//                }
-//            }
-//            .store(in: &cancellables)
-        
-        
-//        self.animeFetchingDataManager.animeDetailDataDelegate = self
-//        self.animeFetchingDataManager.animeCharacterDataDelegate = self
-//        self.animeFetchingDataManager.animeVoiceActorDataDelegate = self
         AnimeDataFetcher.shared.animeDetailDataDelegate = self
-        AnimeDataFetcher.shared.animeCharacterDataDelegate = self
+//        AnimeDataFetcher.shared.animeCharacterDataDelegate = self
         AnimeDataFetcher.shared.animeVoiceActorDataDelegate = self
         
 //        self.view.backgroundColor = .red
@@ -111,9 +92,14 @@ class AnimeDetailViewController: UIViewController {
         backButton.image = UIImage(systemName: "chevron.backward")
         navigationItem.leftBarButtonItem = backButton
         
+        
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         FloatingButtonManager.shared.addToView(toView: self.view)
         FloatingButtonManager.shared.floatingButtonMenu.navigateDelegate = self
-        
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
@@ -208,7 +194,7 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
                 var tmpCharacterPreview: CharacterPreview? = latsCharacterPreview as? CharacterPreview
                 for (index, edge) in characterData.data.media.characterPreview.edges.enumerated() {
                     let characterPreview = CharacterPreview(frame: .zero, characterID: edge.node.id, voiceActorID: edge.voiceActors.first?.id ?? nil)
-                    characterPreview.animeCharacterDataManager = AnimeDataFetcher.shared.self
+                    characterPreview.animeCharacterDataManager = self
                     characterPreview.voiceActorDataManager = AnimeDataFetcher.shared.self
                     
                     characterPreview.characterImageView.loadImage(from: edge.node.image.large)
@@ -648,7 +634,7 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
         for (index, edge) in animeDetailData.characterPreview.edges.enumerated() {
             let characterPreview = CharacterPreview(frame: .zero, characterID: edge.node.id, voiceActorID: edge.voiceActors.first?.id ?? nil)
             
-            characterPreview.animeCharacterDataManager = AnimeDataFetcher.shared.self
+            characterPreview.animeCharacterDataManager = self
             characterPreview.voiceActorDataManager = AnimeDataFetcher.shared.self
             
             characterPreview.characterImageView.loadImage(from: edge.node.image.large)
@@ -906,7 +892,7 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
         var tmpRecommendationsPreview: RecommendationsAnimePreview?
         for (index, recommendation) in animeDetailData.recommendations.nodes.enumerated() {
             let recommendationsPreview = RecommendationsAnimePreview(frame: .zero, animeID: recommendation.mediaRecommendation?.id)
-            recommendationsPreview.animeDataFetcher = AnimeDataFetcher.shared.self
+//            recommendationsPreview.animeDataFetcher = AnimeDataFetcher.shared.self
             recommendationsPreview.translatesAutoresizingMaskIntoConstraints = false
             recommendationsPreview.animeTitle.text = recommendation.mediaRecommendation?.title.userPreferred
             if let coverImage = recommendation.mediaRecommendation?.coverImage?.large {
@@ -1439,27 +1425,27 @@ extension AnimeDetailViewController: UIScrollViewDelegate {
     }
 }
 
-extension AnimeDetailViewController: AnimeCharacterDataDelegate {
-    func animeCharacterDataDelegate(characterData: CharacterDetail) {
-//        print(characterData)
-        DispatchQueue.main.async {
-            let newVC = UIStoryboard(name: "AnimeCharacterPage", bundle: nil).instantiateViewController(withIdentifier: "CharacterPage") as! AnimeCharacterPageViewController
-            newVC.characterData = characterData
-            newVC.animeDetailManager = AnimeDataFetcher.shared.self
-            self.navigationController?.pushViewController(newVC, animated: true)
-        }
-    }
-    
-    
-}
+//extension AnimeDetailViewController: AnimeCharacterDataDelegate {
+//    func animeCharacterDataDelegate(characterData: CharacterDetail) {
+////        print(characterData)
+//        DispatchQueue.main.async {
+//            let newVC = UIStoryboard(name: "AnimeCharacterPage", bundle: nil).instantiateViewController(withIdentifier: "CharacterPage") as! AnimeCharacterPageViewController
+//            newVC.characterData = characterData
+////            newVC.animeDetailManager = AnimeDataFetcher.shared.self
+//            self.navigationController?.pushViewController(newVC, animated: true)
+//        }
+//    }
+//    
+//    
+//}
 
 extension AnimeDetailViewController: AnimeVoiceActorDataDelegate {
-    func animeVoiceActorDataDelegate(voiceActorData: VoiceActorDataResponse.DataClass.StaffData) {
+    func animeVoiceActorDataDelegate(voiceActorData: VoiceActorDataResponse.DataClass.StaffData) { // when characer preview(right side) been tap
         DispatchQueue.main.async {
             let newVC = UIStoryboard(name: "AnimeVoiceActorPage", bundle: nil).instantiateViewController(withIdentifier: "VoiceActorPage") as! AnimeVoiceActorViewController
             newVC.voiceActorDataResponse = voiceActorData
             newVC.animeFetchManager = AnimeDataFetcher.shared.self
-            newVC.characterDataFetcher = AnimeDataFetcher.shared.self
+//            newVC.characterDataFetcher = AnimeDataFetcher.shared.self
             AnimeDataFetcher.shared.passMoreVoiceActorData = newVC.self
             self.navigationController?.pushViewController(newVC, animated: true)
         }
@@ -1507,6 +1493,7 @@ extension AnimeDetailViewController: FavoriteAndNotifyActionDelegate {
     func configFavoriteAndNotify(favorite: Bool, notify: Bool, status: String) {
         print("animeID:", self.animeDetailData?.id, "userUID", Auth.auth().currentUser?.uid)
         if let animeID = self.animeDetailData?.id, let userUID = Auth.auth().currentUser?.uid {
+            // when user tap favorite button or tap notify button, record the current status to firebase
             FirebaseStoreFunc.shared.addAnimeRecord(userUID: userUID, animeID: animeID, isFavorite: favorite, isNotify: notify, status: status) { success, error in
                 if let error = error {
                     print(error.localizedDescription)
@@ -1514,13 +1501,13 @@ extension AnimeDetailViewController: FavoriteAndNotifyActionDelegate {
                     print("Add data success")
                 }
             }
-            if notify {
+            if notify { // user active the notify, notify will active by client side
                 AnimeDataFetcher.shared.fetchAnimeEpisodeDataByID(id: animeID) { episodeData in
                     if let nextAiringEpisode = episodeData?.data.Media.nextAiringEpisode, let episodes = episodeData?.data.Media.episodes, let animeTitle = episodeData?.data.Media.title.native {
                         AnimeNotification.shared.setupAllEpisodeNotification(animeID: animeID, animeTitle: animeTitle, nextAiringEpsode: nextAiringEpisode.episode, nextAiringInterval: TimeInterval(nextAiringEpisode.timeUntilAiring), totalEpisode: episodes)
                     }
                 }
-            } else {
+            } else { // user cancel the notify, notify whice have scheduled will be remove
                 AnimeNotification.shared.removeAllEpisodeNotification(for: animeID)
             }
         }
@@ -1531,12 +1518,27 @@ extension AnimeDetailViewController: FavoriteAndNotifyActionDelegate {
 }
 
 extension AnimeDetailViewController: FetchStaffDataDelegate {
-    func fetchStaffDetailData(staffID: Int) {
+    func fetchStaffDetailData(staffID: Int) { // when staff preview been tap, it will execute
         AnimeDataFetcher.shared.fetchStaffDetailByID(id: staffID) { staff in
             DispatchQueue.main.async {
                 let vc = UIStoryboard(name: "StaffDetailView", bundle: nil).instantiateViewController(withIdentifier: "StaffDetailView") as! StaffDetailViewController
                 vc.staffData = staff
                 vc.fastNavigate = self.tabBarController.self as? any NavigateDelegate
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
+        }
+    }
+    
+    
+}
+
+extension AnimeDetailViewController: GetAnimeCharacterDataDelegate {
+    func getAnimeCharacterData(id: Int, page: Int) { // when characer preview(left side) been tap
+        AnimeDataFetcher.shared.fetchCharacterDetailByCharacterID(id: id, page: page) { characterDetail in
+            DispatchQueue.main.async {
+                let vc = UIStoryboard(name: "AnimeCharacterPage", bundle: nil).instantiateViewController(withIdentifier: "CharacterPage") as! AnimeCharacterPageViewController
+                vc.characterData = characterDetail
+//                vc.fastNavigate = self.tabBarController.self as? any NavigateDelegate
                 self.navigationController?.pushViewController(vc, animated: true)
             }
         }

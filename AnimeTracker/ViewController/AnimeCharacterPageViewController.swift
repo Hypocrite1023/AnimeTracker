@@ -17,9 +17,9 @@ class AnimeCharacterPageViewController: UIViewController {
     @IBOutlet weak var characterGender: UILabel!
     @IBOutlet weak var characterBloodType: UILabel!
     @IBOutlet weak var characterDescription: UILabel!
-    @IBOutlet weak var mediaRelationContainer: UIView!
     @IBOutlet weak var languageSelection: UIButton!
     @IBOutlet weak var wholePageScrollView: UIScrollView!
+    @IBOutlet weak var characterRelationCollectionView: UICollectionView!
     
     var languageSelected = ""
     weak var animeDetailManager: FetchAnimeDetailDataByID?
@@ -49,119 +49,17 @@ class AnimeCharacterPageViewController: UIViewController {
     var voiceActorLanguageTypeSet: Set<String> = Set<String>()
     var languageSelectionActions: [UIAction] = []
     
-    fileprivate func setCharacterRelationView(_ characterData: CharacterDetail.CharacterData.CharacterDataInData) {
-        for subview in mediaRelationContainer.subviews {
-            subview.removeFromSuperview()
-        }
-        var tmpRelationView: MediaRelationView?
-//        print(characterData)
-        if let edges = characterData.media?.edges {
-            for (index, relation) in edges.enumerated() {
-                
-                if let voiceActorRoles = relation.voiceActorRoles {
-                    print(index, "...")
-                    if voiceActorRoles.count != 0 {
-                        for (innerIndex, voiceActor) in voiceActorRoles.enumerated() {
-                            print(index, innerIndex)
-                            let relationView = MediaRelationView(frame: .zero, animeID: relation.node.id, characterID: nil)
-                            relationView.animeIdDelegate = animeDetailManager.self
-                            relationView.translatesAutoresizingMaskIntoConstraints = false
-                            relationView.animeCoverImage.loadImage(from: relation.node.coverImage.extraLarge)
-                            relationView.animeTitle.text = relation.node.title.userPreferred
-                            relationView.relationVoiceActor.text = voiceActor.voiceActor.name.userPreferred
-                            if !voiceActorLanguageTypeSet.contains(voiceActor.voiceActor.language) {
-                                voiceActorLanguageTypeSet.insert(voiceActor.voiceActor.language)
-                            }
-                            let voiceActorImageView = UIImageView()
-                            voiceActorImageView.contentMode = .scaleAspectFit
-                            voiceActorImageView.translatesAutoresizingMaskIntoConstraints = false
-                            voiceActorImageView.loadImage(from: voiceActor.voiceActor.image.large)
-                            relationView.addSubview(voiceActorImageView)
-                            voiceActorImageView.heightAnchor.constraint(equalTo: relationView.heightAnchor, multiplier: 0.33).isActive = true
-                            voiceActorImageView.widthAnchor.constraint(equalTo: relationView.widthAnchor, multiplier: 0.33).isActive = true
-                            voiceActorImageView.trailingAnchor.constraint(equalTo: relationView.trailingAnchor).isActive = true
-                            voiceActorImageView.topAnchor.constraint(equalTo: relationView.topAnchor).isActive = true
-                            
-                            mediaRelationContainer.addSubview(relationView)
-                            relationView.topAnchor.constraint(equalTo: mediaRelationContainer.topAnchor).isActive = true
-                            relationView.heightAnchor.constraint(equalTo: mediaRelationContainer.heightAnchor).isActive = true
-                            relationView.widthAnchor.constraint(equalToConstant: 154).isActive = true
-                            if index == 0 {
-                                if innerIndex == 0 {
-                                    relationView.leadingAnchor.constraint(equalTo: mediaRelationContainer.leadingAnchor).isActive = true
-                                    if voiceActorRoles.count == 1 && edges.count == 1{
-                                        relationView.trailingAnchor.constraint(equalTo: mediaRelationContainer.trailingAnchor).isActive = true
-                                    }
-                                } else if innerIndex == voiceActorRoles.count - 1 {
-                                    relationView.leadingAnchor.constraint(equalTo: tmpRelationView!.trailingAnchor).isActive = true
-                                    //                                        relationView.trailingAnchor.constraint(equalTo: mediaRelationContainer.trailingAnchor).isActive = true
-                                } else {
-                                    relationView.leadingAnchor.constraint(equalTo: tmpRelationView!.trailingAnchor).isActive = true
-                                }
-                            } else if index == edges.count - 1 {
-                                if innerIndex == 0 {
-                                    relationView.leadingAnchor.constraint(equalTo: mediaRelationContainer.trailingAnchor).isActive = true
-                                    if voiceActorRoles.count == 1 {
-                                        relationView.trailingAnchor.constraint(equalTo: mediaRelationContainer.trailingAnchor).isActive = true
-                                    }
-                                } else if innerIndex == voiceActorRoles.count - 1 {
-                                    relationView.leadingAnchor.constraint(equalTo: tmpRelationView!.trailingAnchor).isActive = true
-                                    relationView.trailingAnchor.constraint(equalTo: mediaRelationContainer.trailingAnchor).isActive = true
-                                } else {
-                                    relationView.leadingAnchor.constraint(equalTo: tmpRelationView!.trailingAnchor).isActive = true
-                                }
-                            } else {
-                                if innerIndex == 0 {
-                                    relationView.leadingAnchor.constraint(equalTo: tmpRelationView!.trailingAnchor).isActive = true
-                                } else if innerIndex == voiceActorRoles.count - 1 {
-                                    relationView.leadingAnchor.constraint(equalTo: tmpRelationView!.trailingAnchor).isActive = true
-                                    //                                        relationView.trailingAnchor.constraint(equalTo: mediaRelationContainer.trailingAnchor).isActive = true
-                                } else {
-                                    relationView.leadingAnchor.constraint(equalTo: tmpRelationView!.trailingAnchor).isActive = true
-                                }
-                            }
-                            tmpRelationView = relationView
-                        }
-                    } else {
-                        print(relation)
-                        let relationView = MediaRelationView(frame: .zero, animeID: relation.id, characterID: nil)
-                        relationView.translatesAutoresizingMaskIntoConstraints = false
-                        relationView.animeCoverImage.loadImage(from: relation.node.coverImage.extraLarge)
-                        relationView.animeTitle.text = relation.node.title.userPreferred
-                        relationView.relationVoiceActor.text = ""
-                        
-                        mediaRelationContainer.addSubview(relationView)
-                        
-                        relationView.topAnchor.constraint(equalTo: mediaRelationContainer.topAnchor).isActive = true
-                        relationView.heightAnchor.constraint(equalTo: mediaRelationContainer.heightAnchor).isActive = true
-                        relationView.widthAnchor.constraint(equalToConstant: 154).isActive = true
-                        if index == 0 {
-                            relationView.leadingAnchor.constraint(equalTo: mediaRelationContainer.leadingAnchor).isActive = true
-                            if edges.count == 1 {
-                                relationView.trailingAnchor.constraint(equalTo: mediaRelationContainer.trailingAnchor).isActive = true
-                            }
-                        } else if index == edges.count - 1 {
-                            relationView.leadingAnchor.constraint(equalTo: tmpRelationView!.trailingAnchor).isActive = true
-                            relationView.trailingAnchor.constraint(equalTo: mediaRelationContainer.trailingAnchor).isActive = true
-                        } else {
-                            relationView.leadingAnchor.constraint(equalTo: tmpRelationView!.trailingAnchor).isActive = true
-                        }
-                        tmpRelationView = relationView
-                    }
-                    
-                    print("---", voiceActorRoles.count)
-                }
-                
-            }
-        }
-    }
+//    fileprivate func setCharacterRelationView(_ characterData: CharacterDetail.CharacterData.CharacterDataInData) {
+//        
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-//        mediaRelationContainer.translatesAutoresizingMaskIntoConstraints = false
-//        mediaRelationContainer.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        characterRelationCollectionView.dataSource = self
+        characterRelationCollectionView.delegate = self
+        
         navigationItem.title = ""
         navigationController?.setNavigationBarHidden(false, animated: true)
         wholePageScrollView.delegate = self
@@ -176,16 +74,19 @@ class AnimeCharacterPageViewController: UIViewController {
             
             
             
-            setCharacterRelationView(characterData)
+//            setCharacterRelationView(characterData)
             for (_, language) in voiceActorLanguageTypeSet.enumerated() {
                 let languageAction = UIAction(title: language, state: .off) { action in
                     self.characterDataFiltered = self.filterCharacterDataBy(language: language)
+                    DispatchQueue.main.async {
+                        self.characterRelationCollectionView.reloadData()
+                    }
 //                    action.state = .on
 //                    self.languageSelected = language
 //                    self.updateLanguageSelection()
                     self.languageSelection.setTitle(language, for: .normal)
                     if let data = self.characterDataFiltered?.data.Character {
-                        self.setCharacterRelationView(data)
+//                        self.setCharacterRelationView(data)
                     }
                     
                 }
@@ -202,6 +103,10 @@ class AnimeCharacterPageViewController: UIViewController {
             }
             
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         FloatingButtonManager.shared.addToView(toView: self.view)
         FloatingButtonManager.shared.bringFloatingButtonToFront(in: self.view)
     }
@@ -248,81 +153,6 @@ class AnimeCharacterPageViewController: UIViewController {
         return tmpCharacterDataFiltered
     }
     
-    
-//    Character(id: 330136) {
-//        id
-//        name {
-//          first
-//          middle
-//          last
-//          full
-//          native
-//          userPreferred
-//          alternative
-//          alternativeSpoiler
-//        }
-//        image{
-//          large
-//        }
-//        favourites
-//        isFavourite
-//        isFavouriteBlocked
-//        description(asHtml: true)
-//        age
-//        gender
-//        bloodType
-//        dateOfBirth {
-//          year
-//          month
-//          day
-//        }
-//        media(page: 1, sort: POPULARITY_DESC, onList: true)@include(if: true) {
-//          pageInfo {
-//            total
-//            perPage
-//            currentPage
-//            lastPage
-//            hasNextPage
-//          }
-//          edges {
-//            id
-//            characterRole
-//            voiceActorRoles(sort:[RELEVANCE,ID]) {
-//              roleNotes
-//              voiceActor {
-//                id
-//                name {
-//                  userPreferred
-//                }
-//                image {
-//                  large
-//                }
-//                language:languageV2
-//              }
-//            }
-//            node {
-//              id
-//              type
-//              isAdult
-//              bannerImage
-//              title {
-//                userPreferred
-//              }
-//              coverImage {
-//                extraLarge
-//              }
-//              startDate {
-//                year
-//              }
-//              mediaListEntry {
-//                id
-//                status
-//              }
-//            }
-//          }
-//        }
-//      }
-    
 
     /*
     // MARK: - Navigation
@@ -334,6 +164,58 @@ class AnimeCharacterPageViewController: UIViewController {
     }
     */
 
+}
+
+extension AnimeCharacterPageViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return characterDataFiltered?.data.Character.media?.edges.count ?? 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CharacterRelationCell", for: indexPath) as! CharacterRelationCollectionViewCell
+        if let data = characterDataFiltered?.data.Character.media?.edges[indexPath.item] {
+            if !(data.node.type == "ANIME") {
+                cell.voiceActorImage.isHidden = true
+            } else {
+                cell.voiceActorImage.isHidden = false
+            }
+            cell.cellType = data.node.type
+            cell.animeCoverImage.loadImage(from: data.node.coverImage.extraLarge)
+            cell.animeTitle.text = data.node.title.userPreferred
+            cell.voiceActorName.text = data.voiceActorRoles?.first?.voiceActor.name.userPreferred
+            cell.voiceActorImage.loadImage(from: data.voiceActorRoles?.first?.voiceActor.image.large)
+        }
+        return cell
+    }
+    
+}
+
+extension AnimeCharacterPageViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if characterDataFiltered?.data.Character.media?.edges[indexPath.item].node.type == "ANIME" {
+            if let animeID = characterDataFiltered?.data.Character.media?.edges[indexPath.item].node.id {
+                AnimeDataFetcher.shared.fetchAnimeByID(id: animeID) { mediaResponse in
+                    DispatchQueue.main.async {
+                        let media = mediaResponse.data.media
+                        let vc = AnimeDetailViewController(mediaID: media.id)
+                        vc.animeDetailData = media
+                        vc.navigationItem.title = media.title.native
+                        vc.animeDetailView = AnimeDetailView(frame: self.view.frame)
+                        vc.showOverviewView(sender: vc.animeDetailView.animeBannerView.overviewButton)
+                        vc.fastNavigate = self.tabBarController.self as? any NavigateDelegate
+                        
+                        self.navigationController?.pushViewController(vc, animated: true)
+                    }
+                }
+            }
+        }
+    }
+}
+
+extension AnimeCharacterPageViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: 150, height: 238)
+    }
 }
 
 extension AnimeCharacterPageViewController: UIScrollViewDelegate {

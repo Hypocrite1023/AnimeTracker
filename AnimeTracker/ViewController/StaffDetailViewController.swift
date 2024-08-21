@@ -47,9 +47,6 @@ class StaffDetailViewController: UIViewController {
         }
         staffInfo.attributedText = AnimeDetailFunc.updateAnimeDescription(animeDescription: staffData?.description ?? "")
         
-        FloatingButtonManager.shared.addToView(toView: self.view)
-        FloatingButtonManager.shared.bringFloatingButtonToFront(in: self.view)
-        
         staffAnimeCollectionView.delegate = self
     }
     
@@ -72,6 +69,12 @@ class StaffDetailViewController: UIViewController {
             })
         }
         
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        FloatingButtonManager.shared.addToView(toView: self.view)
+        FloatingButtonManager.shared.bringFloatingButtonToFront(in: self.view)
     }
 
 }
@@ -115,7 +118,19 @@ extension StaffDetailViewController: UICollectionViewDataSource {
 extension StaffDetailViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == staffAnimeCollectionView {
-            AnimeDataFetcher.shared.fetchAnimeByID(id: staffAnimeData[indexPath.item].node.id)
+            AnimeDataFetcher.shared.fetchAnimeByID(id: staffAnimeData[indexPath.item].node.id) { mediaResponse in
+                DispatchQueue.main.async {
+                    let media = mediaResponse.data.media
+                    let vc = AnimeDetailViewController(mediaID: media.id)
+                    vc.animeDetailData = media
+                    vc.navigationItem.title = media.title.native
+                    vc.animeDetailView = AnimeDetailView(frame: self.view.frame)
+                    vc.showOverviewView(sender: vc.animeDetailView.animeBannerView.overviewButton)
+                    vc.fastNavigate = self.tabBarController.self as? any NavigateDelegate
+                    
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            }
         }
     }
 }

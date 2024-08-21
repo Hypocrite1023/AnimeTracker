@@ -173,71 +173,6 @@ class AnimeDataFetcher {
         self.queryURL = URL(string: "https://graphql.anilist.co")!
     }
     
-    func fetchAnimeBySearch(year: String, season: String) {
-        var urlRequest = URLRequest(url: queryURL)
-        urlRequest.httpMethod = "post"
-        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        let query = """
-            query {
-              Page(page: 1, perPage: 50) {
-                media(type: ANIME, seasonYear: \(year), season: \(season), sort: POPULARITY_DESC) {
-                  id
-                  title {
-                    romaji
-                    english
-                    native
-                  }
-                  coverImage {
-                    extraLarge
-                  }
-                }
-                pageInfo {
-                  currentPage
-                  hasNextPage
-                }
-              }
-            }
-            """
-        // Set GraphQL query data
-        let graphQLData = ["query": query]
-        
-        do {
-            urlRequest.httpBody = try JSONSerialization.data(withJSONObject: graphQLData, options: [])
-        } catch {
-            print("Error serializing JSON: \(error.localizedDescription)")
-            return
-        }
-        // Create URLSession task
-        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
-            if let error = error {
-                print("Error fetching data: \(error.localizedDescription)")
-                return
-            }
-            
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                print("Invalid response")
-                return
-            }
-            
-            guard let data = data else {
-                print("No data received")
-                return
-            }
-//            print(String(data: data, encoding: .utf8))
-            do {
-                let media = try JSONDecoder().decode(AnimeSearchedOrTrending.self, from: data)
-                self.animeDataDelegateManager?.passAnimeData(animeData: media)
-//                print(media.data.Page.first?.media.coverImage)
-            } catch {
-                print("Error parsing JSON: \(error.localizedDescription)")
-            }
-        }
-        
-        // Execute URLSession task
-        task.resume()
-        
-    }
     
     func fetchAnimeByTrending(page: Int) {
         isFetchingData = true
@@ -304,7 +239,7 @@ class AnimeDataFetcher {
         task.resume()
     }
     
-    func fetchAnimeByID(id: Int) {
+    func fetchAnimeByID(id: Int, complete: @escaping (MediaResponse) -> Void) {
         isFetchingData = true
         print(id)
         var urlRequest = URLRequest(url: queryURL)
@@ -548,7 +483,8 @@ query {
                 let media = try JSONDecoder().decode(MediaResponse.self, from: data)
 //                print(media.data.media.characterPreview.pageInfo.currentPage, "currentPage")
 //                self.animeDetailDataDelegate?.animeDetailDataDelegate(media: media.data.media)
-                self.animeOverViewDataDelegate?.animeDetailDataDelegate(media: media.data.media)
+//                self.animeOverViewDataDelegate?.animeDetailDataDelegate(media: media.data.media)
+                complete(media)
                 self.isFetchingData = false
             } catch {
                 print("Error parsing JSON: \(error.localizedDescription)")
@@ -856,7 +792,7 @@ query {
         task.resume()
     }
     
-    func fetchCharacterDetailByCharacterID(id: Int, page: Int) {
+    func fetchCharacterDetailByCharacterID(id: Int, page: Int, complete: @escaping (CharacterDetail) -> Void) {
         isFetchingData = true
         print(id)
         var urlRequest = URLRequest(url: queryURL)
@@ -968,7 +904,8 @@ query{
             do {
 //                print(String(data: data, encoding: .utf8))
                 let media = try JSONDecoder().decode(CharacterDetail.self, from: data)
-                self.animeCharacterDataDelegate?.animeCharacterDataDelegate(characterData: media)
+//                self.animeCharacterDataDelegate?.animeCharacterDataDelegate(characterData: media)
+                complete(media)
                 self.isFetchingData = false
             } catch {
                 print("Error parsing JSON: \(error.localizedDescription)")
@@ -1768,11 +1705,11 @@ query {
 
 }
 
-extension AnimeDataFetcher: GetAnimeCharacterDataDelegate {
-    func getAnimeCharacterData(id: Int, page: Int) {
-        fetchCharacterDetailByCharacterID(id: id, page: page)
-    }
-}
+//extension AnimeDataFetcher: GetAnimeCharacterDataDelegate {
+//    func getAnimeCharacterData(id: Int, page: Int) {
+//        fetchCharacterDetailByCharacterID(id: id, page: page)
+//    }
+//}
 
 extension AnimeDataFetcher: FetchAnimeVoiceActorData {
     func fetchAnimeVoiceActorData(id: Int, page: Int) {
@@ -1792,13 +1729,13 @@ extension AnimeDataFetcher: FetchMoreVoiceActorData {
     
 }
 
-extension AnimeDataFetcher: FetchAnimeDetailDataByID {
-    func passAnimeID(animeID: Int) {
-        fetchAnimeByID(id: animeID)
-    }
-    
-    
-}
+//extension AnimeDataFetcher: FetchAnimeDetailDataByID {
+//    func passAnimeID(animeID: Int) {
+//        fetchAnimeByID(id: animeID)
+//    }
+//    
+//    
+//}
 //query($id:Int) {
 //  Media(id:$id) {
 //    id

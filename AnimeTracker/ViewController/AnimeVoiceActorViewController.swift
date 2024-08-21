@@ -39,13 +39,17 @@ class AnimeVoiceActorViewController: UIViewController {
         setupPage()
         wholePageScollView.delegate = self
         // Do any additional setup after loading the view.
-        FloatingButtonManager.shared.addToView(toView: self.view)
-        FloatingButtonManager.shared.bringFloatingButtonToFront(in: self.view)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.isHidden = false
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        FloatingButtonManager.shared.addToView(toView: self.view)
+        FloatingButtonManager.shared.bringFloatingButtonToFront(in: self.view)
     }
     
     fileprivate func setupPage() {
@@ -320,17 +324,24 @@ extension AnimeVoiceActorViewController: UICollectionViewDataSource {
 extension AnimeVoiceActorViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let characterID = voiceActorDataEachYear["\(collectionView.tag)"]?[indexPath.item].characters.first?.id {
-            AnimeDataFetcher.shared.getAnimeCharacterData(id: characterID, page: 1)
+            AnimeDataFetcher.shared.fetchCharacterDetailByCharacterID(id: characterID, page: 1) { characterDetail in
+                DispatchQueue.main.async {
+                    let newVC = UIStoryboard(name: "AnimeCharacterPage", bundle: nil).instantiateViewController(withIdentifier: "CharacterPage") as! AnimeCharacterPageViewController
+                    newVC.characterData = characterDetail
+//                    newVC.animeDetailManager = AnimeDataFetcher.shared.self
+                    self.navigationController?.pushViewController(newVC, animated: true)
+                }
+            }
         }
         
     }
 }
 
-extension AnimeVoiceActorViewController: CharacterIdDelegate {
-    func passCharacterID(characterID: Int) {
-        print(characterID)
-        characterDataFetcher?.getAnimeCharacterData(id: characterID, page: 1)
-    }
-    
-    
-}
+//extension AnimeVoiceActorViewController: CharacterIdDelegate {
+//    func passCharacterID(characterID: Int) {
+//        print(characterID)
+//        characterDataFetcher?.getAnimeCharacterData(id: characterID, page: 1)
+//    }
+//    
+//    
+//}

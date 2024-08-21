@@ -670,7 +670,19 @@ extension SearchPageViewController: UICollectionViewDataSource, UICollectionView
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let animeID = self.animeData?.data.Page.media[indexPath.item].id {
-            AnimeDataFetcher.shared.fetchAnimeByID(id: animeID)
+            AnimeDataFetcher.shared.fetchAnimeByID(id: animeID) { mediaResponse in
+                DispatchQueue.main.async {
+                    let media = mediaResponse.data.media
+                    let vc = AnimeDetailViewController(mediaID: media.id)
+                    vc.animeDetailData = media
+                    vc.navigationItem.title = media.title.native
+                    vc.animeDetailView = AnimeDetailView(frame: self.view.frame)
+                    vc.showOverviewView(sender: vc.animeDetailView.animeBannerView.overviewButton)
+                    vc.fastNavigate = self.tabBarController.self as? any NavigateDelegate
+                    
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            }
         }
     }
     
