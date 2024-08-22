@@ -72,3 +72,44 @@ favoriteBtn.addGestureRecognizer(goToFavoritePageGesture)
 >>>> 從上面例子可以看到 delegate 會比 completion handler 使用上來的複雜一點，不過當一次抓的資料種類比較多，使用delegate可以為不同的資料加入不同的function，
 比如說我同時獲得了character和voice actor的資料，這兩種資料更新的UI是不同的，這時候就可以透過不同的function處理，使用completion handler時，處理不同資料的程式碼
 都混再一起，所以使用delegate程式碼的結構會比較清楚  
+  
+> 2024.08.22  
+>> 使用UITableView with UITableViewDiffableDataSource遇到的問題  
+>>> 在其他頁面更改了資料的值，更新了snapshot也把snapshot apply給data source，但tableview的顯示的資料沒有更新  
+>>> 解決 -> 修改hashable的 == 及 hash function，讓DiffableDataSource檢測到資料的變動  
+```
+// 原本
+struct FavoriteAnime: Hashable {
+    static func == (lhs: FavoriteAnime, rhs: FavoriteAnime) -> Bool {
+        return lhs.animeID == rhs.animeID
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(animeID)
+    }
+    
+    let animeID: Int
+    let isFavorite: Bool
+    let isNotify: Bool
+    let status: String
+    var animeData: SimpleAnimeData.DataResponse.SimpleMedia?
+}
+// 修改後
+struct FavoriteAnime: Hashable {
+    static func == (lhs: FavoriteAnime, rhs: FavoriteAnime) -> Bool {
+        return lhs.animeID == rhs.animeID && lhs.isFavorite == rhs.isFavorite && lhs.isNotify == rhs.isNotify
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(animeID)
+        hasher.combine(isFavorite)
+        hasher.combine(isNotify)
+    }
+    
+    let animeID: Int
+    let isFavorite: Bool
+    let isNotify: Bool
+    let status: String
+    var animeData: SimpleAnimeData.DataResponse.SimpleMedia?
+}
+```

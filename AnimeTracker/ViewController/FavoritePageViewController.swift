@@ -11,11 +11,13 @@ import FirebaseAuth
 
 struct FavoriteAnime: Hashable {
     static func == (lhs: FavoriteAnime, rhs: FavoriteAnime) -> Bool {
-        lhs.animeID == rhs.animeID
+        return lhs.animeID == rhs.animeID && lhs.isFavorite == rhs.isFavorite && lhs.isNotify == rhs.isNotify
     }
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(animeID)
+        hasher.combine(isFavorite)
+        hasher.combine(isNotify)
     }
     
     let animeID: Int
@@ -59,7 +61,7 @@ class FavoritePageViewController: UIViewController {
 
         // Do any additional setup after loading the view.
         configDataSource()
-        applyInitialSnapShot()
+//        applyInitialSnapShot()
         favoriteTableView.delegate = self
     }
         
@@ -68,9 +70,11 @@ class FavoritePageViewController: UIViewController {
         print("favorite page appear")
         self.isEnableFetchData = true
         navigationController?.navigationBar.isHidden = false
-        if isTableDataInitial {
-            applyInitialSnapShot()
-        }
+        applyInitialSnapShot()
+//        if isTableDataInitial {
+//            print("favorite page appear and refresh")
+//            updateSnapShot()
+//        }
 //        favoriteAnimeList.removeAll()
     }
     
@@ -83,7 +87,7 @@ class FavoritePageViewController: UIViewController {
             cell.configNotify = self
             cell.favoriteAndNotifyConfig = self
             cell.configBtnColor(isFavorite: itemIdentifier.isFavorite, isNotify: itemIdentifier.isNotify, status: itemIdentifier.status)
-            
+            print(itemIdentifier.animeData?.title.native, itemIdentifier.isNotify)
             return cell
         })
     }
@@ -100,7 +104,7 @@ class FavoritePageViewController: UIViewController {
                     for document in documents {
                         let data = document.data()
                         let animeID = document.documentID
-                        print(animeID, "animeID")
+//                        print(animeID, "animeID")
                         let isFavorite = data?["isFavorite"] as? Bool
                         let isNotify = data?["isNotify"] as? Bool
                         let status = data?["status"] as? String
@@ -138,6 +142,7 @@ class FavoritePageViewController: UIViewController {
                         }
                     }
                     self.tableViewDataSource?.apply(self.tableViewSnapShot, animatingDifferences: true)
+                    print("apply data source")
                 }
                 self.isEnableFetchData = true
             }

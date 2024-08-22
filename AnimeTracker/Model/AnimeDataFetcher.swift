@@ -1174,6 +1174,7 @@ query {
         let query = """
 query {
   Media(id: \(id)) {
+    id
     title {
       native
       romaji
@@ -1228,7 +1229,7 @@ query {
     
     func fetchAnimeSimpleDataByIDs(id: [Int], completion: @escaping ([SimpleAnimeData.DataResponse.SimpleMedia?]) -> Void) {
         isFetchingData = true
-        print(id)
+//        print(id)
         var urlRequest = URLRequest(url: queryURL)
         urlRequest.httpMethod = "post"
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
