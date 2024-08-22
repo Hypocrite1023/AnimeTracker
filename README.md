@@ -1,45 +1,43 @@
-#  AnimeTracker
-### 功能- functions - Login, register, Reset password  
-<p>
-	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/20240822/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-08-22%20at%2020.06.47.png" width = "200">
-	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/20240822/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-08-22%20at%2020.06.54.png" width = "200">
-	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/20240822/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-08-22%20at%2020.07.00.png" width = "200">
-</p>
-### 4 main Tabs - Trending, Searching, Favorite, Timeline  
+#  AnimeTracker  
+### 4 main Tabs - Trending, Searching, Favorite, Timeline    
 > Trending: Display trending anime right now.  
 > Searching: Searching anime with genres, tags, year, season... etc.  
 > Favorite: Display your favorite anime at this page, your can cancel the favorite or cancel the notification.  
 > Timeline: List the anime from your favorite, and sort by the left time to airing. 
-#### Login page, Register Page, Reset password page
-> Use Google Firebase Service
+#### Login page, Register Page, Reset password page  
+> Use Google Firebase Service    
 <p>
 	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/20240822/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-08-22%20at%2020.06.47.png" width = "200">
 	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/20240822/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-08-22%20at%2020.06.54.png" width = "200">
 	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/20240822/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-08-22%20at%2020.07.00.png" width = "200">
-</p>
-#### Trending Page
+</p>  
+
+#### Trending Page  
 <p>
 	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/20240822/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-08-22%20at%2020.05.35.png" width = "200">
 </p>
-#### Searching Page
+  
+#### Searching Page  
 <p>
 	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/20240822/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-08-22%20at%2020.05.42.png" width = "200">
 	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/20240822/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-08-22%20at%2020.05.45.png" width = "200">
 	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/20240822/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-08-22%20at%2020.05.51.png" width = "200">
 	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/20240822/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-08-22%20at%2020.06.13.png" width = "200">
 </p>
-#### Favorite Page
-> Filter by releasing and finished
+  
+#### Favorite Page  
+> Filter by releasing and finished  
 <p>
 	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/20240822/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-08-22%20at%2020.06.21.png" width = "200">
 	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/20240822/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-08-22%20at%2020.06.30.png" width = "200">
 </p>
-#### Timeline Page
+  
+#### Timeline Page  
 > Sort by the left time of that anime episode will airing
 <p>
 	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/20240822/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-08-22%20at%2020.06.38.png" width = "200">
 </p>
-
+  
 ### Anime Detail Page
 [![Watch the video](https://img.youtube.com/vi/9i-IkybcsOQ/0.jpg)]
 (https://youtube.com/shorts/9i-IkybcsOQ?si=AVUDLoM01vDf2PCn)
