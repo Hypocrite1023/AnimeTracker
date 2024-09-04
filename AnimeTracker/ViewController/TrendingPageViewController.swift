@@ -35,6 +35,7 @@ class TrendingPageViewController: UIViewController {
         trendingCollectionView.dataSource = self
         trendingCollectionView.delegate = self
         
+        print(UIDevice.current.model, UIDevice.current.batteryLevel)
     }
     
     override func viewDidAppear(_ animated: Bool) {

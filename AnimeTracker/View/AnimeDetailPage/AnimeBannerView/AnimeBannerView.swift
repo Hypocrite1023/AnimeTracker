@@ -70,8 +70,8 @@ class AnimeBannerView: UIView {
     }
     
     private func commonInit() {
-        
-        Bundle.main.loadNibNamed("AnimeBannerView", owner: self, options: nil)
+        UINib.init(nibName: "AnimeBannerView", bundle: nil).instantiate(withOwner: self, options: nil)
+//        Bundle.main.loadNibNamed("AnimeBannerView", owner: self, options: nil)
         addSubview(contentView)
         contentView.frame = self.bounds
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]

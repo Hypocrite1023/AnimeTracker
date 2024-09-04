@@ -177,6 +177,7 @@
 		CD9D02FD2C74D7C400FD9141 /* RelationPreviewCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelationPreviewCollectionViewCell.swift; sourceTree = "<group>"; };
 		CD9D02FE2C74D7C400FD9141 /* RelationPreviewCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RelationPreviewCollectionViewCell.xib; sourceTree = "<group>"; };
 		CD9D03012C758AC200FD9141 /* CharacterRelationCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterRelationCollectionViewCell.swift; sourceTree = "<group>"; };
+		CD9D03032C776C6400FD9141 /* AnimeTracker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AnimeTracker.entitlements; sourceTree = "<group>"; };
 		CD9D4E672C4D0126003492C1 /* AnimeDescriptionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeDescriptionDelegate.swift; sourceTree = "<group>"; };
 		CD9D4E692C4E4E6F003492C1 /* WatchViewCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchViewCollectionViewCell.swift; sourceTree = "<group>"; };
 		CD9D4E6B2C4E654A003492C1 /* AnimeStreamingDetailDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeStreamingDetailDelegate.swift; sourceTree = "<group>"; };
@@ -622,6 +623,7 @@
 		CDC14F1F2C453DBF00BC14FA /* AnimeTracker */ = {
 			isa = PBXGroup;
 			children = (
+				CD9D03032C776C6400FD9141 /* AnimeTracker.entitlements */,
 				CD6FB7422C63C752006455D6 /* GoogleService-Info.plist */,
 				CD9D4E772C513ADD003492C1 /* Functions */,
 				CD1AA0E32C49473F00993AEB /* Extension */,
@@ -1125,6 +1127,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AnimeTracker/AnimeTracker.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = P2CKQU8TPP;
@@ -1139,7 +1142,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = hypocrite1023.AnimeTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1158,6 +1161,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AnimeTracker/AnimeTracker.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = P2CKQU8TPP;
@@ -1172,7 +1176,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = hypocrite1023.AnimeTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

@@ -93,7 +93,6 @@ class AnimeDetailViewController: UIViewController {
         navigationItem.leftBarButtonItem = backButton
         
         
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -982,7 +981,7 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
             animeDetailView.reviewView.bottomAnchor.constraint(equalTo: animeDetailView.tmpScrollView.bottomAnchor).isActive = true
         }
     }
-    // MARK: - animeexternalLinkView
+    // MARK: - animeExternalLinkView
     fileprivate func setupAnimeExternalLinkView(_ animeDetailData: MediaResponse.MediaData.Media, _ externalLinkView: ExternalLinkView) {
         animeDetailView.tmpScrollView.addSubview(externalLinkView)
         var tmpExternalLinkPreview: ExternalLinkPreview?

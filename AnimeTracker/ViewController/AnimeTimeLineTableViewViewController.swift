@@ -30,14 +30,8 @@ class AnimeTimeLineTableViewViewController: UIViewController {
 //        }
 //    }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
-        animeTimeLineTableView.dataSource = self
-        animeTimeLineTableView.delegate = self
-//        animeTimeLineTableView.register(AnimeTimeLineTableViewCell.self, forCellReuseIdentifier: "AnimeTimeLineTableViewCell")
-        
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         if let userUID = Auth.auth().currentUser?.uid {
             loadFavoriteAndReleasingEpisodeData(userUID) {
                 print("completion")
@@ -66,6 +60,17 @@ class AnimeTimeLineTableViewViewController: UIViewController {
                 
             }
         }
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        // Do any additional setup after loading the view.
+        animeTimeLineTableView.dataSource = self
+        animeTimeLineTableView.delegate = self
+//        animeTimeLineTableView.register(AnimeTimeLineTableViewCell.self, forCellReuseIdentifier: "AnimeTimeLineTableViewCell")
+        
+        
     }
     
     fileprivate func loadFavoriteAndReleasingEpisodeData(_ userUID: String, completion: @escaping () -> Void) {

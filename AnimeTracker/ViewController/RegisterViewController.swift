@@ -39,6 +39,12 @@ class RegisterViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(closeKeyboard))
+        self.view.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc func closeKeyboard() {
+        self.view.endEditing(true)
     }
     
     fileprivate func setupAlertController(title: String, message: String) {
@@ -128,6 +134,8 @@ extension RegisterViewController: UITextFieldDelegate {
         if let nextTextField = view.viewWithTag(textField.tag + 1) {
             textField.resignFirstResponder()
             nextTextField.becomeFirstResponder()
+        } else {
+            self.view.endEditing(true)
         }
         return true
     }
