@@ -17,24 +17,26 @@ class ResetPasswordViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     
-    fileprivate func setupAlertController(title: String, message: String) {
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "OK", style: .cancel)
-        alertController.addAction(okAction)
-        self.present(alertController, animated: true)
-    }
+//    fileprivate func setupAlertController(title: String, message: String) {
+//        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+//        let okAction = UIAlertAction(title: "OK", style: .cancel)
+//        alertController.addAction(okAction)
+//        self.present(alertController, animated: true)
+//    }
     
     @IBAction func resetPassword(_ sender: UIButton) {
         print("reset")
         guard let emailAddr = emailTextField.text, emailAddr != "" else { // check email address field not null
-            setupAlertController(title: "Email address cannot be null.", message: "Please type your email address.")
+            AlertWithMessageController.setupAlertController(title: "Email address cannot be null.", message: "Please type your email address.", viewController: self)
             return
         }
         Auth.auth().sendPasswordReset(withEmail: emailAddr) { error in
             if let error = error {
-                self.setupAlertController(title: "Reset Password Error", message: error.localizedDescription)
+                AlertWithMessageController.setupAlertController(title: "Reset Password Error", message: error.localizedDescription, viewController: self)
             } else {
-                let alertController = UIAlertController(title: "We have sent you a reset password email, please check your mail box.", message: nil, preferredStyle: .alert)
+//                AlertWithMessageController.setupAlertController(title: "If the email address is already registered, we will send a password reset email to your email address.", message: nil, viewController: self)
+//                self.navigationController?.popViewController(animated: true) // pop to login page
+                let alertController = UIAlertController(title: "If the email address is already registered, we will send a password reset email to your email address.", message: nil, preferredStyle: .alert)
                 let okayAction = UIAlertAction(title: "OK", style: .cancel) { action in
                     self.dismiss(animated: true)
                     self.navigationController?.popViewController(animated: true) // pop to login page

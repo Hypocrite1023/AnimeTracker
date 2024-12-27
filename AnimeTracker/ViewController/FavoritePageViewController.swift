@@ -23,7 +23,7 @@ struct FavoriteAnime: Hashable {
     let animeID: Int
     let isFavorite: Bool
     let isNotify: Bool
-    let status: String
+    var status: String
     var animeData: SimpleAnimeData.DataResponse.SimpleMedia?
 }
 
@@ -118,6 +118,7 @@ class FavoritePageViewController: UIViewController {
                             
                             for (index, data) in simpleAnimeData.enumerated() {
                                 tmpFavoriteAnimeList[index].animeData = data
+                                tmpFavoriteAnimeList[index].status = data?.status ?? ""
                             }
                             completion(tmpFavoriteAnimeList)
                         }

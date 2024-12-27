@@ -8,9 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		064724EF74FD01F36D6E2B4F /* Pods_AnimeTracker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EF066C15013076581D9308E /* Pods_AnimeTracker.framework */; };
+		A3DB5B642D1E23D300FD19A7 /* AlertWithMessageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3DB5B632D1E23D300FD19A7 /* AlertWithMessageController.swift */; };
 		CD1AA0E22C49457F00993AEB /* TrendingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1AA0E12C49457F00993AEB /* TrendingPageViewController.swift */; };
 		CD1AA0E52C49475D00993AEB /* UIImageViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1AA0E42C49475D00993AEB /* UIImageViewExtension.swift */; };
-		CD1AA0E72C49547100993AEB /* Simulator Screenshot - iPhone 15 Pro - 2024-07-18 at 21.47.05.png in Resources */ = {isa = PBXBuildFile; fileRef = CD1AA0E62C49547100993AEB /* Simulator Screenshot - iPhone 15 Pro - 2024-07-18 at 21.47.05.png */; };
+		CD1AA0E72C49547100993AEB /* demo in Resources */ = {isa = PBXBuildFile; fileRef = CD1AA0E62C49547100993AEB /* demo */; };
 		CD1AA0E92C4A72B200993AEB /* AnimeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1AA0E82C4A72B200993AEB /* AnimeDetailView.swift */; };
 		CD1AA0EB2C4A851900993AEB /* AnimeDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1AA0EA2C4A851900993AEB /* AnimeDetailViewController.swift */; };
 		CD1AA0ED2C4BA82D00993AEB /* AnimeDetailDataDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1AA0EC2C4BA82D00993AEB /* AnimeDetailDataDelegate.swift */; };
@@ -122,16 +123,16 @@
 		CDDE2CB62C6466340016647B /* FavoritePageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDDE2CB52C6466340016647B /* FavoritePageViewController.swift */; };
 		CDE22E452C47C39500080BAD /* SearchingAnimeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE22E442C47C39500080BAD /* SearchingAnimeCollectionViewCell.swift */; };
 		CDE22E482C47F8B600080BAD /* AnimeDataDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE22E472C47F8B600080BAD /* AnimeDataDelegate.swift */; };
-		CDE22E4B2C480F7400080BAD /* Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56.png in Resources */ = {isa = PBXBuildFile; fileRef = CDE22E4A2C480F7400080BAD /* Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		07699B9B52E92D5AB8B9520E /* Pods-AnimeTracker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AnimeTracker.release.xcconfig"; path = "Target Support Files/Pods-AnimeTracker/Pods-AnimeTracker.release.xcconfig"; sourceTree = "<group>"; };
 		8EF066C15013076581D9308E /* Pods_AnimeTracker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AnimeTracker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9FC9250BE48481FE9A6EBF98 /* Pods-AnimeTracker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AnimeTracker.debug.xcconfig"; path = "Target Support Files/Pods-AnimeTracker/Pods-AnimeTracker.debug.xcconfig"; sourceTree = "<group>"; };
+		A3DB5B632D1E23D300FD19A7 /* AlertWithMessageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertWithMessageController.swift; sourceTree = "<group>"; };
 		CD1AA0E12C49457F00993AEB /* TrendingPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendingPageViewController.swift; sourceTree = "<group>"; };
 		CD1AA0E42C49475D00993AEB /* UIImageViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageViewExtension.swift; sourceTree = "<group>"; };
-		CD1AA0E62C49547100993AEB /* Simulator Screenshot - iPhone 15 Pro - 2024-07-18 at 21.47.05.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Simulator Screenshot - iPhone 15 Pro - 2024-07-18 at 21.47.05.png"; path = "../../../Desktop/Simulator Screenshot - iPhone 15 Pro - 2024-07-18 at 21.47.05.png"; sourceTree = "<group>"; };
+		CD1AA0E62C49547100993AEB /* demo */ = {isa = PBXFileReference; lastKnownFileType = folder; name = demo; path = ../demo; sourceTree = "<group>"; };
 		CD1AA0E82C4A72B200993AEB /* AnimeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeDetailView.swift; sourceTree = "<group>"; };
 		CD1AA0EA2C4A851900993AEB /* AnimeDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeDetailViewController.swift; sourceTree = "<group>"; };
 		CD1AA0EC2C4BA82D00993AEB /* AnimeDetailDataDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeDetailDataDelegate.swift; sourceTree = "<group>"; };
@@ -246,7 +247,6 @@
 		CDDE2CB52C6466340016647B /* FavoritePageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritePageViewController.swift; sourceTree = "<group>"; };
 		CDE22E442C47C39500080BAD /* SearchingAnimeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchingAnimeCollectionViewCell.swift; sourceTree = "<group>"; };
 		CDE22E472C47F8B600080BAD /* AnimeDataDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeDataDelegate.swift; sourceTree = "<group>"; };
-		CDE22E4A2C480F7400080BAD /* Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56.png"; path = "../../../Desktop/Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56.png"; sourceTree = "<group>"; };
 		CDE22E4E2C48115800080BAD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -389,6 +389,7 @@
 				CD9D4E782C513B07003492C1 /* AnimeDetailFunc.swift */,
 				CD7EF8BE2C64CE0B00DCBF7E /* FirebaseStoreFunc.swift */,
 				CD7EF8C92C66456700DCBF7E /* AnimeNotification.swift */,
+				A3DB5B632D1E23D300FD19A7 /* AlertWithMessageController.swift */,
 			);
 			path = Functions;
 			sourceTree = "<group>";
@@ -650,8 +651,8 @@
 			isa = PBXGroup;
 			children = (
 				CD6FB73E2C635BEC006455D6 /* NavigationViewController.swift */,
-				CD6FB7462C644914006455D6 /* LoginViewController.swift */,
 				CD6FB7442C63DC99006455D6 /* RegisterViewController.swift */,
+				CD6FB7462C644914006455D6 /* LoginViewController.swift */,
 				CD9D02EE2C6CEA6900FD9141 /* ResetPasswordViewController.swift */,
 				CD646CD32C63507000541793 /* TabBarViewController.swift */,
 				CD1AA0E12C49457F00993AEB /* TrendingPageViewController.swift */,
@@ -720,10 +721,10 @@
 		CDE22E492C480F4100080BAD /* Demo */ = {
 			isa = PBXGroup;
 			children = (
-				CD1AA0E62C49547100993AEB /* Simulator Screenshot - iPhone 15 Pro - 2024-07-18 at 21.47.05.png */,
-				CDE22E4A2C480F7400080BAD /* Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56.png */,
+				CD1AA0E62C49547100993AEB /* demo */,
 			);
-			path = Demo;
+			name = Demo;
+			path = demo;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -807,7 +808,6 @@
 				CD9D4ED22C550796003492C1 /* ExternalLinkView.xib in Resources */,
 				CD9D4E812C51535D003492C1 /* RelationView.xib in Resources */,
 				CDC14F2D2C453DC000BC14FA /* Base in Resources */,
-				CDE22E4B2C480F7400080BAD /* Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56.png in Resources */,
 				CD9D4EAA2C5262C5003492C1 /* StatusDistributionView.xib in Resources */,
 				CD9D4EBE2C54E582003492C1 /* RecommendationsView.xib in Resources */,
 				CD9D4E9B2C523FD9003492C1 /* CharacterCollectionView.xib in Resources */,
@@ -826,7 +826,7 @@
 				CDA141F12C57C5DE00708A8B /* ThreadPreview.xib in Resources */,
 				CDA141E52C579F6000708A8B /* RankingView.xib in Resources */,
 				CD9D03002C74D7C400FD9141 /* RelationPreviewCollectionViewCell.xib in Resources */,
-				CD1AA0E72C49547100993AEB /* Simulator Screenshot - iPhone 15 Pro - 2024-07-18 at 21.47.05.png in Resources */,
+				CD1AA0E72C49547100993AEB /* demo in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -945,6 +945,7 @@
 				CDE22E452C47C39500080BAD /* SearchingAnimeCollectionViewCell.swift in Sources */,
 				CD9D4E6A2C4E4E6F003492C1 /* WatchViewCollectionViewCell.swift in Sources */,
 				CD6FB7452C63DC99006455D6 /* RegisterViewController.swift in Sources */,
+				A3DB5B642D1E23D300FD19A7 /* AlertWithMessageController.swift in Sources */,
 				CD9D03022C758AC200FD9141 /* CharacterRelationCollectionViewCell.swift in Sources */,
 				CD7EF8D22C67960800DCBF7E /* AnimeTimeLineTableViewCell.swift in Sources */,
 				CD7EF8CA2C66456700DCBF7E /* AnimeNotification.swift in Sources */,

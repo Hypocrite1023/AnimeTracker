@@ -54,6 +54,7 @@ class AnimeDetailViewController: UIViewController {
         AnimeDataFetcher.shared.animeDetailDataDelegate = self
 //        AnimeDataFetcher.shared.animeCharacterDataDelegate = self
         AnimeDataFetcher.shared.animeVoiceActorDataDelegate = self
+        AnimeDataFetcher.shared.animeOverViewDataDelegate = self
         
 //        self.view.backgroundColor = .red
         
@@ -891,7 +892,7 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
         var tmpRecommendationsPreview: RecommendationsAnimePreview?
         for (index, recommendation) in animeDetailData.recommendations.nodes.enumerated() {
             let recommendationsPreview = RecommendationsAnimePreview(frame: .zero, animeID: recommendation.mediaRecommendation?.id)
-//            recommendationsPreview.animeDataFetcher = AnimeDataFetcher.shared.self
+            recommendationsPreview.animeDataFetcher = AnimeDataFetcher.shared.self
             recommendationsPreview.translatesAutoresizingMaskIntoConstraints = false
             recommendationsPreview.animeTitle.text = recommendation.mediaRecommendation?.title.userPreferred
             if let coverImage = recommendation.mediaRecommendation?.coverImage?.large {
@@ -1540,6 +1541,24 @@ extension AnimeDetailViewController: GetAnimeCharacterDataDelegate {
 //                vc.fastNavigate = self.tabBarController.self as? any NavigateDelegate
                 self.navigationController?.pushViewController(vc, animated: true)
             }
+        }
+    }
+    
+    
+}
+
+extension AnimeDetailViewController: AnimeOverViewDataDelegate {
+    func animeDetailDataDelegate(media: MediaResponse.MediaData.Media) {
+        DispatchQueue.main.async {
+//            let media = media
+            let vc = AnimeDetailViewController(mediaID: media.id)
+            vc.animeDetailData = media
+            vc.navigationItem.title = media.title.native
+            vc.animeDetailView = AnimeDetailView(frame: self.view.frame)
+            vc.showOverviewView(sender: vc.animeDetailView.animeBannerView.overviewButton)
+            vc.fastNavigate = self.tabBarController.self as? any NavigateDelegate
+            
+            self.navigationController?.pushViewController(vc, animated: true)
         }
     }
     

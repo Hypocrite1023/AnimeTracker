@@ -10,13 +10,16 @@ import FirebaseAuth
 import FirebaseCore
 
 class LoginViewController: UIViewController {
+    //MARK: - email textField
     @IBOutlet weak var userEmailTextField: UITextField! { // the textfield that user input their email
         didSet {
 //            userEmailTextField.becomeFirstResponder()
             userEmailTextField.tag = 0
             userEmailTextField.delegate = self
+            userEmailTextField.widthAnchor.constraint(equalToConstant: userEmailTextField.frame.width).isActive = true
         }
     }
+    //MARK: - password textField
     @IBOutlet weak var userPasswordTextField: UITextField! { // the textfield that user input their password which the password relate to the email
         didSet {
             userPasswordTextField.tag = 1
@@ -37,30 +40,33 @@ class LoginViewController: UIViewController {
 //        self.userPasswordTextField.resignFirstResponder()
         self.view.endEditing(true)
     }
-    fileprivate func setupErrorAlertController(title: String, message: String) {
-        let errorAlertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "OK", style: .cancel)
-        errorAlertController.addAction(okAction)
-        
-        self.present(errorAlertController, animated: true)
-    }
+    
+    // MARK: - 錯誤訊息
+//    fileprivate func setupErrorAlertController(title: String, message: String) {
+//        let errorAlertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+//        let okAction = UIAlertAction(title: "OK", style: .cancel)
+//        errorAlertController.addAction(okAction)
+//        
+//        self.present(errorAlertController, animated: true)
+//    }
     
     @IBAction func login(_ sender: Any) {
         guard let userEmail = userEmailTextField.text, userEmailTextField.text != "" else {
-            setupErrorAlertController(title: "Login Error", message: "User email should not be null")
+            AlertWithMessageController.setupAlertController(title: "Login Error", message: "User email should not be null", viewController: self)
             return
         }
         guard let userPassword = userPasswordTextField.text, userPasswordTextField.text != "" else {
-            setupErrorAlertController(title: "Login Error", message: "User password should not be null")
+            AlertWithMessageController.setupAlertController(title: "Login Error", message: "User password should not be null", viewController: self)
             return
         }
         Auth.auth().signIn(withEmail: userEmail, password: userPassword) { (authResult, error) in // use user provide email and password to login
             if let error = error {
-                self.setupErrorAlertController(title: "Some Error Occur", message: error.localizedDescription)
+                AlertWithMessageController.setupAlertController(title: "Some Error Occur", message: error.localizedDescription, viewController: self)
                 return
             }
             
             self.view.endEditing(true) // stop the textfield in the view editing
+            
             if let verified = Auth.auth().currentUser?.isEmailVerified {
                 if verified { // if user complete email verify, they can go to the main page
                     let mainPage = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TabBarController")
@@ -68,7 +74,7 @@ class LoginViewController: UIViewController {
                     self.navigationController?.setViewControllers([mainPage], animated: true)
                     AnimeNotification.shared.checkNotification()
                 } else { // if not, that they need to complete the email verify
-                    self.setupErrorAlertController(title: "You haven't completed the email verification yet.", message: "Go to your mail box and click the verifiction link.")
+                    AlertWithMessageController.setupAlertController(title: "You haven't completed the email verification yet.", message: "Go to your mail box and click the verification link.", viewController: self)
                 }
             }
         }

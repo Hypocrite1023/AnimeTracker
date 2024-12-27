@@ -50,6 +50,7 @@ class RecommendationsAnimePreview: UIView {
     @objc func loadRecommendation(sender: AnimeRecommendationTapGesture) {
         if let animeID = sender.animeID {
             animeDataFetcher?.passAnimeID(animeID: animeID)
+            print("recommend \(animeID)")
         }
     }
 }

@@ -23,15 +23,44 @@ class TrendingPageViewController: UIViewController {
     var lastFetchData: Date?
     var currentLongPressCellStatus: (isFavorite: Bool?, isNotify: Bool?, status: String?, animeID: Int?)
     var favoriteBtn: UIButton!, notifyBtn: UIButton!
+    
+    var fetchAnimeTrendingDataCancellable: AnyCancellable?
 
+    fileprivate func fetchAnimeTrendingData() {
+        fetchAnimeTrendingDataCancellable = AnimeDataFetcher.shared.fetchAnimeByTrending(page: AnimeDataFetcher.shared.trendingNextFetchPage)
+            .sink(receiveCompletion: { completion in
+                print(completion)
+            }, receiveValue: { trending in
+                AnimeDataFetcher.shared.isFetchingData = false
+                if self.animeFetchedData == nil {
+                    self.animeFetchedData = trending
+                    DispatchQueue.main.async {
+                        self.trendingCollectionView.reloadData()
+                    }
+                } else {
+                    let dataLengthBeforeAppend = self.animeFetchedData?.data.Page.media.count ?? 0
+                    self.animeFetchedData?.data.Page.media.append(contentsOf: trending.data.Page.media)
+                    let dataLengthAfterAppend = self.animeFetchedData?.data.Page.media.count ?? 0
+                    
+                    let indexPaths = (dataLengthBeforeAppend..<dataLengthAfterAppend).map { IndexPath(item: $0, section: 0) }
+                    DispatchQueue.main.async {
+                        self.trendingCollectionView.performBatchUpdates({
+                            self.trendingCollectionView.insertItems(at: indexPaths)
+                        }, completion: nil)
+                    }
+                    
+                }
+            })
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
         AnimeDataFetcher.shared.animeOverViewDataDelegate = self
-        AnimeDataFetcher.shared.animeDataDelegateManager = self
-        AnimeDataFetcher.shared.fetchAnimeByTrending(page: AnimeDataFetcher.shared.trendingNextFetchPage)
-        AnimeDataFetcher.shared.isFetchingData = false
+//        AnimeDataFetcher.shared.animeDataDelegateManager = self
+        fetchAnimeTrendingData()
+//        AnimeDataFetcher.shared.isFetchingData = false
         trendingCollectionView.dataSource = self
         trendingCollectionView.delegate = self
         
@@ -45,17 +74,9 @@ class TrendingPageViewController: UIViewController {
     
     deinit {
         print("TrendingPageViewController deinit")
+        fetchAnimeTrendingDataCancellable?.cancel()
+        print("fetchAnimeTrendingDataCancellable cancel")
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
 extension TrendingPageViewController: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -92,7 +113,7 @@ extension TrendingPageViewController: UICollectionViewDelegate, UICollectionView
         DispatchQueue.main.async {
             self.currentLongPressCellStatus.0?.toggle()
             if let favorite = self.currentLongPressCellStatus.0 {
-                print(self.currentLongPressCellStatus.0)
+//                print(self.currentLongPressCellStatus.0)
                 self.favoriteBtn.backgroundColor = favorite ? .systemYellow.withAlphaComponent(0.7) : .secondaryLabel
                 self.favoriteBtn.tintColor = favorite ? .white.withAlphaComponent(1) : .white.withAlphaComponent(0.5)
             } else {
@@ -112,7 +133,7 @@ extension TrendingPageViewController: UICollectionViewDelegate, UICollectionView
         DispatchQueue.main.async {
             self.currentLongPressCellStatus.1?.toggle()
             if let favorite = self.currentLongPressCellStatus.1 {
-                print(self.currentLongPressCellStatus.1)
+//                print(self.currentLongPressCellStatus.1)
                 self.notifyBtn.backgroundColor = favorite ? .systemBlue.withAlphaComponent(0.7) : .secondaryLabel
                 self.notifyBtn.tintColor = favorite ? .white.withAlphaComponent(1) : .white.withAlphaComponent(0.5)
             } else {
@@ -142,7 +163,7 @@ extension TrendingPageViewController: UICollectionViewDelegate, UICollectionView
             var animeStatus: String?
             AnimeDataFetcher.shared.fetchAnimeSimpleDataByID(id: animeID) { simpleAnimeData in
                 animeStatus = simpleAnimeData?.data.Media.status
-                print("animeStatus", animeStatus)
+//                print("animeStatus", animeStatus)
                 FirebaseStoreFunc.shared.getAnimeRecord(userUID: userUID, animeID: animeID) { favorite, notify, _, error in
                     self.currentLongPressCellStatus = (favorite == nil ? false : favorite, notify == nil ? false : notify, animeStatus, animeID)
                     if let favorite = favorite {
@@ -346,7 +367,8 @@ extension TrendingPageViewController: UIScrollViewDelegate {
                 if animeFetchedData.data.Page.pageInfo.hasNextPage {
                     print("fetch data")
                     lastFetchData = Date.now
-                    AnimeDataFetcher.shared.fetchAnimeByTrending(page: AnimeDataFetcher.shared.trendingNextFetchPage)
+//                    AnimeDataFetcher.shared.fetchAnimeByTrending(page: AnimeDataFetcher.shared.trendingNextFetchPage)
+                    fetchAnimeTrendingData()
                 }
             }
         }

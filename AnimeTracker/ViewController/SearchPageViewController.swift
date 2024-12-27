@@ -416,6 +416,7 @@ class SearchPageViewController: UIViewController {
         streamingOnButton.setTitle("Streaming On", for: .normal)
         
         AnimeDataFetcher.shared.loadEssentialData { essentialData in
+            print(essentialData.genreCollection)
             self.updateMultipleSelectionButtonMenu(button: self.genresButton, stringArr: essentialData.genreCollection, selectedSet: self.selectedGenreSet, defaultString: "Select Genres") { set in
                 self.selectedGenreSet = set
                 self.searchChangeLoadData()
