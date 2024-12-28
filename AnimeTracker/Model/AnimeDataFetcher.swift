@@ -272,12 +272,6 @@ query {
             thumbnail
             url
         }
-        streamingEpisodes {
-            site
-            title
-            thumbnail
-            url
-        }
         bannerImage
         nextAiringEpisode {
             airingAt
@@ -1770,6 +1764,3 @@ extension AnimeDataFetcher: FetchMoreVoiceActorData {
 //    }
 //  }
 //}
-
-
-

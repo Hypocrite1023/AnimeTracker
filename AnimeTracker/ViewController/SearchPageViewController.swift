@@ -287,7 +287,7 @@ enum AnimeSourceMaterial: String, CaseIterable {
         }
     }
 }
-
+// MARK: - SearchPageViewController
 class SearchPageViewController: UIViewController {
     
     // Search
@@ -304,12 +304,14 @@ class SearchPageViewController: UIViewController {
     @IBOutlet weak var doujinSwitch: UISwitch!
     
     
-    @IBOutlet weak var trendingAnimeCollectionView: UICollectionView?
+    @IBOutlet weak var searchingResultCollectionView: UICollectionView!
     
-    var expandedHeightConstraint: NSLayoutConstraint!
-    var foldedHeightConstraint: NSLayoutConstraint!
+    var expandedHeightConstraint: NSLayoutConstraint! // 展開搜尋條件欄後的限制
+    var foldedHeightConstraint: NSLayoutConstraint! // 折疊後的限制
     
-    @IBOutlet weak var configScrollView: UIScrollView!
+    @IBOutlet weak var configScrollView: UIScrollView! // 搜尋條件欄
+    
+    // 展開/折疊搜尋欄動畫
     @IBAction func expandConfig(_ sender: Any) {
         let isHidden = configScrollView.isHidden
             
@@ -392,19 +394,20 @@ class SearchPageViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        // 限制height anchor來展開或隱藏搜尋欄
         expandedHeightConstraint = configScrollView.heightAnchor.constraint(equalToConstant: 60)
-            foldedHeightConstraint = configScrollView.heightAnchor.constraint(equalToConstant: 0)
+        foldedHeightConstraint = configScrollView.heightAnchor.constraint(equalToConstant: 0)
         configScrollView.isHidden = true
-        foldedHeightConstraint.isActive = true
+        foldedHeightConstraint.isActive = true // 預設折疊
         print("load search page")
         AnimeDataFetcher.shared.animeDataDelegateManager = self
         AnimeDataFetcher.shared.animeOverViewDataDelegate = self
         
         
         
-        trendingAnimeCollectionView?.dataSource = self
-        trendingAnimeCollectionView?.delegate = self
-        trendingAnimeCollectionView?.register(SearchingAnimeCollectionViewCell.self, forCellWithReuseIdentifier: "searchCell")
+        searchingResultCollectionView?.dataSource = self
+        searchingResultCollectionView?.delegate = self
+        searchingResultCollectionView?.register(SearchingAnimeCollectionViewCell.self, forCellWithReuseIdentifier: "searchCell")
         
         formatButton.setTitle("Select Formats", for: .normal)
         updateMultipleSelectionButtonMenu(button: formatButton, stringArr: AnimeFormat.allCases.map({$0.stringValue}), selectedSet: selectedFormatSet, defaultString: "Select Formats") { set in
@@ -456,6 +459,16 @@ class SearchPageViewController: UIViewController {
         doujinSwitch.addTarget(self, action: #selector(changeDoujinBoolStatus), for: .valueChanged)
         
         searchAnimeTitleTextField.delegate = self
+        
+        let closeKeyboardGesture = UITapGestureRecognizer(target: self, action: #selector(closeKeyboard))
+        self.view.addGestureRecognizer(closeKeyboardGesture)
+        
+        searchingResultCollectionView?.backgroundView = UIImageView(image: UIImage(systemName: "photo"))
+        checkSearchResultIsEmpty()
+    }
+    
+    @objc func closeKeyboard(sender: UITapGestureRecognizer) {
+        searchAnimeTitleTextField.resignFirstResponder()
     }
     
     @objc func changeDoujinBoolStatus(sender: UISwitch) {
@@ -577,6 +590,34 @@ class SearchPageViewController: UIViewController {
         print("SearchingPageViewController deinit")
     }
     
+    func checkSearchResultIsEmpty() {
+        if (animeData?.data.Page.media == nil || animeData?.data.Page.media.count == 0), let frame = searchingResultCollectionView?.frame {
+            let emptyView = UIView(frame: frame)
+            let imageView = UIImageView(image: UIImage(systemName: "magnifyingglass"))
+            imageView.contentMode = .scaleAspectFit
+            imageView.translatesAutoresizingMaskIntoConstraints = false
+            emptyView.addSubview(imageView)
+            
+            let infoLabel = UILabel()
+            infoLabel.text = "No data found..."
+            infoLabel.translatesAutoresizingMaskIntoConstraints = false
+            emptyView.addSubview(infoLabel)
+            
+            imageView.heightAnchor.constraint(equalToConstant: 80).isActive = true
+            imageView.widthAnchor.constraint(equalToConstant: 80).isActive = true
+            imageView.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor).isActive = true
+            imageView.centerYAnchor.constraint(equalTo: emptyView.centerYAnchor).isActive = true
+            
+            infoLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 15).isActive = true
+            infoLabel.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor).isActive = true
+            infoLabel.heightAnchor.constraint(equalToConstant: 40).isActive = true
+            
+            searchingResultCollectionView.backgroundView = emptyView
+        } else {
+            searchingResultCollectionView.backgroundView = nil
+        }
+    }
+    
     
 
     /*
@@ -603,11 +644,14 @@ extension SearchPageViewController: UITextFieldDelegate {
                 self.animeData?.data.Page.pageInfo.hasNextPage = animeData.data.Page.pageInfo.hasNextPage
             }
             
+            
+            
             DispatchQueue.main.async {
-                self.trendingAnimeCollectionView?.reloadData()
+                self.checkSearchResultIsEmpty()
+                self.searchingResultCollectionView?.reloadData()
                 if self.dataCurrentPage == 0 {
                     UIView.animate(withDuration: 0.5) {
-                        self.trendingAnimeCollectionView?.contentOffset.y = 0
+                        self.searchingResultCollectionView?.contentOffset.y = 0
                     }
                 }
             }
@@ -694,7 +738,7 @@ extension SearchPageViewController: UICollectionViewDataSource, UICollectionView
                 return
             }
         }
-        if scrollView == trendingAnimeCollectionView {
+        if scrollView == searchingResultCollectionView {
             if scrollView.contentOffset.y + scrollView.frame.height + 60 > scrollView.contentSize.height && (self.animeData?.data.Page.pageInfo.hasNextPage ?? false) {
                 lastTimeReloadData = Date.now
                 self.dataCurrentPage += 1
@@ -710,7 +754,7 @@ extension SearchPageViewController: AnimeDataDelegate {
         self.animeData = animeData
 
         DispatchQueue.main.async {
-            self.trendingAnimeCollectionView?.reloadData()
+            self.searchingResultCollectionView?.reloadData()
         }
     }
 

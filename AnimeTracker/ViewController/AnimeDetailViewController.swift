@@ -102,6 +102,12 @@ class AnimeDetailViewController: UIViewController {
         FloatingButtonManager.shared.floatingButtonMenu.navigateDelegate = self
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: false)
+        AnimeDataFetcher.shared.animeOverViewDataDelegate = self
+    }
+    
     override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         coordinator.animate(alongsideTransition: { _ in
@@ -505,7 +511,11 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
         if let nextAiringEpisode = animeDetailData.nextAiringEpisode {
             animeInformationScrollView.airingLabel.text =  "Ep \(nextAiringEpisode.episode): \(AnimeDetailFunc.timeLeft(from: nextAiringEpisode.airingAt))"
         } else {
-            animeInformationScrollView.airingLabel.text = "FINISHED"
+            if animeDetailData.status == "NOT_YET_RELEASED" {
+                animeInformationScrollView.airingLabel.text = "NOT_YET_RELEASLED"
+            } else {
+                animeInformationScrollView.airingLabel.text = "FINISHED"
+            }
         }
         animeInformationScrollView.formatLabel.text = animeDetailData.format
         if let episodes = animeDetailData.episodes {
@@ -555,9 +565,9 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
     // MARK: - animeInformationView constraints
     fileprivate func setupAnimeInformationScrollViewConstraints(topAnchorView: UIView, isLastView: Bool) {
         animeDetailView.animeInformationScrollView.topAnchor.constraint(equalTo: topAnchorView.bottomAnchor, constant: 20).isActive = true
-        animeDetailView.animeInformationScrollView.leadingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.leadingAnchor, constant: 10).isActive = true
+        animeDetailView.animeInformationScrollView.leadingAnchor.constraint(equalTo: animeDetailView.tmpScrollView.leadingAnchor, constant: 5).isActive = true
         animeDetailView.animeInformationScrollView.heightAnchor.constraint(equalToConstant: 70).isActive = true
-        animeDetailView.animeInformationScrollView.widthAnchor.constraint(equalTo: animeDetailView.tmpScrollView.widthAnchor, constant: -20).isActive = true
+        animeDetailView.animeInformationScrollView.widthAnchor.constraint(equalTo: animeDetailView.tmpScrollView.widthAnchor, constant: -10).isActive = true
         if isLastView {
             animeDetailView.animeInformationScrollView.bottomAnchor.constraint(equalTo: animeDetailView.tmpScrollView.bottomAnchor).isActive = true
         }
@@ -582,7 +592,7 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
         if let relations = animeDetailData.relations {
             var tmpRelationPreview: RelationPreview?
             for (index, edge) in relations.edges.enumerated() {
-                let relationPreview = RelationPreview()
+                let relationPreview = RelationPreview(frame: .zero, mediaID: edge.node.id)
                 // count == 1 set leading and trailing
                 // count == 2 set leading
                 // count == 3 set leading and trailing
@@ -593,7 +603,9 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
                 relationPreview.statusLabel.text = edge.node.status
                 relationPreview.translatesAutoresizingMaskIntoConstraints = false
                 relationView.viewInScrollView.addSubview(relationPreview)
-                relationPreview.heightAnchor.constraint(equalToConstant: 150).isActive = true
+                relationPreview.topAnchor.constraint(equalTo: relationView.viewInScrollView.topAnchor).isActive = true
+                relationPreview.bottomAnchor.constraint(equalTo: relationView.viewInScrollView.bottomAnchor).isActive = true
+//                relationPreview.centerYAnchor.constraint(equalTo: relationView.viewInScrollView.centerYAnchor).isActive = true
                 relationPreview.widthAnchor.constraint(equalToConstant: 300).isActive = true
                 
                 if index != relations.edges.count - 1 && index != 0 { // middle of the scroll view
@@ -604,6 +616,9 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
                 } else if index == 0 { // first of the scroll view
                     relationPreview.leadingAnchor.constraint(equalTo: relationView.viewInScrollView.leadingAnchor).isActive = true
                     tmpRelationPreview = relationPreview
+                    if relations.edges.count == 1 {
+                        relationPreview.trailingAnchor.constraint(equalTo: relationView.viewInScrollView.trailingAnchor).isActive = true
+                    }
                 } else { // last of the scroll view
                     relationPreview.leadingAnchor.constraint(equalTo: tmpRelationPreview!.trailingAnchor, constant: 30).isActive = true
                     relationPreview.trailingAnchor.constraint(equalTo: relationView.viewInScrollView.trailingAnchor).isActive = true
@@ -646,16 +661,24 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
             
             characterPreview.translatesAutoresizingMaskIntoConstraints = false
             characterView.characterCollectionView.addSubview(characterPreview)
-            if index == 0 { // first
+            if animeDetailData.characterPreview.edges.count == 1 {
                 characterPreview.topAnchor.constraint(equalTo: characterView.characterCollectionView.topAnchor).isActive = true
-            } else if index == animeDetailData.characterPreview.edges.count - 1 { // last
-                characterPreview.topAnchor.constraint(equalTo: tmpCharacterPreview!.bottomAnchor, constant: 10).isActive = true
+//                characterPreview.topAnchor.constraint(equalTo: tmpCharacterPreview!.bottomAnchor, constant: 10).isActive = true
                 characterView.lastBottomConstraint = characterPreview.bottomAnchor.constraint(equalTo: characterView.characterCollectionView.bottomAnchor)
                 characterView.lastBottomConstraint?.isActive = true
-                
-            } else { // middle
-                characterPreview.topAnchor.constraint(equalTo: tmpCharacterPreview!.bottomAnchor, constant: 10).isActive = true
+            } else {
+                if index == 0 { // first
+                    characterPreview.topAnchor.constraint(equalTo: characterView.characterCollectionView.topAnchor).isActive = true
+                } else if index == animeDetailData.characterPreview.edges.count - 1 { // last
+                    characterPreview.topAnchor.constraint(equalTo: tmpCharacterPreview!.bottomAnchor, constant: 10).isActive = true
+                    characterView.lastBottomConstraint = characterPreview.bottomAnchor.constraint(equalTo: characterView.characterCollectionView.bottomAnchor)
+                    characterView.lastBottomConstraint?.isActive = true
+                    
+                } else { // middle
+                    characterPreview.topAnchor.constraint(equalTo: tmpCharacterPreview!.bottomAnchor, constant: 10).isActive = true
+                }
             }
+            
             characterPreview.leadingAnchor.constraint(equalTo: characterView.characterCollectionView.leadingAnchor).isActive = true
 //            characterPreview.trailingAnchor.constraint(equalTo: characterView.characterCollectionView.trailingAnchor).isActive = true
             characterPreview.widthAnchor.constraint(equalTo: characterView.characterCollectionView.widthAnchor).isActive = true
@@ -706,6 +729,10 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
             
             if index == 0 { // first
                 staffPreview.topAnchor.constraint(equalTo: staffView.staffCollectionView.topAnchor).isActive = true
+                if animeDetailData.staffPreview.edges.count == 1 {
+                    animeDetailView.staffView.lastBottomAnchor = staffPreview.bottomAnchor.constraint(equalTo: staffView.staffCollectionView.bottomAnchor)
+                    animeDetailView.staffView.lastBottomAnchor!.isActive = true
+                }
             } else if index == animeDetailData.staffPreview.edges.count - 1 { // last
                 staffPreview.topAnchor.constraint(equalTo: tmpStaffPreview!.bottomAnchor, constant: 10).isActive = true
                 animeDetailView.staffView.lastBottomAnchor = staffPreview.bottomAnchor.constraint(equalTo: staffView.staffCollectionView.bottomAnchor)
@@ -851,7 +878,8 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
         animeDetailView.tmpScrollView.addSubview(watchView)
         var tmpStreamingPreview: AnimeWatchPreview?
         for (index, streaming) in animeDetailData.streamingEpisodes.enumerated() {
-            let watchPreview = AnimeWatchPreview()
+            let watchPreview = AnimeWatchPreview(frame: .zero, site: streaming.site, url: streaming.url)
+            watchPreview.openUrlDelegate = self
             watchPreview.animeWatchPreviewImageView.loadImage(from: streaming.thumbnail)
             watchPreview.animeWatchPreviewLabel.text = streaming.title
             watchPreview.translatesAutoresizingMaskIntoConstraints = false
@@ -1011,6 +1039,9 @@ extension AnimeDetailViewController: AnimeDetailDataDelegate {
             externalLinkPreview.trailingAnchor.constraint(equalTo: externalLinkView.linkContainer.trailingAnchor).isActive = true
             if index == 0 {
                 externalLinkPreview.topAnchor.constraint(equalTo: externalLinkView.linkContainer.topAnchor).isActive = true
+                if animeDetailData.externalLinks.count == 1 {
+                    externalLinkPreview.bottomAnchor.constraint(equalTo: externalLinkView.linkContainer.bottomAnchor).isActive = true
+                }
             } else if index == animeDetailData.externalLinks.count - 1 {
                 externalLinkPreview.bottomAnchor.constraint(equalTo: externalLinkView.linkContainer.bottomAnchor).isActive = true
                 if let tmpExternalLinkPreview = tmpExternalLinkPreview {

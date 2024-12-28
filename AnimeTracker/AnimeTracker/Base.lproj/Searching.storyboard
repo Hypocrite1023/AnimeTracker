@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Hj5-ea-YPo">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Hj5-ea-YPo">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -46,7 +45,7 @@
                                         <rect key="frame" x="5" y="0.0" width="388" height="40"/>
                                         <subviews>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="CRT-c4-a9g">
-                                                <rect key="frame" x="0.0" y="3" width="40" height="34.666666666666671"/>
+                                                <rect key="frame" x="0.0" y="2.6666666666666679" width="40" height="34.666666666666657"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="40" id="39j-9e-DRQ"/>
                                                 </constraints>
@@ -298,11 +297,11 @@
                         <outlet property="formatButton" destination="lLX-1I-6a5" id="AfZ-We-vXf"/>
                         <outlet property="genresButton" destination="ODn-f2-0TQ" id="lij-Wf-WZo"/>
                         <outlet property="searchAnimeTitleTextField" destination="Th9-Z0-7B6" id="70X-Is-ASe"/>
+                        <outlet property="searchingResultCollectionView" destination="d1y-bZ-ddC" id="g7K-EE-uqV"/>
                         <outlet property="seasonButton" destination="vZD-2Z-W96" id="tGL-TG-cXZ"/>
                         <outlet property="sortButton" destination="2qL-Xf-R4k" id="mE7-xq-oE0"/>
                         <outlet property="sourceMaterialButton" destination="fAg-3Z-RTQ" id="ZSh-np-B37"/>
                         <outlet property="streamingOnButton" destination="BeA-Gk-TLB" id="gYZ-3h-pLb"/>
-                        <outlet property="trendingAnimeCollectionView" destination="d1y-bZ-ddC" id="g7K-EE-uqV"/>
                         <outlet property="yearButton" destination="2ze-K8-483" id="d0F-V4-if5"/>
                     </connections>
                 </viewController>

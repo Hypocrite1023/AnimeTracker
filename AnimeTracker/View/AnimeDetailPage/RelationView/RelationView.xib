@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -35,7 +34,9 @@
                     <subviews>
                         <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="G8e-ZC-xzR">
                             <rect key="frame" x="0.0" y="0.0" width="383" height="150"/>
-                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="150" id="u3a-Tu-GOg"/>
+                            </constraints>
                         </view>
                     </subviews>
                     <constraints>
@@ -44,6 +45,7 @@
                         <constraint firstAttribute="height" constant="150" id="AQR-UX-q9d"/>
                         <constraint firstItem="G8e-ZC-xzR" firstAttribute="top" secondItem="SuU-U3-zkS" secondAttribute="top" id="MPg-NL-cYL"/>
                         <constraint firstItem="G8e-ZC-xzR" firstAttribute="leading" secondItem="SuU-U3-zkS" secondAttribute="leading" id="Pz3-eb-zdY"/>
+                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="150" id="hoD-xM-Urc"/>
                     </constraints>
                     <viewLayoutGuide key="contentLayoutGuide" id="SuU-U3-zkS"/>
                     <viewLayoutGuide key="frameLayoutGuide" id="hiY-pO-sw7"/>
@@ -53,6 +55,7 @@
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstItem="YdO-mj-nTx" firstAttribute="trailing" secondItem="iN0-l3-epB" secondAttribute="trailing" constant="-5" id="04U-5U-OGM"/>
+                <constraint firstAttribute="bottom" secondItem="YdO-mj-nTx" secondAttribute="bottom" id="8Yi-p5-utb"/>
                 <constraint firstAttribute="trailing" secondItem="IL9-7t-640" secondAttribute="trailing" constant="5" id="Ar5-fJ-nkS"/>
                 <constraint firstItem="YdO-mj-nTx" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="5" id="CQk-rL-r6c"/>
                 <constraint firstItem="YdO-mj-nTx" firstAttribute="top" secondItem="IL9-7t-640" secondAttribute="bottom" constant="10" id="dm9-Zj-F7P"/>
@@ -65,9 +68,4 @@
             <point key="canvasLocation" x="43.511450381679388" y="-209.85915492957747"/>
         </view>
     </objects>
-    <resources>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-    </resources>
 </document>
