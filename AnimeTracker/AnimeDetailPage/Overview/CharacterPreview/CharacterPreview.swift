@@ -25,6 +25,7 @@ class CharacterPreview: UIView {
 //    weak var voiceActorDataManager: FetchAnimeVoiceActorData?
     
     weak var characterIdPassDelegate: CharacterIdDelegate?
+    weak var voiceActorIdPassDelegate: VoiceActorIdDelegate?
 
     
     init(frame: CGRect, characterID: Int?, voiceActorID: Int?) {
@@ -91,6 +92,7 @@ class CharacterPreview: UIView {
                            }
                        })
 //        voiceActorDataManager?.fetchAnimeVoiceActorData(id: sender.voiceActorID, page: 1)
+        voiceActorIdPassDelegate?.showVoiceActorPage(voiceActorId: sender.voiceActorID)
     }
 }
 
@@ -116,4 +118,8 @@ class VoiceActorTapGesture: UITapGestureRecognizer {
 
 protocol CharacterIdDelegate: AnyObject {
     func showCharacterPage(characterId: Int)
+}
+
+protocol VoiceActorIdDelegate: AnyObject {
+    func showVoiceActorPage(voiceActorId: Int)
 }

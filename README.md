@@ -146,3 +146,34 @@ struct FavoriteAnime: Hashable {
     var animeData: SimpleAnimeData.DataResponse.SimpleMedia?
 }
 ```
+---
+## 2025.4.22
+```
+class AnimeVoiceActorViewController: UIViewController {
+    @IBOutlet weak var relationCollectionView: UICollectionView!
+    let loadMoreVoiceActorDataTrigger: PassthroughSubject<Void, Never> = PassthroughSubject<Void, Never>()
+}
+extension AnimeVoiceActorViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView == relationCollectionView {
+            if let hasNextPage = viewModel?.voiceActorData?.characterMedia?.pageInfo.hasNextPage, hasNextPage && (scrollView.contentOffset.x + scrollView.bounds.width > scrollView.contentSize.width + 10) && !AnimeDataFetcher.shared.isFetchingData {
+                loadMoreVoiceActorDataTrigger.send()
+            }
+        }
+    }
+}
+
+class AnimeVoiceActorPageViewModel {
+    private var cancellables: Set<AnyCancellable> = []
+    func bindLoadMoreVoiceActorTriggerToViewModel(trigger: PassthroughSubject<Void, Never>) {
+        trigger
+            .throttle(for: .seconds(2), scheduler: DispatchQueue.main, latest: false)
+            .sink { _ in
+                self.fetchMoreVoiceActorData()
+            }
+            .store(in: &cancellables)
+    }
+}
+```
+### 利用 PassthroughSubject 搭配 throttle 將 Api 請求次數限制在最多2秒一次
+當 CollectionView.contentOffset.x 加上 CollectionView 的寬度大於 CollectionView 的contentSize.width(也就是可滑動的view的大小的寬度)，loadMoreVoiceActorDataTrigger 就 send 一個 Void 的值， 而 viewModel 因為 viewController 使用了 bindLoadMoreVoiceActorTriggerToViewModel()，所以 viewModel 當 loadMoreVoiceActorDataTrigger send 值時就能觀察到

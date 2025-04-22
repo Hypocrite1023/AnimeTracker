@@ -6,39 +6,48 @@
 //
 
 import UIKit
+import Combine
 
 class AnimeVoiceActorViewController: UIViewController {
     
     @IBOutlet weak var voiceActorName: UILabel!
     @IBOutlet weak var voiceActorImage: UIImageView!
     @IBOutlet weak var voiceActorInfoView: UIView!
-    @IBOutlet weak var relationContainer: UIView!
     @IBOutlet weak var wholePageScollView: UIScrollView!
+    @IBOutlet weak var relationCollectionView: UICollectionView!
     
-    var yearSet: Set<Int> = Set<Int>()
-    var relationScrollViewBottomAnchor: NSLayoutConstraint?
-    
-    var voiceActorDataResponse: VoiceActorDataResponse.DataClass.StaffData?
+    var viewModel: AnimeVoiceActorPageViewModel?
+    private var cancellables: Set<AnyCancellable> = []
+    let loadMoreVoiceActorDataTrigger: PassthroughSubject<Void, Never> = PassthroughSubject<Void, Never>()
     var isFirstInfo: Bool = true
     
-    var lastTimeFetch: TimeInterval = 0
-    let fetchDataTimeIntervalLimit: TimeInterval = 2
-    
-    weak var animeFetchManager: FetchMoreVoiceActorData?
-    weak var characterDataFetcher: GetAnimeCharacterDataDelegate?
-    weak var animeDetailManager: AnimeDetailDataDelegate?
-    
-    var relationScrollViewCollection: [RelationScrollView] = []
-    var voiceActorDataEachYear: [String: [VoiceActorDataResponse.DataClass.StaffData.CharacterMedia.Edge]] = [String: [VoiceActorDataResponse.DataClass.StaffData.CharacterMedia.Edge]]()
-    var collectionviewCollection: [UICollectionView] = []
-
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        navigationController?.setNavigationBarHidden(false, animated: true)
-        setupPage()
-        wholePageScollView.delegate = self
-        // Do any additional setup after loading the view.
+        
+        relationCollectionView.dataSource = self
+        relationCollectionView.delegate = self
+        
+        viewModel?.$voiceActorData
+            .prefix(2)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { _ in
+                print("setup page")
+                self.setupPage()
+            })
+            .store(in: &cancellables)
+        
+        viewModel?.$voiceActorDataEachYear
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { _ in
+                print("reload voice actor data each year")
+                self.relationCollectionView.reloadData()
+            })
+            .store(in: &cancellables)
+        
+        relationCollectionView.register(UINib(nibName: "RelationPreviewCollectionViewCell", bundle: nil).self, forCellWithReuseIdentifier: "VoiceActorRelationPreviewCell")
+        
+        viewModel?.bindLoadMoreVoiceActorTriggerToViewModel(trigger: loadMoreVoiceActorDataTrigger)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -52,8 +61,8 @@ class AnimeVoiceActorViewController: UIViewController {
         FloatingButtonManager.shared.bringFloatingButtonToFront(in: self.view)
     }
     
-    fileprivate func setupPage() {
-        if let voiceActorDataResponse = voiceActorDataResponse {
+    private func setupPage() {
+        if let voiceActorDataResponse = viewModel?.voiceActorData {
             navigationItem.title = ""
 //            navigationItem.title = voiceActorDataResponse.name.native
             voiceActorName.text = voiceActorDataResponse.name.native
@@ -143,7 +152,7 @@ class AnimeVoiceActorViewController: UIViewController {
                 descriptionLabel.bottomAnchor.constraint(equalTo: voiceActorInfoView.bottomAnchor).isActive = true
             }
             
-            updateRelationData(voiceActorDataResponse.characterMedia)
+//            updateRelationData(voiceActorDataResponse.characterMedia)
             
         }
     }
@@ -183,134 +192,38 @@ class AnimeVoiceActorViewController: UIViewController {
         
         topAnchorView = label
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
+
 extension AnimeVoiceActorViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if scrollView == wholePageScollView {
-            let now = Date().timeIntervalSince1970
-            if now - lastTimeFetch < fetchDataTimeIntervalLimit {
-                return
-            }
-            if voiceActorName.frame.maxY - 3 <= scrollView.contentOffset.y && navigationItem.title!.isEmpty {
-                navigationItem.title = voiceActorName.text
-            } else if voiceActorName.frame.maxY - 3 > scrollView.contentOffset.y && !navigationItem.title!.isEmpty{
-                navigationItem.title = ""
-            }
-//            print(voiceActorName.frame.maxY - 3, scrollView.contentOffset.y)
-            if scrollView.contentOffset.y + scrollView.frame.height > scrollView.contentSize.height + 50 && scrollView.contentSize.height != 0 {
-                
-                print("fetch new relation")
-                lastTimeFetch = now
-                if let hasNextPage = voiceActorDataResponse?.characterMedia?.pageInfo.hasNextPage {
-                    if hasNextPage {
-                        if let id = voiceActorDataResponse?.id, let page = voiceActorDataResponse?.characterMedia?.pageInfo.currentPage {
-                            animeFetchManager?.fetchMoreVoiceActorData(id: id, page: page + 1)
-                        }
-                    }
-                }
-            }
-//            print(scrollView.contentOffset.y + scrollView.frame.height, scrollView.contentSize.height)
-        }
-    }
-}
-
-extension AnimeVoiceActorViewController: ReceiveMoreVoiceActorData {
-    fileprivate func updateRelationData(_ voiceActorData: VoiceActorDataResponse.DataClass.StaffData.CharacterMedia?) {
-        if relationScrollViewCollection.count != 0 {
-            relationScrollViewBottomAnchor?.isActive = false
-        }
-        if let voiceActorData = voiceActorData?.edges {
-            for (index, data) in voiceActorData.enumerated() {
-                if let year = data.node.startDate.year {
-                    if !yearSet.contains(year) { // add additional collection view
-                        let newRelationScrollView = RelationScrollView()
-                        newRelationScrollView.yearLabel.text = "\(year)"
-                        newRelationScrollView.translatesAutoresizingMaskIntoConstraints = false
-                        self.relationContainer.addSubview(newRelationScrollView)
-                        newRelationScrollView.heightAnchor.constraint(equalToConstant: 261).isActive = true
-                        newRelationScrollView.leadingAnchor.constraint(equalTo: relationContainer.leadingAnchor).isActive = true
-                        newRelationScrollView.trailingAnchor.constraint(equalTo: relationContainer.trailingAnchor).isActive = true
-                        if relationScrollViewCollection.count == 0 {
-                            newRelationScrollView.topAnchor.constraint(equalTo: relationContainer.topAnchor).isActive = true
-                        } else {
-                            newRelationScrollView.topAnchor.constraint(equalTo: relationScrollViewCollection.last!.bottomAnchor, constant: 20).isActive = true
-                        }
-                        relationScrollViewCollection.append(newRelationScrollView)
-                        let collectionViewLayout: UICollectionViewFlowLayout = {
-                            let layout = UICollectionViewFlowLayout()
-                            layout.scrollDirection = .horizontal
-                            layout.minimumLineSpacing = 10
-                            layout.minimumInteritemSpacing = 10
-                            layout.itemSize = CGSize(width: 120, height: 240)
-                            return layout
-                        }()
-                        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
-                        collectionView.translatesAutoresizingMaskIntoConstraints = false
-                        newRelationScrollView.collectionViewContainer.addSubview(collectionView)
-                        collectionView.topAnchor.constraint(equalTo: newRelationScrollView.collectionViewContainer.topAnchor).isActive = true
-                        collectionView.bottomAnchor.constraint(equalTo: newRelationScrollView.collectionViewContainer.bottomAnchor).isActive = true
-                        collectionView.leadingAnchor.constraint(equalTo: newRelationScrollView.collectionViewContainer.leadingAnchor).isActive = true
-                        collectionView.trailingAnchor.constraint(equalTo: newRelationScrollView.collectionViewContainer.trailingAnchor).isActive = true
-                        collectionView.dataSource = self
-                        collectionView.delegate = self
-                        collectionView.tag = year
-                        collectionView.register(UINib(nibName: "RelationPreviewCollectionViewCell", bundle: nil).self, forCellWithReuseIdentifier: "voiceActorRelationCollectionView\(collectionView.tag)")
-                        collectionviewCollection.append(collectionView)
-                        voiceActorDataEachYear["\(year)"] = []
-                        voiceActorDataEachYear["\(year)"]?.append(data)
-                        yearSet.insert(year)
-                    } else {
-                        voiceActorDataEachYear["\(year)"]?.append(data)
-                    }
-                }
-            }
-            if relationScrollViewCollection.count != 0 {
-                relationScrollViewBottomAnchor = relationScrollViewCollection.last!.bottomAnchor.constraint(equalTo: relationContainer.bottomAnchor)
-                relationScrollViewBottomAnchor?.isActive = true
-            }
-        }
-        DispatchQueue.main.async {
-            self.collectionviewCollection.forEach { collectionView in
-                print(self.voiceActorDataEachYear["\(collectionView.tag)"])
-                collectionView.reloadData()
+        if scrollView == relationCollectionView {
+            if let hasNextPage = viewModel?.voiceActorData?.characterMedia?.pageInfo.hasNextPage, hasNextPage && (scrollView.contentOffset.x + scrollView.bounds.width > scrollView.contentSize.width + 10) && !AnimeDataFetcher.shared.isFetchingData {
+                loadMoreVoiceActorDataTrigger.send()
             }
         }
     }
-
-    
-    func updateVoiceActorData(voiceActorData: VoiceActorDataResponse.DataClass.StaffData.CharacterMedia?) {
-        voiceActorDataResponse?.characterMedia?.pageInfo.currentPage = voiceActorData?.pageInfo.currentPage ?? 0
-        voiceActorDataResponse?.characterMedia?.pageInfo.hasNextPage = voiceActorData?.pageInfo.hasNextPage ?? false
-        print("update page", voiceActorData?.pageInfo.currentPage ?? 0)
-        DispatchQueue.main.async {
-            self.updateRelationData(voiceActorData)
-        }
-        
-    }
-    
-    
 }
 
 extension AnimeVoiceActorViewController: UICollectionViewDataSource {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        guard let viewModel = viewModel else { return 0 }
+//        print("sections count", viewModel.voiceActorDataEachYear.keys.count)
+        return viewModel.voiceActorDataEachYear.keys.count
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return voiceActorDataEachYear[String(collectionView.tag)]?.count ?? 0
+        guard let viewModel = viewModel else { return 0 }
+        let keys = viewModel.voiceActorDataEachYear.keys.sorted(by: >)
+//        print("numberOfItemsInSection", viewModel.voiceActorDataEachYear[keys[section]]?.count ?? 0)
+        return viewModel.voiceActorDataEachYear[keys[section]]?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let data = voiceActorDataEachYear[String(collectionView.tag)]?[indexPath.item]
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "voiceActorRelationCollectionView\(collectionView.tag)", for: indexPath) as! RelationPreviewCollectionViewCell
+        guard let viewModel = viewModel else { return UICollectionViewCell() }
+        let keys = viewModel.voiceActorDataEachYear.keys.sorted(by: >)
+        
+        let data = viewModel.voiceActorDataEachYear[keys[indexPath.section]]?[indexPath.row]
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "VoiceActorRelationPreviewCell", for: indexPath) as! RelationPreviewCollectionViewCell
         cell.characterImage.loadImage(from: data?.characters.first?.image.large)
         cell.animeTitle.text = data?.node.title.userPreferred
         cell.characterName.text = data?.characters.first?.name.userPreferred
@@ -318,12 +231,28 @@ extension AnimeVoiceActorViewController: UICollectionViewDataSource {
         return cell
     }
     
-    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard kind == UICollectionView.elementKindSectionHeader else {
+            return UICollectionReusableView()
+        }
+        
+        let header = collectionView.dequeueReusableSupplementaryView(
+            ofKind: kind,
+            withReuseIdentifier: "AnimeVoiceActorCollectionViewHeader",
+            for: indexPath) as! AnimeVoiceActorCollectionViewHeader
+        guard let viewModel = viewModel else { return header}
+        let year = viewModel.voiceActorDataEachYear.keys.sorted(by: >)[indexPath.section]
+        
+        header.yearLabel.text = "\(year)"
+        return header
+    }
 }
 
 extension AnimeVoiceActorViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let characterID = voiceActorDataEachYear["\(collectionView.tag)"]?[indexPath.item].characters.first?.id {
+        guard let viewModel = viewModel else { return }
+        let keys = viewModel.voiceActorDataEachYear.keys.sorted(by: >)
+        if let characterID = viewModel.voiceActorDataEachYear[keys[indexPath.section]]?[indexPath.row].characters.first?.id {
 //            AnimeDataFetcher.shared.fetchCharacterDetailByCharacterID(id: characterID, page: 1) { characterDetail in
 //                DispatchQueue.main.async {
 //                    let newVC = UIStoryboard(name: "AnimeCharacterPage", bundle: nil).instantiateViewController(withIdentifier: "CharacterPage") as! AnimeCharacterPageViewController
@@ -331,9 +260,14 @@ extension AnimeVoiceActorViewController: UICollectionViewDelegate {
 //                    self.navigationController?.pushViewController(newVC, animated: true)
 //                }
 //            }
+            let vc = UIStoryboard(name: "AnimeCharacterPage", bundle: nil).instantiateViewController(identifier: "AnimeCharacterPage") as! AnimeCharacterPageViewController
+            vc.viewModel = AnimeCharacterPageViewModel(characterID: characterID)
+            navigationController?.pushViewController(vc, animated: true)
         }
         
     }
+    
+    
 }
 
 //extension AnimeVoiceActorViewController: CharacterIdDelegate {
@@ -344,3 +278,8 @@ extension AnimeVoiceActorViewController: UICollectionViewDelegate {
 //    
 //    
 //}
+
+class AnimeVoiceActorCollectionViewHeader: UICollectionReusableView {
+    @IBOutlet weak var yearLabel: UILabel!
+    
+}

@@ -122,19 +122,9 @@ extension AnimeCharacterPageViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if viewModel?.characterDataFiltered?.data.Character.media?.edges[indexPath.item].node.type == "ANIME" {
             if let animeID = viewModel?.characterDataFiltered?.data.Character.media?.edges[indexPath.item].node.id {
-//                AnimeDataFetcher.shared.fetchAnimeByID(id: animeID) { mediaResponse in
-//                    DispatchQueue.main.async {
-//                        let media = mediaResponse.data.media
-//                        let vc = AnimeDetailViewController(mediaID: media.id)
-//                        vc.animeDetailData = media
-//                        vc.navigationItem.title = media.title.native
-//                        vc.animeDetailView = AnimeDetailView(frame: self.view.frame)
-//                        vc.showOverviewView(sender: vc.animeDetailView.animeBannerView.overviewButton)
-//                        vc.fastNavigate = self.tabBarController.self as? any NavigateDelegate
-//                        
-//                        self.navigationController?.pushViewController(vc, animated: true)
-//                    }
-//                }
+                let vc = UIStoryboard(name: "AnimeDetailPage", bundle: nil).instantiateViewController(identifier: "AnimeDetailView") as! AnimeDetailPageViewController
+                vc.viewModel = AnimeDetailPageViewModel(animeID: animeID)
+                navigationController?.pushViewController(vc, animated: true)
             }
         }
     }

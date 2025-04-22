@@ -866,7 +866,7 @@ query{
             .eraseToAnyPublisher()
     }
     
-    func fetchVoiceActorDataByID(id: Int, page: Int) {
+    func fetchVoiceActorDataByID(id: Int, page: Int = 1) -> AnyPublisher<VoiceActorDataResponse.DataClass.StaffData, Error> {
         isFetchingData = true
         print(id)
         var urlRequest = URLRequest(url: queryURL)
@@ -988,39 +988,24 @@ query {
             urlRequest.httpBody = try JSONSerialization.data(withJSONObject: graphQLData, options: [])
         } catch {
             print("Error serializing JSON: \(error.localizedDescription)")
-            return
         }
-        // Create URLSession task
-        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
-            if let error = error {
-                print("Error fetching data: \(error.localizedDescription)")
-                return
-            }
+        return URLSession.shared.dataTaskPublisher(for: urlRequest)
+            .tryMap { data, response in
             
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                print("Invalid response")
-                return
+                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                    print("Invalid response")
+                    throw URLError(.badServerResponse)
+                }
+                return data
             }
-            
-            guard let data = data else {
-                print("No data received")
-                return
+            .decode(type: VoiceActorDataResponse.self, decoder: JSONDecoder())
+            .map {
+                $0.data.Staff
             }
-            do {
-                //                print(String(data: data, encoding: .utf8))
-                let media = try JSONDecoder().decode(VoiceActorDataResponse.self, from: data)
-                self.animeVoiceActorDataDelegate?.animeVoiceActorDataDelegate(voiceActorData: media.data.Staff)
-                self.isFetchingData = false
-            } catch {
-                print("Error parsing JSON: \(error.localizedDescription)")
-            }
-        }
-        
-        // Execute URLSession task
-        task.resume()
+            .eraseToAnyPublisher()
     }
     
-    func fetchMoreVoiceActorDataByID(id: Int, page: Int) {
+    func fetchMoreVoiceActorDataByID(id: Int, page: Int) -> AnyPublisher<VoiceActorDataResponse.DataClass.StaffData.CharacterMedia?, Error> {
         isFetchingData = true
         print(id)
         var urlRequest = URLRequest(url: queryURL)
@@ -1081,37 +1066,20 @@ query {
             urlRequest.httpBody = try JSONSerialization.data(withJSONObject: graphQLData, options: [])
         } catch {
             print("Error serializing JSON: \(error.localizedDescription)")
-            return
         }
-        // Create URLSession task
-        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
-            if let error = error {
-                print("Error fetching data: \(error.localizedDescription)")
-                return
+        return URLSession.shared.dataTaskPublisher(for: urlRequest)
+            .tryMap { data, response in
+                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                    print("Invalid response")
+                    throw URLError(.badServerResponse)
+                }
+                return data
             }
-            
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                print("Invalid response")
-                return
+            .decode(type: VoiceActorData.self, decoder: JSONDecoder())
+            .map {
+                $0.data.Staff.characterMedia
             }
-            
-            guard let data = data else {
-                print("No data received")
-                return
-            }
-            do {
-                //                print(String(data: data, encoding: .utf8))
-                let media = try JSONDecoder().decode(VoiceActorData.self, from: data)
-                self.passMoreVoiceActorData?.updateVoiceActorData(voiceActorData: media.data.Staff.characterMedia)
-                self.isFetchingData = false
-            } catch {
-                print("Error parsing JSON: \(error.localizedDescription)")
-            }
-            
-        }
-        
-        // Execute URLSession task
-        task.resume()
+            .eraseToAnyPublisher()
     }
     
     func fetchAnimeSimpleDataByID(id: Int) -> AnyPublisher<SimpleAnimeData, Error> {

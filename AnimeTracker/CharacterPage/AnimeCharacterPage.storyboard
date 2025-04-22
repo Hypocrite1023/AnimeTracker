@@ -134,7 +134,7 @@
                                                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="5ba-zg-PVe">
                                                                             <rect key="frame" x="2" y="192.33333333333334" width="146" height="43.666666666666657"/>
                                                                             <subviews>
-                                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="character name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7ZG-LM-39c">
+                                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="character name" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="7" translatesAutoresizingMaskIntoConstraints="NO" id="7ZG-LM-39c">
                                                                                     <rect key="frame" x="0.0" y="0.0" width="146" height="26.333333333333332"/>
                                                                                     <constraints>
                                                                                         <constraint firstAttribute="height" constant="26.333333333333332" id="Lvg-z7-Si8"/>
