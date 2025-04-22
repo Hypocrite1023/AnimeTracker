@@ -23,10 +23,9 @@ class StaffPreview: UIView {
     var staffID: Int?
     weak var fetchStaffDataDelegate: FetchStaffDataDelegate?
     
-    init(frame: CGRect, staffID: Int?, fetchStaffDataDelegate: FetchStaffDataDelegate?) {
+    init(frame: CGRect, staffID: Int?) {
         super.init(frame: frame)
         self.staffID = staffID
-        self.fetchStaffDataDelegate = fetchStaffDataDelegate
         commonInit()
     }
     

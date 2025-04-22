@@ -13,10 +13,11 @@ class SearchingAnimeCollectionViewCell: UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        animeTitle.numberOfLines = 0
+        
     }
     
     func setup(title: String, imageURL: String?) {
-        
         for views in subviews {
             views.removeFromSuperview()
         }

@@ -233,6 +233,7 @@
                     </tabBar>
                     <connections>
                         <segue destination="oDg-0y-TsI" kind="relationship" relationship="viewControllers" id="6HN-vG-Qyb"/>
+                        <segue destination="YJZ-AC-6cp" kind="relationship" relationship="viewControllers" id="8SG-7F-3YD"/>
                         <segue destination="HsS-3k-s7b" kind="relationship" relationship="viewControllers" id="eQl-W0-aqq"/>
                         <segue destination="quL-5y-AAv" kind="relationship" relationship="viewControllers" id="j6B-m8-lRy"/>
                         <segue destination="8cx-Bm-bbR" kind="relationship" relationship="viewControllers" id="HQh-fi-WCc"/>
@@ -413,17 +414,24 @@
             <point key="canvasLocation" x="147" y="-242"/>
         </scene>
         <!--Category-->
-        <scene sceneID="3uM-VO-0iw">
+        <scene sceneID="7hI-f1-9BF">
             <objects>
-                <viewControllerPlaceholder storyboardName="Category" id="h2B-il-6Eh" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="io1-di-dom"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="BSH-ZL-IVE" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <viewController id="YJZ-AC-6cp" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="2yQ-BR-CiA">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="ZEq-ZC-GIy"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Category" image="tray.full" catalog="system" id="ADv-ee-gaZ"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Wzy-C0-zpR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="79" y="221"/>
+            <point key="canvasLocation" x="53" y="157"/>
         </scene>
     </scenes>
     <resources>
+        <image name="tray.full" catalog="system" width="128" height="88"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

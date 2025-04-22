@@ -174,7 +174,7 @@ class AnimeDataFetcher {
     }
     
     
-    func fetchAnimeByTrending(page: Int) -> AnyPublisher<AnimeSearchedOrTrending, Error> {
+    func fetchAnimeByTrending(page: Int) -> AnyPublisher<AnimeTrending, Error> {
         isFetchingData = true
         var urlRequest = URLRequest(url: queryURL)
         urlRequest.httpMethod = "post"
@@ -206,47 +206,50 @@ class AnimeDataFetcher {
             urlRequest.httpBody = try JSONSerialization.data(withJSONObject: graphQLData, options: [])
         } catch {
             print("Error serializing JSON: \(error.localizedDescription)")
-//            return
+            //            return
         }
         trendingNextFetchPage += 1
         // Create URLSession task
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .map({$0.data})
-            .decode(type: AnimeSearchedOrTrending.self, decoder: JSONDecoder())
+            .map {
+//                print(String(data: $0, encoding: .utf8))
+                return $0
+            }
+            .decode(type: AnimeTrending.self, decoder: JSONDecoder())
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
-//        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
-//            if let error = error {
-//                print("Error fetching data: \(error.localizedDescription)")
-//                return
-//            }
-            
-//            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-//                print("Invalid response")
-//                return
-//            }
-//            
-//            guard let data = data else {
-//                print("No data received")
-//                return
-//            }
-//            do {
-//                let media = try JSONDecoder().decode(AnimeSearchedOrTrending.self, from: data)
-//                self.animeDataDelegateManager?.passAnimeData(animeData: media)
-//                self.trendingNextFetchPage += 1
-////                print(media.data.Page.first?.media.coverImage)
-//            } catch {
-//                print("Error parsing JSON: \(error.localizedDescription)")
-//            }
-//        }
+        //        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+        //            if let error = error {
+        //                print("Error fetching data: \(error.localizedDescription)")
+        //                return
+        //            }
+        
+        //            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+        //                print("Invalid response")
+        //                return
+        //            }
+        //
+        //            guard let data = data else {
+        //                print("No data received")
+        //                return
+        //            }
+        //            do {
+        //                let media = try JSONDecoder().decode(AnimeSearchedOrTrending.self, from: data)
+        //                self.animeDataDelegateManager?.passAnimeData(animeData: media)
+        //                self.trendingNextFetchPage += 1
+        ////                print(media.data.Page.first?.media.coverImage)
+        //            } catch {
+        //                print("Error parsing JSON: \(error.localizedDescription)")
+        //            }
+        //        }
         
         // Execute URLSession task
-//        task.resume()
+        //        task.resume()
     }
     
-    func fetchAnimeByID(id: Int, complete: @escaping (MediaResponse) -> Void) {
+    func fetchAnimeByID(id: Int) -> AnyPublisher<MediaResponse, Error> {
         isFetchingData = true
-        print(id)
         var urlRequest = URLRequest(url: queryURL)
         urlRequest.httpMethod = "post"
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -460,41 +463,22 @@ query {
             urlRequest.httpBody = try JSONSerialization.data(withJSONObject: graphQLData, options: [])
         } catch {
             print("Error serializing JSON: \(error.localizedDescription)")
-            return
         }
         // Create URLSession task
-        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
-            if let error = error {
-                print("Error fetching data: \(error.localizedDescription)")
-                return
-            }
-            
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                print("Invalid response")
-                return
-            }
-            
-            guard let data = data else {
-                print("No data received")
-                return
-            }
-            do {
-                let media = try JSONDecoder().decode(MediaResponse.self, from: data)
-//                print(media.data.media.characterPreview.pageInfo.currentPage, "currentPage")
-//                self.animeDetailDataDelegate?.animeDetailDataDelegate(media: media.data.media)
-//                self.animeOverViewDataDelegate?.animeDetailDataDelegate(media: media.data.media)
-                complete(media)
+        return URLSession.shared.dataTaskPublisher(for: urlRequest)
+            .tryMap { data, response in
+                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                    print("Invalid response")
+                    throw URLError(.badServerResponse)
+                }
                 self.isFetchingData = false
-            } catch {
-                print("Error parsing JSON: \(error.localizedDescription)")
+                return data
             }
-        }
-        
-        // Execute URLSession task
-        task.resume()
+            .decode(type: MediaResponse.self, decoder: JSONDecoder())
+            .eraseToAnyPublisher()
     }
     
-    func fetchCharacterPreviewByMediaId(id: Int, page: Int) {
+    func fetchCharacterPreviewByMediaId(id: Int, page: Int) -> AnyPublisher<MediaCharacterPreview.MediaData.Media, Error> {
         isFetchingData = true
         print(id)
         var urlRequest = URLRequest(url: queryURL)
@@ -543,36 +527,22 @@ query {
             urlRequest.httpBody = try JSONSerialization.data(withJSONObject: graphQLData, options: [])
         } catch {
             print("Error serializing JSON: \(error.localizedDescription)")
-            return
         }
         // Create URLSession task
-        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
-            if let error = error {
-                print("Error fetching data: \(error.localizedDescription)")
-                return
-            }
+        return URLSession.shared.dataTaskPublisher(for: urlRequest)
+            .tryMap { data, response in
             
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                print("Invalid response")
-                return
+                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                    print("Invalid response")
+                    throw URLError(.badServerResponse)
+                }
+                return data
             }
-            
-            guard let data = data else {
-                print("No data received")
-                return
+            .decode(type: MediaCharacterPreview.self, decoder: JSONDecoder())
+            .map {
+                $0.data.media
             }
-            do {
-                let media = try JSONDecoder().decode(MediaCharacterPreview.self, from: data)
-//                print(media.data.media.characterPreview.pageInfo.currentPage, "currentPage")
-                self.animeDetailDataDelegate?.animeDetailCharacterDataDelegate(characterData: media)
-                self.isFetchingData = false
-            } catch {
-                print("Error parsing JSON: \(error.localizedDescription)")
-            }
-        }
-        
-        // Execute URLSession task
-        task.resume()
+            .eraseToAnyPublisher()
     }
     
     func fetchStaffPreviewByMediaId(id: Int, page: Int) {
@@ -791,7 +761,7 @@ query {
         task.resume()
     }
     
-    func fetchCharacterDetailByCharacterID(id: Int, page: Int, complete: @escaping (CharacterDetail) -> Void) {
+    func fetchCharacterDetailByCharacterID(id: Int, page: Int = 1) -> AnyPublisher<CharacterDetail, Error> {
         isFetchingData = true
         print(id)
         var urlRequest = URLRequest(url: queryURL)
@@ -882,37 +852,18 @@ query{
             urlRequest.httpBody = try JSONSerialization.data(withJSONObject: graphQLData, options: [])
         } catch {
             print("Error serializing JSON: \(error.localizedDescription)")
-            return
         }
         // Create URLSession task
-        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
-            if let error = error {
-                print("Error fetching data: \(error.localizedDescription)")
-                return
+        return URLSession.shared.dataTaskPublisher(for: urlRequest)
+            .tryMap { data, response in
+                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                    print("Invalid response")
+                    throw URLError(.badServerResponse)
+                }
+                return data
             }
-            
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                print("Invalid response")
-                return
-            }
-            
-            guard let data = data else {
-                print("No data received")
-                return
-            }
-            do {
-//                print(String(data: data, encoding: .utf8))
-                let media = try JSONDecoder().decode(CharacterDetail.self, from: data)
-//                self.animeCharacterDataDelegate?.animeCharacterDataDelegate(characterData: media)
-                complete(media)
-                self.isFetchingData = false
-            } catch {
-                print("Error parsing JSON: \(error.localizedDescription)")
-            }
-        }
-        
-        // Execute URLSession task
-        task.resume()
+            .decode(type: CharacterDetail.self, decoder: JSONDecoder())
+            .eraseToAnyPublisher()
     }
     
     func fetchVoiceActorDataByID(id: Int, page: Int) {
@@ -1056,7 +1007,7 @@ query {
                 return
             }
             do {
-//                print(String(data: data, encoding: .utf8))
+                //                print(String(data: data, encoding: .utf8))
                 let media = try JSONDecoder().decode(VoiceActorDataResponse.self, from: data)
                 self.animeVoiceActorDataDelegate?.animeVoiceActorDataDelegate(voiceActorData: media.data.Staff)
                 self.isFetchingData = false
@@ -1149,7 +1100,7 @@ query {
                 return
             }
             do {
-//                print(String(data: data, encoding: .utf8))
+                //                print(String(data: data, encoding: .utf8))
                 let media = try JSONDecoder().decode(VoiceActorData.self, from: data)
                 self.passMoreVoiceActorData?.updateVoiceActorData(voiceActorData: media.data.Staff.characterMedia)
                 self.isFetchingData = false
@@ -1163,7 +1114,7 @@ query {
         task.resume()
     }
     
-    func fetchAnimeSimpleDataByID(id: Int, completion: @escaping (SimpleAnimeData?) -> Void) {
+    func fetchAnimeSimpleDataByID(id: Int) -> AnyPublisher<SimpleAnimeData, Error> {
         isFetchingData = true
         print(id)
         var urlRequest = URLRequest(url: queryURL)
@@ -1193,37 +1144,25 @@ query {
             urlRequest.httpBody = try JSONSerialization.data(withJSONObject: graphQLData, options: [])
         } catch {
             print("Error serializing JSON: \(error.localizedDescription)")
-            return
         }
         // Create URLSession task
-        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
-            if let error = error {
-                print("Error fetching data: \(error.localizedDescription)")
-                return
+        return URLSession.shared.dataTaskPublisher(for: urlRequest)
+            .map {
+                print($0.data)
+                return $0
             }
-            
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                print("Invalid response")
-                return
-            }
-            
-            guard let data = data else {
-                print("No data received")
-                return
-            }
-            do {
-//                print(String(data: data, encoding: .utf8))
-                let media = try JSONDecoder().decode(SimpleAnimeData.self, from: data)
-                completion(media)
+            .tryMap { data, response in
+                print(response)
+                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                    print("Invalid response")
+                    throw URLError(.badServerResponse)
+                }
                 self.isFetchingData = false
-            } catch {
-                print("Error parsing JSON: \(error.localizedDescription)")
+                print(String(data: data, encoding: .utf8))
+                return data
             }
-            
-        }
-        
-        // Execute URLSession task
-        task.resume()
+            .decode(type: SimpleAnimeData.self, decoder: JSONDecoder())
+            .eraseToAnyPublisher()
     }
     
     func fetchAnimeSimpleDataByIDs(id: [Int], completion: @escaping ([SimpleAnimeData.DataResponse.SimpleMedia?]) -> Void) {
@@ -1502,7 +1441,7 @@ query {
         task.resume()
     }
     
-    func loadEssentialData(completion: @escaping (EssentialDataCollection.EssentialData) -> Void) {
+    func loadAnimeSearchingEssentialData() -> AnyPublisher<EssentialDataCollection.EssentialData, Error> {
         isFetchingData = true
         var urlRequest = URLRequest(url: queryURL)
         urlRequest.httpMethod = "post"
@@ -1523,40 +1462,26 @@ query {
             urlRequest.httpBody = try JSONSerialization.data(withJSONObject: graphQLData, options: [])
         } catch {
             print("Error serializing JSON: \(error.localizedDescription)")
-            return
         }
         // Create URLSession task
-        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
-            if let error = error {
-                print("Error fetching data: \(error.localizedDescription)")
-                return
+        return URLSession.shared.dataTaskPublisher(for: urlRequest)
+            .tryMap { data, response in
+                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                    print("Invalid response")
+                    throw URLError(.badServerResponse)
+                }
+                
+                return data
             }
-            
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                print("Invalid response")
-                return
-            }
-            
-            guard let data = data else {
-                print("No data received")
-                return
-            }
-            do {
-//                print(String(data: data, encoding: .utf8))
-                let media = try JSONDecoder().decode(EssentialDataCollection.self, from: data)
-                completion(media.data)
+            .decode(type: EssentialDataCollection.self, decoder: JSONDecoder())
+            .map {
                 self.isFetchingData = false
-            } catch {
-                print("Error parsing JSON: \(error.localizedDescription)")
+                return $0.data
             }
-            
-        }
-        
-        // Execute URLSession task
-        task.resume()
+            .eraseToAnyPublisher()
     }
     
-    func searchAnime(title: String, genres: [String], format: [String], sort: String, airingStatus: [String], streamingOn: [String], country: String, sourceMaterial: [String], doujin: Bool, year: Int?, season: String, page: Int, completion: @escaping (AnimeSearchedOrTrending) -> Void) {
+    func searchAnime(title: String, genres: [String], format: [String], sort: String, airingStatus: [String], streamingOn: [String], country: String, sourceMaterial: [String], doujin: Bool, year: Int?, season: String, page: Int) -> AnyPublisher<AnimeSearchingResult, Error> {
         isFetchingData = true
         var urlRequest = URLRequest(url: queryURL)
         urlRequest.httpMethod = "post"
@@ -1564,7 +1489,7 @@ query {
         print(genres.isEmpty)
         let query = """
 query {
-    Page(page: \(page + 1), perPage: 50) {
+    Page(page: \(page), perPage: 50) {
         pageInfo {
             hasNextPage
             currentPage
@@ -1583,45 +1508,24 @@ query {
     }
 }
 """
-        print(query)
-        
         let graphQLData = ["query": query]
         
         do {
             urlRequest.httpBody = try JSONSerialization.data(withJSONObject: graphQLData, options: [])
         } catch {
             print("Error serializing JSON: \(error.localizedDescription)")
-            return
         }
         // Create URLSession task
-        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
-            if let error = error {
-                print("Error fetching data: \(error.localizedDescription)")
-                return
+        return URLSession.shared.dataTaskPublisher(for: urlRequest)
+            .tryMap { data, response in
+                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                    print("Invalid response")
+                    throw URLError(.badServerResponse)
+                }
+                return data
             }
-            
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                print("Invalid response")
-                return
-            }
-            
-            guard let data = data else {
-                print("No data received")
-                return
-            }
-            do {
-//                print(String(data: data, encoding: .utf8))
-                let media = try JSONDecoder().decode(AnimeSearchedOrTrending.self, from: data)
-                completion(media)
-                self.isFetchingData = false
-            } catch {
-                print("Error parsing JSON: \(error.localizedDescription)")
-            }
-            
-        }
-        
-        // Execute URLSession task
-        task.resume()
+            .decode(type: AnimeSearchingResult.self, decoder: JSONDecoder())
+            .eraseToAnyPublisher()
     }
     
     func fetchStaffDetailByID(id: Int, completion: @escaping (StaffDetailData.StaffData.Staff?) -> Void) {
@@ -1711,13 +1615,13 @@ query {
 //    }
 //}
 
-extension AnimeDataFetcher: FetchAnimeDetailDataByID {
-    func passAnimeID(animeID: Int) {
-        fetchAnimeByID(id: animeID) { mediaResponse in
-            self.animeOverViewDataDelegate?.animeDetailDataDelegate(media: mediaResponse.data.media)
-        }
-    }
-}
+//extension AnimeDataFetcher: FetchAnimeDetailDataByID {
+//    func passAnimeID(animeID: Int) {
+//        fetchAnimeByID(id: animeID) { mediaResponse in
+//            self.animeOverViewDataDelegate?.animeDetailDataDelegate(media: mediaResponse.data.media)
+//        }
+//    }
+//}
 
 extension AnimeDataFetcher: FetchAnimeVoiceActorData {
     func fetchAnimeVoiceActorData(id: Int, page: Int) {

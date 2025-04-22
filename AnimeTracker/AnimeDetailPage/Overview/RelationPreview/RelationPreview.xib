@@ -32,7 +32,7 @@
                     </constraints>
                 </imageView>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="uNQ-66-xtY">
-                    <rect key="frame" x="100" y="19.999999999999996" width="200" height="46.666666666666657"/>
+                    <rect key="frame" x="100" y="9.9999999999999964" width="200" height="46.666666666666657"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Source" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WUl-Iu-2Mu">
                             <rect key="frame" x="0.0" y="0.0" width="200" height="14.333333333333334"/>
@@ -40,7 +40,7 @@
                             <color key="textColor" name="AccentColor"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gov-dg-P0Z">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="Gov-dg-P0Z">
                             <rect key="frame" x="0.0" y="26.333333333333336" width="200" height="20.333333333333336"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="textColor"/>
@@ -80,8 +80,9 @@
                 <constraint firstItem="kZB-kv-rcg" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="6KW-jo-rof"/>
                 <constraint firstItem="uNQ-66-xtY" firstAttribute="leading" secondItem="kZB-kv-rcg" secondAttribute="trailing" constant="10" id="H36-Jx-PXu"/>
                 <constraint firstAttribute="bottom" secondItem="E3a-N6-4wl" secondAttribute="bottom" constant="10" id="Lxj-nI-0eP"/>
+                <constraint firstItem="E3a-N6-4wl" firstAttribute="top" relation="greaterThanOrEqual" secondItem="uNQ-66-xtY" secondAttribute="bottom" constant="10" id="Oqd-UE-0NS"/>
                 <constraint firstAttribute="trailing" secondItem="uNQ-66-xtY" secondAttribute="trailing" id="Tur-Vm-6tY"/>
-                <constraint firstItem="uNQ-66-xtY" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="20" id="XLV-Hs-9Ze"/>
+                <constraint firstItem="uNQ-66-xtY" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="10" id="XLV-Hs-9Ze"/>
                 <constraint firstAttribute="bottom" secondItem="kZB-kv-rcg" secondAttribute="bottom" id="yes-CH-guw"/>
                 <constraint firstItem="kZB-kv-rcg" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="z9X-dk-vhP"/>
             </constraints>
@@ -96,7 +97,7 @@
             <color red="0.0" green="0.46000000000000002" blue="0.89000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <systemColor name="secondaryLabelColor">
-            <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

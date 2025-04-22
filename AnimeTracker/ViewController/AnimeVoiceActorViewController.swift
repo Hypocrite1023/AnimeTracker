@@ -324,14 +324,13 @@ extension AnimeVoiceActorViewController: UICollectionViewDataSource {
 extension AnimeVoiceActorViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let characterID = voiceActorDataEachYear["\(collectionView.tag)"]?[indexPath.item].characters.first?.id {
-            AnimeDataFetcher.shared.fetchCharacterDetailByCharacterID(id: characterID, page: 1) { characterDetail in
-                DispatchQueue.main.async {
-                    let newVC = UIStoryboard(name: "AnimeCharacterPage", bundle: nil).instantiateViewController(withIdentifier: "CharacterPage") as! AnimeCharacterPageViewController
-                    newVC.characterData = characterDetail
-//                    newVC.animeDetailManager = AnimeDataFetcher.shared.self
-                    self.navigationController?.pushViewController(newVC, animated: true)
-                }
-            }
+//            AnimeDataFetcher.shared.fetchCharacterDetailByCharacterID(id: characterID, page: 1) { characterDetail in
+//                DispatchQueue.main.async {
+//                    let newVC = UIStoryboard(name: "AnimeCharacterPage", bundle: nil).instantiateViewController(withIdentifier: "CharacterPage") as! AnimeCharacterPageViewController
+//                    newVC.characterData = characterDetail
+//                    self.navigationController?.pushViewController(newVC, animated: true)
+//                }
+//            }
         }
         
     }

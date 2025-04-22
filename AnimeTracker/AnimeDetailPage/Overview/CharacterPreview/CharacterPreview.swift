@@ -8,14 +8,6 @@
 import UIKit
 
 class CharacterPreview: UIView {
-
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
-    }
-    */
     
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var characterImageView: UIImageView!
@@ -29,8 +21,10 @@ class CharacterPreview: UIView {
     
     var characterID: Int?
     var voiceActorID: Int?
-    weak var animeCharacterDataManager: GetAnimeCharacterDataDelegate?
-    weak var voiceActorDataManager: FetchAnimeVoiceActorData?
+//    weak var animeCharacterDataManager: GetAnimeCharacterDataDelegate?
+//    weak var voiceActorDataManager: FetchAnimeVoiceActorData?
+    
+    weak var characterIdPassDelegate: CharacterIdDelegate?
 
     
     init(frame: CGRect, characterID: Int?, voiceActorID: Int?) {
@@ -56,12 +50,11 @@ class CharacterPreview: UIView {
             let characterSideGesture = CharacterTapGesture(target: self, action: #selector(loadCharacterData), characterID: characterID)
             characterSideView.addGestureRecognizer(characterSideGesture)
         }
+        
         if let voiceActorID = voiceActorID {
             let voiceActorSideGesture = VoiceActorTapGesture(target: self, action: #selector(loadVoiceActorData), voiceActorID: voiceActorID)
             voiceActorSideView.addGestureRecognizer(voiceActorSideGesture)
         }
-        
-        
     }
     
     @objc func loadCharacterData(sender: CharacterTapGesture) {
@@ -80,7 +73,8 @@ class CharacterPreview: UIView {
                            }
                        })
         
-        animeCharacterDataManager?.getAnimeCharacterData(id: sender.characterID, page: 1)
+//        animeCharacterDataManager?.getAnimeCharacterData(id: sender.characterID, page: 1)
+        characterIdPassDelegate?.showCharacterPage(characterId: sender.characterID)
     }
     @objc func loadVoiceActorData(sender: VoiceActorTapGesture) {
         print(sender.voiceActorID)
@@ -96,7 +90,7 @@ class CharacterPreview: UIView {
                                view.transform = CGAffineTransform.identity
                            }
                        })
-        voiceActorDataManager?.fetchAnimeVoiceActorData(id: sender.voiceActorID, page: 1)
+//        voiceActorDataManager?.fetchAnimeVoiceActorData(id: sender.voiceActorID, page: 1)
     }
 }
 
@@ -118,4 +112,8 @@ class VoiceActorTapGesture: UITapGestureRecognizer {
         super.init(target: target, action: action)
     }
     
+}
+
+protocol CharacterIdDelegate: AnyObject {
+    func showCharacterPage(characterId: Int)
 }

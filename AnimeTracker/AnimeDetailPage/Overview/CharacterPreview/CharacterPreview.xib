@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -36,28 +36,28 @@
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                 </view>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="40A-WB-3CB">
-                    <rect key="frame" x="0.0" y="0.0" width="65" height="83"/>
+                    <rect key="frame" x="0.0" y="0.0" width="60" height="83"/>
                     <constraints>
-                        <constraint firstAttribute="width" secondItem="40A-WB-3CB" secondAttribute="height" multiplier="65:83" id="T4a-5E-lo3"/>
+                        <constraint firstAttribute="width" secondItem="40A-WB-3CB" secondAttribute="height" multiplier="65:90" id="T4a-5E-lo3"/>
                     </constraints>
                 </imageView>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="dvS-su-o63">
-                    <rect key="frame" x="328" y="0.0" width="65" height="83"/>
+                    <rect key="frame" x="333" y="0.0" width="60" height="83"/>
                     <constraints>
-                        <constraint firstAttribute="width" secondItem="dvS-su-o63" secondAttribute="height" multiplier="65:83" id="Ce3-Si-XuH"/>
+                        <constraint firstAttribute="width" secondItem="dvS-su-o63" secondAttribute="height" multiplier="65:90" id="Ce3-Si-XuH"/>
                     </constraints>
                 </imageView>
                 <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="4kZ-9L-mTm">
-                    <rect key="frame" x="70" y="5" width="253" height="20.333333333333332"/>
+                    <rect key="frame" x="65" y="5" width="263" height="20.333333333333332"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5CU-pj-UpC">
-                            <rect key="frame" x="0.0" y="0.0" width="124" height="20.333333333333332"/>
+                            <rect key="frame" x="0.0" y="0.0" width="129" height="20.333333333333332"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TC5-SE-naM">
-                            <rect key="frame" x="129" y="0.0" width="124" height="20.333333333333332"/>
+                            <rect key="frame" x="134" y="0.0" width="129" height="20.333333333333332"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
@@ -68,16 +68,16 @@
                     </constraints>
                 </stackView>
                 <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="a3F-Zy-t0f">
-                    <rect key="frame" x="70" y="57.666666666666664" width="253" height="20.333333333333336"/>
+                    <rect key="frame" x="65" y="57.666666666666664" width="263" height="20.333333333333336"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zQL-Nb-gYv">
-                            <rect key="frame" x="0.0" y="0.0" width="124" height="20.333333333333332"/>
+                            <rect key="frame" x="0.0" y="0.0" width="129" height="20.333333333333332"/>
                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
                             <color key="textColor" systemColor="secondaryLabelColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZvZ-VL-ZZH">
-                            <rect key="frame" x="129" y="0.0" width="124" height="20.333333333333332"/>
+                            <rect key="frame" x="134" y="0.0" width="129" height="20.333333333333332"/>
                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
                             <color key="textColor" systemColor="secondaryLabelColor"/>
                             <nil key="highlightedColor"/>
@@ -91,10 +91,10 @@
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
-                <constraint firstItem="dvS-su-o63" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="A07-Ul-Ixu"/>
+                <constraint firstItem="dvS-su-o63" firstAttribute="trailing" secondItem="iN0-l3-epB" secondAttribute="trailing" id="A07-Ul-Ixu"/>
                 <constraint firstAttribute="trailing" secondItem="dgm-2N-ZSC" secondAttribute="trailing" id="Err-fp-OgL"/>
                 <constraint firstItem="4kZ-9L-mTm" firstAttribute="leading" secondItem="40A-WB-3CB" secondAttribute="trailing" constant="5" id="FdA-cx-SDk"/>
-                <constraint firstItem="40A-WB-3CB" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="I49-zS-2Zf"/>
+                <constraint firstItem="40A-WB-3CB" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="I49-zS-2Zf"/>
                 <constraint firstItem="40A-WB-3CB" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="MAi-We-llh"/>
                 <constraint firstItem="4kZ-9L-mTm" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="5" id="OFo-9r-4Gc"/>
                 <constraint firstAttribute="bottom" secondItem="dgm-2N-ZSC" secondAttribute="bottom" id="VfM-sd-yiM"/>
@@ -120,7 +120,7 @@
     </objects>
     <resources>
         <systemColor name="secondaryLabelColor">
-            <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

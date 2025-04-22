@@ -55,7 +55,7 @@ class RelationPreview: UIView {
     
     @objc func relationPreviewTapped(sender: RelationPreviewGestureRecognizer) {
         print(sender.mediaID)
-        AnimeDataFetcher.shared.passAnimeID(animeID: sender.mediaID)
+//        AnimeDataFetcher.shared.passAnimeID(animeID: sender.mediaID)
     }
 
 }

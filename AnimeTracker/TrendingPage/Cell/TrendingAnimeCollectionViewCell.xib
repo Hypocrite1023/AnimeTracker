@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="TrendingAnimeCollectionViewCell" customModule="AnimeTracker" customModuleProvider="target"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="" id="gTV-IL-0wX" customClass="TrendingAnimeCollectionViewCell" customModule="AnimeTracker" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="152" height="240"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="152" height="240"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tPR-G4-VS1">
+                        <rect key="frame" x="0.0" y="0.0" width="152" height="240"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="sQI-B8-gBo">
+                                <rect key="frame" x="0.0" y="0.0" width="152" height="192"/>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="qW7-Wz-1XM">
+                                <rect key="frame" x="0.0" y="197" width="152" height="20.333333333333343"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="qW7-Wz-1XM" firstAttribute="top" secondItem="sQI-B8-gBo" secondAttribute="bottom" constant="5" id="AlO-uE-pvg"/>
+                            <constraint firstItem="sQI-B8-gBo" firstAttribute="height" secondItem="tPR-G4-VS1" secondAttribute="height" multiplier="0.8" id="Hoh-Se-zkH"/>
+                            <constraint firstAttribute="trailing" secondItem="sQI-B8-gBo" secondAttribute="trailing" id="ISz-Zx-lmE"/>
+                            <constraint firstAttribute="trailing" secondItem="qW7-Wz-1XM" secondAttribute="trailing" id="QWM-ae-ppx"/>
+                            <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="qW7-Wz-1XM" secondAttribute="bottom" id="RNk-yL-3KN"/>
+                            <constraint firstItem="sQI-B8-gBo" firstAttribute="top" secondItem="tPR-G4-VS1" secondAttribute="top" id="XdI-49-m3L"/>
+                            <constraint firstItem="qW7-Wz-1XM" firstAttribute="leading" secondItem="tPR-G4-VS1" secondAttribute="leading" id="dWl-5A-ggf"/>
+                            <constraint firstItem="sQI-B8-gBo" firstAttribute="leading" secondItem="tPR-G4-VS1" secondAttribute="leading" id="rTh-vr-7iD"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstItem="tPR-G4-VS1" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="9Ey-JH-XVl"/>
+                <constraint firstAttribute="bottom" secondItem="tPR-G4-VS1" secondAttribute="bottom" id="P8H-8n-UAs"/>
+                <constraint firstItem="tPR-G4-VS1" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="UCr-HO-bFN"/>
+                <constraint firstAttribute="trailing" secondItem="tPR-G4-VS1" secondAttribute="trailing" id="lp2-hJ-FM5"/>
+            </constraints>
+            <size key="customSize" width="152" height="240"/>
+            <connections>
+                <outlet property="animeNameLabel" destination="qW7-Wz-1XM" id="50S-Vq-iPU"/>
+                <outlet property="animeThumbnail" destination="sQI-B8-gBo" id="mU5-Y0-aSE"/>
+            </connections>
+            <point key="canvasLocation" x="91.603053435114504" y="55.633802816901408"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
