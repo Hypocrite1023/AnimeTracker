@@ -148,7 +148,7 @@ struct StaffDetailData: Codable {
                 }
             }
             struct Name: Codable {
-                let native: String
+                let native: String?
                 let userPreferred: String
             }
         }
@@ -545,7 +545,7 @@ query {
             .eraseToAnyPublisher()
     }
     
-    func fetchStaffPreviewByMediaId(id: Int, page: Int) {
+    func fetchStaffPreviewByMediaId(id: Int, page: Int) -> AnyPublisher<MediaStaffPreview, Error> {
         isFetchingData = true
         print(id)
         var urlRequest = URLRequest(url: queryURL)
@@ -585,38 +585,20 @@ query {
             urlRequest.httpBody = try JSONSerialization.data(withJSONObject: graphQLData, options: [])
         } catch {
             print("Error serializing JSON: \(error.localizedDescription)")
-            return
         }
-        // Create URLSession task
-        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
-            if let error = error {
-                print("Error fetching data: \(error.localizedDescription)")
-                return
+        return URLSession.shared.dataTaskPublisher(for: urlRequest)
+            .tryMap { data, response in
+                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                    print("Invalid response")
+                    throw URLError(.badServerResponse)
+                }
+                return data
             }
-            
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                print("Invalid response")
-                return
-            }
-            
-            guard let data = data else {
-                print("No data received")
-                return
-            }
-            do {
-                let media = try JSONDecoder().decode(MediaStaffPreview.self, from: data)
-                self.animeDetailDataDelegate?.animeDetailStaffDataDelegate(staffData: media)
-                self.isFetchingData = false
-            } catch {
-                print("Error parsing JSON: \(error.localizedDescription)")
-            }
-        }
-        
-        // Execute URLSession task
-        task.resume()
+            .decode(type: MediaStaffPreview.self, decoder: JSONDecoder())
+            .eraseToAnyPublisher()
     }
     
-    func fetchRankingDataByMediaId(id: Int) {
+    func fetchRankingDataByMediaId(id: Int) -> AnyPublisher<MediaRanking.MediaData.Media, Error> {
         isFetchingData = true
         print(id)
         var urlRequest = URLRequest(url: queryURL)
@@ -645,35 +627,21 @@ query {
             urlRequest.httpBody = try JSONSerialization.data(withJSONObject: graphQLData, options: [])
         } catch {
             print("Error serializing JSON: \(error.localizedDescription)")
-            return
         }
-        // Create URLSession task
-        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
-            if let error = error {
-                print("Error fetching data: \(error.localizedDescription)")
-                return
+        return URLSession.shared.dataTaskPublisher(for: urlRequest)
+            .tryMap { data, response in
+                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                    print("Invalid response")
+                    throw URLError(.badServerResponse)
+                }
+                
+                return data
             }
-            
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                print("Invalid response")
-                return
+            .decode(type: MediaRanking.self, decoder: JSONDecoder())
+            .map {
+                $0.data.media
             }
-            
-            guard let data = data else {
-                print("No data received")
-                return
-            }
-            do {
-                let media = try JSONDecoder().decode(MediaRanking.self, from: data)
-                self.animeDetailDataDelegate?.animeDetailRankingDataDelegate(rankingData: media.data.media)
-                self.isFetchingData = false
-            } catch {
-                print("Error parsing JSON: \(error.localizedDescription)")
-            }
-        }
-        
-        // Execute URLSession task
-        task.resume()
+            .eraseToAnyPublisher()
     }
     
     func fetchThreadDataByMediaId(id: Int, page: Int) {
@@ -1126,7 +1094,7 @@ query {
                     throw URLError(.badServerResponse)
                 }
                 self.isFetchingData = false
-                print(String(data: data, encoding: .utf8))
+//                print(String(data: data, encoding: .utf8))
                 return data
             }
             .decode(type: SimpleAnimeData.self, decoder: JSONDecoder())
@@ -1496,7 +1464,7 @@ query {
             .eraseToAnyPublisher()
     }
     
-    func fetchStaffDetailByID(id: Int, completion: @escaping (StaffDetailData.StaffData.Staff?) -> Void) {
+    func fetchStaffDetailByID(id: Int) -> AnyPublisher<StaffDetailData.StaffData.Staff, Error> {
         isFetchingData = true
         print(id)
         var urlRequest = URLRequest(url: queryURL)
@@ -1542,37 +1510,21 @@ query {
             urlRequest.httpBody = try JSONSerialization.data(withJSONObject: graphQLData, options: [])
         } catch {
             print("Error serializing JSON: \(error.localizedDescription)")
-            return
         }
-        // Create URLSession task
-        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
-            if let error = error {
-                print("Error fetching data: \(error.localizedDescription)")
-                return
-            }
-            
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                print("Invalid response")
-                return
-            }
-            
-            guard let data = data else {
-                print("No data received")
-                return
-            }
-            do {
+        return URLSession.shared.dataTaskPublisher(for: urlRequest)
+            .tryMap { data, response in
+                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                    print("Invalid response")
+                    throw URLError(.badServerResponse)
+                }
 //                print(String(data: data, encoding: .utf8))
-                let media = try JSONDecoder().decode(StaffDetailData.self, from: data)
-                completion(media.data.staff)
-                self.isFetchingData = false
-            } catch {
-                print("Error parsing JSON: \(error.localizedDescription)")
+                return data
             }
-            
-        }
-        
-        // Execute URLSession task
-        task.resume()
+            .decode(type: StaffDetailData.self, decoder: JSONDecoder())
+            .map {
+                $0.data.staff
+            }
+            .eraseToAnyPublisher()
     }
 
 }

@@ -33,6 +33,7 @@ class TrendingPageViewController: UIViewController {
                 self.trendingCollectionView.reloadData()
             }
             .store(in: &cancellables)
+        navigationController?.hidesBarsOnSwipe = true
     }
     
     override func viewDidAppear(_ animated: Bool) {

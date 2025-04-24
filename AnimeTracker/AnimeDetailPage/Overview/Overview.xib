@@ -61,7 +61,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vyy-1D-oou" userLabel="Anime Information Scroll View">
-                    <rect key="frame" x="5" y="0.0" width="383" height="67"/>
+                    <rect key="frame" x="5" y="5" width="383" height="67"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7Gm-JR-vIl">
                             <rect key="frame" x="0.0" y="0.0" width="1784.3333333333333" height="67"/>
@@ -485,7 +485,7 @@
                     <viewLayoutGuide key="frameLayoutGuide" id="tB0-S4-yT4"/>
                 </scrollView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xd5-SJ-Fe6">
-                    <rect key="frame" x="5" y="82" width="383" height="21"/>
+                    <rect key="frame" x="5" y="87" width="383" height="21"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="21" id="Snx-gk-gL9"/>
@@ -495,14 +495,14 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description Body" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7BX-tZ-2pW">
-                    <rect key="frame" x="5" y="108" width="383" height="17"/>
+                    <rect key="frame" x="5" y="113" width="383" height="17"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Relations" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GvQ-OA-FAd">
-                    <rect key="frame" x="5" y="140" width="383" height="21"/>
+                    <rect key="frame" x="5" y="145" width="383" height="21"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="21" id="ga8-Y9-wDm"/>
                     </constraints>
@@ -934,7 +934,7 @@
                 <constraint firstItem="GvQ-OA-FAd" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="5" id="QU2-jf-21h"/>
                 <constraint firstItem="YO9-BY-AHB" firstAttribute="top" secondItem="CB8-ze-LoJ" secondAttribute="bottom" constant="5" id="RAS-5f-rxZ"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="7BX-tZ-2pW" secondAttribute="trailing" constant="5" id="RqR-Hw-gws"/>
-                <constraint firstItem="vyy-1D-oou" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="SaW-dd-JWd"/>
+                <constraint firstItem="vyy-1D-oou" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="5" id="SaW-dd-JWd"/>
                 <constraint firstAttribute="trailing" secondItem="vyy-1D-oou" secondAttribute="trailing" constant="5" id="T0t-Vj-TPs"/>
                 <constraint firstItem="7BX-tZ-2pW" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="5" id="Tc7-IZ-S36"/>
                 <constraint firstItem="7pb-1v-b46" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="5" id="UO9-w9-Mb7"/>
@@ -977,7 +977,7 @@
     </objects>
     <resources>
         <systemColor name="secondaryLabelColor">
-            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

@@ -8,20 +8,12 @@
 import UIKit
 
 class StaffPreview: UIView {
-
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
-    }
-    */
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var staffImageView: UIImageView!
     @IBOutlet weak var staffNameLabel: UILabel!
     @IBOutlet weak var staffRoleLabel: UILabel!
     var staffID: Int?
-    weak var fetchStaffDataDelegate: FetchStaffDataDelegate?
+    weak var staffIdDelegate: StaffIdDelegate?
     
     init(frame: CGRect, staffID: Int?) {
         super.init(frame: frame)
@@ -32,7 +24,6 @@ class StaffPreview: UIView {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         self.staffID = nil
-        self.fetchStaffDataDelegate = nil
         commonInit()
     }
     
@@ -49,12 +40,12 @@ class StaffPreview: UIView {
     @objc func showStaffDetail() {
         print(staffID)
         if let staffID = staffID {
-            fetchStaffDataDelegate?.fetchStaffDetailData(staffID: staffID)
+            staffIdDelegate?.showStaffPage(staffID: staffID)
         }
     }
 
 }
 
-protocol FetchStaffDataDelegate: AnyObject {
-    func fetchStaffDetailData(staffID: Int)
+protocol StaffIdDelegate: AnyObject {
+    func showStaffPage(staffID: Int)
 }

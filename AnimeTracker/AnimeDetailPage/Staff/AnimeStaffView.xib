@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AnimeStaffView" customModule="AnimeTracker" customModuleProvider="target">
+            <connections>
+                <outlet property="contentView" destination="iN0-l3-epB" id="fpY-aI-PVq"/>
+                <outlet property="staffVStack" destination="ab0-KA-5ji" id="i6p-7U-FVt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="393" height="564"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Staff" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="afR-uq-7Yg">
+                    <rect key="frame" x="5" y="15" width="383" height="21"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="21" id="Ycd-ln-RRJ"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="ab0-KA-5ji">
+                    <rect key="frame" x="5" y="41" width="383" height="518"/>
+                </stackView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="ab0-KA-5ji" secondAttribute="trailing" constant="5" id="KsM-0n-OFv"/>
+                <constraint firstItem="afR-uq-7Yg" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="5" id="SsH-SS-ot8"/>
+                <constraint firstItem="afR-uq-7Yg" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="15" id="baj-qM-MIb"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="afR-uq-7Yg" secondAttribute="trailing" constant="5" id="czE-D9-yQO"/>
+                <constraint firstItem="ab0-KA-5ji" firstAttribute="top" secondItem="afR-uq-7Yg" secondAttribute="bottom" constant="5" id="fUx-hm-Bl9"/>
+                <constraint firstItem="ab0-KA-5ji" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="5" id="wCq-E7-vPj"/>
+                <constraint firstAttribute="bottom" secondItem="ab0-KA-5ji" secondAttribute="bottom" constant="5" id="z2Z-XL-Ee1"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="-48.091603053435115" y="90.140845070422543"/>
+        </view>
+    </objects>
+</document>

@@ -12,8 +12,6 @@ import FirebaseFirestoreInternal
 import Kingfisher
 
 class AnimeDetailPageViewController: UIViewController {
-    
-    var viewModel: AnimeDetailPageViewModel?
     @IBOutlet weak var backgroundImageView: UIImageView!
     @IBOutlet weak var blurEffectView: UIVisualEffectView!
     @IBOutlet weak var wholePageScrollView: UIScrollView!
@@ -32,7 +30,11 @@ class AnimeDetailPageViewController: UIViewController {
     @IBOutlet weak var showStaffBtn: UIButton!
     @IBOutlet weak var container: UIView!
     
+    var viewModel: AnimeDetailPageViewModel?
     private var cancellables: Set<AnyCancellable> = []
+    
+    let loadMoreStaffDataTrigger: PassthroughSubject<Void, Never> = .init()
+    
     weak var fastNavigate: NavigateDelegate?
     
     override func viewDidLoad() {
@@ -46,6 +48,7 @@ class AnimeDetailPageViewController: UIViewController {
 
         let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(swipeAction))
         swipeGesture.direction = .right
+        swipeGesture.delegate = self
         self.view.addGestureRecognizer(swipeGesture)
         
         let backButton = UIBarButtonItem(title: nil, style: .plain, target: self, action: #selector(swipeAction))
@@ -70,6 +73,17 @@ class AnimeDetailPageViewController: UIViewController {
             }, receiveValue: { edges in
                 if let container = self.container.subviews.first as? AnimeCharactersView {
                     self.updateCharacters(container: container, edges: edges)
+                }
+            })
+            .store(in: &cancellables)
+        
+        viewModel?.subscribeLoadMoreStaffDataTrigger(trigger: loadMoreStaffDataTrigger.eraseToAnyPublisher())
+        
+        viewModel?.newAnimeStaffDataPassThrough
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { edges in
+                if let container = self.container.subviews.first as? AnimeStaffView {
+                    self.updateStaffs(container: container, edges: edges)
                 }
             })
             .store(in: &cancellables)
@@ -192,7 +206,129 @@ class AnimeDetailPageViewController: UIViewController {
     }
     
     func setupStats() {
+        let statsView = AnimeStatsView()
+        // ranking
+        if viewModel?.animeRankingData == nil {
+            viewModel?.loadAnimeRankingData()
+        }
+        viewModel?.$animeRankingData
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { _ in
+                
+            }, receiveValue: { _ in
+                if let rankingDataNotNil = self.viewModel?.animeRankingData {
+                    for (_, rankingData) in rankingDataNotNil.rankings.enumerated() {
+                        let rankingPreview = RankingPreview()
+                        rankingPreview.rankingImageView.image = UIImage(systemName: ((rankingData.type == "RATED") ? "star.fill" : "heart.fill"))
+                        rankingPreview.rankingImageView.tintColor = rankingData.type == "RATED" ? UIColor.systemYellow : UIColor.systemRed
+                        rankingPreview.rankingTitleLabel.text = "#\(rankingData.rank) \(rankingData.year == nil ? "" : String(rankingData.year!)) \(rankingData.season == nil ? "" : rankingData.season!) \(rankingData.context.capitalized)"
+                        rankingPreview.translatesAutoresizingMaskIntoConstraints = false
+                        statsView.rankingsVStack.addArrangedSubview(rankingPreview)
+//                        rankingPreview.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 10).isActive = true
+                        rankingPreview.heightAnchor.constraint(equalToConstant: 40).isActive = true
+                    }
+                }
+            })
+            .store(in: &cancellables)
+       
         
+        // status distribution
+        let statusDistribution = viewModel?.animeDetailData?.stats.statusDistribution.sorted(by: {$0.amount > $1.amount})
+        let totalAmount = statusDistribution?.reduce(0) { (result, statusDistribution) -> Int in
+            return result + statusDistribution.amount
+        }
+        let statusDistributionAmountLabel = [statsView.statusDistributionFirstLabel, statsView.statusDistributionSecondLabel, statsView.statusDistributionThirdLabel, statsView.statusDistributionFourthLabel, statsView.statusDistributionFifthLabel]
+        let statusDistributionStatusLabel = [statsView.statusDistributionFirst, statsView.statusDistributionSecond, statsView.statusDistributionThird, statsView.statusDistributionFourth, statsView.statusDistributionFifth]
+        let statsColor: [UIColor] = [#colorLiteral(red: 0.4110881686, green: 0.8372716904, blue: 0.2253350019, alpha: 1), #colorLiteral(red: 0.00486722542, green: 0.6609873176, blue: 0.9997979999, alpha: 1), #colorLiteral(red: 0.5738196373, green: 0.3378910422, blue: 0.9544720054, alpha: 1), #colorLiteral(red: 0.9687278867, green: 0.4746391773, blue: 0.6418368816, alpha: 1), #colorLiteral(red: 0.9119635224, green: 0.3648597598, blue: 0.4597702026, alpha: 1)]
+        var buttonConf = UIButton.Configuration.filled()
+        buttonConf.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 2, bottom: 2, trailing: 2)
+        
+        if let statusDistributionNotNil = statusDistribution, let totalAmountNotNil = totalAmount {
+            for (index, label) in statusDistributionStatusLabel.enumerated() {
+                buttonConf.baseBackgroundColor = statsColor[index]
+                buttonConf.baseForegroundColor = .white
+                buttonConf.title = statusDistribution?[index].status.uppercased()
+                label?.configuration = buttonConf
+            }
+            for (index, label) in statusDistributionAmountLabel.enumerated() {
+                label?.text = "\(statusDistributionNotNil[index].amount)"
+                label?.adjustsFontSizeToFitWidth = true
+            }
+            var lastView: UIView = statsView.statusDistributionPercentView
+            for (index, status) in statusDistributionNotNil.enumerated() {
+                let tmpView = UIView()
+                tmpView.backgroundColor = statsColor[index]
+                tmpView.translatesAutoresizingMaskIntoConstraints = false
+                statsView.statusDistributionPercentView.addSubview(tmpView)
+                tmpView.heightAnchor.constraint(equalToConstant: 15).isActive = true
+                tmpView.bottomAnchor.constraint(equalTo: statsView.statusDistributionPercentView.bottomAnchor).isActive = true
+                //            print(CGFloat(status.amount) / CGFloat(totalAmount) * statusDistributionView.persentView.bounds.size.width)
+                if index != statusDistributionNotNil.count - 1 && index != 0 {
+                    
+                    tmpView.widthAnchor.constraint(equalTo: statsView.statusDistributionPercentView.widthAnchor, multiplier: CGFloat(status.amount) / CGFloat(totalAmountNotNil)).isActive = true
+                    tmpView.leadingAnchor.constraint(equalTo: lastView.trailingAnchor).isActive = true
+                } else if index == 0 {
+                    tmpView.leadingAnchor.constraint(equalTo: lastView.leadingAnchor).isActive = true
+                    tmpView.widthAnchor.constraint(equalTo: statsView.statusDistributionPercentView.widthAnchor, multiplier: CGFloat(status.amount) / CGFloat(totalAmountNotNil)).isActive = true
+                } else {
+                    tmpView.leadingAnchor.constraint(equalTo: lastView.trailingAnchor).isActive = true
+                    tmpView.trailingAnchor.constraint(equalTo: statsView.statusDistributionPercentView.trailingAnchor).isActive = true
+                }
+                lastView = tmpView
+            }
+        }
+        // score distribution
+        let scoreAmountTotal = viewModel?.animeDetailData?.stats.scoreDistribution.reduce(0) { ( result, scoreDistribution) -> Int in
+            return result + scoreDistribution.amount
+        }
+        if let scoreDistribution = viewModel?.animeDetailData?.stats.scoreDistribution {
+            for (index, score) in scoreDistribution.enumerated() {
+                let percent = AnimeDetailFunc.partOfAmount(value: score.amount, totalValue: scoreAmountTotal ?? 0)
+                let scoreView = UIView()
+                scoreView.layer.cornerRadius = 5
+                scoreView.clipsToBounds = true
+                // 0 1 2 3 4(yellow) | 5 6 7 8 9
+                if index < 5 {
+                    scoreView.backgroundColor = AnimeDetailFunc.mixColor(color1: UIColor.systemRed, color2: UIColor.systemYellow, fraction: CGFloat(index) / 5)
+                } else {
+                    scoreView.backgroundColor = AnimeDetailFunc.mixColor(color1: UIColor.systemYellow, color2: UIColor.systemGreen, fraction: CGFloat(index - 4) / 5)
+                }
+                let scoreDistributionContainer = UIView()
+                scoreDistributionContainer.addSubview(scoreView)
+                scoreView.translatesAutoresizingMaskIntoConstraints = false
+                scoreView.bottomAnchor.constraint(equalTo: scoreDistributionContainer.bottomAnchor, constant: -40).isActive = true
+                scoreView.heightAnchor.constraint(equalToConstant: 100 * percent + 10).isActive = true
+                scoreView.widthAnchor.constraint(equalToConstant: 25).isActive = true
+                scoreView.centerXAnchor.constraint(equalTo: scoreDistributionContainer.centerXAnchor).isActive = true
+                
+                let percentLabel = UILabel()
+                percentLabel.adjustsFontSizeToFitWidth = true
+                percentLabel.translatesAutoresizingMaskIntoConstraints = false
+                percentLabel.text = String(format: "%.1f%%", percent * 100)
+                scoreDistributionContainer.addSubview(percentLabel)
+                percentLabel.bottomAnchor.constraint(equalTo: scoreView.topAnchor, constant: -10).isActive = true
+                percentLabel.widthAnchor.constraint(equalToConstant: 30).isActive = true
+                percentLabel.centerXAnchor.constraint(equalTo: scoreDistributionContainer.centerXAnchor).isActive = true
+                
+                let scoreLabel = UILabel()
+                scoreLabel.translatesAutoresizingMaskIntoConstraints = false
+                scoreLabel.textAlignment = .center
+                scoreLabel.text = "\(score.score)"
+                scoreLabel.textColor = .secondaryLabel
+                scoreDistributionContainer.addSubview(scoreLabel)
+                scoreLabel.topAnchor.constraint(equalTo: scoreView.bottomAnchor, constant: 5).isActive = true
+                scoreLabel.widthAnchor.constraint(equalToConstant: 30).isActive = true
+                scoreLabel.centerXAnchor.constraint(equalTo: scoreDistributionContainer.centerXAnchor).isActive = true
+                scoreDistributionContainer.widthAnchor.constraint(equalToConstant: 30).isActive = true
+                statsView.scoreDistributionHStack.addArrangedSubview(scoreDistributionContainer)
+            }
+        }
+        container.addSubview(statsView)
+        statsView.translatesAutoresizingMaskIntoConstraints = false
+        statsView.leadingAnchor.constraint(equalTo: container.leadingAnchor).isActive = true
+        statsView.trailingAnchor.constraint(equalTo: container.trailingAnchor).isActive = true
+        statsView.topAnchor.constraint(equalTo: container.topAnchor).isActive = true
+        statsView.bottomAnchor.constraint(equalTo: container.bottomAnchor).isActive = true
     }
     
     func setupSocial() {
@@ -200,13 +336,33 @@ class AnimeDetailPageViewController: UIViewController {
     }
     
     func setupStaff() {
+        let staffView = AnimeStaffView()
+        staffView.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(staffView)
+        staffView.leadingAnchor.constraint(equalTo: container.leadingAnchor).isActive = true
+        staffView.trailingAnchor.constraint(equalTo: container.trailingAnchor).isActive = true
+        staffView.topAnchor.constraint(equalTo: container.topAnchor).isActive = true
+        staffView.bottomAnchor.constraint(equalTo: container.bottomAnchor).isActive = true
         
+        guard let animeStaffData = viewModel?.animeStaffData else { return }
+        for (_, edge) in animeStaffData.edges.enumerated() {
+            let staffPreview = StaffPreview(frame: .zero, staffID: edge.node.id)
+            staffPreview.staffIdDelegate = self
+            staffPreview.staffImageView.loadImage(from: edge.node.image.large)
+            staffPreview.staffNameLabel.text = edge.node.name.userPreferred
+            staffPreview.staffRoleLabel.text = edge.role
+            staffPreview.translatesAutoresizingMaskIntoConstraints = false
+            staffView.staffVStack.addArrangedSubview(staffPreview)
+            staffPreview.heightAnchor.constraint(equalToConstant: 83).isActive = true
+        }
     }
     
     func updateCharacters(container: AnimeCharactersView, edges: [MediaResponse.MediaData.Media.CharacterPreview.Edges]) {
         
         for edge in edges {
             let characterPreview = CharacterPreview(frame: .zero, characterID: edge.node.id, voiceActorID: edge.voiceActors.first?.id ?? nil)
+            characterPreview.characterIdPassDelegate = self
+            characterPreview.voiceActorIdPassDelegate = self
             characterPreview.characterImageView.loadImage(from: edge.node.image.large)
             characterPreview.characterNameLabel.text = edge.node.name.userPreferred
             characterPreview.characterRoleLabel.text = edge.role
@@ -220,6 +376,19 @@ class AnimeDetailPageViewController: UIViewController {
             container.charactersVStack.addArrangedSubview(characterPreview)
         }
         
+    }
+    
+    func updateStaffs(container: AnimeStaffView, edges: [MediaResponse.MediaData.Media.StaffPreview.Edges]) {
+        for (_, edge) in edges.enumerated() {
+            let staffPreview = StaffPreview(frame: .zero, staffID: edge.node.id)
+            staffPreview.staffIdDelegate = self
+            staffPreview.staffImageView.loadImage(from: edge.node.image.large)
+            staffPreview.staffNameLabel.text = edge.node.name.userPreferred
+            staffPreview.staffRoleLabel.text = edge.role
+            staffPreview.translatesAutoresizingMaskIntoConstraints = false
+            container.staffVStack.addArrangedSubview(staffPreview)
+            staffPreview.heightAnchor.constraint(equalToConstant: 83).isActive = true
+        }
     }
     
     func configureButtonsColor(sender: UIButton, buttonArr: [UIButton]) {
@@ -409,7 +578,6 @@ class AnimeDetailPageViewController: UIViewController {
         let scoreAmountTotal = viewModel?.animeDetailData?.stats.scoreDistribution.reduce(0) { ( result, scoreDistribution) -> Int in
             return result + scoreDistribution.amount
         }
-//        var tmpScoreView: UIView?
         if let scoreDistribution = viewModel?.animeDetailData?.stats.scoreDistribution {
             for (index, score) in scoreDistribution.enumerated() {
                 let percent = AnimeDetailFunc.partOfAmount(value: score.amount, totalValue: scoreAmountTotal ?? 0)
@@ -607,7 +775,6 @@ class AnimeDetailPageViewController: UIViewController {
     
     @objc func swipeAction(sender: UISwipeGestureRecognizer?) {
         print("right swipe")
-        backgroundImageView.removeFromSuperview()
         navigationController?.popViewController(animated: true)
     }
 
@@ -625,6 +792,13 @@ extension AnimeDetailPageViewController: UIScrollViewDelegate {
                     viewModel?.loadMoreCharactersData()
                 }
             }
+            
+            if let _ = container.subviews.first as? AnimeStaffView {
+                if offsetY > contentHeight - frameHeight && AnimeDataFetcher.shared.isFetchingData == false && viewModel?.animeStaffData?.pageInfo.hasNextPage ?? false {
+                    loadMoreStaffDataTrigger.send()
+                }
+            }
+            
         }
     }
 }
@@ -642,5 +816,19 @@ extension AnimeDetailPageViewController: VoiceActorIdDelegate {
         let vc = UIStoryboard(name: "AnimeVoiceActorPage", bundle: nil).instantiateViewController(withIdentifier: "VoiceActorPage") as! AnimeVoiceActorViewController
         vc.viewModel = AnimeVoiceActorPageViewModel(voiceActorID: voiceActorId)
         navigationController?.pushViewController(vc, animated: true)
+    }
+}
+
+extension AnimeDetailPageViewController: StaffIdDelegate {
+    func showStaffPage(staffID: Int) {
+        let vc = UIStoryboard(name: "StaffDetailView", bundle: nil).instantiateViewController(withIdentifier: "StaffDetailView") as! StaffDetailViewController
+        vc.viewModel = StaffDetailViewModel(staffId: staffID)
+        navigationController?.pushViewController(vc, animated: true)
+    }
+}
+
+extension AnimeDetailPageViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
 }

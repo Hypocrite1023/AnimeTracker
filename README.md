@@ -177,3 +177,30 @@ class AnimeVoiceActorPageViewModel {
 ```
 ### 利用 PassthroughSubject 搭配 throttle 將 Api 請求次數限制在最多2秒一次
 當 CollectionView.contentOffset.x 加上 CollectionView 的寬度大於 CollectionView 的contentSize.width(也就是可滑動的view的大小的寬度)，loadMoreVoiceActorDataTrigger 就 send 一個 Void 的值， 而 viewModel 因為 viewController 使用了 bindLoadMoreVoiceActorTriggerToViewModel()，所以 viewModel 當 loadMoreVoiceActorDataTrigger send 值時就能觀察到
+---
+## 2025.4.24
+```
+let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(swipeAction))
+swipeGesture.direction = .right
+self.view.addGestureRecognizer(swipeGesture)
+
+@objc func swipeAction(sender: UISwipeGestureRecognizer?) {
+    print("right swipe")
+    navigationController?.popViewController(animated: true)
+}
+```
+### 我在 AnimeDetailViewController viewDidLoad() 加入了上面的程式碼 且 在 TrendingPageViewController 的 viewDidLoad() 中 設定了 `navigationController?.hidesBarsOnSwipe = true`
+> 這樣在 AnimeDetailView 會沒辦法透過往右滑來回到上一頁 
+```
+swipeGesture.delegate = self
+
+extension AnimeDetailPageViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+}
+```
+### 需要加上 `swipeGesture.delegate = self` 並且 `func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }`
+> 這樣允許了 NavigationController 辨識的 swipe gesture 跟我們設定的右滑回上頁的 gesture 能同時被辨識

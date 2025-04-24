@@ -6,69 +6,49 @@
 //
 
 import UIKit
+import Combine
 
 class StaffDetailViewController: UIViewController {
     @IBOutlet weak var staffDetailScrollView: UIScrollView!
     @IBOutlet weak var staffName: UILabel!
     @IBOutlet weak var staffNickName: UILabel!
-    @IBOutlet weak var staffInfo: UILabel! {
-        didSet {
-            staffInfo.numberOfLines = 0
-        }
-    }
+    @IBOutlet weak var staffInfo: UILabel!
     @IBOutlet weak var staffCoverImage: UIImageView!
-    @IBOutlet weak var staffAnimeCollectionView: UICollectionView! {
-        didSet {
-            staffAnimeCollectionView.dataSource = self
-        }
-    }
-    @IBOutlet weak var staffMangaCollectionView: UICollectionView! {
-        didSet {
-            staffMangaCollectionView.dataSource = self
-        }
-    }
+    @IBOutlet weak var staffAnimeCollectionView: UICollectionView!
+    @IBOutlet weak var staffMangaCollectionView: UICollectionView!
     
-    var staffData: StaffDetailData.StaffData.Staff?
-    var staffAnimeData: [StaffDetailData.StaffData.Staff.StaffMedia.Edge] = []
-    var staffMangaData: [StaffDetailData.StaffData.Staff.StaffMedia.Edge] = []
+    var viewModel: StaffDetailViewModel?
+    private var cancellables: Set<AnyCancellable> = []
     
     weak var fastNavigate: NavigateDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
         navigationController?.isNavigationBarHidden = false
-        staffName.text = staffData?.name.native
-        staffNickName.text = staffData?.primaryOccupations.joined(separator: ", ")
-        staffCoverImage.loadImage(from: staffData?.image.large)
-        if let description = staffData?.description {
-            print(AnimeDetailFunc.extractLinks(from: description))
-        }
-        staffInfo.attributedText = AnimeDetailFunc.updateAnimeDescription(animeDescription: staffData?.description ?? "")
         
-        staffAnimeCollectionView.delegate = self
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        if let staffData = staffData {
-            staffAnimeData = staffData.staffMedia.edges.compactMap({ staffMedia in
-                if staffMedia.node.type.uppercased() == "Anime".uppercased() {
-                    return staffMedia
-                } else {
-                    return nil
-                }
+        viewModel?.$staffData
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] staffData in
+                guard let data = staffData else { return }
+                self?.setupView(staffData: data)
             })
-            staffMangaData = staffData.staffMedia.edges.compactMap({ staffMedia in
-                if staffMedia.node.type.uppercased() == "Manga".uppercased() {
-                    return staffMedia
-                } else {
-                    return nil
-                }
-            })
-        }
+            .store(in: &cancellables)
         
+        viewModel?.$staffAnimeData
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { _ in
+                self.staffAnimeCollectionView.reloadData()
+            })
+            .store(in: &cancellables)
+        
+        viewModel?.$staffMangaData
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { _ in
+                self.staffMangaCollectionView.reloadData()
+            })
+            .store(in: &cancellables)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -76,35 +56,48 @@ class StaffDetailViewController: UIViewController {
         FloatingButtonManager.shared.addToView(toView: self.view)
         FloatingButtonManager.shared.bringFloatingButtonToFront(in: self.view)
     }
+    
+    private func setupView(staffData: StaffDetailData.StaffData.Staff) {
+        staffName.text = staffData.name.native
+        staffNickName.text = staffData.primaryOccupations.joined(separator: ", ")
+        staffCoverImage.loadImage(from: staffData.image.large)
+        staffInfo.attributedText = AnimeDetailFunc.updateAnimeDescription(animeDescription: staffData.description)
+        
+        staffAnimeCollectionView.delegate = self
+        staffMangaCollectionView.delegate = self
+        
+        staffAnimeCollectionView.dataSource = self
+        staffMangaCollectionView.dataSource = self
+    }
 
 }
 
 extension StaffDetailViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == staffAnimeCollectionView {
-            return staffAnimeData.count
+            return viewModel?.staffAnimeData.count ?? 0
+        } else if collectionView == staffMangaCollectionView {
+            return viewModel?.staffMangaData.count ?? 0
+        } else {
+            return 0
         }
-        if collectionView == staffMangaCollectionView {
-            return staffMangaData.count
-        }
-        return 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == staffAnimeCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "StaffAnimeCollectionViewCell", for: indexPath) as! StaffCollectionViewCell
-            cell.animeCoverImage.loadImage(from: staffAnimeData[indexPath.item].node.coverImage.large)
-            cell.animeTitle.text = staffAnimeData[indexPath.item].node.title.native
-            cell.staffTypeInAnime.text = staffAnimeData[indexPath.item].staffRole
+            cell.animeCoverImage.loadImage(from: viewModel?.staffAnimeData[indexPath.item].node.coverImage.large)
+            cell.animeTitle.text = viewModel?.staffAnimeData[indexPath.item].node.title.native
+            cell.staffTypeInAnime.text = viewModel?.staffAnimeData[indexPath.item].staffRole
             cell.workType = .anime
 //            cell.id = staffAnimeData[indexPath.item].id
             return cell
         }
         if collectionView == staffMangaCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "StaffMangaCollectionViewCell", for: indexPath) as! StaffCollectionViewCell
-            cell.animeCoverImage.loadImage(from: staffMangaData[indexPath.item].node.coverImage.large)
-            cell.animeTitle.text = staffMangaData[indexPath.item].node.title.native
-            cell.staffTypeInAnime.text = staffMangaData[indexPath.item].staffRole
+            cell.animeCoverImage.loadImage(from: viewModel?.staffMangaData[indexPath.item].node.coverImage.large)
+            cell.animeTitle.text = viewModel?.staffMangaData[indexPath.item].node.title.native
+            cell.staffTypeInAnime.text = viewModel?.staffMangaData[indexPath.item].staffRole
             cell.workType = .manga
 //            cell.id = staffMangaData[indexPath.item].id
             return cell
