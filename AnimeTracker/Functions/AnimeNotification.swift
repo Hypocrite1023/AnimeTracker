@@ -91,7 +91,7 @@ class AnimeNotification {
     
     func checkNotification() {
         if let userUID = Auth.auth().currentUser?.uid {
-            FirebaseStoreFunc.shared.loadUserNotificationAnime(userUID: userUID) { document, error in
+            FirebaseManager.shared.loadUserNotificationAnime(userUID: userUID) { document, error in
                 if let document = document {
                     let animeIDs = document.map({$0.documentID})
                     for animeID in animeIDs {

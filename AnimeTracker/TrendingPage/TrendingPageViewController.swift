@@ -14,7 +14,8 @@ class TrendingPageViewController: UIViewController {
     
     @IBOutlet weak var trendingCollectionView: UICollectionView!
     private let viewModel: TrendingPageViewModel = TrendingPageViewModel()
-        
+    
+    private let isScrollingPassThroughSubject: PassthroughSubject<Bool, Never> = .init()
     private var cancellables: Set<AnyCancellable> = []
     var fetchingDataIndicator = UIActivityIndicatorView(style: .large)
     
@@ -26,19 +27,42 @@ class TrendingPageViewController: UIViewController {
         trendingCollectionView.delegate = self
         trendingCollectionView.register(UINib(nibName: "TrendingAnimeCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "TrendingCollectionViewCell")
         
+        let collectionViewFlowLayout = UICollectionViewFlowLayout()
+        let spacing = 10
+        let width = (Int(UIScreen.main.bounds.width) - 2 * spacing) / 2
+        collectionViewFlowLayout.itemSize = CGSize(width: width, height: width * 2)
+        collectionViewFlowLayout.minimumInteritemSpacing = CGFloat(spacing)
+        trendingCollectionView.collectionViewLayout = collectionViewFlowLayout
+        
         viewModel.$animeTrendingData
             .receive(on: DispatchQueue.main)
             .sink { _ in
-                AnimeDataFetcher.shared.isFetchingData = false
                 self.trendingCollectionView.reloadData()
             }
             .store(in: &cancellables)
-        navigationController?.hidesBarsOnSwipe = true
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-//        self.tabBarController?.selectedIndex = 1
+        
+        isScrollingPassThroughSubject
+            .removeDuplicates()
+            .map { bool -> AnyPublisher<Bool, Never> in
+                if bool == false {
+                    Just(bool)
+                        .delay(for: 2, scheduler: DispatchQueue.main)
+                        .eraseToAnyPublisher()
+                } else {
+                    Just(bool)
+                        .eraseToAnyPublisher()
+                }
+            }
+            .switchToLatest()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isScrolling in
+                if isScrolling {
+                    self?.navigationController?.setNavigationBarHidden(true, animated: true)
+                } else {
+                    self?.navigationController?.setNavigationBarHidden(false, animated: true)
+                }
+            }
+            .store(in: &cancellables)
     }
     
     deinit {
@@ -87,7 +111,7 @@ extension TrendingPageViewController: UICollectionViewDelegate, UICollectionView
                 self.favoriteBtn.tintColor = .white.withAlphaComponent(1)
             }
             if let userUID = Auth.auth().currentUser?.uid, let animeID = self.viewModel.currentLongPressCellStatus.animeID {
-                FirebaseStoreFunc.shared.addAnimeRecord(userUID: userUID, animeID: animeID, isFavorite: self.viewModel.currentLongPressCellStatus.isFavorite!, isNotify: self.viewModel.currentLongPressCellStatus.isNotify!, status: self.viewModel.currentLongPressCellStatus.status ?? "") { isSuccess, error in
+                FirebaseManager.shared.addAnimeRecord(userUID: userUID, animeID: animeID, isFavorite: self.viewModel.currentLongPressCellStatus.isFavorite!, isNotify: self.viewModel.currentLongPressCellStatus.isNotify!, status: self.viewModel.currentLongPressCellStatus.status ?? "") { isSuccess, error in
                     print("Is success?", isSuccess)
                 }
             }
@@ -106,7 +130,7 @@ extension TrendingPageViewController: UICollectionViewDelegate, UICollectionView
                 self.notifyBtn.tintColor = .white.withAlphaComponent(1)
             }
             if let userUID = Auth.auth().currentUser?.uid, let animeID = self.viewModel.currentLongPressCellStatus.animeID {
-                FirebaseStoreFunc.shared.addAnimeRecord(userUID: userUID, animeID: animeID, isFavorite: self.viewModel.currentLongPressCellStatus.isFavorite!, isNotify: self.viewModel.currentLongPressCellStatus.isNotify!, status: self.viewModel.currentLongPressCellStatus.status ?? "") { isSuccess, error in
+                FirebaseManager.shared.addAnimeRecord(userUID: userUID, animeID: animeID, isFavorite: self.viewModel.currentLongPressCellStatus.isFavorite!, isNotify: self.viewModel.currentLongPressCellStatus.isNotify!, status: self.viewModel.currentLongPressCellStatus.status ?? "") { isSuccess, error in
                     print("Is success?", isSuccess)
                 }
             }
@@ -137,7 +161,7 @@ extension TrendingPageViewController: UICollectionViewDelegate, UICollectionView
                     }
                 } receiveValue: { simpleAnimeData in
                     animeStatus = simpleAnimeData.data.Media.status
-                    FirebaseStoreFunc.shared.getAnimeRecord(userUID: userUID, animeID: animeID) { favorite, notify, _, error in
+                    FirebaseManager.shared.getAnimeRecord(userUID: userUID, animeID: animeID) { favorite, notify, _, error in
                         self.viewModel.currentLongPressCellStatus = (favorite == nil ? false : favorite, notify == nil ? false : notify, animeStatus, animeID)
                         if let favorite = favorite {
                             if favorite { // favorite == true
@@ -270,46 +294,6 @@ extension TrendingPageViewController: UICollectionViewDelegate, UICollectionView
     
 }
 
-extension TrendingPageViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = collectionView.bounds.width / 2 - 20 // Adjusting width with some padding
-        let height: CGFloat = 350  // Fixed height for each cell
-        
-        return CGSize(width: width, height: height)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 5
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 5, left: 10, bottom: 15, right: 10)
-    }
-}
-//extension TrendingPageViewController: AnimeDataDelegate {
-//    func passAnimeData(animeData: AnimeSearchedOrTrending) {
-//        if viewModel.animeTrendingData == nil {
-//            viewModel.animeTrendingData = animeData
-//            DispatchQueue.main.async {
-//                self.trendingCollectionView.reloadData()
-//            }
-//        } else {
-//            let dataLengthBeforeAppend = self.animeFetchedData?.data.Page.media.count ?? 0
-//            self.animeFetchedData?.data.Page.media.append(contentsOf: animeData.data.Page.media)
-//            let dataLengthAfterAppend = self.animeFetchedData?.data.Page.media.count ?? 0
-//            
-//            let indexPaths = (dataLengthBeforeAppend..<dataLengthAfterAppend).map { IndexPath(item: $0, section: 0) }
-//            DispatchQueue.main.async {
-//                self.trendingCollectionView.performBatchUpdates({
-//                    self.trendingCollectionView.insertItems(at: indexPaths)
-//                }, completion: nil)
-//            }
-//            AnimeDataFetcher.shared.isFetchingData = false
-//        }
-//    }
-//    
-//    
-//}
 extension TrendingPageViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if let lastTimeFetchData = viewModel.lastFetchDateTime {
@@ -330,6 +314,14 @@ extension TrendingPageViewController: UIScrollViewDelegate {
                 }
             }
         }
+    }
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        isScrollingPassThroughSubject.send(true)
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        isScrollingPassThroughSubject.send(false)
     }
 }
 

@@ -7,6 +7,8 @@
 
 import Foundation
 import FirebaseFirestore
+import FirebaseAuth
+import Combine
 
 //users (集合)
 // └── user_uid (文檔)
@@ -25,8 +27,8 @@ struct FavoriteAndNotify: Codable {
     var isNotify: Bool
 }
 
-class FirebaseStoreFunc {
-    static let shared = FirebaseStoreFunc()
+class FirebaseManager {
+    static let shared = FirebaseManager()
     enum FireStoreKeyString {
         static let USERSCOLLECTION = "users"
         static let WATCHEDANIME = "watched_animes"
@@ -38,9 +40,61 @@ class FirebaseStoreFunc {
     var userFavoriteLastFetchDocument: DocumentSnapshot?
     
     let db = Firestore.firestore()
-    private init() {
-        
+    private init() {}
+    
+    func signIn(withEmail: String, password: String) -> AnyPublisher<Void, Error> {
+        return Future<Void, Error> { promise in
+            Auth.auth().signIn(withEmail: withEmail, password: password) { _, error in
+                if let error = error {
+                    promise(.failure(error))
+                } else {
+                    promise(.success(()))
+                }
+            }
+        }
+        .eraseToAnyPublisher()
     }
+    
+    func register(withEmail: String, password: String, username: String) -> AnyPublisher<Void, Error> {
+        return Future<Void, Error> { promise in
+            Auth.auth().createUser(withEmail: withEmail, password: password) { _, error in
+                if let error = error {
+                    promise(.failure(error))
+                } else {
+                    if let createProfileChangeRequest = Auth.auth().currentUser?.createProfileChangeRequest() {
+                        createProfileChangeRequest.displayName = username
+                        createProfileChangeRequest.commitChanges { error in
+                            if let _ = error {
+                                promise(.failure(RegisterError.createUsernameFail))
+                            }
+                        }
+                    }
+                    
+                    Auth.auth().currentUser?.sendEmailVerification { error in
+                        if let _ = error {
+                            promise(.failure(RegisterError.sendVerifyEmailFail))
+                        }
+                    }
+                    promise(.success(()))
+                }
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    func resetPassword(withEmail: String) -> AnyPublisher<Void, Error> {
+        return Future<Void, Error> { promise in
+            Auth.auth().sendPasswordReset(withEmail: withEmail) { error in
+                if let error = error {
+                    promise(.failure(error))
+                } else {
+                    promise(.success(()))
+                }
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+    
     func establishUserDocument(userUID: String, completion: @escaping (Bool, Error?) -> Void) {
     }
     
@@ -171,5 +225,12 @@ class FirebaseStoreFunc {
                 completion(snapshot?.documents, nil)
             }
         }
+    }
+    
+    func isAuthenticatedAndEmailVerified() -> Bool {
+        guard let currentUser = Auth.auth().currentUser else {
+            return false
+        }
+        return currentUser.isEmailVerified
     }
 }

@@ -13,9 +13,8 @@ class TabBarViewController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         // Do any additional setup after loading the view.
-        
+        AnimeNotification.shared.checkNotification()
         // logout
         let logoutAction = UIAction(title: "Logout", image: UIImage(systemName: "figure.walk")) { action in
             do {

@@ -76,7 +76,7 @@ class AnimeTimeLineTableViewViewController: UIViewController {
     fileprivate func loadFavoriteAndReleasingEpisodeData(_ userUID: String, completion: @escaping () -> Void) {
         self.episodeDatas.removeAll()
         self.animeTimeLineData.removeAll()
-        FirebaseStoreFunc.shared.loadUserFavoriteAndReleasing(userUID: userUID, perFetch: 20) { snapshot, error in
+        FirebaseManager.shared.loadUserFavoriteAndReleasing(userUID: userUID, perFetch: 20) { snapshot, error in
             if let documents = snapshot {
                 let animeIDs = documents.compactMap({ Int($0.documentID) })
                 if !animeIDs.isEmpty {

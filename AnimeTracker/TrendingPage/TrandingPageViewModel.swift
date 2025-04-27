@@ -29,7 +29,7 @@ class TrendingPageViewModel {
                         break
                 }
             } receiveValue: { trendingData in
-//                print(trendingData)
+                AnimeDataFetcher.shared.isFetchingData = false
                 self.animeTrendingData = trendingData
             }
             .store(in: &bindings)

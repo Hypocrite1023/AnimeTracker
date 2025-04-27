@@ -7,19 +7,16 @@
 
 import UIKit
 import Combine
-import FirebaseAuth
 
 class NavigationViewController: UINavigationController {
 
     private var cancellables = Set<AnyCancellable>()
     
     // when fetching data it will show
-    var fetchingDataIndicator = UIActivityIndicatorView(style: .large)
+    let fetchingDataIndicator = UIActivityIndicatorView(style: .large)
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
         
         AnimeDataFetcher.shared.$isFetchingData
             .receive(on: DispatchQueue.main)
@@ -47,23 +44,16 @@ class NavigationViewController: UINavigationController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        print("view did appear")
         // check the user is email verify
-        if let verified = Auth.auth().currentUser?.isEmailVerified {
-            if verified {
-                print("login success")
-                let mainPage = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TabBarController")
-                self.viewControllers = [mainPage]
-            } else {
-                print("need login")
-                let loginPage = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginPage")
-                self.viewControllers = [loginPage]
-            }
-        } else {
+        guard FirebaseManager.shared.isAuthenticatedAndEmailVerified() else {
             print("need login")
             let loginPage = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginPage")
             self.viewControllers = [loginPage]
+            return
         }
+        print("login success")
+        let mainPage = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TabBarController")
+        self.viewControllers = [mainPage]
     }
     
     func clearAllUserDefaults() {
@@ -72,17 +62,6 @@ class NavigationViewController: UINavigationController {
         defaults.removePersistentDomain(forName: domain)
         defaults.synchronize()
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
 
 

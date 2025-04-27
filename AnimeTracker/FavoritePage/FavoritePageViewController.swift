@@ -96,7 +96,7 @@ class FavoritePageViewController: UIViewController {
 //        print(FirebaseStoreFunc.shared.userFavoriteLastFetchDocument)
         isEnableFetchData = false
         if let userUID = Auth.auth().currentUser?.uid {
-            FirebaseStoreFunc.shared.loadUserFavorite(userUID: userUID, perFetch: perFetch) { snapshot, error in
+            FirebaseManager.shared.loadUserFavorite(userUID: userUID, perFetch: perFetch) { snapshot, error in
                 var tmpFavoriteAnimeList: [FavoriteAnime] = []
                 if let error = error {
                     print(error.localizedDescription)
@@ -230,7 +230,7 @@ extension FavoritePageViewController: UITableViewDelegate {
 extension FavoritePageViewController: ConfigFavoriteAndNotifyWithAnimeID {
     func configFavoriteAndNotifyWithAnimeID(animeID: Int, isFavorite: Bool, isNotify: Bool, status: String) {
         if let userUID = Auth.auth().currentUser?.uid {
-            FirebaseStoreFunc.shared.addAnimeRecord(userUID: userUID, animeID: animeID, isFavorite: isFavorite, isNotify: isNotify, status: status) { success, error in
+            FirebaseManager.shared.addAnimeRecord(userUID: userUID, animeID: animeID, isFavorite: isFavorite, isNotify: isNotify, status: status) { success, error in
                 if let error = error {
                     print(error.localizedDescription)
                 }

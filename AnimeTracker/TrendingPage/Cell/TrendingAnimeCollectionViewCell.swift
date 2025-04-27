@@ -20,6 +20,9 @@ class TrendingAnimeCollectionViewCell: UICollectionViewCell {
     func setCell(title: String, imageURL: String?) {
         animeNameLabel.text = title
         animeThumbnail.kf.setImage(with: URL(string: imageURL ?? ""))
+        
+        animeThumbnail.layer.cornerRadius = 5
+        animeThumbnail.clipsToBounds = true
     }
 
 }

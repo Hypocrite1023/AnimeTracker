@@ -200,7 +200,5 @@ extension AnimeDetailPageViewController: UIGestureRecognizerDelegate {
     }
 }
 ```
-### 需要加上 `swipeGesture.delegate = self` 並且 `func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return true
-    }`
+### 需要加上 `swipeGesture.delegate = self` 並且 `func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool { return true }`
 > 這樣允許了 NavigationController 辨識的 swipe gesture 跟我們設定的右滑回上頁的 gesture 能同時被辨識
