@@ -8,6 +8,7 @@
 import UIKit
 import FirebaseFirestore
 import FirebaseAuth
+import Combine
 
 struct FavoriteAnime: Hashable {
     static func == (lhs: FavoriteAnime, rhs: FavoriteAnime) -> Bool {
@@ -54,6 +55,8 @@ class FavoritePageViewController: UIViewController {
     var isTableDataInitial = false
     
     var lastTimeFetchData = Date.now
+    
+    private var cancellables: Set<AnyCancellable> = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -229,31 +232,47 @@ extension FavoritePageViewController: UITableViewDelegate {
 
 extension FavoritePageViewController: ConfigFavoriteAndNotifyWithAnimeID {
     func configFavoriteAndNotifyWithAnimeID(animeID: Int, isFavorite: Bool, isNotify: Bool, status: String) {
-        if let userUID = Auth.auth().currentUser?.uid {
-            FirebaseManager.shared.addAnimeRecord(userUID: userUID, animeID: animeID, isFavorite: isFavorite, isNotify: isNotify, status: status) { success, error in
-                if let error = error {
-                    print(error.localizedDescription)
+        guard let userUID = FirebaseManager.shared.getCurrentUserUID() else { return }
+        FirebaseManager.shared.addAnimeRecord(userUID: userUID, animeID: animeID, isFavorite: isFavorite, isNotify: isNotify, status: status)
+            .receive(on: DispatchQueue.main)
+            .timeout(10, scheduler: RunLoop.main)
+            .sink { completion in
+                switch completion {
+                    
+                case .finished:
+                    break
+                case .failure(let error):
+                    AlertWithMessageController.setupAlertController(title: "Error", message: "Some error...", viewController: self)
                 }
-                if success {
-                    print("change status success")
-                }
+            } receiveValue: { _ in
+                
             }
-        }
+            .store(in: &cancellables)
     }
     
 }
 
-extension FavoritePageViewController: ConfigAnimdNotify {
-    func configAnimdNotify(animeID: Int, isNotify: Bool) {
+extension FavoritePageViewController: ConfigAnimeNotify {
+    func configAnimeNotify(animeID: Int, isNotify: Bool) {
         if isNotify {
-            AnimeDataFetcher.shared.fetchAnimeEpisodeDataByID(id: animeID) { episodeData in
-                if let nextAiringEpisode = episodeData?.data.Media.nextAiringEpisode, let episodes = episodeData?.data.Media.episodes, let animeTitle = episodeData?.data.Media.title.native {
-                    AnimeNotification.shared.setupAllEpisodeNotification(animeID: animeID, animeTitle: animeTitle, nextAiringEpsode: nextAiringEpisode.episode, nextAiringInterval: TimeInterval(nextAiringEpisode.timeUntilAiring), totalEpisode: episodes)
-                }
-            }
+            AnimeDataFetcher.shared.fetchAnimeEpisodeDataByID(id: animeID)
+                .timeout(10, scheduler: RunLoop.main)
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .finished:
+                        break
+                    case .failure(_):
+                        AlertWithMessageController.setupAlertController(title: "Error", message: "Some error...", viewController: self)
+                    }
+                        
+                }, receiveValue: { episodeData in
+                    if let nextAiringEpisode = episodeData.data.Media.nextAiringEpisode, let episodes = episodeData.data.Media.episodes {
+                        AnimeNotification.shared.setupAllEpisodeNotification(animeID: animeID, animeTitle: episodeData.data.Media.title.native, nextAiringEpsode: nextAiringEpisode.episode, nextAiringInterval: TimeInterval(nextAiringEpisode.timeUntilAiring), totalEpisode: episodes)
+                    }
+                })
+                .store(in: &cancellables)
         } else {
             AnimeNotification.shared.removeAllEpisodeNotification(for: animeID)
         }
-        
     }
 }

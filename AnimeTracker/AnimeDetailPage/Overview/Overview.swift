@@ -10,6 +10,7 @@ import UIKit
 class Overview: UIView {
     @IBOutlet var contentView: UIView!
     // information
+    @IBOutlet weak var informationScrollView: UIScrollView!
     @IBOutlet weak var airingLabel: UILabel!
     @IBOutlet weak var formatLabel: UILabel!
     @IBOutlet weak var episodesLabel: UILabel!
@@ -39,6 +40,7 @@ class Overview: UIView {
     // staff
     @IBOutlet weak var staffsVStackView: UIStackView!
     // status distribution
+    @IBOutlet weak var statusDistributionContainer: UIView!
     @IBOutlet weak var statusDistributionFirst: UIButton!
     @IBOutlet weak var statusDistributionFirstLabel: UILabel!
     @IBOutlet weak var statusDistributionSecond: UIButton!

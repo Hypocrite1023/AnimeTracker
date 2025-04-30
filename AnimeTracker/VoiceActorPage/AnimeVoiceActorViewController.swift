@@ -23,7 +23,7 @@ class AnimeVoiceActorViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        navigationController?.setNavigationBarHidden(false, animated: true)
         relationCollectionView.dataSource = self
         relationCollectionView.delegate = self
         

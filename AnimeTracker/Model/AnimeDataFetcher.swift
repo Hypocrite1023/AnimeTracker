@@ -1173,7 +1173,7 @@ query {
         task.resume()
     }
     
-    func fetchAnimeEpisodeDataByID(id: Int, completion: @escaping (SimpleEpisodeData?) -> Void) {
+    func fetchAnimeEpisodeDataByID(id: Int) -> AnyPublisher<SimpleEpisodeData, Error> {
         isFetchingData = true
         print(id)
         var urlRequest = URLRequest(url: queryURL)
@@ -1207,37 +1207,17 @@ query {
             urlRequest.httpBody = try JSONSerialization.data(withJSONObject: graphQLData, options: [])
         } catch {
             print("Error serializing JSON: \(error.localizedDescription)")
-            return
         }
-        // Create URLSession task
-        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
-            if let error = error {
-                print("Error fetching data: \(error.localizedDescription)")
-                return
+        return URLSession.shared.dataTaskPublisher(for: urlRequest)
+            .tryMap { data, response in
+                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                    print("Invalid response")
+                    throw URLError(.badServerResponse)
+                }
+                return data
             }
-            
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                print("Invalid response")
-                return
-            }
-            
-            guard let data = data else {
-                print("No data received")
-                return
-            }
-            do {
-//                print(String(data: data, encoding: .utf8))
-                let media = try JSONDecoder().decode(SimpleEpisodeData.self, from: data)
-                completion(media)
-                self.isFetchingData = false
-            } catch {
-                print("Error parsing JSON: \(error.localizedDescription)")
-            }
-            
-        }
-        
-        // Execute URLSession task
-        task.resume()
+            .decode(type: SimpleEpisodeData.self, decoder: JSONDecoder())
+            .eraseToAnyPublisher()
     }
     
     func fetchAnimeEpisodeDataByIDs(id: [Int], completion: @escaping ([SimpleEpisodeData.DataResponse.SimpleMedia?]) -> Void) {

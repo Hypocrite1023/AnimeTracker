@@ -7,7 +7,6 @@
 
 import UIKit
 import Combine
-import FirebaseAuth
 
 
 class TrendingPageViewController: UIViewController {
@@ -83,7 +82,7 @@ extension TrendingPageViewController: UICollectionViewDelegate, UICollectionView
     func setConfigButton(backgroundColor: UIColor, tintColor: UIColor, buttonImage: UIImage?, isTrue: Bool) -> UIButton {
         let button = UIButton(type: .custom)
         button.setTitle("", for: .normal)
-        button.backgroundColor = isTrue ? backgroundColor : .secondaryLabel
+        button.backgroundColor = isTrue ? backgroundColor.withAlphaComponent(1) : .secondaryLabel
         button.tintColor = tintColor.withAlphaComponent(isTrue ? 1.0 : 0.5)
         button.layer.cornerRadius = 10
         button.clipsToBounds = true
@@ -94,8 +93,6 @@ extension TrendingPageViewController: UICollectionViewDelegate, UICollectionView
         buttonConf.buttonSize = .large
         buttonConf.image = buttonImage
         button.configuration = buttonConf
-//        favoriteBtn.contentHorizontalAlignment = .fill
-//        favoriteBtn.contentVerticalAlignment = .fill
         return button
     }
     
@@ -103,51 +100,99 @@ extension TrendingPageViewController: UICollectionViewDelegate, UICollectionView
         DispatchQueue.main.async {
             self.viewModel.currentLongPressCellStatus.isFavorite?.toggle()
             if let favorite = self.viewModel.currentLongPressCellStatus.isFavorite {
-                self.favoriteBtn.backgroundColor = favorite ? .systemYellow.withAlphaComponent(0.7) : .secondaryLabel
-                self.favoriteBtn.tintColor = favorite ? .white.withAlphaComponent(1) : .white.withAlphaComponent(0.5)
-            } else {
+                self.updateConfigButton(btn: self.favoriteBtn, isTrue: favorite)
+            } else { // favorite 的值原本是nil 代表第一次按下這個動畫的 favorite button
                 self.viewModel.currentLongPressCellStatus.isFavorite = true
-                self.favoriteBtn.backgroundColor = .systemYellow.withAlphaComponent(0.7)
-                self.favoriteBtn.tintColor = .white.withAlphaComponent(1)
+                self.updateConfigButton(btn: self.favoriteBtn, isTrue: true)
             }
-            if let userUID = Auth.auth().currentUser?.uid, let animeID = self.viewModel.currentLongPressCellStatus.animeID {
-                FirebaseManager.shared.addAnimeRecord(userUID: userUID, animeID: animeID, isFavorite: self.viewModel.currentLongPressCellStatus.isFavorite!, isNotify: self.viewModel.currentLongPressCellStatus.isNotify!, status: self.viewModel.currentLongPressCellStatus.status ?? "") { isSuccess, error in
-                    print("Is success?", isSuccess)
+            guard let userUID = FirebaseManager.shared.getCurrentUserUID(), let animeID = self.viewModel.currentLongPressCellStatus.animeID, let isFavorite = self.viewModel.currentLongPressCellStatus.isFavorite, let isNotify = self.viewModel.currentLongPressCellStatus.isNotify, let status = self.viewModel.currentLongPressCellStatus.status else {
+                AlertWithMessageController.setupAlertController(title: "Error", message: "Some error...", viewController: self)
+                return
+            }
+            FirebaseManager.shared.addAnimeRecord(userUID: userUID, animeID: animeID, isFavorite: isFavorite, isNotify: isNotify, status: status)
+                .receive(on: DispatchQueue.main)
+                .timeout(10, scheduler: RunLoop.main)
+                .sink { completion in
+                    switch completion {
+                        
+                    case .finished:
+                        break
+                    case .failure(let error):
+                        AlertWithMessageController.setupAlertController(title: "Error", message: error.localizedDescription, viewController: self)
+                    }
+                } receiveValue: { _ in
+                    
                 }
-            }
+                .store(in: &self.cancellables)
         }
     }
     
     @objc func notifyBtnTap() {
+        
         DispatchQueue.main.async {
             self.viewModel.currentLongPressCellStatus.isNotify?.toggle()
-            if let notify = self.viewModel.currentLongPressCellStatus.isNotify {
-                self.notifyBtn.backgroundColor = notify ? .systemBlue.withAlphaComponent(0.7) : .secondaryLabel
-                self.notifyBtn.tintColor = notify ? .white.withAlphaComponent(1) : .white.withAlphaComponent(0.5)
+            if let isNotify = self.viewModel.currentLongPressCellStatus.isNotify {
+                self.updateConfigButton(btn: self.notifyBtn, isTrue: isNotify)
+                
             } else {
                 self.viewModel.currentLongPressCellStatus.isNotify = true
-                self.notifyBtn.backgroundColor = .systemBlue.withAlphaComponent(0.7)
-                self.notifyBtn.tintColor = .white.withAlphaComponent(1)
+                self.updateConfigButton(btn: self.notifyBtn, isTrue: true)
             }
-            if let userUID = Auth.auth().currentUser?.uid, let animeID = self.viewModel.currentLongPressCellStatus.animeID {
-                FirebaseManager.shared.addAnimeRecord(userUID: userUID, animeID: animeID, isFavorite: self.viewModel.currentLongPressCellStatus.isFavorite!, isNotify: self.viewModel.currentLongPressCellStatus.isNotify!, status: self.viewModel.currentLongPressCellStatus.status ?? "") { isSuccess, error in
-                    print("Is success?", isSuccess)
+            
+            if let isNotify = self.viewModel.currentLongPressCellStatus.isNotify {
+                if isNotify {
+                    self.viewModel.createLocolNotification()
+                        .receive(on: DispatchQueue.main)
+                        .sink { completion in
+                            switch completion {
+                            case .finished:
+                                break
+                            case .failure(let error):
+                                if let error = error as? LocolNotificationError {
+                                    AlertWithMessageController.setupAlertController(title: "Setting notification error", message: error.description, viewController: self)
+                                } else {
+                                    AlertWithMessageController.setupAlertController(title: "Setting notification error", message: error.localizedDescription, viewController: self)
+                                }
+                                
+                            }
+                        } receiveValue: { _ in
+                            
+                        }
+                        .store(in: &self.cancellables)
+                } else {
+                    self.viewModel.removeLocolNotification()
+                        .receive(on: DispatchQueue.main)
+                        .sink { completion in
+                            switch completion {
+                            case .finished:
+                                break
+                            case .failure(let error):
+                                if let error = error as? LocolNotificationError {
+                                    AlertWithMessageController.setupAlertController(title: "Setting notification error", message: error.description, viewController: self)
+                                }
+                            }
+                        } receiveValue: { _ in
+                            
+                        }
+                        .store(in: &self.cancellables)
                 }
-            }
-            if self.viewModel.currentLongPressCellStatus.isNotify! {
-                AnimeDataFetcher.shared.fetchAnimeEpisodeDataByID(id: self.viewModel.currentLongPressCellStatus.animeID!) { episodeData in
-                    if let nextAiringEpisode = episodeData?.data.Media.nextAiringEpisode, let episodes = episodeData?.data.Media.episodes, let animeTitle = episodeData?.data.Media.title.native {
-                        AnimeNotification.shared.setupAllEpisodeNotification(animeID: self.viewModel.currentLongPressCellStatus.animeID!, animeTitle: animeTitle, nextAiringEpsode: nextAiringEpisode.episode, nextAiringInterval: TimeInterval(nextAiringEpisode.timeUntilAiring), totalEpisode: episodes)
-                    }
-                }
-            } else {
-                AnimeNotification.shared.removeAllEpisodeNotification(for: self.viewModel.currentLongPressCellStatus.animeID!)
             }
         }
     }
     
+    private func updateConfigButton(btn: UIButton, isTrue: Bool) {
+        if btn == notifyBtn {
+            btn.backgroundColor = isTrue ? .systemBlue.withAlphaComponent(1) : .secondaryLabel
+            btn.tintColor = .white.withAlphaComponent(isTrue ? 1 : 0.5)
+        } else if btn == favoriteBtn {
+            btn.backgroundColor = isTrue ? .systemYellow.withAlphaComponent(1) : .secondaryLabel
+            btn.tintColor = .white.withAlphaComponent(isTrue ? 1 : 0.5)
+        }
+        
+    }
+    
     func applyBlur(cell: UICollectionViewCell, animeID: Int) {
-        if let userUID = Auth.auth().currentUser?.uid {
+        if let userUID = FirebaseManager.shared.getCurrentUserUID() {
             var animeStatus: String?
             AnimeDataFetcher.shared.fetchAnimeSimpleDataByID(id: animeID)
                 .receive(on: DispatchQueue.main)
@@ -198,25 +243,44 @@ extension TrendingPageViewController: UICollectionViewDelegate, UICollectionView
                         self.view.addSubview(blurEffectView)
                         let tapToDismiss = UITapGestureRecognizer(target: self, action: #selector(self.closeBlurView))
                         blurEffectView.addGestureRecognizer(tapToDismiss)
-                        let cellSnapShot = cell.snapshotView(afterScreenUpdates: true)
-                        cellSnapShot?.frame = cell.convert(cell.bounds, to: self.view)
-                        cellSnapShot?.center = self.view.center
-                        cellSnapShot?.alpha = 0.0
-                        cellSnapShot?.tag = 998
-                        self.view.addSubview(cellSnapShot!)
+                        guard let cellSnapShot = cell.snapshotView(afterScreenUpdates: true) else { return }
+                        
+                        let cellSnapShotWithPaddingContainer = UIView()
+                        cellSnapShotWithPaddingContainer.backgroundColor = .white
+                        cellSnapShotWithPaddingContainer.layer.cornerRadius = 10
+                        cellSnapShotWithPaddingContainer.clipsToBounds = true
+                        
+                        cellSnapShotWithPaddingContainer.addSubview(cellSnapShot)
+                        cellSnapShot.translatesAutoresizingMaskIntoConstraints = false
+                        cellSnapShot.widthAnchor.constraint(equalToConstant: cellSnapShot.bounds.width).isActive = true
+                        cellSnapShot.heightAnchor.constraint(equalToConstant: cellSnapShot.bounds.height).isActive = true
+                        cellSnapShot.centerXAnchor.constraint(equalTo: cellSnapShotWithPaddingContainer.centerXAnchor).isActive = true
+                        cellSnapShot.centerYAnchor.constraint(equalTo: cellSnapShotWithPaddingContainer.centerYAnchor).isActive = true
+                        
+                        cellSnapShotWithPaddingContainer.alpha = 0.0
+                        cellSnapShotWithPaddingContainer.tag = 998
+                        cellSnapShot.alpha = 0.0
+                        cellSnapShot.tag = 997
+                        self.view.addSubview(cellSnapShotWithPaddingContainer)
+                        cellSnapShotWithPaddingContainer.translatesAutoresizingMaskIntoConstraints = false
+                        cellSnapShotWithPaddingContainer.widthAnchor.constraint(equalToConstant: cellSnapShot.bounds.width + 20).isActive = true
+                        cellSnapShotWithPaddingContainer.heightAnchor.constraint(equalToConstant: cellSnapShot.bounds.height + 20).isActive = true
+                        cellSnapShotWithPaddingContainer.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+                        cellSnapShotWithPaddingContainer.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
                         let buttonStackView = UIStackView(arrangedSubviews: self.viewModel.currentLongPressCellStatus.status == "RELEASING" ? [self.favoriteBtn, self.notifyBtn] : [self.favoriteBtn])
                         buttonStackView.axis = .horizontal
                         buttonStackView.spacing = 30
                         buttonStackView.translatesAutoresizingMaskIntoConstraints = false
-                        buttonStackView.tag = 997
+                        buttonStackView.tag = 996
                         self.view.addSubview(buttonStackView)
-                        buttonStackView.topAnchor.constraint(equalTo: cellSnapShot!.bottomAnchor, constant: 20).isActive = true
+                        buttonStackView.topAnchor.constraint(equalTo: cellSnapShotWithPaddingContainer.bottomAnchor, constant: 20).isActive = true
                         buttonStackView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
                         UIView.animate(withDuration: 0.1) {
                             cell.transform = transform
                         } completion: { complete in
                             UIView.animate(withDuration: 0.1) {
-                                cellSnapShot?.alpha = 1.0
+                                cellSnapShotWithPaddingContainer.alpha = 1.0
+                                cellSnapShot.alpha = 1.0
                             }
                         }
                     }
@@ -231,12 +295,14 @@ extension TrendingPageViewController: UICollectionViewDelegate, UICollectionView
         self.view.viewWithTag(999)?.removeFromSuperview()
         self.view.viewWithTag(998)?.removeFromSuperview()
         self.view.viewWithTag(997)?.removeFromSuperview()
+        self.view.viewWithTag(996)?.removeFromSuperview()
         UIView.animate(withDuration: 0.1) {
             cell.transform = .identity
         }
     }
     
     @objc func cellLongTap(sender: AnimeCellLongPressGesture) {
+        
         switch sender.state {
         case .possible:
             break
@@ -247,7 +313,6 @@ extension TrendingPageViewController: UICollectionViewDelegate, UICollectionView
             for cell in trendingCollectionView.visibleCells {
                 if cell == viewModel.selectedAnimeCell {
                     applyBlur(cell: cell, animeID: sender.animeID)
-                    print("applyBlur")
                 }
             }
         case .changed:
@@ -296,21 +361,17 @@ extension TrendingPageViewController: UICollectionViewDelegate, UICollectionView
 
 extension TrendingPageViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if let lastTimeFetchData = viewModel.lastFetchDateTime {
-            if Date.now.timeIntervalSince(lastTimeFetchData) < 2 {
-                return
-            }
-                
-        }
-        let offsetY = scrollView.contentOffset.y
-        let contentHeight = scrollView.contentSize.height
-        let frameHeight = scrollView.frame.size.height
+        guard let hasNextPage = viewModel.animeTrendingData?.data.page.pageInfo.hasNextPage, hasNextPage else { return }
+        
+        let offsetY = scrollView.contentOffset.y // 當前scroll view滑到的offset 畫面左上角
+        let contentHeight = scrollView.contentSize.height // 當前scroll view可滑動的大小
+        let frameHeight = scrollView.frame.size.height // scroll view畫面大小
 //        print("offsetY: \(offsetY)", "contentHeight: \(contentHeight)", "frameHeight: \(frameHeight)")
-        if offsetY > contentHeight - frameHeight {
+        if offsetY + frameHeight > contentHeight {
             if let hasNextPage = viewModel.animeTrendingData?.data.page.pageInfo.hasNextPage {
                 if hasNextPage {
                     viewModel.lastFetchDateTime = .now
-                    viewModel.fetchMoreTrendingAnimeData()
+                    viewModel.fetchMoreTrendingAnimeDataTrigger()
                 }
             }
         }
@@ -333,9 +394,3 @@ class AnimeCellLongPressGesture: UILongPressGestureRecognizer {
         self.animeID = animeID
     }
 }
-
-//extension TrendingPageViewController: UIViewControllerTransitioningDelegate {
-//    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
-//        return RightSwipeDismissPresentationController(presentedViewController: presented, presenting: presenting)
-//    }
-//}

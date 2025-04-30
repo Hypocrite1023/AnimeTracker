@@ -23,6 +23,7 @@
                 <outlet property="formatLabel" destination="ZBn-4W-lmF" id="iTG-U7-YjJ"/>
                 <outlet property="genresLabel" destination="8aQ-cn-fFz" id="kma-74-ZbX"/>
                 <outlet property="hashTagLabel" destination="cC1-u8-E9Z" id="06x-We-zhd"/>
+                <outlet property="informationScrollView" destination="vyy-1D-oou" id="hxG-zm-5zy"/>
                 <outlet property="linkVStack" destination="KfV-Vq-kii" id="IJz-6J-Is3"/>
                 <outlet property="meanScoreLabel" destination="yHe-ST-Qrg" id="97F-Vk-1jH"/>
                 <outlet property="nativeLabel" destination="ICK-Iv-qI0" id="32n-P7-s8k"/>
@@ -37,6 +38,7 @@
                 <outlet property="sourceLabel" destination="n02-qC-RPj" id="FD7-bM-SN4"/>
                 <outlet property="staffsVStackView" destination="1f2-CG-9eK" id="12L-7P-jdM"/>
                 <outlet property="startDateLabel" destination="Vsf-3b-BZJ" id="UMb-Cz-ak9"/>
+                <outlet property="statusDistributionContainer" destination="3RH-kT-gvA" id="Sr5-IS-Fg3"/>
                 <outlet property="statusDistributionFifth" destination="CCw-sw-6W8" id="Zvf-nI-FzN"/>
                 <outlet property="statusDistributionFifthLabel" destination="79j-3a-ro4" id="q07-UJ-sVs"/>
                 <outlet property="statusDistributionFirst" destination="zh9-O9-GTr" id="eIi-Zu-HUd"/>
@@ -510,7 +512,7 @@
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eAP-Ml-yGB" userLabel="Relations Scroll View">
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eAP-Ml-yGB" userLabel="Relations Scroll View">
                     <rect key="frame" x="5" y="184" width="383" height="157"/>
                     <subviews>
                         <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qfa-pH-Ymv">
@@ -518,13 +520,9 @@
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="Y6K-Il-NgS">
                                     <rect key="frame" x="0.0" y="0.0" width="200" height="150"/>
-                                    <constraints>
-                                        <constraint firstAttribute="height" constant="150" id="ps6-j8-QjO"/>
-                                    </constraints>
                                 </stackView>
                             </subviews>
                             <constraints>
-                                <constraint firstAttribute="height" constant="150" id="3et-Go-dMJ"/>
                                 <constraint firstAttribute="bottom" secondItem="Y6K-Il-NgS" secondAttribute="bottom" id="DSh-Ck-FgD"/>
                                 <constraint firstItem="Y6K-Il-NgS" firstAttribute="leading" secondItem="qfa-pH-Ymv" secondAttribute="leading" id="Kos-qM-27t"/>
                                 <constraint firstItem="Y6K-Il-NgS" firstAttribute="top" secondItem="qfa-pH-Ymv" secondAttribute="top" id="hlQ-HW-vJZ"/>
@@ -542,7 +540,7 @@
                     <viewLayoutGuide key="contentLayoutGuide" id="dU2-Ku-oZS"/>
                     <viewLayoutGuide key="frameLayoutGuide" id="NZP-gF-mif"/>
                 </scrollView>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Characters" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zh0-US-UZu">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Characters" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zh0-US-UZu">
                     <rect key="frame" x="10" y="349" width="378" height="21"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="21" id="HjU-Iq-jJG"/>
@@ -578,10 +576,10 @@
                 <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mcb-ty-53k" userLabel="Status Distribution Scroll View">
                     <rect key="frame" x="5" y="838" width="383" height="105"/>
                     <subviews>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3RH-kT-gvA" userLabel="contentview">
+                        <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3RH-kT-gvA" userLabel="contentview">
                             <rect key="frame" x="0.0" y="0.0" width="380" height="105"/>
                             <subviews>
-                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="Ga9-mP-VvH">
+                                <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="Ga9-mP-VvH">
                                     <rect key="frame" x="5" y="15" width="370" height="90"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="oTd-mx-s2z">
@@ -754,7 +752,7 @@
                             </subviews>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
-                                <constraint firstItem="Ga9-mP-VvH" firstAttribute="top" secondItem="3RH-kT-gvA" secondAttribute="top" constant="15" id="0Qv-ef-yK5"/>
+                                <constraint firstItem="Ga9-mP-VvH" firstAttribute="top" relation="greaterThanOrEqual" secondItem="3RH-kT-gvA" secondAttribute="top" constant="15" id="0Qv-ef-yK5"/>
                                 <constraint firstAttribute="trailing" secondItem="Ga9-mP-VvH" secondAttribute="trailing" constant="5" id="Mk1-GV-fSE"/>
                                 <constraint firstItem="Ga9-mP-VvH" firstAttribute="leading" secondItem="3RH-kT-gvA" secondAttribute="leading" constant="5" id="SU1-5c-H5o"/>
                                 <constraint firstAttribute="bottom" secondItem="Ga9-mP-VvH" secondAttribute="bottom" id="gbo-uo-4Wl"/>
@@ -845,9 +843,6 @@
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="y97-xH-m7c" userLabel="Recommendations HStack View">
                             <rect key="frame" x="0.0" y="0.0" width="383" height="180"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="180" id="ijl-7x-tYE"/>
-                            </constraints>
                         </stackView>
                     </subviews>
                     <constraints>

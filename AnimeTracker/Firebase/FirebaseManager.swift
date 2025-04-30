@@ -32,9 +32,9 @@ class FirebaseManager {
     enum FireStoreKeyString {
         static let USERSCOLLECTION = "users"
         static let WATCHEDANIME = "watched_animes"
-        static let FAVORITESTR = "isFavorite"
-        static let NOTIFYSTR = "isNotify"
-        static let STATUSSTR = "status"
+        static let IS_FAVORITE_STR = "isFavorite"
+        static let IS_NOTIFY_STR = "isNotify"
+        static let STATUS_STR = "status"
     }
     
     var userFavoriteLastFetchDocument: DocumentSnapshot?
@@ -95,6 +95,10 @@ class FirebaseManager {
         .eraseToAnyPublisher()
     }
     
+    func getCurrentUserUID() -> String? {
+        return Auth.auth().currentUser?.uid
+    }
+    
     func establishUserDocument(userUID: String, completion: @escaping (Bool, Error?) -> Void) {
     }
     
@@ -132,16 +136,19 @@ class FirebaseManager {
         }
     }
     
-    func addAnimeRecord(userUID: String, animeID: Int, isFavorite: Bool, isNotify: Bool, status: String, completion: @escaping (Bool, Error?) -> Void) {
+    func addAnimeRecord(userUID: String, animeID: Int, isFavorite: Bool, isNotify: Bool, status: String) -> AnyPublisher<Void, Error> {
         let animeRef = db.collection(FireStoreKeyString.USERSCOLLECTION).document(userUID).collection(FireStoreKeyString.WATCHEDANIME).document("\(animeID)")
-        let data: [String: Any] = [FireStoreKeyString.FAVORITESTR: isFavorite, FireStoreKeyString.NOTIFYSTR: isNotify, FireStoreKeyString.STATUSSTR: status]
-        animeRef.setData(data) { error in
-            if let error = error {
-                completion(false, error)
-            } else {
-                completion(true, nil)
+        let data: [String: Any] = [FireStoreKeyString.IS_FAVORITE_STR: isFavorite, FireStoreKeyString.IS_NOTIFY_STR: isNotify, FireStoreKeyString.STATUS_STR: status]
+        
+        return Future<Void, Error> { promise in
+            animeRef.setData(data) { error in
+                if let error = error {
+                    promise(.failure(error))
+                }
+                promise(.success(()))
             }
         }
+        .eraseToAnyPublisher()
     }
     
     func getAnimeRecord(userUID: String, animeID: Int, completion: @escaping (Bool?, Bool?, String?, Error?) -> Void) {
@@ -151,9 +158,9 @@ class FirebaseManager {
                 completion(nil, nil, nil, error)
             } else if let document = document, document.exists {
                 let data = document.data()
-                let favorite = data?[FireStoreKeyString.FAVORITESTR] as? Bool
-                let notify = data?[FireStoreKeyString.NOTIFYSTR] as? Bool
-                let status = data?[FireStoreKeyString.STATUSSTR] as? String
+                let favorite = data?[FireStoreKeyString.IS_FAVORITE_STR] as? Bool
+                let notify = data?[FireStoreKeyString.IS_NOTIFY_STR] as? Bool
+                let status = data?[FireStoreKeyString.STATUS_STR] as? String
                 completion(favorite, notify, status, nil)
             } else {
                 completion(nil, nil, nil, nil)
@@ -195,7 +202,7 @@ class FirebaseManager {
 //                print("first fetch")
 //            }
 //        }
-        userRef.whereField(FireStoreKeyString.FAVORITESTR, isEqualTo: true).getDocuments { snapshot, error in
+        userRef.whereField(FireStoreKeyString.IS_FAVORITE_STR, isEqualTo: true).getDocuments { snapshot, error in
             if let error = error {
                 completion(nil, error)
             } else {
@@ -207,7 +214,7 @@ class FirebaseManager {
     
     func loadUserFavoriteAndReleasing(userUID: String, perFetch: Int, completion: @escaping ([DocumentSnapshot]?, Error?) -> Void) {
         let userRef = db.collection(FireStoreKeyString.USERSCOLLECTION).document(userUID).collection(FireStoreKeyString.WATCHEDANIME)
-        userRef.whereField(FireStoreKeyString.FAVORITESTR, isEqualTo: true).whereField(FireStoreKeyString.STATUSSTR, isEqualTo: "RELEASING").limit(to: perFetch).getDocuments { snapshot, error in
+        userRef.whereField(FireStoreKeyString.IS_FAVORITE_STR, isEqualTo: true).whereField(FireStoreKeyString.STATUS_STR, isEqualTo: "RELEASING").limit(to: perFetch).getDocuments { snapshot, error in
             if let error = error {
                 completion(nil, error)
             } else {
@@ -218,7 +225,7 @@ class FirebaseManager {
     
     func loadUserNotificationAnime(userUID: String, completion: @escaping ([DocumentSnapshot]?, Error?) -> Void) {
         let userRef = db.collection(FireStoreKeyString.USERSCOLLECTION).document(userUID).collection(FireStoreKeyString.WATCHEDANIME)
-        userRef.whereField(FireStoreKeyString.NOTIFYSTR, isEqualTo: true).whereField(FireStoreKeyString.STATUSSTR, isEqualTo: "RELEASING").getDocuments { snapshot, error in
+        userRef.whereField(FireStoreKeyString.IS_NOTIFY_STR, isEqualTo: true).whereField(FireStoreKeyString.STATUS_STR, isEqualTo: "RELEASING").getDocuments { snapshot, error in
             if let error = error {
                 completion(nil, error)
             } else {

@@ -8,6 +8,7 @@
 import Foundation
 import UserNotifications
 import FirebaseAuth
+import Combine
 
 struct EpisodeAndNotificationID {
     let episode: Int
@@ -16,9 +17,9 @@ struct EpisodeAndNotificationID {
 
 class AnimeNotification {
     static let shared = AnimeNotification()
-    private init() {
-        
-    }
+    private init() {}
+    
+    private var cancellables: Set<AnyCancellable> = []
     
     func addNotificationIDToUserDefault(animeID: Int, episode: Int, id: String) {
         if let currentAnimeNotification = UserDefaults.standard.dictionary(forKey: "\(animeID)") {
@@ -95,11 +96,16 @@ class AnimeNotification {
                 if let document = document {
                     let animeIDs = document.map({$0.documentID})
                     for animeID in animeIDs {
-                        AnimeDataFetcher.shared.fetchAnimeEpisodeDataByID(id: Int(animeID)!) { episodeData in
-                            if let nextAiringEpisode = episodeData?.data.Media.nextAiringEpisode, let episodes = episodeData?.data.Media.episodes, let animeTitle = episodeData?.data.Media.title.native {
-                                AnimeNotification.shared.setupAllEpisodeNotification(animeID: Int(animeID)!, animeTitle: animeTitle, nextAiringEpsode: nextAiringEpisode.episode, nextAiringInterval: TimeInterval(nextAiringEpisode.timeUntilAiring), totalEpisode: episodes)
+                        guard let animeIDInt = Int(animeID) else { continue }
+                        AnimeDataFetcher.shared.fetchAnimeEpisodeDataByID(id: animeIDInt)
+                            .sink { _ in
+                                
+                            } receiveValue: { episodesData in
+                                if let nextAiringEpisode = episodesData.data.Media.nextAiringEpisode, let episodes = episodesData.data.Media.episodes {
+                                    AnimeNotification.shared.setupAllEpisodeNotification(animeID: animeIDInt, animeTitle: episodesData.data.Media.title.native, nextAiringEpsode: nextAiringEpisode.episode, nextAiringInterval: TimeInterval(nextAiringEpisode.timeUntilAiring), totalEpisode: episodes)
+                                }
                             }
-                        }
+                            .store(in: &self.cancellables)
                     }
                 }
             }

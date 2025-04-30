@@ -8,21 +8,13 @@
 import UIKit
 
 class RecommendationsAnimePreview: UIView {
-
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
-    }
-    */
     
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var coverImageView: UIImageView!
     @IBOutlet weak var animeTitle: UILabel!
     
     let animeID: Int?
-    weak var animeDataFetcher: FetchAnimeDetailDataByID?
+    weak var recommendationDelegate: RecommendationDelegate?
     
     init(frame: CGRect, animeID: Int?) {
         self.animeID = animeID
@@ -49,8 +41,8 @@ class RecommendationsAnimePreview: UIView {
 
     @objc func loadRecommendation(sender: AnimeRecommendationTapGesture) {
         if let animeID = sender.animeID {
-            animeDataFetcher?.passAnimeID(animeID: animeID)
             print("recommend \(animeID)")
+            recommendationDelegate?.passRecommendationAnimeID(animeID)
         }
     }
 }
@@ -61,4 +53,8 @@ class AnimeRecommendationTapGesture: UITapGestureRecognizer {
         self.animeID = animeID
         super.init(target: target, action: action)
     }
+}
+
+protocol RecommendationDelegate: AnyObject {
+    func passRecommendationAnimeID(_ id: Int)
 }

@@ -28,7 +28,7 @@ class FavoriteTableViewCell: UITableViewCell {
     var isNotify: Bool!
     var status: String!
     weak var favoriteAndNotifyConfig: ConfigFavoriteAndNotifyWithAnimeID?
-    weak var configNotify: ConfigAnimdNotify?
+    weak var configNotify: ConfigAnimeNotify?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -50,7 +50,7 @@ class FavoriteTableViewCell: UITableViewCell {
         sender.tintColor = isNotify ? .systemBlue : .lightGray
         favoriteAndNotifyConfig?.configFavoriteAndNotifyWithAnimeID(animeID: animeID, isFavorite: isFavorite, isNotify: isNotify, status: status)
         
-        configNotify?.configAnimdNotify(animeID: animeID, isNotify: isNotify)
+        configNotify?.configAnimeNotify(animeID: animeID, isNotify: isNotify)
         
     }
     
@@ -76,6 +76,6 @@ protocol ConfigFavoriteAndNotifyWithAnimeID: AnyObject {
     func configFavoriteAndNotifyWithAnimeID(animeID: Int, isFavorite: Bool, isNotify: Bool, status: String)
 }
 
-protocol ConfigAnimdNotify: AnyObject {
-    func configAnimdNotify(animeID: Int, isNotify: Bool)
+protocol ConfigAnimeNotify: AnyObject {
+    func configAnimeNotify(animeID: Int, isNotify: Bool)
 }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -21,10 +21,13 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="sDO-rR-oSE" userLabel="cover image">
-                    <rect key="frame" x="0.0" y="0.0" width="130" height="180"/>
+                    <rect key="frame" x="0.0" y="0.0" width="130" height="185.33333333333334"/>
+                    <constraints>
+                        <constraint firstAttribute="width" secondItem="sDO-rR-oSE" secondAttribute="height" multiplier="115:164" id="Nyn-hI-LOm"/>
+                    </constraints>
                 </imageView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0KK-A6-Mjc">
-                    <rect key="frame" x="2" y="182" width="126" height="51"/>
+                    <rect key="frame" x="2" y="187.33333333333334" width="126" height="45.666666666666657"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                     <nil key="textColor"/>
@@ -34,14 +37,13 @@
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
-                <constraint firstAttribute="width" secondItem="0KK-A6-Mjc" secondAttribute="height" multiplier="130:51" id="7Lb-Eu-qzS"/>
-                <constraint firstItem="0KK-A6-Mjc" firstAttribute="top" secondItem="sDO-rR-oSE" secondAttribute="bottom" constant="2" id="BmG-2B-ZMI"/>
+                <constraint firstItem="0KK-A6-Mjc" firstAttribute="top" secondItem="sDO-rR-oSE" secondAttribute="bottom" constant="2" id="IZy-6H-W0y"/>
                 <constraint firstItem="sDO-rR-oSE" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="Jl2-Qp-66w"/>
-                <constraint firstAttribute="width" secondItem="sDO-rR-oSE" secondAttribute="height" multiplier="13:18" id="N2G-Xp-bAH"/>
                 <constraint firstAttribute="trailing" secondItem="0KK-A6-Mjc" secondAttribute="trailing" constant="2" id="NbH-G1-FCp"/>
                 <constraint firstItem="sDO-rR-oSE" firstAttribute="trailing" secondItem="iN0-l3-epB" secondAttribute="trailing" id="T8e-Uu-grc"/>
                 <constraint firstAttribute="bottom" secondItem="0KK-A6-Mjc" secondAttribute="bottom" id="YMH-Z5-ETS"/>
                 <constraint firstItem="0KK-A6-Mjc" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="2" id="eBz-Jz-zYe"/>
+                <constraint firstItem="sDO-rR-oSE" firstAttribute="height" relation="greaterThanOrEqual" secondItem="0KK-A6-Mjc" secondAttribute="height" multiplier="4" id="i9N-lE-D6e"/>
                 <constraint firstItem="sDO-rR-oSE" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="iKW-RC-Pa3"/>
             </constraints>
             <nil key="simulatedTopBarMetrics"/>
