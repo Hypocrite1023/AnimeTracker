@@ -9,6 +9,7 @@ DerivedData/
 *.dSYM.zip
 *.dSYM
 .DS_Store
+.gitignore
 
 # Swift Package Manager
 .build/

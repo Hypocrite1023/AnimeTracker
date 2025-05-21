@@ -10,6 +10,8 @@ import Combine
 import FirebaseAuth
 import FirebaseFirestoreInternal
 import Kingfisher
+import SnapKit
+import CombineCocoa
 
 class AnimeDetailPageViewController: UIViewController {
     @IBOutlet weak var backgroundImageView: UIImageView!
@@ -22,6 +24,7 @@ class AnimeDetailPageViewController: UIViewController {
     @IBOutlet weak var animeTitleLabel: UILabel!
     
     // 各類別項目按鈕
+    @IBOutlet weak var contentSwitchBtnScrollView: UIScrollView!
     @IBOutlet weak var showOverViewBtn: UIButton!
     @IBOutlet weak var showWatchBtn: UIButton!
     @IBOutlet weak var showCharactersBtn: UIButton!
@@ -29,9 +32,10 @@ class AnimeDetailPageViewController: UIViewController {
     @IBOutlet weak var showSocialBtn: UIButton!
     @IBOutlet weak var showStaffBtn: UIButton!
     @IBOutlet weak var container: UIView!
-    
+    // data property
     var viewModel: AnimeDetailPageViewModel?
     private var cancellables: Set<AnyCancellable> = []
+    private var characterData: [MediaResponse.MediaData.Media.CharacterPreview.Edges] = []
     
     let loadMoreStaffDataTrigger: PassthroughSubject<Void, Never> = .init()
     
@@ -54,40 +58,11 @@ class AnimeDetailPageViewController: UIViewController {
         backButton.image = UIImage(systemName: "chevron.backward")
         navigationItem.leftBarButtonItem = backButton
         
-        viewModel?.$animeDetailData
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { completion in
-                
-            }, receiveValue: { _ in
-                self.setupBaseView()
-                self.showContent(self.showOverViewBtn)
-            })
-            .store(in: &cancellables)
-        
-        viewModel?.$newAnimeCharacterData
-            .dropFirst()
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { completion in
-                
-            }, receiveValue: { edges in
-                if let container = self.container.subviews.first as? AnimeCharactersView {
-                    self.updateCharacters(container: container, edges: edges)
-                }
-            })
-            .store(in: &cancellables)
-        
-        viewModel?.subscribeLoadMoreStaffDataTrigger(trigger: loadMoreStaffDataTrigger.eraseToAnyPublisher())
-        
-        viewModel?.newAnimeStaffDataPassThrough
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { edges in
-                if let container = self.container.subviews.first as? AnimeStaffView {
-                    self.updateStaffs(container: container, edges: edges)
-                }
-            })
-            .store(in: &cancellables)
-        
         wholePageScrollView.delegate = self
+        
+        
+        setupSubscriber()
+        setupUI()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -100,124 +75,184 @@ class AnimeDetailPageViewController: UIViewController {
         navigationController?.setNavigationBarHidden(false, animated: false)
     }
     
+    private func setupUI() {
+        contentSwitchBtnScrollView.layer.cornerRadius = 10
+        showContent(showOverViewBtn)
+    }
+    
+    private func setupSubscriber() {
+        guard let viewModel = viewModel else { return }
+        
+        viewModel.showOverview
+            .receive(on: DispatchQueue.main)
+            .sink { animeDetail in
+                self.setupBaseView(data: animeDetail)
+                self.setupOverview(data: animeDetail)
+            }
+            .store(in: &cancellables)
+        viewModel.showWatch
+            .receive(on: DispatchQueue.main)
+            .sink { streamingEpisode in
+                self.setupWatch(streamingEpisodes: streamingEpisode)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.showCharacters
+            .receive(on: DispatchQueue.main)
+            .sink { characters in
+                self.setupCharacters(characters: characters)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.shouldUpdateCharacters
+            .filter { !$0.isEmpty }
+            .receive(on: DispatchQueue.main)
+            .sink { characters in
+                
+                self.viewModel?.animeCharacterData.append(contentsOf: characters)
+                guard let container = self.container.subviews.first(where: {$0 is AnimeCharactersView}) as? AnimeCharactersView else { return }
+                self.updateCharacters(container: container, edges: characters)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.showStats
+            .receive(on: DispatchQueue.main)
+            .sink { (ranking, stats) in
+                guard let ranking, let stats else { return }
+                self.setupStats(rankingData: ranking, stats: stats)
+            }
+            .store(in: &cancellables)
+
+    }
+    
+    private func setupPublisher() {
+//        showOverViewBtn.tapPublisher
+//            .sink { [weak self] _ in
+//                self?.viewModel?.shouldShowOverview.send(())
+//            }
+//            .store(in: &cancellables)
+    }
+    
     @IBAction func showContent(_ sender: UIButton) {
+        let currentOffset = wholePageScrollView.contentOffset
         configureButtonsColor(sender: sender, buttonArr: [showOverViewBtn, showStaffBtn, showCharactersBtn, showWatchBtn, showSocialBtn, showStatsBtn])
         for subview in container.subviews {
             subview.removeFromSuperview()
         }
         switch sender {
             case showOverViewBtn:
-                setupOverview()
+            viewModel?.shouldShowOverview.send(())
             case showWatchBtn:
-                setupWatch()
+            viewModel?.shouldShowWatch.send(())
             case showCharactersBtn:
-                setupCharacters()
+            viewModel?.shouldShowCharacters.send(())
             case showStatsBtn:
-                setupStats()
+            viewModel?.shouldShowStats.send(())
             case showSocialBtn:
-                setupSocial()
+            viewModel?.shouldShowSocial.send(())
             case showStaffBtn:
-                setupStaff()
+            viewModel?.shouldShowStaff.send(())
             default:
                 break
         }
+        wholePageScrollView.layoutIfNeeded()
+
+        // 設定 offset 回原本的位置
+        wholePageScrollView.setContentOffset(currentOffset, animated: false)
     }
     // MARK: - Base
-    func setupBaseView() {
-        backgroundImageView.kf.setImage(with: URL(string: viewModel?.animeDetailData?.coverImage.extraLarge ?? ""))
-        animeBannerImage.kf.setImage(with: URL(string: viewModel?.animeDetailData?.bannerImage ?? (viewModel?.animeDetailData?.coverImage.extraLarge ?? "")))
-        
-        animeThumbnailImage.kf.setImage(with: URL(string: viewModel?.animeDetailData?.coverImage.extraLarge ?? ""))
-        animeTitleLabel.text = viewModel?.animeDetailData?.title.native
+    func setupBaseView(data: MediaResponse.MediaData.Media?) {
+        guard let data = data else { return }
+        backgroundImageView.kf.setImage(with: URL(string: data.coverImage.extraLarge ?? ""))
+        animeBannerImage.kf.setImage(with: URL(string: data.bannerImage ?? (viewModel?.animeDetailData?.coverImage.extraLarge ?? "")))
+        animeThumbnailImage.kf.setImage(with: URL(string: data.coverImage.extraLarge ?? ""))
+        animeTitleLabel.text = data.title.native
     }
     // MARK: - Overview
-    func setupOverview() {
+    func setupOverview(data: MediaResponse.MediaData.Media?) {
         let overview = Overview()
-        overview.translatesAutoresizingMaskIntoConstraints = false
         container.addSubview(overview)
-        overview.leadingAnchor.constraint(equalTo: container.leadingAnchor).isActive = true
-        overview.trailingAnchor.constraint(equalTo: container.trailingAnchor).isActive = true
-        overview.topAnchor.constraint(equalTo: container.topAnchor).isActive = true
-        overview.bottomAnchor.constraint(equalTo: container.bottomAnchor).isActive = true
-        setupAnimeInformation(overview: overview)
-        setupAnimeDescription(overview: overview)
-        setupAnimeRelation(overview: overview)
-        setupAnimeCharacter(overview: overview)
-        setupAnimeStaff(overview: overview)
-        setupAnimeStatusDistribution(overview: overview)
-        setupAnimeScoreDistriubtionView(overview: overview)
-        setupAnimeWatchHStack(overview: overview)
-        setupAnimeRecommendationsHStack(overview: overview)
-        setupAnimeReviewsVStack(overview: overview)
-        setupAnimeExternalLinkVStack(overview: overview)
-        setupAnimeTagsVStack(overview: overview)
+        overview.snp.makeConstraints { make in
+            make.top.bottom.leading.trailing.equalToSuperview()
+        }
+        guard let data = data else { return }
+        setupAnimeInformation(overview: overview, animeDetailData: data)
+        setupAnimeDescription(overview: overview, animeDetailData: data)
+        setupAnimeRelation(overview: overview, animeDetailData: data)
+        setupAnimeCharacter(overview: overview, animeDetailData: data)
+        setupAnimeStaff(overview: overview, animeDetailData: data)
+        setupAnimeStatusDistribution(overview: overview, animeDetailData: data)
+        setupAnimeScoreDistriubtionView(overview: overview, animeDetailData: data)
+        setupAnimeWatchHStack(overview: overview, animeDetailData: data)
+        setupAnimeRecommendationsHStack(overview: overview, animeDetailData: data)
+        setupAnimeReviewsVStack(overview: overview, animeDetailData: data)
+        setupAnimeExternalLinkVStack(overview: overview, animeDetailData: data)
+        setupAnimeTagsVStack(overview: overview, animeDetailData: data)
     }
     // MARK: - Setting up overview sub functions
-    func setupAnimeInformation(overview: Overview) {
-        
-        if let animeDetailData = viewModel?.animeDetailData {
-            if let nextAiringEpisode = animeDetailData.nextAiringEpisode {
-                overview.airingLabel.text =  "Ep \(nextAiringEpisode.episode): \(AnimeDetailFunc.timeLeft(from: nextAiringEpisode.airingAt))"
+    func setupAnimeInformation(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
+        if let nextAiringEpisode = animeDetailData.nextAiringEpisode {
+            overview.airingLabel.text =  "Ep \(nextAiringEpisode.episode): \(AnimeDetailFunc.timeLeft(from: nextAiringEpisode.airingAt))"
+        } else {
+            if animeDetailData.status == "NOT_YET_RELEASED" {
+                overview.airingLabel.text = "NOT_YET_RELEASLED"
             } else {
-                if animeDetailData.status == "NOT_YET_RELEASED" {
-                    overview.airingLabel.text = "NOT_YET_RELEASLED"
-                } else {
-                    overview.airingLabel.text = "FINISHED"
-                }
+                overview.airingLabel.text = "FINISHED"
             }
-            overview.formatLabel.text = animeDetailData.format
-            if let episodes = animeDetailData.episodes {
-                overview.episodesLabel.text = "\(episodes)"
-            } else {
-                overview.episodesLabel.text = ""
-            }
-            if let duration = animeDetailData.duration {
-                overview.episodesDurationLabel.text = "\(duration) mins"
-            } else {
-                overview.episodesDurationLabel.text = ""
-            }
-            overview.statusLabel.text = animeDetailData.status
-            if let year = animeDetailData.startDate.year, let month = animeDetailData.startDate.month, let day = animeDetailData.startDate.day {
-                overview.startDateLabel.text = AnimeDetailFunc.startDateString(year: year, month: month, day: day)
-            } else {
-                overview.startDateLabel.text = ""
-            }
-            if let season = animeDetailData.season, let seasonYear = animeDetailData.seasonYear {
-                overview.seasonLabel.text = "\(season) \(seasonYear)"
-            } else {
-                overview.seasonLabel.text = ""
-            }
-            if let averageScore = animeDetailData.averageScore {
-                overview.averageScoreLabel.text = "\(averageScore)%"
-            } else {
-                overview.averageScoreLabel.text = "%"
-            }
-            if let meanScore = animeDetailData.meanScore {
-                overview.meanScoreLabel.text = "\(meanScore)%"
-            } else {
-                overview.meanScoreLabel.text = ""
-            }
-            
-            overview.popularityLabel.text = "\(animeDetailData.popularity)"
-            overview.favoriteLabel.text = "\(animeDetailData.favourites)"
-            overview.studiosLabel.text = AnimeDetailFunc.getMainStudio(from: animeDetailData.studios)
-            overview.producersLabel.text = AnimeDetailFunc.getProducers(from: animeDetailData.studios)
-            overview.sourceLabel.text = animeDetailData.source
-            overview.hashTagLabel.text = animeDetailData.hashtag
-            overview.genresLabel.text = animeDetailData.genres.joined(separator: ",")
-            overview.romajiLabel.text = animeDetailData.title.romaji
-            overview.englishLabel.text = animeDetailData.title.english
-            overview.nativeLabel.text = animeDetailData.title.native
-            overview.synonymsLabel.text = animeDetailData.synonyms.joined(separator: ",")
         }
+        overview.formatLabel.text = animeDetailData.format
+        if let episodes = animeDetailData.episodes {
+            overview.episodesLabel.text = "\(episodes)"
+        } else {
+            overview.episodesLabel.text = ""
+        }
+        if let duration = animeDetailData.duration {
+            overview.episodesDurationLabel.text = "\(duration) mins"
+        } else {
+            overview.episodesDurationLabel.text = ""
+        }
+        overview.statusLabel.text = animeDetailData.status
+        if let year = animeDetailData.startDate.year, let month = animeDetailData.startDate.month, let day = animeDetailData.startDate.day {
+            overview.startDateLabel.text = AnimeDetailFunc.startDateString(year: year, month: month, day: day)
+        } else {
+            overview.startDateLabel.text = ""
+        }
+        if let season = animeDetailData.season, let seasonYear = animeDetailData.seasonYear {
+            overview.seasonLabel.text = "\(season) \(seasonYear)"
+        } else {
+            overview.seasonLabel.text = ""
+        }
+        if let averageScore = animeDetailData.averageScore {
+            overview.averageScoreLabel.text = "\(averageScore)%"
+        } else {
+            overview.averageScoreLabel.text = "%"
+        }
+        if let meanScore = animeDetailData.meanScore {
+            overview.meanScoreLabel.text = "\(meanScore)%"
+        } else {
+            overview.meanScoreLabel.text = ""
+        }
+        
+        overview.popularityLabel.text = "\(animeDetailData.popularity)"
+        overview.favoriteLabel.text = "\(animeDetailData.favourites)"
+        overview.studiosLabel.text = AnimeDetailFunc.getMainStudio(from: animeDetailData.studios)
+        overview.producersLabel.text = AnimeDetailFunc.getProducers(from: animeDetailData.studios)
+        overview.sourceLabel.text = animeDetailData.source
+        overview.hashTagLabel.text = animeDetailData.hashtag
+        overview.genresLabel.text = animeDetailData.genres.joined(separator: ",")
+        overview.romajiLabel.text = animeDetailData.title.romaji
+        overview.englishLabel.text = animeDetailData.title.english
+        overview.nativeLabel.text = animeDetailData.title.native
+        overview.synonymsLabel.text = animeDetailData.synonyms.joined(separator: ",")
+        
     }
     
-    func setupAnimeDescription(overview: Overview) {
-        overview.descriptionContextLabel.attributedText = AnimeDetailFunc.updateAnimeDescription(animeDescription: viewModel?.animeDetailData?.description ?? "")
+    func setupAnimeDescription(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
+        overview.descriptionContextLabel.attributedText = AnimeDetailFunc.updateAnimeDescription(animeDescription: animeDetailData.description)
     }
     
-    func setupAnimeRelation(overview: Overview) {
-        if let relations = viewModel?.animeDetailData?.relations {
+    func setupAnimeRelation(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
+        if let relations = animeDetailData.relations {
             for edge in relations.edges {
                 let relationPreview = RelationPreview(frame: .zero, mediaID: edge.node.id)
                 // 230:328 -> 115:164
@@ -226,53 +261,53 @@ class AnimeDetailPageViewController: UIViewController {
                 relationPreview.titleLabel.text = edge.node.title.userPreferred
                 relationPreview.typeLabel.text = edge.node.type
                 relationPreview.statusLabel.text = edge.node.status
-                relationPreview.translatesAutoresizingMaskIntoConstraints = false
-                relationPreview.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width * 0.8).isActive = true
-                relationPreview.heightAnchor.constraint(equalTo: relationPreview.widthAnchor, multiplier: 0.45).isActive = true
+                relationPreview.snp.makeConstraints { make in
+                    make.width.equalTo(UIScreen.main.bounds.width).multipliedBy(0.8)
+                    make.height.equalTo(relationPreview.snp.width).multipliedBy(0.45)
+                }
                 overview.relationHStackView.addArrangedSubview(relationPreview)
             }
         }
     }
     
-    func setupAnimeCharacter(overview: Overview) {
-        if let characters = viewModel?.animeDetailData?.characterPreview.edges {
-            for edge in characters {
-                let characterPreview = CharacterPreview(frame: .zero, characterID: edge.node.id, voiceActorID: edge.voiceActors.first?.id ?? nil)
-                characterPreview.characterIdPassDelegate = self
-                characterPreview.voiceActorIdPassDelegate = self
-                characterPreview.characterImageView.kf.setImage(with: URL(string: edge.node.image.large))
-                characterPreview.characterNameLabel.text = edge.node.name.userPreferred
-                characterPreview.characterRoleLabel.text = edge.role
-                characterPreview.voiceActorImageView.kf.setImage(with: URL(string: edge.voiceActors.first?.image.large ?? "photo"))
-                characterPreview.voiceActorNameLabel.text = edge.voiceActors.first?.name.userPreferred
-                characterPreview.voiceActorCountryLabel.text = edge.voiceActors.first?.language
-                
-                characterPreview.translatesAutoresizingMaskIntoConstraints = false
-                characterPreview.heightAnchor.constraint(equalTo: characterPreview.widthAnchor, multiplier: 0.25).isActive = true
-                overview.charactersVStackView.addArrangedSubview(characterPreview)
+    func setupAnimeCharacter(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
+        let characters = animeDetailData.characterPreview.edges
+        for edge in characters {
+            let characterPreview = CharacterPreview(frame: .zero, characterID: edge.node.id, voiceActorID: edge.voiceActors.first?.id ?? nil)
+            characterPreview.characterIdPassDelegate = self
+            characterPreview.voiceActorIdPassDelegate = self
+            characterPreview.characterImageView.kf.setImage(with: URL(string: edge.node.image.large))
+            characterPreview.characterNameLabel.text = edge.node.name.userPreferred
+            characterPreview.characterRoleLabel.text = edge.role
+            characterPreview.voiceActorImageView.kf.setImage(with: URL(string: edge.voiceActors.first?.image.large ?? "photo"))
+            characterPreview.voiceActorNameLabel.text = edge.voiceActors.first?.name.userPreferred
+            characterPreview.voiceActorCountryLabel.text = edge.voiceActors.first?.language
+            
+            characterPreview.snp.makeConstraints { make in
+                make.height.equalTo(characterPreview.snp.width).multipliedBy(0.25)
+            }
+            overview.charactersVStackView.addArrangedSubview(characterPreview)
+        }
+    }
+    
+    func setupAnimeStaff(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
+        let staffs = animeDetailData.staffPreview.edges
+        for edge in staffs {
+            let staffPreview = StaffPreview(frame: .zero, staffID: edge.node.id)
+            staffPreview.staffImageView.kf.setImage(with: URL(string: edge.node.image.large))
+            staffPreview.staffNameLabel.text = edge.node.name.userPreferred
+            staffPreview.staffRoleLabel.text = edge.role
+            overview.staffsVStackView.addArrangedSubview(staffPreview)
+            staffPreview.snp.makeConstraints { make in
+                make.height.equalTo(staffPreview.snp.width).multipliedBy(0.25)
             }
         }
     }
     
-    func setupAnimeStaff(overview: Overview) {
-        if let staffs = viewModel?.animeDetailData?.staffPreview.edges {
-            for edge in staffs {
-                let staffPreview = StaffPreview(frame: .zero, staffID: edge.node.id)
-                staffPreview.staffImageView.kf.setImage(with: URL(string: edge.node.image.large))
-                staffPreview.staffNameLabel.text = edge.node.name.userPreferred
-                staffPreview.staffRoleLabel.text = edge.role
-                staffPreview.translatesAutoresizingMaskIntoConstraints = false
-                overview.staffsVStackView.addArrangedSubview(staffPreview)
-                
-                staffPreview.heightAnchor.constraint(equalTo: staffPreview.widthAnchor, multiplier: 0.25).isActive = true
-            }
-        }
-        
-    }
-    
-    func setupAnimeStatusDistribution(overview: Overview) {
-        let statusDistribution = viewModel?.animeDetailData?.stats.statusDistribution.sorted(by: {$0.amount > $1.amount})
-        let totalAmount = statusDistribution?.reduce(0) { (result, statusDistribution) -> Int in
+    func setupAnimeStatusDistribution(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
+        let animeDetailData = animeDetailData
+        let statusDistribution = animeDetailData.stats.statusDistribution.sorted(by: {$0.amount > $1.amount})
+        let totalAmount = statusDistribution.reduce(0) { (result, statusDistribution) -> Int in
             return result + statusDistribution.amount
         }
         let statusDistributionAmountLabel = [overview.statusDistributionFirstLabel, overview.statusDistributionSecondLabel, overview.statusDistributionThirdLabel, overview.statusDistributionFourthLabel, overview.statusDistributionFifthLabel]
@@ -281,211 +316,203 @@ class AnimeDetailPageViewController: UIViewController {
         var buttonConf = UIButton.Configuration.filled()
         buttonConf.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 2, bottom: 2, trailing: 2)
         
-        if let statusDistributionNotNil = statusDistribution, let totalAmountNotNil = totalAmount {
-            for (index, label) in statusDistributionStatusLabel.enumerated() {
-                buttonConf.baseBackgroundColor = statsColor[index]
-                buttonConf.baseForegroundColor = .white
-                buttonConf.title = statusDistribution?[index].status.uppercased()
-                label?.configuration = buttonConf
-                label?.translatesAutoresizingMaskIntoConstraints = false
-            }
-            for (index, label) in statusDistributionAmountLabel.enumerated() {
-                label?.text = "\(statusDistributionNotNil[index].amount)"
-                label?.adjustsFontSizeToFitWidth = true
-            }
-            var lastView: UIView = overview.statusDistributionPercentView
-            // 百分比條
-            for (index, status) in statusDistributionNotNil.enumerated() {
-                let tmpView = UIView()
-                tmpView.backgroundColor = statsColor[index]
-                tmpView.translatesAutoresizingMaskIntoConstraints = false
-                overview.statusDistributionPercentView.addSubview(tmpView)
-                tmpView.heightAnchor.constraint(equalToConstant: 15).isActive = true
-                tmpView.bottomAnchor.constraint(equalTo: overview.statusDistributionPercentView.bottomAnchor).isActive = true
-                
-                if index != statusDistributionNotNil.count - 1 && index != 0 {
-                    tmpView.leadingAnchor.constraint(equalTo: lastView.trailingAnchor).isActive = true
-                } else if index == 0 {
-                    tmpView.leadingAnchor.constraint(equalTo: overview.statusDistributionPercentView.leadingAnchor).isActive = true
-                } else {
-                    tmpView.leadingAnchor.constraint(equalTo: lastView.trailingAnchor).isActive = true
-                    tmpView.trailingAnchor.constraint(equalTo: overview.statusDistributionPercentView.trailingAnchor).isActive = true
-                }
-                tmpView.widthAnchor.constraint(equalTo: overview.statusDistributionPercentView.widthAnchor, multiplier: CGFloat(status.amount) / CGFloat(totalAmountNotNil)).isActive = true
-                lastView = tmpView
-            }
+        for (index, label) in statusDistributionStatusLabel.enumerated() {
+            buttonConf.baseBackgroundColor = statsColor[index]
+            buttonConf.baseForegroundColor = .white
+            buttonConf.title = statusDistribution[index].status.uppercased()
+            label?.configuration = buttonConf
         }
-        overview.statusDistributionContainer.translatesAutoresizingMaskIntoConstraints = false
-        overview.statusDistributionContainer.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width * 1.5).isActive = true
-        overview.statusDistributionContainer.heightAnchor.constraint(equalToConstant: 120).isActive = true
+        for (index, label) in statusDistributionAmountLabel.enumerated() {
+            label?.text = "\(statusDistribution[index].amount)"
+            label?.adjustsFontSizeToFitWidth = true
+        }
+        var lastView: UIView? = nil
+        for (index, status) in statusDistribution.enumerated() {
+            let tmpView = UIView()
+            tmpView.backgroundColor = statsColor[index]
+            overview.statusDistributionPercentView.addSubview(tmpView)
+            
+            let ratio = CGFloat(status.amount) / CGFloat(totalAmount)
+            
+            tmpView.snp.makeConstraints { make in
+                make.top.bottom.equalToSuperview()
+                make.width.equalTo(overview.statusDistributionPercentView.snp.width).multipliedBy(ratio)
+                
+                if let lastView = lastView {
+                    make.leading.equalTo(lastView.snp.trailing)
+                } else {
+                    make.leading.equalToSuperview()
+                }
+                
+                if index == statusDistribution.count - 1 {
+                    make.trailing.equalToSuperview() // 避免總寬加總不準
+                }
+            }
+            
+            lastView = tmpView
+        }
     }
     
-    func setupAnimeScoreDistriubtionView(overview: Overview) {
-        let scoreAmountTotal = viewModel?.animeDetailData?.stats.scoreDistribution.reduce(0) { ( result, scoreDistribution) -> Int in
+    func setupAnimeScoreDistriubtionView(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
+        let scoreAmountTotal = animeDetailData.stats.scoreDistribution.reduce(0) { ( result, scoreDistribution) -> Int in
             return result + scoreDistribution.amount
         }
-        if let scoreDistribution = viewModel?.animeDetailData?.stats.scoreDistribution {
-            for (index, score) in scoreDistribution.enumerated() {
-                let percent = AnimeDetailFunc.partOfAmount(value: score.amount, totalValue: scoreAmountTotal ?? 0)
-                let scoreView = UIView() // 顏色條
-                scoreView.layer.cornerRadius = 5
-                scoreView.clipsToBounds = true
-                // 0 1 2 3 4(yellow) | 5 6 7 8 9
-                if index < 5 {
-                    scoreView.backgroundColor = AnimeDetailFunc.mixColor(color1: UIColor.systemRed, color2: UIColor.systemYellow, fraction: CGFloat(index) / 5)
-                } else {
-                    scoreView.backgroundColor = AnimeDetailFunc.mixColor(color1: UIColor.systemYellow, color2: UIColor.systemGreen, fraction: CGFloat(index - 4) / 5)
-                }
-                let scoreDistributionContainer = UIView() // 裝顏色條 分數標籤 百分比的容器
-                scoreDistributionContainer.addSubview(scoreView)
-                scoreView.translatesAutoresizingMaskIntoConstraints = false
-                scoreView.bottomAnchor.constraint(equalTo: scoreDistributionContainer.bottomAnchor, constant: -40).isActive = true
-                scoreView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height * 0.1 * percent + 10).isActive = true
-                scoreView.widthAnchor.constraint(equalToConstant: 25).isActive = true
-                scoreView.centerXAnchor.constraint(equalTo: scoreDistributionContainer.centerXAnchor).isActive = true
-                
-                let percentLabel = UILabel()
-                percentLabel.adjustsFontSizeToFitWidth = true
-                percentLabel.translatesAutoresizingMaskIntoConstraints = false
-                percentLabel.text = String(format: "%.1f%%", percent * 100)
-                scoreDistributionContainer.addSubview(percentLabel)
-                percentLabel.bottomAnchor.constraint(equalTo: scoreView.topAnchor, constant: -10).isActive = true
-                percentLabel.widthAnchor.constraint(equalToConstant: 30).isActive = true
-                percentLabel.centerXAnchor.constraint(equalTo: scoreDistributionContainer.centerXAnchor).isActive = true
-                
-                let scoreLabel = UILabel()
-                scoreLabel.translatesAutoresizingMaskIntoConstraints = false
-                scoreLabel.textAlignment = .center
-                scoreLabel.text = "\(score.score)"
-                scoreLabel.textColor = .secondaryLabel
-                scoreDistributionContainer.addSubview(scoreLabel)
-                scoreLabel.topAnchor.constraint(equalTo: scoreView.bottomAnchor, constant: 5).isActive = true
-                scoreLabel.widthAnchor.constraint(equalToConstant: 30).isActive = true
-                scoreLabel.centerXAnchor.constraint(equalTo: scoreDistributionContainer.centerXAnchor).isActive = true
-                
-//                scoreDistributionContainer.heightAnchor.constraint(equalToConstant: 140).isActive = true
-                scoreDistributionContainer.widthAnchor.constraint(equalToConstant: 30).isActive = true
-                overview.scoreDistributionHStack.addArrangedSubview(scoreDistributionContainer)
-            }
-        }
-        
-    }
-    
-    func setupAnimeWatchHStack(overview: Overview) {
-        if let streamingEpisodes = viewModel?.animeDetailData?.streamingEpisodes {
-            for streaming in streamingEpisodes {
-                let watchPreview = AnimeWatchPreview(frame: .zero, site: streaming.site, url: streaming.url)
-//                watchPreview.openUrlDelegate = self
-                watchPreview.animeWatchPreviewImageView.kf.setImage(with: URL(string: streaming.thumbnail))
-                watchPreview.animeWatchPreviewLabel.text = streaming.title
-                watchPreview.translatesAutoresizingMaskIntoConstraints = false
-                overview.watchHStack.addArrangedSubview(watchPreview)
-                
-                watchPreview.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width * 0.33).isActive = true
-                watchPreview.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width * 0.66).isActive = true
-            }
-        }
-        
-    }
-    
-    func setupAnimeRecommendationsHStack(overview: Overview) {
-        if let recommendations = viewModel?.animeDetailData?.recommendations.nodes {
-            for recommendation in recommendations {
-                let recommendationsPreview = RecommendationsAnimePreview(frame: .zero, animeID: recommendation.mediaRecommendation?.id)
-                
-                recommendationsPreview.recommendationDelegate = self
-                
-                recommendationsPreview.translatesAutoresizingMaskIntoConstraints = false
-                recommendationsPreview.animeTitle.text = recommendation.mediaRecommendation?.title.userPreferred
-                if let coverImage = recommendation.mediaRecommendation?.coverImage?.large {
-                    recommendationsPreview.coverImageView.kf.setImage(with: URL(string: coverImage))
-                }
-                overview.recommendationsHStack.addArrangedSubview(recommendationsPreview)
-                
-                recommendationsPreview.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width * 0.33).isActive = true
-            }
-        }
-        
-    }
-    
-    func setupAnimeReviewsVStack(overview: Overview) {
-        if let reviews = viewModel?.animeDetailData?.reviewPreview.nodes {
-            if reviews.count == 0 {
-                let voidLabel = UILabel()
-                voidLabel.backgroundColor = .white
-                voidLabel.text = "This anime didn't have review yet"
-                voidLabel.font = .italicSystemFont(ofSize: 15)
-                voidLabel.textColor = UIColor.secondaryLabel
-                voidLabel.layer.cornerRadius = 10
-                voidLabel.clipsToBounds = true
-                voidLabel.translatesAutoresizingMaskIntoConstraints = false
-                overview.reviewsVStack.addArrangedSubview(voidLabel)
-                voidLabel.heightAnchor.constraint(equalToConstant: 60).isActive = true
-                
+        let scoreDistribution = animeDetailData.stats.scoreDistribution
+        for (index, score) in scoreDistribution.enumerated() {
+            let percent = AnimeDetailFunc.partOfAmount(value: score.amount, totalValue: scoreAmountTotal)
+            let scoreView = UIView() // 顏色條
+            scoreView.layer.cornerRadius = 5
+            scoreView.clipsToBounds = true
+            // 0 1 2 3 4(yellow) | 5 6 7 8 9
+            if index < 5 {
+                scoreView.backgroundColor = AnimeDetailFunc.mixColor(color1: UIColor.systemRed, color2: UIColor.systemYellow, fraction: CGFloat(index) / 5)
             } else {
-                for review in reviews {
-                    let animeReview = AnimeReview()
-                    animeReview.userReviewLabel.layer.cornerRadius = 10
-                    animeReview.userReviewLabel.clipsToBounds = true
-                    animeReview.userAvatar.loadImage(from: review.user.avatar?.large)
-                    animeReview.userReviewLabel.text = review.summary
-                    animeReview.translatesAutoresizingMaskIntoConstraints = false
-                    overview.reviewsVStack.addArrangedSubview(animeReview)
-                }
+                scoreView.backgroundColor = AnimeDetailFunc.mixColor(color1: UIColor.systemYellow, color2: UIColor.systemGreen, fraction: CGFloat(index - 4) / 5)
+            }
+            let scoreDistributionContainer = UIView() // 裝顏色條 分數標籤 百分比的容器
+            scoreDistributionContainer.addSubview(scoreView)
+            scoreView.snp.makeConstraints { make in
+                make.bottom.equalToSuperview().offset(-40)
+                make.height.equalTo(UIScreen.main.bounds.height * 0.1 * percent + 10)
+                make.width.equalTo(25)
+                make.centerX.equalToSuperview()
+            }
+            
+            let percentLabel = UILabel()
+            percentLabel.adjustsFontSizeToFitWidth = true
+            percentLabel.text = String(format: "%.1f%%", percent * 100)
+            scoreDistributionContainer.addSubview(percentLabel)
+            percentLabel.snp.makeConstraints { make in
+                make.bottom.equalTo(scoreView.snp.top).offset(-10)
+                make.width.equalTo(30)
+                make.centerX.equalToSuperview()
+            }
+            
+            let scoreLabel = UILabel()
+            scoreLabel.textAlignment = .center
+            scoreLabel.text = "\(score.score)"
+            scoreLabel.textColor = .secondaryLabel
+            scoreDistributionContainer.addSubview(scoreLabel)
+            scoreLabel.snp.makeConstraints { make in
+                make.top.equalTo(scoreView.snp.bottom).offset(5)
+                make.width.equalTo(30)
+                make.centerX.equalToSuperview()
+            }
+            
+            scoreDistributionContainer.snp.makeConstraints { make in
+                make.width.equalTo(30)
+            }
+            overview.scoreDistributionHStack.addArrangedSubview(scoreDistributionContainer)
+        }
+    }
+    
+    func setupAnimeWatchHStack(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
+        let streamingEpisodes = animeDetailData.streamingEpisodes
+        for streaming in streamingEpisodes {
+            let watchPreview = AnimeWatchPreview(frame: .zero, site: streaming.site, url: streaming.url)
+//                watchPreview.openUrlDelegate = self
+            watchPreview.animeWatchPreviewImageView.kf.setImage(with: URL(string: streaming.thumbnail))
+            watchPreview.animeWatchPreviewLabel.text = streaming.title
+            overview.watchHStack.addArrangedSubview(watchPreview)
+            watchPreview.snp.makeConstraints { make in
+                make.height.equalTo(UIScreen.main.bounds.width * 0.33)
+                make.width.equalTo(watchPreview.snp.height).multipliedBy(2)
+            }
+        }
+    }
+    
+    func setupAnimeRecommendationsHStack(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
+        let recommendations = animeDetailData.recommendations.nodes
+        for recommendation in recommendations {
+            let recommendationsPreview = RecommendationsAnimePreview(frame: .zero, animeID: recommendation.mediaRecommendation?.id)
+            
+            recommendationsPreview.recommendationDelegate = self
+            
+            recommendationsPreview.animeTitle.text = recommendation.mediaRecommendation?.title.userPreferred
+            if let coverImage = recommendation.mediaRecommendation?.coverImage?.large {
+                recommendationsPreview.coverImageView.kf.setImage(with: URL(string: coverImage))
+            }
+            overview.recommendationsHStack.addArrangedSubview(recommendationsPreview)
+            
+            recommendationsPreview.snp.makeConstraints { make in
+                make.width.equalTo(UIScreen.main.bounds.width * 0.33)
             }
         }
         
+        
     }
     
-    func setupAnimeExternalLinkVStack(overview: Overview) {
-        if let externalLinks = viewModel?.animeDetailData?.externalLinks {
-            for externalLink in externalLinks {
-                let externalLinkPreview = ExternalLinkPreview(frame: .zero, url: externalLink.url, siteName: externalLink.site)
+    func setupAnimeReviewsVStack(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
+        let reviews = animeDetailData.reviewPreview.nodes
+        if reviews.count == 0 {
+            let voidLabel = UILabel()
+            voidLabel.backgroundColor = .white
+            voidLabel.text = "\t\tThis anime didn't have review yet"
+            voidLabel.font = .italicSystemFont(ofSize: 15)
+            voidLabel.textColor = UIColor.secondaryLabel
+            voidLabel.layer.cornerRadius = 10
+            voidLabel.clipsToBounds = true
+            overview.reviewsVStack.addArrangedSubview(voidLabel)
+            voidLabel.snp.makeConstraints { make in
+                make.height.equalTo(60)
+            }
+        } else {
+            for review in reviews {
+                let animeReview = AnimeReview()
+                animeReview.userReviewLabel.layer.cornerRadius = 10
+                animeReview.userReviewLabel.clipsToBounds = true
+                animeReview.userAvatar.kf.setImage(with: URL(string: review.user.avatar?.large ?? ""))
+                animeReview.userReviewLabel.text = review.summary
+                overview.reviewsVStack.addArrangedSubview(animeReview)
+            }
+        }
+    }
+    
+    func setupAnimeExternalLinkVStack(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
+        let externalLinks = animeDetailData.externalLinks
+        for externalLink in externalLinks {
+            let externalLinkPreview = ExternalLinkPreview(frame: .zero, url: externalLink.url, siteName: externalLink.site)
 //                externalLinkPreview.openURLDelegate = self
-                externalLinkPreview.translatesAutoresizingMaskIntoConstraints = false
-                if let externalLinkIcon = externalLink.icon {
-                    externalLinkPreview.externalLinkIcon.loadImage(from: externalLinkIcon)
-                } else {
-                    externalLinkPreview.externalLinkIcon.image = UIImage(systemName: "link")
-                }
-                externalLinkPreview.externalLinkIcon.backgroundColor = UIColor(hex: externalLink.color)
-                externalLinkPreview.externalLinkIconColor.backgroundColor = UIColor(hex: externalLink.color)
-                externalLinkPreview.externalLinkIconColor.layer.cornerRadius = 10
-                externalLinkPreview.externalLinkIconColor.clipsToBounds = true
-                externalLinkPreview.externalLinkTitle.text = externalLink.site
-                //            externalLinkPreview.externalLinkTitle.textColor = .secondaryLabel
-                externalLinkPreview.externalLinkTitleNote.text = externalLink.notes == nil ? "" : "(\(externalLink.notes!))"
-                externalLinkPreview.externalLinkTitleNote.textColor = .secondaryLabel
-                externalLinkPreview.layer.cornerRadius = 10
-                externalLinkPreview.clipsToBounds = true
-                overview.linkVStack.addArrangedSubview(externalLinkPreview)
+            if let externalLinkIcon = externalLink.icon {
+                externalLinkPreview.externalLinkIcon.kf.setImage(with: URL(string: externalLinkIcon))
+            } else {
+                externalLinkPreview.externalLinkIcon.image = UIImage(systemName: "link")
             }
+            externalLinkPreview.externalLinkIcon.backgroundColor = UIColor(hex: externalLink.color)
+            externalLinkPreview.externalLinkIconColor.backgroundColor = UIColor(hex: externalLink.color)
+            externalLinkPreview.externalLinkIconColor.layer.cornerRadius = 10
+            externalLinkPreview.externalLinkIconColor.clipsToBounds = true
+            externalLinkPreview.externalLinkTitle.text = externalLink.site
+            
+            externalLinkPreview.externalLinkTitleNote.text = externalLink.notes == nil ? "" : "(\(externalLink.notes!))"
+            externalLinkPreview.externalLinkTitleNote.textColor = .secondaryLabel
+            externalLinkPreview.layer.cornerRadius = 10
+            externalLinkPreview.clipsToBounds = true
+            overview.linkVStack.addArrangedSubview(externalLinkPreview)
         }
-        
     }
     
-    func setupAnimeTagsVStack(overview: Overview) {
-        if let tags = viewModel?.animeDetailData?.tags {
+    func setupAnimeTagsVStack(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
+        let tags = animeDetailData.tags
             for tag in tags {
                 let tagPreview = TagPreview()
                 tagPreview.tagName.text = tag.name
                 tagPreview.tagPercent.text = "\(tag.rank) %"
                 
     //            tagPreview.isHidden = tag.isMediaSpoiler
-                tagPreview.translatesAutoresizingMaskIntoConstraints = false
                 overview.tagsVStack.addArrangedSubview(tagPreview)
                 
-                tagPreview.heightAnchor.constraint(equalToConstant: 40).isActive = true
+                tagPreview.snp.makeConstraints { make in
+                    make.height.equalTo(40)
+                }
                 
                 if tag.isMediaSpoiler {
                     let blurEffect = UIBlurEffect(style: .light)
                     let blurEffectView = UIVisualEffectView(effect: blurEffect)
-                    print(tagPreview.bounds.size)
                     tagPreview.addSubview(blurEffectView)
-                    blurEffectView.translatesAutoresizingMaskIntoConstraints = false
-                    blurEffectView.leadingAnchor.constraint(equalTo: tagPreview.leadingAnchor).isActive = true
-                    blurEffectView.trailingAnchor.constraint(equalTo: tagPreview.trailingAnchor).isActive = true
-                    blurEffectView.heightAnchor.constraint(equalTo: tagPreview.heightAnchor).isActive = true
+                    blurEffectView.snp.makeConstraints { make in
+                        make.leading.trailing.top.bottom.equalToSuperview()
+                    }
                     let eyeSlashImg = UIImageView(image: UIImage(systemName: "eye.slash.fill"))
                     eyeSlashImg.tintColor = .secondaryLabel
     //                eyeSlashImg.translatesAutoresizingMaskIntoConstraints = false
@@ -497,68 +524,63 @@ class AnimeDetailPageViewController: UIViewController {
                     let spoilerTemplateView = UIStackView(arrangedSubviews: [eyeSlashImg, spoilerText])
                     spoilerTemplateView.axis = .horizontal
                     spoilerTemplateView.spacing = 10
-                    spoilerTemplateView.translatesAutoresizingMaskIntoConstraints = false
                     blurEffectView.contentView.addSubview(spoilerTemplateView)
-                    spoilerTemplateView.centerXAnchor.constraint(equalTo: blurEffectView.centerXAnchor).isActive = true
-                    spoilerTemplateView.centerYAnchor.constraint(equalTo: blurEffectView.centerYAnchor).isActive = true
+                    spoilerTemplateView.snp.makeConstraints { make in
+                        make.centerX.centerY.equalTo(blurEffectView.contentView)
+                    }
                     
                     let tapToShow = UITapGestureRecognizer(target: self, action: #selector(showSpoiler))
                     blurEffectView.addGestureRecognizer(tapToShow)
                 }
             }
-        }
-        
     }
     // MARK: - Watch
-    func setupWatch() {
+    func setupWatch(streamingEpisodes: [MediaResponse.MediaData.Media.StreamingEpisodes]) {
+        print(streamingEpisodes)
         let animeWatchView = AnimeWatchView()
-        animeWatchView.translatesAutoresizingMaskIntoConstraints = false
         container.addSubview(animeWatchView)
-        animeWatchView.leadingAnchor.constraint(equalTo: container.leadingAnchor).isActive = true
-        animeWatchView.trailingAnchor.constraint(equalTo: container.trailingAnchor).isActive = true
-        animeWatchView.topAnchor.constraint(equalTo: container.topAnchor).isActive = true
-        animeWatchView.bottomAnchor.constraint(equalTo: container.bottomAnchor).isActive = true
-        if let streamingEpisodes = viewModel?.animeDetailData?.streamingEpisodes {
-            for streaming in streamingEpisodes {
-                let watchPreview = AnimeWatchPreview(frame: .zero, site: streaming.site, url: streaming.url)
-//                watchPreview.openUrlDelegate = self
-//                watchPreview.animeWatchPreviewImageView.loadImage(from: streaming.thumbnail)
-                watchPreview.animeWatchPreviewImageView.kf.setImage(with: URL(string: streaming.thumbnail))
-                watchPreview.animeWatchPreviewLabel.text = streaming.title
-                watchPreview.translatesAutoresizingMaskIntoConstraints = false
-                animeWatchView.watchVStack.addArrangedSubview(watchPreview)
-                watchPreview.heightAnchor.constraint(equalTo: watchPreview.widthAnchor, multiplier: 0.5).isActive = true
+        animeWatchView.snp.makeConstraints { make in
+            make.leading.top.bottom.trailing.equalToSuperview()
+        }
+        let streamingEpisodes = streamingEpisodes
+        for streaming in streamingEpisodes {
+            let watchPreview = AnimeWatchPreview(frame: .zero, site: streaming.site, url: streaming.url)
+//            watchPreview.openUrlDelegate = self
+//            watchPreview.animeWatchPreviewImageView.loadImage(from: streaming.thumbnail)
+            watchPreview.animeWatchPreviewImageView.kf.setImage(with: URL(string: streaming.thumbnail))
+            watchPreview.animeWatchPreviewLabel.text = streaming.title
+            animeWatchView.watchVStack.addArrangedSubview(watchPreview)
+            watchPreview.snp.makeConstraints { make in
+                make.height.equalTo(watchPreview.snp.width).multipliedBy(0.5)
             }
         }
     }
     // MARK: - Characters
-    func setupCharacters() {
+    func setupCharacters(characters: [MediaResponse.MediaData.Media.CharacterPreview.Edges]) {
         let animeCharactersView = AnimeCharactersView()
-        animeCharactersView.translatesAutoresizingMaskIntoConstraints = false
         container.addSubview(animeCharactersView)
-        animeCharactersView.leadingAnchor.constraint(equalTo: container.leadingAnchor).isActive = true
-        animeCharactersView.trailingAnchor.constraint(equalTo: container.trailingAnchor).isActive = true
-        animeCharactersView.topAnchor.constraint(equalTo: container.topAnchor).isActive = true
-        animeCharactersView.bottomAnchor.constraint(equalTo: container.bottomAnchor).isActive = true
-        if let characters = viewModel?.animeCharacterData?.edges {
-            for edge in characters {
-                let characterPreview = CharacterPreview(frame: .zero, characterID: edge.node.id, voiceActorID: edge.voiceActors.first?.id ?? nil)
-                
-                characterPreview.characterIdPassDelegate = self
-                characterPreview.voiceActorIdPassDelegate = self
-                
-                characterPreview.characterImageView.kf.setImage(with: URL(string: edge.node.image.large))
-                characterPreview.characterNameLabel.text = edge.node.name.userPreferred
-                characterPreview.characterRoleLabel.text = edge.role
-                characterPreview.voiceActorImageView.kf.setImage(with: URL(string: edge.voiceActors.first?.image.large ?? ""))
-                characterPreview.voiceActorNameLabel.text = edge.voiceActors.first?.name.userPreferred
-                characterPreview.voiceActorCountryLabel.text = edge.voiceActors.first?.language
-                characterPreview.translatesAutoresizingMaskIntoConstraints = false
-                
-                // image size width:height = 46:69
-                characterPreview.heightAnchor.constraint(equalTo: characterPreview.widthAnchor, multiplier: 0.25).isActive = true
-                animeCharactersView.charactersVStack.addArrangedSubview(characterPreview)
+        animeCharactersView.snp.makeConstraints { make in
+            make.leading.trailing.top.bottom.equalToSuperview()
+        }
+        let characters = characters
+        for edge in characters {
+            let characterPreview = CharacterPreview(frame: .zero, characterID: edge.node.id, voiceActorID: edge.voiceActors.first?.id ?? nil)
+            
+            characterPreview.characterIdPassDelegate = self
+            characterPreview.voiceActorIdPassDelegate = self
+            
+            characterPreview.characterImageView.kf.setImage(with: URL(string: edge.node.image.large))
+            characterPreview.characterNameLabel.text = edge.node.name.userPreferred
+            characterPreview.characterRoleLabel.text = edge.role
+            characterPreview.voiceActorImageView.kf.setImage(with: URL(string: edge.voiceActors.first?.image.large ?? ""))
+            characterPreview.voiceActorNameLabel.text = edge.voiceActors.first?.name.userPreferred
+            characterPreview.voiceActorCountryLabel.text = edge.voiceActors.first?.language
+            
+            // image size width:height = 46:69
+            characterPreview.snp.makeConstraints { make in
+                make.height.equalTo(characterPreview.snp.width).multipliedBy(0.25)
             }
+            animeCharactersView.charactersVStack.addArrangedSubview(characterPreview)
         }
     }
     
@@ -577,42 +599,31 @@ class AnimeDetailPageViewController: UIViewController {
             characterPreview.voiceActorNameLabel.text = edge.voiceActors.first?.name.userPreferred
             characterPreview.voiceActorCountryLabel.text = edge.voiceActors.first?.language
             
-            characterPreview.translatesAutoresizingMaskIntoConstraints = false
-            characterPreview.heightAnchor.constraint(equalTo: characterPreview.widthAnchor, multiplier: 0.25).isActive = true
+            characterPreview.snp.makeConstraints { make in
+                make.height.equalTo(characterPreview.snp.width).multipliedBy(0.25)
+            }
             container.charactersVStack.addArrangedSubview(characterPreview)
         }
         
     }
     // MARK: - Stats
-    func setupStats() {
+    func setupStats(rankingData: MediaRanking.MediaData.Media, stats: MediaResponse.MediaData.Media.Stats) {
         let statsView = AnimeStatsView()
-        // ranking
-        if viewModel?.animeRankingData == nil {
-            viewModel?.loadAnimeRankingData()
-        }
-        viewModel?.$animeRankingData
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { _ in
-                
-            }, receiveValue: { _ in
-                if let rankingDataNotNil = self.viewModel?.animeRankingData {
-                    for (_, rankingData) in rankingDataNotNil.rankings.enumerated() {
-                        let rankingPreview = RankingPreview()
-                        rankingPreview.rankingImageView.image = UIImage(systemName: ((rankingData.type == "RATED") ? "star.fill" : "heart.fill"))
-                        rankingPreview.rankingImageView.tintColor = rankingData.type == "RATED" ? UIColor.systemYellow : UIColor.systemRed
-                        rankingPreview.rankingTitleLabel.text = "#\(rankingData.rank) \(rankingData.year == nil ? "" : String(rankingData.year!)) \(rankingData.season == nil ? "" : rankingData.season!) \(rankingData.context.capitalized)"
-                        rankingPreview.translatesAutoresizingMaskIntoConstraints = false
-                        statsView.rankingsVStack.addArrangedSubview(rankingPreview)
-                        rankingPreview.heightAnchor.constraint(equalTo: rankingPreview.widthAnchor, multiplier: 0.25).isActive = true
-                    }
-                }
-            })
-            .store(in: &cancellables)
-       
         
+        let rankingData = rankingData
+        for (_, rankingData) in rankingData.rankings.enumerated() {
+            let rankingPreview = RankingPreview()
+            rankingPreview.rankingImageView.image = UIImage(systemName: ((rankingData.type == "RATED") ? "star.fill" : "heart.fill"))
+            rankingPreview.rankingImageView.tintColor = rankingData.type == "RATED" ? UIColor.systemYellow : UIColor.systemRed
+            rankingPreview.rankingTitleLabel.text = "#\(rankingData.rank) \(rankingData.year == nil ? "" : String(rankingData.year!)) \(rankingData.season == nil ? "" : rankingData.season!) \(rankingData.context.capitalized)"
+            statsView.rankingsVStack.addArrangedSubview(rankingPreview)
+            rankingPreview.snp.makeConstraints { make in
+                make.height.equalTo(rankingPreview.snp.width).multipliedBy(0.25)
+            }
+        }
         // status distribution
-        let statusDistribution = viewModel?.animeDetailData?.stats.statusDistribution.sorted(by: {$0.amount > $1.amount})
-        let totalAmount = statusDistribution?.reduce(0) { (result, statusDistribution) -> Int in
+        let statusDistribution = stats.statusDistribution.sorted(by: {$0.amount > $1.amount})
+        let totalAmount = statusDistribution.reduce(0) { (result, statusDistribution) -> Int in
             return result + statusDistribution.amount
         }
         let statusDistributionAmountLabel = [statsView.statusDistributionFirstLabel, statsView.statusDistributionSecondLabel, statsView.statusDistributionThirdLabel, statsView.statusDistributionFourthLabel, statsView.statusDistributionFifthLabel]
@@ -621,47 +632,46 @@ class AnimeDetailPageViewController: UIViewController {
         var buttonConf = UIButton.Configuration.filled()
         buttonConf.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 2, bottom: 2, trailing: 2)
         
-        if let statusDistributionNotNil = statusDistribution, let totalAmountNotNil = totalAmount {
-            for (index, label) in statusDistributionStatusLabel.enumerated() {
-                buttonConf.baseBackgroundColor = statsColor[index]
-                buttonConf.baseForegroundColor = .white
-                buttonConf.title = statusDistribution?[index].status.uppercased()
-                label?.configuration = buttonConf
-            }
-            for (index, label) in statusDistributionAmountLabel.enumerated() {
-                label?.text = "\(statusDistributionNotNil[index].amount)"
-                label?.adjustsFontSizeToFitWidth = true
-            }
-            var lastView: UIView = statsView.statusDistributionPercentView
-            for (index, status) in statusDistributionNotNil.enumerated() {
-                let tmpView = UIView()
-                tmpView.backgroundColor = statsColor[index]
-                tmpView.translatesAutoresizingMaskIntoConstraints = false
-                statsView.statusDistributionPercentView.addSubview(tmpView)
-                tmpView.heightAnchor.constraint(equalToConstant: 15).isActive = true
-                tmpView.bottomAnchor.constraint(equalTo: statsView.statusDistributionPercentView.bottomAnchor).isActive = true
-                //            print(CGFloat(status.amount) / CGFloat(totalAmount) * statusDistributionView.persentView.bounds.size.width)
-                if index != statusDistributionNotNil.count - 1 && index != 0 {
-                    
-                    tmpView.widthAnchor.constraint(equalTo: statsView.statusDistributionPercentView.widthAnchor, multiplier: CGFloat(status.amount) / CGFloat(totalAmountNotNil)).isActive = true
-                    tmpView.leadingAnchor.constraint(equalTo: lastView.trailingAnchor).isActive = true
-                } else if index == 0 {
-                    tmpView.leadingAnchor.constraint(equalTo: lastView.leadingAnchor).isActive = true
-                    tmpView.widthAnchor.constraint(equalTo: statsView.statusDistributionPercentView.widthAnchor, multiplier: CGFloat(status.amount) / CGFloat(totalAmountNotNil)).isActive = true
-                } else {
-                    tmpView.leadingAnchor.constraint(equalTo: lastView.trailingAnchor).isActive = true
-                    tmpView.trailingAnchor.constraint(equalTo: statsView.statusDistributionPercentView.trailingAnchor).isActive = true
-                }
-                lastView = tmpView
-            }
+        for (index, label) in statusDistributionStatusLabel.enumerated() {
+            buttonConf.baseBackgroundColor = statsColor[index]
+            buttonConf.baseForegroundColor = .white
+            buttonConf.title = statusDistribution[index].status.uppercased()
+            label?.configuration = buttonConf
         }
+        for (index, label) in statusDistributionAmountLabel.enumerated() {
+            label?.text = "\(statusDistribution[index].amount)"
+            label?.adjustsFontSizeToFitWidth = true
+        }
+        var lastView: UIView = statsView.statusDistributionPercentView
+        for (index, status) in statusDistribution.enumerated() {
+            let tmpView = UIView()
+            tmpView.backgroundColor = statsColor[index]
+            tmpView.translatesAutoresizingMaskIntoConstraints = false
+            statsView.statusDistributionPercentView.addSubview(tmpView)
+            tmpView.heightAnchor.constraint(equalToConstant: 15).isActive = true
+            tmpView.bottomAnchor.constraint(equalTo: statsView.statusDistributionPercentView.bottomAnchor).isActive = true
+            //            print(CGFloat(status.amount) / CGFloat(totalAmount) * statusDistributionView.persentView.bounds.size.width)
+            if index != statusDistribution.count - 1 && index != 0 {
+                
+                tmpView.widthAnchor.constraint(equalTo: statsView.statusDistributionPercentView.widthAnchor, multiplier: CGFloat(status.amount) / CGFloat(totalAmount)).isActive = true
+                tmpView.leadingAnchor.constraint(equalTo: lastView.trailingAnchor).isActive = true
+            } else if index == 0 {
+                tmpView.leadingAnchor.constraint(equalTo: lastView.leadingAnchor).isActive = true
+                tmpView.widthAnchor.constraint(equalTo: statsView.statusDistributionPercentView.widthAnchor, multiplier: CGFloat(status.amount) / CGFloat(totalAmount)).isActive = true
+            } else {
+                tmpView.leadingAnchor.constraint(equalTo: lastView.trailingAnchor).isActive = true
+                tmpView.trailingAnchor.constraint(equalTo: statsView.statusDistributionPercentView.trailingAnchor).isActive = true
+            }
+            lastView = tmpView
+        }
+        
         // score distribution
-        let scoreAmountTotal = viewModel?.animeDetailData?.stats.scoreDistribution.reduce(0) { ( result, scoreDistribution) -> Int in
+        let scoreAmountTotal = stats.scoreDistribution.reduce(0) { ( result, scoreDistribution) -> Int in
             return result + scoreDistribution.amount
         }
         if let scoreDistribution = viewModel?.animeDetailData?.stats.scoreDistribution {
             for (index, score) in scoreDistribution.enumerated() {
-                let percent = AnimeDetailFunc.partOfAmount(value: score.amount, totalValue: scoreAmountTotal ?? 0)
+                let percent = AnimeDetailFunc.partOfAmount(value: score.amount, totalValue: scoreAmountTotal)
                 let scoreView = UIView()
                 scoreView.layer.cornerRadius = 5
                 scoreView.clipsToBounds = true
@@ -797,16 +807,21 @@ class AnimeDetailPageViewController: UIViewController {
 
 extension AnimeDetailPageViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if Date.now.timeIntervalSince((viewModel?.lastFetchDataTime)!) > 2 {
-            let offsetY = scrollView.contentOffset.y
-            let contentHeight = scrollView.contentSize.height
-            let frameHeight = scrollView.frame.size.height
-            
-            if let _ = container.subviews.first as? AnimeCharactersView {
-                if offsetY > contentHeight - frameHeight && AnimeDataFetcher.shared.isFetchingData == false && viewModel?.animeCharacterData?.pageInfo.hasNextPage ?? false {
-                    viewModel?.loadMoreCharactersData()
-                }
+        if scrollView == wholePageScrollView {
+            contentSwitchBtnScrollView.alpha = 0.5
+        }
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let frameHeight = scrollView.frame.size.height
+        
+        if let _ = container.subviews.first as? AnimeCharactersView {
+            if offsetY > contentHeight - frameHeight && AnimeDataFetcher.shared.isFetchingData == false {
+                viewModel?.shouldLoadMoreCharacters.send(())
             }
+        }
+        
+        if Date.now.timeIntervalSince((viewModel?.lastFetchDataTime)!) > 2 {
+            
             
             if let _ = container.subviews.first as? AnimeStaffView {
                 if offsetY > contentHeight - frameHeight && AnimeDataFetcher.shared.isFetchingData == false && viewModel?.animeStaffData?.pageInfo.hasNextPage ?? false {
@@ -815,17 +830,41 @@ extension AnimeDetailPageViewController: UIScrollViewDelegate {
             }
             
             if scrollView == wholePageScrollView {
+                guard let navigationController = navigationController else { return }
+//                print(contentSwitchBtnScrollView.frame.minY, navigationController.navigationBar.frame.maxY)
+                if (contentSwitchBtnScrollView.frame.minY > navigationController.navigationBar.frame.maxY + 10 + scrollView.contentOffset.y) && isNavigationBarHidden == false {
+                    UIView.animate(withDuration: 0.5) {
+                        self.contentSwitchBtnScrollView.transform = .identity
+                    }
+                } else {
+                    if isNavigationBarHidden == false {
+                        UIView.animate(withDuration: 0.5) {
+                            self.contentSwitchBtnScrollView.transform = CGAffineTransform(translationX: 50, y: 0)
+                        }
+                    }
+                }
                 let threshold: CGFloat = 10
                 if offsetY > wholePageScrollViewContentOffsetY + threshold && !isNavigationBarHidden {
                     isNavigationBarHidden = true
-                    navigationController?.setNavigationBarHidden(true, animated: true)
+                    navigationController.setNavigationBarHidden(true, animated: true)
+                    UIView.animate(withDuration: 0.5) {
+                        self.contentSwitchBtnScrollView.transform = .identity
+                    }
                 } else if offsetY < wholePageScrollViewContentOffsetY - threshold && isNavigationBarHidden {
                     isNavigationBarHidden = false
-                    navigationController?.setNavigationBarHidden(false, animated: true)
+                    navigationController.setNavigationBarHidden(false, animated: true)
                 }
                 wholePageScrollViewContentOffsetY = offsetY
             }
         }
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        contentSwitchBtnScrollView.alpha = 1.0
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        contentSwitchBtnScrollView.alpha = 1.0
     }
 }
 

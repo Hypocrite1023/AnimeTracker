@@ -19,20 +19,34 @@ class TrendingPageViewController: UIViewController {
     var fetchingDataIndicator = UIActivityIndicatorView(style: .large)
     
     var favoriteBtn: UIButton!, notifyBtn: UIButton!
-        
+    
+    private var lastContentOffsetY: CGFloat = .zero
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        setupUI()
+        setupSubscrition()
+        
+        lastContentOffsetY = trendingCollectionView.contentOffset.y
+    }
+    
+    private func setupUI() {
+        navigationController?.setNavigationBarHidden(false, animated: false)
+        
         trendingCollectionView.dataSource = self
         trendingCollectionView.delegate = self
         trendingCollectionView.register(UINib(nibName: "TrendingAnimeCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "TrendingCollectionViewCell")
         
         let collectionViewFlowLayout = UICollectionViewFlowLayout()
         let spacing = 10
-        let width = (Int(UIScreen.main.bounds.width) - 2 * spacing) / 2
+        let width = (Int(UIScreen.main.bounds.width) - 3 * spacing) / 3
         collectionViewFlowLayout.itemSize = CGSize(width: width, height: width * 2)
         collectionViewFlowLayout.minimumInteritemSpacing = CGFloat(spacing)
         trendingCollectionView.collectionViewLayout = collectionViewFlowLayout
-        
+    }
+    
+    private func setupSubscrition() {
         viewModel.$animeTrendingData
             .receive(on: DispatchQueue.main)
             .sink { _ in
@@ -40,37 +54,13 @@ class TrendingPageViewController: UIViewController {
             }
             .store(in: &cancellables)
         
-        isScrollingPassThroughSubject
-            .removeDuplicates()
-            .map { bool -> AnyPublisher<Bool, Never> in
-                if bool == false {
-                    Just(bool)
-                        .delay(for: 2, scheduler: DispatchQueue.main)
-                        .eraseToAnyPublisher()
-                } else {
-                    Just(bool)
-                        .eraseToAnyPublisher()
-                }
-            }
-            .switchToLatest()
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] isScrolling in
-                if isScrolling {
-                    self?.navigationController?.setNavigationBarHidden(true, animated: true)
-                } else {
-                    self?.navigationController?.setNavigationBarHidden(false, animated: true)
-                }
+        viewModel.shouldNavigateToDetailPage
+            .sink { animeId in
+                let vc = UIStoryboard(name: "AnimeDetailPage", bundle: nil).instantiateViewController(identifier: "AnimeDetailView") as! AnimeDetailPageViewController
+                vc.viewModel = AnimeDetailPageViewModel(animeID: animeId)
+                self.navigationController?.pushViewController(vc, animated: true)
             }
             .store(in: &cancellables)
-    }
-    
-    deinit {
-        print("TrendingPageViewController deinit")
-    }
-}
-extension TrendingPageViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.animeTrendingData?.data.page.media.count ?? 0
     }
     
     @objc func closeBlurView() {
@@ -287,8 +277,6 @@ extension TrendingPageViewController: UICollectionViewDelegate, UICollectionView
                 }
                 .store(in: &cancellables)
         }
-        
-
     }
     
     func removeBlur(cell: UICollectionViewCell) {
@@ -328,6 +316,16 @@ extension TrendingPageViewController: UICollectionViewDelegate, UICollectionView
         }
     }
     
+    deinit {
+        print("TrendingPageViewController deinit")
+    }
+}
+// MARK: - UICollectionViewDataSource
+extension TrendingPageViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return viewModel.animeTrendingData?.data.page.media.count ?? 0
+    }
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TrendingCollectionViewCell", for: indexPath) as! TrendingAnimeCollectionViewCell
         
@@ -348,41 +346,43 @@ extension TrendingPageViewController: UICollectionViewDelegate, UICollectionView
         return cell
     }
     
+}
+// MARK: - UICollectionViewDelegate
+extension TrendingPageViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let animeData = viewModel.animeTrendingData?.data.page.media[indexPath.item] {
-            let vc = UIStoryboard(name: "AnimeDetailPage", bundle: nil).instantiateViewController(identifier: "AnimeDetailView") as! AnimeDetailPageViewController
-            vc.viewModel = AnimeDetailPageViewModel(animeID: animeData.id)
-            navigationController?.pushViewController(vc, animated: true)
+            viewModel.animeCollectionViewCellTap.send(animeData.id)
         }
         collectionView.deselectItem(at: indexPath, animated: true)
     }
-    
 }
-
+// MARK: - UIScrollViewDelegate
 extension TrendingPageViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard let hasNextPage = viewModel.animeTrendingData?.data.page.pageInfo.hasNextPage, hasNextPage else { return }
-        
-        let offsetY = scrollView.contentOffset.y // 當前scroll view滑到的offset 畫面左上角
-        let contentHeight = scrollView.contentSize.height // 當前scroll view可滑動的大小
-        let frameHeight = scrollView.frame.size.height // scroll view畫面大小
-//        print("offsetY: \(offsetY)", "contentHeight: \(contentHeight)", "frameHeight: \(frameHeight)")
-        if offsetY + frameHeight > contentHeight {
-            if let hasNextPage = viewModel.animeTrendingData?.data.page.pageInfo.hasNextPage {
-                if hasNextPage {
-                    viewModel.lastFetchDateTime = .now
-                    viewModel.fetchMoreTrendingAnimeDataTrigger()
+        if scrollView == trendingCollectionView {
+            if scrollView.contentOffset.y > lastContentOffsetY + 30 {
+                lastContentOffsetY = scrollView.contentOffset.y
+                navigationController?.setNavigationBarHidden(true, animated: true)
+            } else if scrollView.contentOffset.y < lastContentOffsetY - 30 {
+                lastContentOffsetY = scrollView.contentOffset.y
+                navigationController?.setNavigationBarHidden(false, animated: true)
+            }
+            
+            guard let hasNextPage = viewModel.animeTrendingData?.data.page.pageInfo.hasNextPage, hasNextPage else { return }
+            
+            let offsetY = scrollView.contentOffset.y // 當前scroll view滑到的offset 畫面左上角
+            let contentHeight = scrollView.contentSize.height // 當前scroll view可滑動的大小
+            let frameHeight = scrollView.frame.size.height // scroll view畫面大小
+            let cellHeight = ((scrollView as! UICollectionView).collectionViewLayout as! UICollectionViewFlowLayout).itemSize.height
+//            print("offsetY: \(offsetY)", "contentHeight: \(contentHeight)", "frameHeight: \(frameHeight)", "cellHeight: \(cellHeight)")
+            if offsetY + frameHeight >= contentHeight - 12 * cellHeight { // 還沒滑到最下面就先load data
+                if let hasNextPage = viewModel.animeTrendingData?.data.page.pageInfo.hasNextPage {
+                    if hasNextPage {
+                        viewModel.shouldLoadMoreTrendingData.send(())
+                    }
                 }
             }
         }
-    }
-    
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        isScrollingPassThroughSubject.send(true)
-    }
-    
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        isScrollingPassThroughSubject.send(false)
     }
 }
 

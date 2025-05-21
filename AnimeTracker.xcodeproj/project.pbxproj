@@ -8,6 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		064724EF74FD01F36D6E2B4F /* Pods_AnimeTracker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EF066C15013076581D9308E /* Pods_AnimeTracker.framework */; };
+		A30AA2BB2DDB879600E24670 /* LookinServer in Frameworks */ = {isa = PBXBuildFile; productRef = A30AA2BA2DDB879600E24670 /* LookinServer */; };
+		A30C69A82DD84381004A7A88 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = A30C69A72DD84381004A7A88 /* Kingfisher */; };
+		A30C69AB2DDB5701004A7A88 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = A30C69AA2DDB5701004A7A88 /* SnapKit */; };
+		A30C69B02DDB5812004A7A88 /* CombineCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = A30C69AF2DDB5812004A7A88 /* CombineCocoa */; };
+		A30C69B32DDB5A9B004A7A88 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = A30C69B22DDB5A9B004A7A88 /* SnapKit */; };
+		A30C69B62DDB5B2C004A7A88 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = A30C69B52DDB5B2C004A7A88 /* SnapKit */; };
+		A3619D182DD60E4700231B63 /* Publisher+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3619D172DD60E3A00231B63 /* Publisher+Ext.swift */; };
+		A3619D1A2DD61C4800231B63 /* UIButton+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3619D192DD61C4800231B63 /* UIButton+Ext.swift */; };
 		A3FE0E9E2DAF79970044CA0E /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = A3FE0E9D2DAF79970044CA0E /* Kingfisher */; };
 		CD1AA0E52C49475D00993AEB /* UIImageViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1AA0E42C49475D00993AEB /* UIImageViewExtension.swift */; };
 		CD1AA0E72C49547100993AEB /* demo in Resources */ = {isa = PBXBuildFile; fileRef = CD1AA0E62C49547100993AEB /* demo */; };
@@ -48,6 +56,8 @@
 		07699B9B52E92D5AB8B9520E /* Pods-AnimeTracker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AnimeTracker.release.xcconfig"; path = "Target Support Files/Pods-AnimeTracker/Pods-AnimeTracker.release.xcconfig"; sourceTree = "<group>"; };
 		8EF066C15013076581D9308E /* Pods_AnimeTracker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AnimeTracker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9FC9250BE48481FE9A6EBF98 /* Pods-AnimeTracker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AnimeTracker.debug.xcconfig"; path = "Target Support Files/Pods-AnimeTracker/Pods-AnimeTracker.debug.xcconfig"; sourceTree = "<group>"; };
+		A3619D172DD60E3A00231B63 /* Publisher+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+Ext.swift"; sourceTree = "<group>"; };
+		A3619D192DD61C4800231B63 /* UIButton+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Ext.swift"; sourceTree = "<group>"; };
 		CD1AA0E42C49475D00993AEB /* UIImageViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageViewExtension.swift; sourceTree = "<group>"; };
 		CD1AA0E62C49547100993AEB /* demo */ = {isa = PBXFileReference; lastKnownFileType = folder; name = demo; path = ../demo; sourceTree = "<group>"; };
 		CD1AA0EC2C4BA82D00993AEB /* AnimeDetailDataDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeDetailDataDelegate.swift; sourceTree = "<group>"; };
@@ -109,8 +119,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A30C69B62DDB5B2C004A7A88 /* SnapKit in Frameworks */,
+				A30C69A82DD84381004A7A88 /* Kingfisher in Frameworks */,
+				A30C69AB2DDB5701004A7A88 /* SnapKit in Frameworks */,
+				A30C69B32DDB5A9B004A7A88 /* SnapKit in Frameworks */,
 				A3FE0E9E2DAF79970044CA0E /* Kingfisher in Frameworks */,
+				A30C69B02DDB5812004A7A88 /* CombineCocoa in Frameworks */,
 				064724EF74FD01F36D6E2B4F /* Pods_AnimeTracker.framework in Frameworks */,
+				A30AA2BB2DDB879600E24670 /* LookinServer in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,8 +153,10 @@
 		CD1AA0E32C49473F00993AEB /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				A3619D172DD60E3A00231B63 /* Publisher+Ext.swift */,
 				CD1AA0E42C49475D00993AEB /* UIImageViewExtension.swift */,
 				CD9D4EDA2C550FB2003492C1 /* UIColorExtension.swift */,
+				A3619D192DD61C4800231B63 /* UIButton+Ext.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -355,6 +373,9 @@
 			mainGroup = CDC14F142C453DBF00BC14FA;
 			packageReferences = (
 				A3FE0E9C2DAF79970044CA0E /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				A30C69AE2DDB5812004A7A88 /* XCRemoteSwiftPackageReference "CombineCocoa" */,
+				A30C69B42DDB5B2C004A7A88 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				A30AA2B92DDB879600E24670 /* XCRemoteSwiftPackageReference "LookinServer" */,
 			);
 			productRefGroup = CDC14F1E2C453DBF00BC14FA /* Products */;
 			projectDirPath = "";
@@ -437,6 +458,7 @@
 				CD9D4E6C2C4E654A003492C1 /* AnimeStreamingDetailDelegate.swift in Sources */,
 				CD2FF7AE2C5CB93000924687 /* VoiceActorDataResponse.swift in Sources */,
 				CD2FF7A12C5B804F00924687 /* AnimeCharacterDataDelegate.swift in Sources */,
+				A3619D182DD60E4700231B63 /* Publisher+Ext.swift in Sources */,
 				CD2FF7BA2C5CB9EF00924687 /* MediaCharacterPreview.swift in Sources */,
 				CD2FF7BC2C5CBA0400924687 /* MediaResponse.swift in Sources */,
 				CDA141F82C57CEC000708A8B /* ThreadsView.swift in Sources */,
@@ -444,6 +466,7 @@
 				CDC14F3C2C46A7C200BC14FA /* AnimeDataFetcher.swift in Sources */,
 				CD2FF7B82C5CB9CD00924687 /* MediaStaffPreview.swift in Sources */,
 				CD8DD5CA2C60987C00E0D7A2 /* OpenURLDelegate.swift in Sources */,
+				A3619D1A2DD61C4800231B63 /* UIButton+Ext.swift in Sources */,
 				CD9D4E682C4D0126003492C1 /* AnimeDescriptionDelegate.swift in Sources */,
 				CD2FF7B02C5CB95600924687 /* AnimeSearchedOrTrending.swift in Sources */,
 				CD9D4EDB2C550FB2003492C1 /* UIColorExtension.swift in Sources */,
@@ -697,6 +720,46 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		A30AA2B92DDB879600E24670 /* XCRemoteSwiftPackageReference "LookinServer" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/QMUI/LookinServer/";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.8;
+			};
+		};
+		A30C69A92DDB5701004A7A88 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.7.1;
+			};
+		};
+		A30C69AE2DDB5812004A7A88 /* XCRemoteSwiftPackageReference "CombineCocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/CombineCommunity/CombineCocoa";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.4.1;
+			};
+		};
+		A30C69B12DDB5A9B004A7A88 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.7.1;
+			};
+		};
+		A30C69B42DDB5B2C004A7A88 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.7.1;
+			};
+		};
 		A3FE0E9C2DAF79970044CA0E /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/onevcat/Kingfisher";
@@ -708,6 +771,36 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		A30AA2BA2DDB879600E24670 /* LookinServer */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A30AA2B92DDB879600E24670 /* XCRemoteSwiftPackageReference "LookinServer" */;
+			productName = LookinServer;
+		};
+		A30C69A72DD84381004A7A88 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A3FE0E9C2DAF79970044CA0E /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
+		A30C69AA2DDB5701004A7A88 /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A30C69A92DDB5701004A7A88 /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+		A30C69AF2DDB5812004A7A88 /* CombineCocoa */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A30C69AE2DDB5812004A7A88 /* XCRemoteSwiftPackageReference "CombineCocoa" */;
+			productName = CombineCocoa;
+		};
+		A30C69B22DDB5A9B004A7A88 /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A30C69B12DDB5A9B004A7A88 /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+		A30C69B52DDB5B2C004A7A88 /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A30C69B42DDB5B2C004A7A88 /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
 		A3FE0E9D2DAF79970044CA0E /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = A3FE0E9C2DAF79970044CA0E /* XCRemoteSwiftPackageReference "Kingfisher" */;

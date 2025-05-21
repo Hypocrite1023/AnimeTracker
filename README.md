@@ -202,3 +202,8 @@ extension AnimeDetailPageViewController: UIGestureRecognizerDelegate {
 ```
 ### 需要加上 `swipeGesture.delegate = self` 並且 `func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool { return true }`
 > 這樣允許了 NavigationController 辨識的 swipe gesture 跟我們設定的右滑回上頁的 gesture 能同時被辨識
+
+___
+## 2025.5.20
+### UIScrollView 的 content view 因為有 Navigation Bar 的關係最上方會留個空間，但我不想要
+> 調整 scrollView 的 `contentInsetAdjustmentBehavior` 為 .never

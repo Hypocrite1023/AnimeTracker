@@ -10,15 +10,23 @@ import Combine
 import UIKit
 
 class TrendingPageViewModel {
-    @Published var animeTrendingData: AnimeTrending?
+    
+    
+    // MARK: - input
+    let animeCollectionViewCellTap: PassthroughSubject<Int, Never> = .init()
+    let shouldLoadMoreTrendingData: PassthroughSubject<Void, Never> = .init()
+    // MARK: - output
+    var shouldNavigateToDetailPage: AnyPublisher<Int, Never> = .empty
+    // MARK: - data property
     var selectedAnimeCell: UICollectionViewCell?
-    var lastFetchDateTime: Date?
     var currentLongPressCellStatus: (isFavorite: Bool?, isNotify: Bool?, status: String?, animeID: Int?)
+    @Published var animeTrendingData: AnimeTrending?
     private var cancellables: Set<AnyCancellable> = []
     
-    let fetchMoreDataTrigger = PassthroughSubject<Void, Never>()
-    
     init() {
+        setupPublisher()
+        setupSubscriber()
+        
         AnimeDataFetcher.shared.fetchAnimeByTrending(page: 1)
             .sink { completion in
                 switch completion {
@@ -33,8 +41,15 @@ class TrendingPageViewModel {
                 self.animeTrendingData = trendingData
             }
             .store(in: &cancellables)
+    }
+    
+    private func setupPublisher() {
         
-        fetchMoreDataTrigger
+    }
+    
+    private func setupSubscriber() {
+        shouldNavigateToDetailPage = animeCollectionViewCellTap.eraseToAnyPublisher()
+        shouldLoadMoreTrendingData
             .throttle(for: 2, scheduler: RunLoop.main, latest: false)
             .sink { _ in
                 guard let currentPage = self.animeTrendingData?.data.page.pageInfo.currentPage else {
@@ -61,10 +76,6 @@ class TrendingPageViewModel {
                 self.animeTrendingData?.data.page.pageInfo = trendingData.data.page.pageInfo
             }
             .store(in: &cancellables)
-    }
-    
-    func fetchMoreTrendingAnimeDataTrigger() {
-        fetchMoreDataTrigger.send(())
     }
     
     func createOrUpdateAnimeRecord() -> AnyPublisher<Void, Error> {
