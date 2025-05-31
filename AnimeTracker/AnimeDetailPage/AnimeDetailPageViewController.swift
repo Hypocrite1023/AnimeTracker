@@ -62,6 +62,7 @@ class AnimeDetailPageViewController: UIViewController {
         
         
         setupSubscriber()
+        setupPublisher()
         setupUI()
     }
     
@@ -122,15 +123,49 @@ class AnimeDetailPageViewController: UIViewController {
                 self.setupStats(rankingData: ranking, stats: stats)
             }
             .store(in: &cancellables)
-
+        
+        viewModel.showStaffs
+            .receive(on: DispatchQueue.main)
+            .sink { staffData in
+                self.setupStaff(staffData: staffData)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.shouldUpdateStaffs
+            .receive(on: DispatchQueue.main)
+            .sink { staffData in
+                guard let container = self.container.subviews.first(where: {$0 is AnimeStaffView}) as? AnimeStaffView else { return }
+                self.updateStaffs(container: container, edges: staffData)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.configFavoritePublisher
+            .receive(on: DispatchQueue.main)
+            .sink { isFavorite in
+                self.updateFunctionalButton(isOnColor: .systemYellow, for: self.addAnimeToFavoriteBtn, isOn: isFavorite)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.configNotificationPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { isNotify in
+                self.updateFunctionalButton(isOnColor: .systemBlue, for: self.animeAiringNotifyBtn, isOn: isNotify)
+            }
+            .store(in: &cancellables)
     }
     
     private func setupPublisher() {
-//        showOverViewBtn.tapPublisher
-//            .sink { [weak self] _ in
-//                self?.viewModel?.shouldShowOverview.send(())
-//            }
-//            .store(in: &cancellables)
+        addAnimeToFavoriteBtn.tapPublisher
+            .sink { [weak self] _ in
+                self?.viewModel?.configFavorite.send(())
+            }
+            .store(in: &cancellables)
+        
+        animeAiringNotifyBtn.tapPublisher
+            .sink { [weak self] _ in
+                self?.viewModel?.configNotification.send(())
+            }
+            .store(in: &cancellables)
     }
     
     @IBAction func showContent(_ sender: UIButton) {
@@ -160,6 +195,53 @@ class AnimeDetailPageViewController: UIViewController {
         // 設定 offset 回原本的位置
         wholePageScrollView.setContentOffset(currentOffset, animated: false)
     }
+    
+    
+    func configureButtonsColor(sender: UIButton, buttonArr: [UIButton]) {
+        for button in buttonArr {
+            if button != sender {
+                DispatchQueue.main.async {
+                    button.setTitleColor(.blue.withAlphaComponent(0.6), for: .normal)
+                    button.layer.shadowColor = .none
+                    button.layer.shadowOpacity = 0
+                    button.layer.shadowOffset = .zero
+                    button.layer.shadowRadius = 0
+                }
+                
+            } else {
+                DispatchQueue.main.async {
+                    button.setTitleColor(.blue.withAlphaComponent(0.9), for: .normal)
+                    button.layer.shadowColor = UIColor.blue.cgColor
+                    button.layer.shadowOpacity = 0.7
+                    button.layer.shadowOffset = CGSize(width: 2, height: 5)
+                    button.layer.shadowRadius = 4
+                }
+                
+            }
+        }
+    }
+    
+    @objc func showSpoiler(sender: UITapGestureRecognizer) {
+        print(sender.view.debugDescription)
+        guard let blurEffectView = sender.view else {
+            return
+        }
+        
+        UIView.animate(withDuration: 0.3) {
+            blurEffectView.isHidden = true
+        }
+//        sender.view.isHidden
+    }
+    
+    @objc func swipeAction(sender: UISwipeGestureRecognizer?) {
+        print("right swipe")
+        navigationController?.popViewController(animated: true)
+    }
+
+}
+
+// MARK: - UI func
+extension AnimeDetailPageViewController {
     // MARK: - Base
     func setupBaseView(data: MediaResponse.MediaData.Media?) {
         guard let data = data else { return }
@@ -167,6 +249,9 @@ class AnimeDetailPageViewController: UIViewController {
         animeBannerImage.kf.setImage(with: URL(string: data.bannerImage ?? (viewModel?.animeDetailData?.coverImage.extraLarge ?? "")))
         animeThumbnailImage.kf.setImage(with: URL(string: data.coverImage.extraLarge ?? ""))
         animeTitleLabel.text = data.title.native
+        if data.status.uppercased() != "RELEASING".uppercased() {
+            self.animeAiringNotifyBtn.isHidden = true
+        }
     }
     // MARK: - Overview
     func setupOverview(data: MediaResponse.MediaData.Media?) {
@@ -244,11 +329,14 @@ class AnimeDetailPageViewController: UIViewController {
         overview.englishLabel.text = animeDetailData.title.english
         overview.nativeLabel.text = animeDetailData.title.native
         overview.synonymsLabel.text = animeDetailData.synonyms.joined(separator: ",")
-        
+        overview.informationScrollView.layer.cornerRadius = 10
+        overview.informationScrollView.clipsToBounds = true
     }
     
     func setupAnimeDescription(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
         overview.descriptionContextLabel.attributedText = AnimeDetailFunc.updateAnimeDescription(animeDescription: animeDetailData.description)
+        overview.layer.cornerRadius = 10
+        overview.descriptionContextLabel.clipsToBounds = true
     }
     
     func setupAnimeRelation(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
@@ -261,8 +349,11 @@ class AnimeDetailPageViewController: UIViewController {
                 relationPreview.titleLabel.text = edge.node.title.userPreferred
                 relationPreview.typeLabel.text = edge.node.type
                 relationPreview.statusLabel.text = edge.node.status
+                relationPreview.layer.cornerRadius = 10
+                relationPreview.clipsToBounds = true
+                
                 relationPreview.snp.makeConstraints { make in
-                    make.width.equalTo(UIScreen.main.bounds.width).multipliedBy(0.8)
+                    make.width.equalTo(UIScreen.main.bounds.width - 10)
                     make.height.equalTo(relationPreview.snp.width).multipliedBy(0.45)
                 }
                 overview.relationHStackView.addArrangedSubview(relationPreview)
@@ -282,6 +373,8 @@ class AnimeDetailPageViewController: UIViewController {
             characterPreview.voiceActorImageView.kf.setImage(with: URL(string: edge.voiceActors.first?.image.large ?? "photo"))
             characterPreview.voiceActorNameLabel.text = edge.voiceActors.first?.name.userPreferred
             characterPreview.voiceActorCountryLabel.text = edge.voiceActors.first?.language
+            characterPreview.layer.cornerRadius = 10
+            characterPreview.clipsToBounds = true
             
             characterPreview.snp.makeConstraints { make in
                 make.height.equalTo(characterPreview.snp.width).multipliedBy(0.25)
@@ -297,6 +390,9 @@ class AnimeDetailPageViewController: UIViewController {
             staffPreview.staffImageView.kf.setImage(with: URL(string: edge.node.image.large))
             staffPreview.staffNameLabel.text = edge.node.name.userPreferred
             staffPreview.staffRoleLabel.text = edge.role
+            staffPreview.layer.cornerRadius = 10
+            staffPreview.clipsToBounds = true
+            
             overview.staffsVStackView.addArrangedSubview(staffPreview)
             staffPreview.snp.makeConstraints { make in
                 make.height.equalTo(staffPreview.snp.width).multipliedBy(0.25)
@@ -408,11 +504,31 @@ class AnimeDetailPageViewController: UIViewController {
     
     func setupAnimeWatchHStack(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
         let streamingEpisodes = animeDetailData.streamingEpisodes
+        guard !streamingEpisodes.isEmpty else {
+            let voidLabel = UILabel()
+            voidLabel.backgroundColor = .white
+            voidLabel.text = "This anime didn't have any source provided by the AniList API."
+            voidLabel.textAlignment = .center
+            voidLabel.numberOfLines = 0
+            voidLabel.font = .italicSystemFont(ofSize: 15)
+            voidLabel.textColor = UIColor.secondaryLabel
+            voidLabel.layer.cornerRadius = 10
+            voidLabel.clipsToBounds = true
+            overview.watchHStack.addArrangedSubview(voidLabel)
+            voidLabel.snp.makeConstraints { make in
+                make.width.equalTo(UIScreen.main.bounds.width - 10)
+            }
+            return
+        }
         for streaming in streamingEpisodes {
             let watchPreview = AnimeWatchPreview(frame: .zero, site: streaming.site, url: streaming.url)
 //                watchPreview.openUrlDelegate = self
             watchPreview.animeWatchPreviewImageView.kf.setImage(with: URL(string: streaming.thumbnail))
             watchPreview.animeWatchPreviewLabel.text = streaming.title
+            
+            watchPreview.layer.cornerRadius = 10
+            watchPreview.clipsToBounds = true
+            
             overview.watchHStack.addArrangedSubview(watchPreview)
             watchPreview.snp.makeConstraints { make in
                 make.height.equalTo(UIScreen.main.bounds.width * 0.33)
@@ -494,45 +610,47 @@ class AnimeDetailPageViewController: UIViewController {
     
     func setupAnimeTagsVStack(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
         let tags = animeDetailData.tags
-            for tag in tags {
-                let tagPreview = TagPreview()
-                tagPreview.tagName.text = tag.name
-                tagPreview.tagPercent.text = "\(tag.rank) %"
-                
-    //            tagPreview.isHidden = tag.isMediaSpoiler
-                overview.tagsVStack.addArrangedSubview(tagPreview)
-                
-                tagPreview.snp.makeConstraints { make in
-                    make.height.equalTo(40)
-                }
-                
-                if tag.isMediaSpoiler {
-                    let blurEffect = UIBlurEffect(style: .light)
-                    let blurEffectView = UIVisualEffectView(effect: blurEffect)
-                    tagPreview.addSubview(blurEffectView)
-                    blurEffectView.snp.makeConstraints { make in
-                        make.leading.trailing.top.bottom.equalToSuperview()
-                    }
-                    let eyeSlashImg = UIImageView(image: UIImage(systemName: "eye.slash.fill"))
-                    eyeSlashImg.tintColor = .secondaryLabel
-    //                eyeSlashImg.translatesAutoresizingMaskIntoConstraints = false
-    //                blurEffectView.contentView.addSubview(eyeSlashImg)
-                    let spoilerText = UILabel()
-                    spoilerText.text = "Spoiler Tag"
-                    spoilerText.textColor = .secondaryLabel
-                    spoilerText.font = UIFont.boldSystemFont(ofSize: 14)
-                    let spoilerTemplateView = UIStackView(arrangedSubviews: [eyeSlashImg, spoilerText])
-                    spoilerTemplateView.axis = .horizontal
-                    spoilerTemplateView.spacing = 10
-                    blurEffectView.contentView.addSubview(spoilerTemplateView)
-                    spoilerTemplateView.snp.makeConstraints { make in
-                        make.centerX.centerY.equalTo(blurEffectView.contentView)
-                    }
-                    
-                    let tapToShow = UITapGestureRecognizer(target: self, action: #selector(showSpoiler))
-                    blurEffectView.addGestureRecognizer(tapToShow)
-                }
+        for tag in tags {
+            let tagPreview = TagPreview()
+            tagPreview.tagName.text = tag.name
+            tagPreview.tagPercent.text = "\(tag.rank) %"
+            tagPreview.layer.cornerRadius = 10
+            tagPreview.clipsToBounds = true
+            
+//            tagPreview.isHidden = tag.isMediaSpoiler
+            overview.tagsVStack.addArrangedSubview(tagPreview)
+            
+            tagPreview.snp.makeConstraints { make in
+                make.height.equalTo(40)
             }
+            
+            if tag.isMediaSpoiler {
+                let blurEffect = UIBlurEffect(style: .light)
+                let blurEffectView = UIVisualEffectView(effect: blurEffect)
+                tagPreview.addSubview(blurEffectView)
+                blurEffectView.snp.makeConstraints { make in
+                    make.leading.trailing.top.bottom.equalToSuperview()
+                }
+                let eyeSlashImg = UIImageView(image: UIImage(systemName: "eye.slash.fill"))
+                eyeSlashImg.tintColor = .secondaryLabel
+//                eyeSlashImg.translatesAutoresizingMaskIntoConstraints = false
+//                blurEffectView.contentView.addSubview(eyeSlashImg)
+                let spoilerText = UILabel()
+                spoilerText.text = "Spoiler Tag"
+                spoilerText.textColor = .secondaryLabel
+                spoilerText.font = UIFont.boldSystemFont(ofSize: 14)
+                let spoilerTemplateView = UIStackView(arrangedSubviews: [eyeSlashImg, spoilerText])
+                spoilerTemplateView.axis = .horizontal
+                spoilerTemplateView.spacing = 10
+                blurEffectView.contentView.addSubview(spoilerTemplateView)
+                spoilerTemplateView.snp.makeConstraints { make in
+                    make.centerX.centerY.equalTo(blurEffectView.contentView)
+                }
+                
+                let tapToShow = UITapGestureRecognizer(target: self, action: #selector(showSpoiler))
+                blurEffectView.addGestureRecognizer(tapToShow)
+            }
+        }
     }
     // MARK: - Watch
     func setupWatch(streamingEpisodes: [MediaResponse.MediaData.Media.StreamingEpisodes]) {
@@ -723,17 +841,15 @@ class AnimeDetailPageViewController: UIViewController {
         
     }
     // MARK: - Staff
-    func setupStaff() {
+    func setupStaff(staffData: [MediaResponse.MediaData.Media.StaffPreview.Edges]) {
         let staffView = AnimeStaffView()
-        staffView.translatesAutoresizingMaskIntoConstraints = false
         container.addSubview(staffView)
-        staffView.leadingAnchor.constraint(equalTo: container.leadingAnchor).isActive = true
-        staffView.trailingAnchor.constraint(equalTo: container.trailingAnchor).isActive = true
-        staffView.topAnchor.constraint(equalTo: container.topAnchor).isActive = true
-        staffView.bottomAnchor.constraint(equalTo: container.bottomAnchor).isActive = true
+        staffView.snp.makeConstraints { make in
+            make.leading.trailing.top.bottom.equalToSuperview()
+        }
         
-        guard let animeStaffData = viewModel?.animeStaffData else { return }
-        for (_, edge) in animeStaffData.edges.enumerated() {
+        let animeStaffData = staffData
+        for (_, edge) in animeStaffData.enumerated() {
             let staffPreview = StaffPreview(frame: .zero, staffID: edge.node.id)
             
             staffPreview.staffIdDelegate = self
@@ -741,68 +857,34 @@ class AnimeDetailPageViewController: UIViewController {
             staffPreview.staffImageView.kf.setImage(with: URL(string: edge.node.image.large))
             staffPreview.staffNameLabel.text = edge.node.name.userPreferred
             staffPreview.staffRoleLabel.text = edge.role
-            staffPreview.translatesAutoresizingMaskIntoConstraints = false
             staffView.staffVStack.addArrangedSubview(staffPreview)
-            staffPreview.heightAnchor.constraint(equalTo: staffPreview.widthAnchor, multiplier: 0.25).isActive = true
-        }
-    }
-    
-    func updateStaffs(container: AnimeStaffView, edges: [MediaResponse.MediaData.Media.StaffPreview.Edges]) {
-    for (_, edge) in edges.enumerated() {
-        let staffPreview = StaffPreview(frame: .zero, staffID: edge.node.id)
-        
-        staffPreview.staffIdDelegate = self
-        
-        staffPreview.staffImageView.kf.setImage(with: URL(string: edge.node.image.large))
-        staffPreview.staffNameLabel.text = edge.node.name.userPreferred
-        staffPreview.staffRoleLabel.text = edge.role
-        staffPreview.translatesAutoresizingMaskIntoConstraints = false
-        container.staffVStack.addArrangedSubview(staffPreview)
-        staffPreview.heightAnchor.constraint(equalTo: staffPreview.widthAnchor, multiplier: 0.25).isActive = true
-    }
-}
-    
-    func configureButtonsColor(sender: UIButton, buttonArr: [UIButton]) {
-        for button in buttonArr {
-            if button != sender {
-                DispatchQueue.main.async {
-                    button.setTitleColor(.blue.withAlphaComponent(0.6), for: .normal)
-                    button.layer.shadowColor = .none
-                    button.layer.shadowOpacity = 0
-                    button.layer.shadowOffset = .zero
-                    button.layer.shadowRadius = 0
-                }
-                
-            } else {
-                DispatchQueue.main.async {
-                    button.setTitleColor(.blue.withAlphaComponent(0.9), for: .normal)
-                    button.layer.shadowColor = UIColor.blue.cgColor
-                    button.layer.shadowOpacity = 0.7
-                    button.layer.shadowOffset = CGSize(width: 2, height: 5)
-                    button.layer.shadowRadius = 4
-                }
-                
+            staffPreview.snp.makeConstraints { make in
+                make.height.equalTo(staffPreview.snp.width).multipliedBy(0.25)
             }
         }
     }
     
-    @objc func showSpoiler(sender: UITapGestureRecognizer) {
-        print(sender.view.debugDescription)
-        guard let blurEffectView = sender.view else {
-            return
+    func updateStaffs(container: AnimeStaffView, edges: [MediaResponse.MediaData.Media.StaffPreview.Edges]) {
+        let edges = edges
+        for (_, edge) in edges.enumerated() {
+            let staffPreview = StaffPreview(frame: .zero, staffID: edge.node.id)
+            
+            staffPreview.staffIdDelegate = self
+            
+            staffPreview.staffImageView.kf.setImage(with: URL(string: edge.node.image.large))
+            staffPreview.staffNameLabel.text = edge.node.name.userPreferred
+            staffPreview.staffRoleLabel.text = edge.role
+            container.staffVStack.addArrangedSubview(staffPreview)
+            staffPreview.snp.makeConstraints { make in
+                make.height.equalTo(staffPreview.snp.width).multipliedBy(0.25)
+            }
         }
-        
-        UIView.animate(withDuration: 0.3) {
-            blurEffectView.isHidden = true
-        }
-//        sender.view.isHidden
     }
     
-    @objc func swipeAction(sender: UISwipeGestureRecognizer?) {
-        print("right swipe")
-        navigationController?.popViewController(animated: true)
+    // MARK: - Favorite and Notification button
+    func updateFunctionalButton(isOnColor: UIColor, for button: UIButton, isOn: Bool) {
+        button.tintColor = isOn ? isOnColor : .gray.withAlphaComponent(0.5)
     }
-
 }
 
 extension AnimeDetailPageViewController: UIScrollViewDelegate {
@@ -818,44 +900,37 @@ extension AnimeDetailPageViewController: UIScrollViewDelegate {
             if offsetY > contentHeight - frameHeight && AnimeDataFetcher.shared.isFetchingData == false {
                 viewModel?.shouldLoadMoreCharacters.send(())
             }
+        } else if let _ = container.subviews.first as? AnimeStaffView {
+            if offsetY > contentHeight - frameHeight && AnimeDataFetcher.shared.isFetchingData == false {
+                viewModel?.shouldLoadMoreStaffs.send(())
+            }
         }
         
-        if Date.now.timeIntervalSince((viewModel?.lastFetchDataTime)!) > 2 {
-            
-            
-            if let _ = container.subviews.first as? AnimeStaffView {
-                if offsetY > contentHeight - frameHeight && AnimeDataFetcher.shared.isFetchingData == false && viewModel?.animeStaffData?.pageInfo.hasNextPage ?? false {
-                    loadMoreStaffDataTrigger.send()
+        if scrollView == wholePageScrollView {
+            guard let navigationController = navigationController else { return }
+            if (contentSwitchBtnScrollView.frame.minY > navigationController.navigationBar.frame.maxY + 10 + scrollView.contentOffset.y) && isNavigationBarHidden == false {
+                UIView.animate(withDuration: 0.5) {
+                    self.contentSwitchBtnScrollView.transform = .identity
+                }
+            } else {
+                if isNavigationBarHidden == false {
+                    UIView.animate(withDuration: 0.5) {
+                        self.contentSwitchBtnScrollView.transform = CGAffineTransform(translationX: 50, y: 0)
+                    }
                 }
             }
-            
-            if scrollView == wholePageScrollView {
-                guard let navigationController = navigationController else { return }
-//                print(contentSwitchBtnScrollView.frame.minY, navigationController.navigationBar.frame.maxY)
-                if (contentSwitchBtnScrollView.frame.minY > navigationController.navigationBar.frame.maxY + 10 + scrollView.contentOffset.y) && isNavigationBarHidden == false {
-                    UIView.animate(withDuration: 0.5) {
-                        self.contentSwitchBtnScrollView.transform = .identity
-                    }
-                } else {
-                    if isNavigationBarHidden == false {
-                        UIView.animate(withDuration: 0.5) {
-                            self.contentSwitchBtnScrollView.transform = CGAffineTransform(translationX: 50, y: 0)
-                        }
-                    }
+            let threshold: CGFloat = 10
+            if offsetY > wholePageScrollViewContentOffsetY + threshold && !isNavigationBarHidden {
+                isNavigationBarHidden = true
+                navigationController.setNavigationBarHidden(true, animated: true)
+                UIView.animate(withDuration: 0.5) {
+                    self.contentSwitchBtnScrollView.transform = .identity
                 }
-                let threshold: CGFloat = 10
-                if offsetY > wholePageScrollViewContentOffsetY + threshold && !isNavigationBarHidden {
-                    isNavigationBarHidden = true
-                    navigationController.setNavigationBarHidden(true, animated: true)
-                    UIView.animate(withDuration: 0.5) {
-                        self.contentSwitchBtnScrollView.transform = .identity
-                    }
-                } else if offsetY < wholePageScrollViewContentOffsetY - threshold && isNavigationBarHidden {
-                    isNavigationBarHidden = false
-                    navigationController.setNavigationBarHidden(false, animated: true)
-                }
-                wholePageScrollViewContentOffsetY = offsetY
+            } else if offsetY < wholePageScrollViewContentOffsetY - threshold && isNavigationBarHidden {
+                isNavigationBarHidden = false
+                navigationController.setNavigationBarHidden(false, animated: true)
             }
+            wholePageScrollViewContentOffsetY = offsetY
         }
     }
     
@@ -894,7 +969,7 @@ extension AnimeDetailPageViewController: StaffIdDelegate {
 
 extension AnimeDetailPageViewController: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return true
+        return false
     }
 }
 

@@ -7,7 +7,6 @@
 
 import Foundation
 import UserNotifications
-import FirebaseAuth
 import Combine
 
 struct EpisodeAndNotificationID {
@@ -61,7 +60,7 @@ class AnimeNotification {
             scheduleLocalNotification(animeID: animeID, animeTitle: animeTitle, episode: episode, timeInterval: nextAiringInterval + TimeInterval(index * 604800))
         }
         
-        print(UserDefaults.standard.dictionary(forKey: animeTitle))
+        print(UserDefaults.standard.dictionary(forKey: "\(animeID)"))
     }
     
     func removeAllEpisodeNotification(for animeID: Int) {
@@ -77,38 +76,37 @@ class AnimeNotification {
     }
     
     func removeAllNotification() {
-//        if let userUID = Auth.auth().currentUser?.uid {
-//            FirebaseStoreFunc.shared.loadUserNotificationAnime(userUID: userUID) { document, error in
-//                if let document = document {
-//                    let animeIDs = document.map({$0.documentID})
-//                    for animeID in animeIDs {
-//                        self.removeAllEpisodeNotification(for: Int(animeID)!)
-//                    }
-//                }
-//            }
-//        }
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
     }
     
-    func checkNotification() {
-        if let userUID = Auth.auth().currentUser?.uid {
-            FirebaseManager.shared.loadUserNotificationAnime(userUID: userUID) { document, error in
-                if let document = document {
-                    let animeIDs = document.map({$0.documentID})
-                    for animeID in animeIDs {
-                        guard let animeIDInt = Int(animeID) else { continue }
-                        AnimeDataFetcher.shared.fetchAnimeEpisodeDataByID(id: animeIDInt)
-                            .sink { _ in
-                                
-                            } receiveValue: { episodesData in
-                                if let nextAiringEpisode = episodesData.data.Media.nextAiringEpisode, let episodes = episodesData.data.Media.episodes {
-                                    AnimeNotification.shared.setupAllEpisodeNotification(animeID: animeIDInt, animeTitle: episodesData.data.Media.title.native, nextAiringEpsode: nextAiringEpisode.episode, nextAiringInterval: TimeInterval(nextAiringEpisode.timeUntilAiring), totalEpisode: episodes)
-                                }
-                            }
-                            .store(in: &self.cancellables)
+    func checkNotification() -> AnyPublisher<(String, [Int: String]), Never> { // 需要回傳 status 已經不是 RELEASING 的動畫 id
+        guard let userUID = FirebaseManager.shared.getCurrentUserUID() else {
+            return Just(("", [:])).eraseToAnyPublisher()
+        }
+        return FirebaseManager.shared.loadUserNotificationAnime(userUID: userUID)
+            .flatMap { animeIDs -> AnyPublisher<SimpleEpisodeData, Never> in
+                animeIDs.publisher
+                    .flatMap(maxPublishers: .max(5)) { animeID in
+                        AnimeDataFetcher.shared.fetchAnimeEpisodeDataByID(id: animeID)
+                            .catch { _ in Empty<SimpleEpisodeData, Never>(completeImmediately: true) }
+                            .eraseToAnyPublisher()
+                    }
+                    .eraseToAnyPublisher()
+            }
+            .collect()
+            .map { episodesData in
+                var needUpdateAnimeIDs: [Int: String] = [:]
+                episodesData.forEach {
+                    if $0.data.Media.status != AnimeInfo.AnimeStatus.releasing.rawValue {
+                        needUpdateAnimeIDs[$0.data.Media.id] = $0.data.Media.status
+                    }
+                    if let nextAiringEpisode = $0.data.Media.nextAiringEpisode, let episodes = $0.data.Media.episodes {
+                        AnimeNotification.shared.setupAllEpisodeNotification(animeID: $0.data.Media.id, animeTitle: $0.data.Media.title.native, nextAiringEpsode: nextAiringEpisode.episode, nextAiringInterval: TimeInterval(nextAiringEpisode.timeUntilAiring), totalEpisode: episodes)
                     }
                 }
+                
+                return (userUID, needUpdateAnimeIDs)
             }
-        }
+            .eraseToAnyPublisher()
     }
 }

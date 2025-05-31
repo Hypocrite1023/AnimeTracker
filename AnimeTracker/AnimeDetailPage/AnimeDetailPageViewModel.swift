@@ -11,7 +11,6 @@ import Combine
 class AnimeDetailPageViewModel {
     
     // MARK: - input
-    let shouldLoadMoreStaff: PassthroughSubject<Void, Never> = .init()
     let shouldShowOverview: PassthroughSubject<Void, Never> = .init()
     let shouldShowWatch: PassthroughSubject<Void, Never> = .init()
     let shouldShowCharacters: PassthroughSubject<Void, Never> = .init()
@@ -19,31 +18,43 @@ class AnimeDetailPageViewModel {
     let shouldShowStats: PassthroughSubject<Void, Never> = .init()
     let shouldShowSocial: PassthroughSubject<Void, Never> = .init()
     let shouldShowStaff: PassthroughSubject<Void, Never> = .init()
+    let shouldLoadMoreStaffs: PassthroughSubject<Void, Never> = .init()
     let shouldShowAlert: PassthroughSubject<String, Never> = .init()
+    let configFavorite: PassthroughSubject<Void, Never> = .init()
+    let configNotification: PassthroughSubject<Void, Never> = .init()
     // MARK: - output
-    var newCharacterData: AnyPublisher<[MediaResponse.MediaData.Media.CharacterPreview.Edges], Never> = .empty
-    var newStaffData: AnyPublisher<[MediaResponse.MediaData.Media.StaffPreview.Edges], Never> = .empty
-    var showOverview: AnyPublisher<MediaResponse.MediaData.Media?, Never> = .empty
-    var showWatch: AnyPublisher<[MediaResponse.MediaData.Media.StreamingEpisodes], Never> = .empty
-    var showCharacters: AnyPublisher<[MediaResponse.MediaData.Media.CharacterPreview.Edges], Never> = .empty
-    var shouldUpdateCharacters: AnyPublisher<[MediaResponse.MediaData.Media.CharacterPreview.Edges], Never> = .empty
-    var showStats: AnyPublisher<(MediaRanking.MediaData.Media?, MediaResponse.MediaData.Media.Stats?), Never> = .empty
-    var showAlert: AnyPublisher<String, Never> = .empty
+    private(set) var newCharacterData: AnyPublisher<[MediaResponse.MediaData.Media.CharacterPreview.Edges], Never> = .empty
+    private(set) var newStaffData: AnyPublisher<[MediaResponse.MediaData.Media.StaffPreview.Edges], Never> = .empty
+    private(set) var showOverview: AnyPublisher<MediaResponse.MediaData.Media?, Never> = .empty
+    private(set) var showWatch: AnyPublisher<[MediaResponse.MediaData.Media.StreamingEpisodes], Never> = .empty
+    private(set) var showCharacters: AnyPublisher<[MediaResponse.MediaData.Media.CharacterPreview.Edges], Never> = .empty
+    private(set) var shouldUpdateCharacters: AnyPublisher<[MediaResponse.MediaData.Media.CharacterPreview.Edges], Never> = .empty
+    private(set) var showStats: AnyPublisher<(MediaRanking.MediaData.Media?, MediaResponse.MediaData.Media.Stats?), Never> = .empty
+    private(set) var showStaffs: AnyPublisher<[MediaResponse.MediaData.Media.StaffPreview.Edges], Never> = .empty
+    private(set) var shouldUpdateStaffs: AnyPublisher<[MediaResponse.MediaData.Media.StaffPreview.Edges], Never> = .empty
+    private(set) var showAlert: AnyPublisher<String, Never> = .empty
+    private(set) var configFavoritePublisher: AnyPublisher<Bool, Never> = .empty
+    private(set) var configNotificationPublisher: AnyPublisher<Bool, Never> = .empty
     // MARK: - data property
     let animeID: Int
+    let userUID: String?
+    @Published var isFavorite: Bool = false
+    @Published var isNotify: Bool = false
+    var isFirebaseDataInitFinished: Bool = false
     @Published var animeDetailData: MediaResponse.MediaData.Media?
     @Published var animeCharacterData: [MediaResponse.MediaData.Media.CharacterPreview.Edges] = []
     @Published var newAnimeCharacterData: [MediaResponse.MediaData.Media.CharacterPreview.Edges] = []
     @Published var animeRankingData: MediaRanking.MediaData.Media?
-    @Published var animeStaffData: MediaResponse.MediaData.Media.StaffPreview?
+    @Published var animeStaffData: [MediaResponse.MediaData.Media.StaffPreview.Edges] = []
     let newAnimeStaffDataPassThrough: PassthroughSubject<[MediaResponse.MediaData.Media.StaffPreview.Edges], Never> = .init()
-    var lastFetchDataTime: Date?
     
     private var cancellable: Set<AnyCancellable> = []
     
     init(animeID: Int) {
         self.animeID = animeID
-        lastFetchDataTime = .now
+        let userUidOptional: String? = FirebaseManager.shared.getCurrentUserUID()
+        userUID = userUidOptional
+        
         AnimeDataFetcher.shared.fetchAnimeByID(id: animeID)
             .receive(on: DispatchQueue.main)
             .sink { completion in
@@ -56,15 +67,78 @@ class AnimeDetailPageViewModel {
             } receiveValue: { response in
                 self.animeDetailData = response.data.media
                 self.animeCharacterData = response.data.media.characterPreview.edges
-                self.animeStaffData = response.data.media.staffPreview
+                self.animeStaffData = response.data.media.staffPreview.edges
             }
             .store(in: &cancellable)
         
+        if let userUID = userUidOptional {
+            FirebaseManager.shared.getAnimeRecord(userUID: userUID, animeID: self.animeID)
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                        
+                    case .finished:
+                        break
+                    case .failure(let error):
+                        self.shouldShowAlert.send(error.localizedDescription)
+                    }
+                }, receiveValue: { (favorite, notify, _) in
+                    self.isFavorite = favorite ?? false
+                    self.isNotify = notify ?? false
+                    self.isFirebaseDataInitFinished = true
+                    print("isFavorite: \(self.isFavorite); isNotify: \(self.isNotify)")
+                })
+                .store(in: &cancellable)
+            
+            setupSubscriber(userUID: userUID)
+        }
+        
         setupPublisher()
+        
     }
     
-    private func setupSubscriber() {
+    private func setupSubscriber(userUID: String) {
+        $isFavorite
+            .combineLatest($isNotify)
+            .dropFirst()
+            .filter { _ in self.isFirebaseDataInitFinished }
+            .flatMap { isFavorite, isNotify -> AnyPublisher<Void, Error> in
+                print("isFavorite: \(isFavorite); isNotify: \(isNotify)")
+                let animeStatus = self.animeDetailData?.status ?? ""
+                return FirebaseManager.shared.addAnimeRecord(userUID: userUID, animeID: self.animeID, isFavorite: isFavorite, isNotify: isNotify, status: animeStatus)
+            }
+            .catch{ error in
+                self.shouldShowAlert.send(error.localizedDescription)
+                return Empty<Void, Never>(completeImmediately: true).eraseToAnyPublisher()
+            }
+            .sink { _ in
+                
+            }
+            .store(in: &cancellable)
         
+        configFavorite
+            .sink { _ in
+                self.isFavorite.toggle()
+            }
+            .store(in: &cancellable)
+        
+        configNotification
+            .sink { _ in
+                self.isNotify.toggle()
+            }
+            .store(in: &cancellable)
+        
+        $isNotify
+            .filter { _ in self.isFirebaseDataInitFinished }
+            .sink { isNotify in
+                if isNotify {
+                    guard let animeTitle = self.animeDetailData?.title.native, let nextAiringEpisode = self.animeDetailData?.nextAiringEpisode, let episodes = self.animeDetailData?.episodes else { return }
+                    print(animeTitle, nextAiringEpisode)
+                    AnimeNotification.shared.setupAllEpisodeNotification(animeID: self.animeID, animeTitle: animeTitle, nextAiringEpsode: nextAiringEpisode.episode, nextAiringInterval: TimeInterval(nextAiringEpisode.timeUntilAiring), totalEpisode: episodes)
+                } else {
+                    AnimeNotification.shared.removeAllEpisodeNotification(for: self.animeID)
+                }
+            }
+            .store(in: &cancellable)
     }
     
     private func setupPublisher() {
@@ -130,7 +204,11 @@ class AnimeDetailPageViewModel {
                 guard let animeRankingData = self.animeRankingData else {
                     return AnimeDataFetcher.shared.fetchRankingDataByMediaId(id: self.animeID)
                         .prefix(1)
-                        .assertNoFailure()
+                        .catch({ error in
+                            self.shouldShowAlert.send(error.localizedDescription)
+                            return Empty<MediaRanking.MediaData.Media, Never>(completeImmediately: true)
+                                .eraseToAnyPublisher()
+                        })
                         .eraseToAnyPublisher()
                 }
                 return Just(animeRankingData).eraseToAnyPublisher()
@@ -144,21 +222,44 @@ class AnimeDetailPageViewModel {
             })
             .eraseToAnyPublisher()
         
-        showAlert = shouldShowAlert.eraseToAnyPublisher()
-    }
-    
-    func loadAnimeRankingData() {
-        if let animeID = animeDetailData?.id {
-            AnimeDataFetcher.shared.fetchRankingDataByMediaId(id: animeID)
-                .receive(on: DispatchQueue.main)
-                .sink { completion in
-                    
-                } receiveValue: { rankingData in
-                    AnimeDataFetcher.shared.isFetchingData = false
-                    self.animeRankingData = rankingData
-                }
-                .store(in: &cancellable)
-        }
+        showStaffs = shouldShowStaff
+            .flatMap {
+                return self.$animeStaffData
+                    .prefix(1)
+                    .eraseToAnyPublisher()
+            }
+            .eraseToAnyPublisher()
         
+        shouldUpdateStaffs = shouldLoadMoreStaffs
+            .throttle(for: 2, scheduler: RunLoop.main, latest: false)
+            .filter { self.animeDetailData?.staffPreview.pageInfo.hasNextPage ?? false }
+            .compactMap {
+                return self.animeDetailData?.staffPreview.pageInfo.currentPage
+            }
+            .flatMap { currentPage in
+                return AnimeDataFetcher.shared.fetchStaffPreviewByMediaId(id: self.animeID, page: currentPage + 1)
+                    .handleEvents(receiveCompletion: { _ in
+                        AnimeDataFetcher.shared.isFetchingData = false
+                    }, receiveCancel: {
+                        AnimeDataFetcher.shared.isFetchingData = false
+                    })
+                    .map {
+                        self.animeDetailData?.staffPreview.pageInfo = $0.data.media.staffPreview.pageInfo
+                        self.animeStaffData.append(contentsOf: $0.data.media.staffPreview.edges)
+                        return $0.data.media.staffPreview.edges
+                    }
+                    .catch { error in
+                        self.shouldShowAlert.send(error.localizedDescription)
+                        return Empty<[MediaResponse.MediaData.Media.StaffPreview.Edges], Never>(completeImmediately: true).eraseToAnyPublisher()
+                    }
+                    .eraseToAnyPublisher()
+            }
+            .eraseToAnyPublisher()
+        
+        showAlert = shouldShowAlert.eraseToAnyPublisher()
+        
+        configFavoritePublisher = $isFavorite.eraseToAnyPublisher()
+        
+        configNotificationPublisher = $isNotify.eraseToAnyPublisher()
     }
 }

@@ -474,6 +474,11 @@
                                 <constraint firstAttribute="bottom" secondItem="UFZ-vo-VyH" secondAttribute="bottom" id="yQQ-pm-nMJ"/>
                                 <constraint firstAttribute="bottom" secondItem="Xp4-tM-peo" secondAttribute="bottom" id="ypv-4G-u9L"/>
                             </constraints>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                    <integer key="value" value="10"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
                         </view>
                     </subviews>
                     <constraints>
@@ -512,13 +517,13 @@
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eAP-Ml-yGB" userLabel="Relations Scroll View">
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" bounces="NO" alwaysBounceHorizontal="YES" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eAP-Ml-yGB" userLabel="Relations Scroll View">
                     <rect key="frame" x="5" y="184" width="383" height="157"/>
                     <subviews>
                         <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qfa-pH-Ymv">
                             <rect key="frame" x="0.0" y="0.0" width="200" height="150"/>
                             <subviews>
-                                <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="Y6K-Il-NgS">
+                                <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Y6K-Il-NgS">
                                     <rect key="frame" x="0.0" y="0.0" width="200" height="150"/>
                                 </stackView>
                             </subviews>
@@ -757,6 +762,11 @@
                                 <constraint firstItem="Ga9-mP-VvH" firstAttribute="leading" secondItem="3RH-kT-gvA" secondAttribute="leading" constant="5" id="SU1-5c-H5o"/>
                                 <constraint firstAttribute="bottom" secondItem="Ga9-mP-VvH" secondAttribute="bottom" id="gbo-uo-4Wl"/>
                             </constraints>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                    <integer key="value" value="10"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
                         </view>
                     </subviews>
                     <constraints>
@@ -787,6 +797,11 @@
                             <constraints>
                                 <constraint firstAttribute="height" constant="140" id="nPs-RT-ufd"/>
                             </constraints>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                    <integer key="value" value="10"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
                         </stackView>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

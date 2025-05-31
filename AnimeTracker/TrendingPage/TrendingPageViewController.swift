@@ -20,14 +20,20 @@ class TrendingPageViewController: UIViewController {
     
     var favoriteBtn: UIButton!, notifyBtn: UIButton!
     
-    private var lastContentOffsetY: CGFloat = .zero
+    private var lastContentOffsetY: CGFloat?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupUI()
+        
         setupSubscrition()
         
+        
+        setupUI()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         lastContentOffsetY = trendingCollectionView.contentOffset.y
     }
     
@@ -196,84 +202,84 @@ class TrendingPageViewController: UIViewController {
                     }
                 } receiveValue: { simpleAnimeData in
                     animeStatus = simpleAnimeData.data.Media.status
-                    FirebaseManager.shared.getAnimeRecord(userUID: userUID, animeID: animeID) { favorite, notify, _, error in
-                        self.viewModel.currentLongPressCellStatus = (favorite == nil ? false : favorite, notify == nil ? false : notify, animeStatus, animeID)
-                        if let favorite = favorite {
-                            if favorite { // favorite == true
-                                self.favoriteBtn = self.setConfigButton(backgroundColor: .systemYellow, tintColor: .white, buttonImage: UIImage(systemName: "star.fill"), isTrue: true)
-                            } else { // favorite == false
-                                self.favoriteBtn = self.setConfigButton(backgroundColor: .systemYellow, tintColor: .white, buttonImage: UIImage(systemName: "star.fill"), isTrue: false)
-                            }
-                        } else { // favorite == nil
-                            self.favoriteBtn = self.setConfigButton(backgroundColor: .systemYellow, tintColor: .white, buttonImage: UIImage(systemName: "star.fill"), isTrue: false)
-                        }
-                        
-                        if let notify = notify {
-                            if notify { // notify == true
-                                self.notifyBtn = self.setConfigButton(backgroundColor: .systemBlue, tintColor: .white, buttonImage: UIImage(systemName: "bell.fill"), isTrue: true)
-                            } else { // notify == false
-                                self.notifyBtn = self.setConfigButton(backgroundColor: .systemBlue, tintColor: .white, buttonImage: UIImage(systemName: "bell.fill"), isTrue: false)
-                            }
-                        } else { // notify == nil
-                            self.notifyBtn = self.setConfigButton(backgroundColor: .systemBlue, tintColor: .white, buttonImage: UIImage(systemName: "bell.fill"), isTrue: false)
-                        }
-                        
-                        self.favoriteBtn.addTarget(self, action: #selector(self.favoriteBtnTap), for: .touchUpInside)
-                        self.notifyBtn.addTarget(self, action: #selector(self.notifyBtnTap), for: .touchUpInside)
-                        
-                        let cellCurrentX = cell.center.x
-                        let cellCurrentY = cell.center.y
-                        let viewCenterX = self.view.center.x
-                        let viewCenterY = self.view.center.y
-                        let transform = CGAffineTransform(translationX: cellCurrentX > viewCenterX ? -(cellCurrentX - viewCenterX) : viewCenterX - cellCurrentX, y: cellCurrentY > viewCenterY ? -(cellCurrentY - viewCenterY) : viewCenterY - cellCurrentX)
-                        let blurEffect = UIBlurEffect(style: .light)
-                        let blurEffectView = UIVisualEffectView(effect: blurEffect)
-                        blurEffectView.frame = self.view.bounds
-                        blurEffectView.tag = 999
-                        self.view.addSubview(blurEffectView)
-                        let tapToDismiss = UITapGestureRecognizer(target: self, action: #selector(self.closeBlurView))
-                        blurEffectView.addGestureRecognizer(tapToDismiss)
-                        guard let cellSnapShot = cell.snapshotView(afterScreenUpdates: true) else { return }
-                        
-                        let cellSnapShotWithPaddingContainer = UIView()
-                        cellSnapShotWithPaddingContainer.backgroundColor = .white
-                        cellSnapShotWithPaddingContainer.layer.cornerRadius = 10
-                        cellSnapShotWithPaddingContainer.clipsToBounds = true
-                        
-                        cellSnapShotWithPaddingContainer.addSubview(cellSnapShot)
-                        cellSnapShot.translatesAutoresizingMaskIntoConstraints = false
-                        cellSnapShot.widthAnchor.constraint(equalToConstant: cellSnapShot.bounds.width).isActive = true
-                        cellSnapShot.heightAnchor.constraint(equalToConstant: cellSnapShot.bounds.height).isActive = true
-                        cellSnapShot.centerXAnchor.constraint(equalTo: cellSnapShotWithPaddingContainer.centerXAnchor).isActive = true
-                        cellSnapShot.centerYAnchor.constraint(equalTo: cellSnapShotWithPaddingContainer.centerYAnchor).isActive = true
-                        
-                        cellSnapShotWithPaddingContainer.alpha = 0.0
-                        cellSnapShotWithPaddingContainer.tag = 998
-                        cellSnapShot.alpha = 0.0
-                        cellSnapShot.tag = 997
-                        self.view.addSubview(cellSnapShotWithPaddingContainer)
-                        cellSnapShotWithPaddingContainer.translatesAutoresizingMaskIntoConstraints = false
-                        cellSnapShotWithPaddingContainer.widthAnchor.constraint(equalToConstant: cellSnapShot.bounds.width + 20).isActive = true
-                        cellSnapShotWithPaddingContainer.heightAnchor.constraint(equalToConstant: cellSnapShot.bounds.height + 20).isActive = true
-                        cellSnapShotWithPaddingContainer.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-                        cellSnapShotWithPaddingContainer.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
-                        let buttonStackView = UIStackView(arrangedSubviews: self.viewModel.currentLongPressCellStatus.status == "RELEASING" ? [self.favoriteBtn, self.notifyBtn] : [self.favoriteBtn])
-                        buttonStackView.axis = .horizontal
-                        buttonStackView.spacing = 30
-                        buttonStackView.translatesAutoresizingMaskIntoConstraints = false
-                        buttonStackView.tag = 996
-                        self.view.addSubview(buttonStackView)
-                        buttonStackView.topAnchor.constraint(equalTo: cellSnapShotWithPaddingContainer.bottomAnchor, constant: 20).isActive = true
-                        buttonStackView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-                        UIView.animate(withDuration: 0.1) {
-                            cell.transform = transform
-                        } completion: { complete in
-                            UIView.animate(withDuration: 0.1) {
-                                cellSnapShotWithPaddingContainer.alpha = 1.0
-                                cellSnapShot.alpha = 1.0
-                            }
-                        }
-                    }
+//                    FirebaseManager.shared.getAnimeRecord(userUID: userUID, animeID: animeID) { favorite, notify, _, error in
+//                        self.viewModel.currentLongPressCellStatus = (favorite == nil ? false : favorite, notify == nil ? false : notify, animeStatus, animeID)
+//                        if let favorite = favorite {
+//                            if favorite { // favorite == true
+//                                self.favoriteBtn = self.setConfigButton(backgroundColor: .systemYellow, tintColor: .white, buttonImage: UIImage(systemName: "star.fill"), isTrue: true)
+//                            } else { // favorite == false
+//                                self.favoriteBtn = self.setConfigButton(backgroundColor: .systemYellow, tintColor: .white, buttonImage: UIImage(systemName: "star.fill"), isTrue: false)
+//                            }
+//                        } else { // favorite == nil
+//                            self.favoriteBtn = self.setConfigButton(backgroundColor: .systemYellow, tintColor: .white, buttonImage: UIImage(systemName: "star.fill"), isTrue: false)
+//                        }
+//                        
+//                        if let notify = notify {
+//                            if notify { // notify == true
+//                                self.notifyBtn = self.setConfigButton(backgroundColor: .systemBlue, tintColor: .white, buttonImage: UIImage(systemName: "bell.fill"), isTrue: true)
+//                            } else { // notify == false
+//                                self.notifyBtn = self.setConfigButton(backgroundColor: .systemBlue, tintColor: .white, buttonImage: UIImage(systemName: "bell.fill"), isTrue: false)
+//                            }
+//                        } else { // notify == nil
+//                            self.notifyBtn = self.setConfigButton(backgroundColor: .systemBlue, tintColor: .white, buttonImage: UIImage(systemName: "bell.fill"), isTrue: false)
+//                        }
+//                        
+//                        self.favoriteBtn.addTarget(self, action: #selector(self.favoriteBtnTap), for: .touchUpInside)
+//                        self.notifyBtn.addTarget(self, action: #selector(self.notifyBtnTap), for: .touchUpInside)
+//                        
+//                        let cellCurrentX = cell.center.x
+//                        let cellCurrentY = cell.center.y
+//                        let viewCenterX = self.view.center.x
+//                        let viewCenterY = self.view.center.y
+//                        let transform = CGAffineTransform(translationX: cellCurrentX > viewCenterX ? -(cellCurrentX - viewCenterX) : viewCenterX - cellCurrentX, y: cellCurrentY > viewCenterY ? -(cellCurrentY - viewCenterY) : viewCenterY - cellCurrentX)
+//                        let blurEffect = UIBlurEffect(style: .light)
+//                        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+//                        blurEffectView.frame = self.view.bounds
+//                        blurEffectView.tag = 999
+//                        self.view.addSubview(blurEffectView)
+//                        let tapToDismiss = UITapGestureRecognizer(target: self, action: #selector(self.closeBlurView))
+//                        blurEffectView.addGestureRecognizer(tapToDismiss)
+//                        guard let cellSnapShot = cell.snapshotView(afterScreenUpdates: true) else { return }
+//                        
+//                        let cellSnapShotWithPaddingContainer = UIView()
+//                        cellSnapShotWithPaddingContainer.backgroundColor = .white
+//                        cellSnapShotWithPaddingContainer.layer.cornerRadius = 10
+//                        cellSnapShotWithPaddingContainer.clipsToBounds = true
+//                        
+//                        cellSnapShotWithPaddingContainer.addSubview(cellSnapShot)
+//                        cellSnapShot.translatesAutoresizingMaskIntoConstraints = false
+//                        cellSnapShot.widthAnchor.constraint(equalToConstant: cellSnapShot.bounds.width).isActive = true
+//                        cellSnapShot.heightAnchor.constraint(equalToConstant: cellSnapShot.bounds.height).isActive = true
+//                        cellSnapShot.centerXAnchor.constraint(equalTo: cellSnapShotWithPaddingContainer.centerXAnchor).isActive = true
+//                        cellSnapShot.centerYAnchor.constraint(equalTo: cellSnapShotWithPaddingContainer.centerYAnchor).isActive = true
+//                        
+//                        cellSnapShotWithPaddingContainer.alpha = 0.0
+//                        cellSnapShotWithPaddingContainer.tag = 998
+//                        cellSnapShot.alpha = 0.0
+//                        cellSnapShot.tag = 997
+//                        self.view.addSubview(cellSnapShotWithPaddingContainer)
+//                        cellSnapShotWithPaddingContainer.translatesAutoresizingMaskIntoConstraints = false
+//                        cellSnapShotWithPaddingContainer.widthAnchor.constraint(equalToConstant: cellSnapShot.bounds.width + 20).isActive = true
+//                        cellSnapShotWithPaddingContainer.heightAnchor.constraint(equalToConstant: cellSnapShot.bounds.height + 20).isActive = true
+//                        cellSnapShotWithPaddingContainer.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+//                        cellSnapShotWithPaddingContainer.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
+//                        let buttonStackView = UIStackView(arrangedSubviews: self.viewModel.currentLongPressCellStatus.status == "RELEASING" ? [self.favoriteBtn, self.notifyBtn] : [self.favoriteBtn])
+//                        buttonStackView.axis = .horizontal
+//                        buttonStackView.spacing = 30
+//                        buttonStackView.translatesAutoresizingMaskIntoConstraints = false
+//                        buttonStackView.tag = 996
+//                        self.view.addSubview(buttonStackView)
+//                        buttonStackView.topAnchor.constraint(equalTo: cellSnapShotWithPaddingContainer.bottomAnchor, constant: 20).isActive = true
+//                        buttonStackView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+//                        UIView.animate(withDuration: 0.1) {
+//                            cell.transform = transform
+//                        } completion: { complete in
+//                            UIView.animate(withDuration: 0.1) {
+//                                cellSnapShotWithPaddingContainer.alpha = 1.0
+//                                cellSnapShot.alpha = 1.0
+//                            }
+//                        }
+//                    }
                 }
                 .store(in: &cancellables)
         }
@@ -360,13 +366,18 @@ extension TrendingPageViewController: UICollectionViewDelegate {
 extension TrendingPageViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView == trendingCollectionView {
-            if scrollView.contentOffset.y > lastContentOffsetY + 30 {
-                lastContentOffsetY = scrollView.contentOffset.y
-                navigationController?.setNavigationBarHidden(true, animated: true)
-            } else if scrollView.contentOffset.y < lastContentOffsetY - 30 {
-                lastContentOffsetY = scrollView.contentOffset.y
-                navigationController?.setNavigationBarHidden(false, animated: true)
+            if let lastContentOffsetY = self.lastContentOffsetY {
+                if scrollView.contentOffset.y > lastContentOffsetY + 30 {
+                    self.lastContentOffsetY = scrollView.contentOffset.y
+                    navigationController?.setNavigationBarHidden(true, animated: true)
+                    setTabBar(hidden: true, animated: true)
+                } else if scrollView.contentOffset.y < lastContentOffsetY - 30 {
+                    self.lastContentOffsetY = scrollView.contentOffset.y
+                    navigationController?.setNavigationBarHidden(false, animated: true)
+                    setTabBar(hidden: false, animated: true)
+                }
             }
+            
             
             guard let hasNextPage = viewModel.animeTrendingData?.data.page.pageInfo.hasNextPage, hasNextPage else { return }
             
@@ -382,6 +393,21 @@ extension TrendingPageViewController: UIScrollViewDelegate {
                     }
                 }
             }
+        }
+    }
+}
+
+extension TrendingPageViewController {
+    func setTabBar(hidden: Bool, animated: Bool) {
+        guard let tabBar = self.tabBarController?.tabBar else { return }
+        let isHidden = tabBar.frame.origin.y >= UIScreen.main.bounds.height
+        if hidden == isHidden { return }
+
+        let height = tabBar.frame.size.height
+        let offsetY = hidden ? height : -height
+
+        UIView.animate(withDuration: animated ? 0.3 : 0.0) {
+            tabBar.frame = tabBar.frame.offsetBy(dx: 0, dy: offsetY)
         }
     }
 }

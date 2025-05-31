@@ -44,6 +44,7 @@ struct SimpleEpisodeData: Codable {
             let nextAiringEpisode: NextAiringEpisode?
             let episodes: Int?
             let coverImage: CoverImage
+            let status: String
             
             struct Title: Codable {
                 let native: String

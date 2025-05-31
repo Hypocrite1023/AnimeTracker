@@ -8,13 +8,15 @@
 import UIKit
 import FirebaseAuth
 import UserNotifications
+import Combine
 
 class TabBarViewController: UITabBarController {
+    
+    private var cancellables = Set<AnyCancellable>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        AnimeNotification.shared.checkNotification()
         // logout
         let logoutAction = UIAction(title: "Logout", image: UIImage(systemName: "figure.walk")) { action in
             do {
@@ -35,36 +37,46 @@ class TabBarViewController: UITabBarController {
             navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "person.circle"), menu: menu)
         }
         requestNotificationPermission() // request notification permission
-        print("check notification.")
+            .sink { granted in
+                if granted {
+                    AnimeNotification.shared.checkNotification()
+                        .flatMap { (userUID, animeIDs) in
+                            animeIDs.map { ($0.key, AnimeInfo.AnimeStatus(rawValue: $0.value) ?? AnimeInfo.AnimeStatus.finished) }.publisher
+                                .flatMap(maxPublishers: .max(5)) { (animeID, status) -> AnyPublisher<Void, Never> in
+                                    FirebaseManager.shared.updateAnimeStatus(userUID: userUID, animeID: animeID, status: status)
+                                }
+                                .collect()
+                                .eraseToAnyPublisher()
+                        }
+                        .sink { _ in
+                            print("Notification check finished...")
+                        }
+                        .store(in: &self.cancellables)
+                } else {
+                    print("Notification permission denied.")
+                }
+            }
+            .store(in: &cancellables)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
     }
     
-    func requestNotificationPermission() {
+    func requestNotificationPermission() -> AnyPublisher<Bool, Never> {
         let center = UNUserNotificationCenter.current()
-        center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
-            if granted {
-                print("Notification permission granted.")
-            } else {
-                print("Notification permission denied.")
+        
+        return Future<Bool, Never> { promise in
+            center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+                if granted {
+                    promise(.success(true))
+                } else {
+                    promise(.success(false))
+                }
             }
         }
+        .eraseToAnyPublisher()
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
 
 extension TabBarViewController: NavigateDelegate {

@@ -37,6 +37,9 @@ class RecommendationsAnimePreview: UIView {
         
         let recommendationTapGesture = AnimeRecommendationTapGesture(target: self, action: #selector(loadRecommendation), animeID: self.animeID)
         self.addGestureRecognizer(recommendationTapGesture)
+        
+        coverImageView.layer.cornerRadius = 10
+        coverImageView.clipsToBounds = true
     }
 
     @objc func loadRecommendation(sender: AnimeRecommendationTapGesture) {
