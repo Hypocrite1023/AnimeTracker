@@ -7,6 +7,7 @@
 
 import UIKit
 import Combine
+import Kingfisher
 
 class NavigationViewController: UINavigationController {
 
@@ -17,7 +18,7 @@ class NavigationViewController: UINavigationController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        ImageCache.default.memoryStorage.config.totalCostLimit = 100 * 1024 * 1024 // 100MB
         AnimeDataFetcher.shared.$isFetchingData
             .receive(on: DispatchQueue.main)
             .sink {

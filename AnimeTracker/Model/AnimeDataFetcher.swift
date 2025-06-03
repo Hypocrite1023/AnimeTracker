@@ -190,7 +190,7 @@ class AnimeDataFetcher {
                     native
                   }
                   coverImage {
-                    extraLarge
+                    large
                   }
                 }
                 pageInfo {

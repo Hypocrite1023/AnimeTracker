@@ -12,6 +12,7 @@ import Combine
 class TrendingPageViewController: UIViewController {
     
     @IBOutlet weak var trendingCollectionView: UICollectionView!
+    private let refreshControl = UIRefreshControl()
     private let viewModel: TrendingPageViewModel = TrendingPageViewModel()
     
     private let isScrollingPassThroughSubject: PassthroughSubject<Bool, Never> = .init()
@@ -25,11 +26,13 @@ class TrendingPageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
         setupSubscrition()
-        
-        
         setupUI()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
     }
     
     override func viewDidLayoutSubviews() {
@@ -50,6 +53,9 @@ class TrendingPageViewController: UIViewController {
         collectionViewFlowLayout.itemSize = CGSize(width: width, height: width * 2)
         collectionViewFlowLayout.minimumInteritemSpacing = CGFloat(spacing)
         trendingCollectionView.collectionViewLayout = collectionViewFlowLayout
+        
+        trendingCollectionView.refreshControl = refreshControl
+        refreshControl.addTarget(self, action: #selector(refreshTrendingData), for: .valueChanged)
     }
     
     private func setupSubscrition() {
@@ -57,6 +63,7 @@ class TrendingPageViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .sink { _ in
                 self.trendingCollectionView.reloadData()
+                self.refreshControl.endRefreshing()
             }
             .store(in: &cancellables)
         
@@ -73,6 +80,10 @@ class TrendingPageViewController: UIViewController {
         if let selectedAnimeCell = viewModel.selectedAnimeCell {
             removeBlur(cell: selectedAnimeCell)
         }
+    }
+    
+    @objc func refreshTrendingData() {
+        self.viewModel.shouldRefreshTrendingData.send(())
     }
     
     func setConfigButton(backgroundColor: UIColor, tintColor: UIColor, buttonImage: UIImage?, isTrue: Bool) -> UIButton {
@@ -340,11 +351,11 @@ extension TrendingPageViewController: UICollectionViewDataSource {
             let longTapGesture = AnimeCellLongPressGesture(target: self, action: #selector(cellLongTap), animeID: animeData.id)
             cell.addGestureRecognizer(longTapGesture)
             if let animeTitle = animeData.title.native {
-                cell.setCell(title: animeTitle, imageURL: animeData.coverImage.extraLarge)
+                cell.setCell(title: animeTitle, imageURL: animeData.coverImage.large)
             } else if let animeTitle = animeData.title.english {
-                cell.setCell(title: animeTitle, imageURL: animeData.coverImage.extraLarge)
+                cell.setCell(title: animeTitle, imageURL: animeData.coverImage.large)
             } else if let animeTitle = animeData.title.romaji {
-                cell.setCell(title: animeTitle, imageURL: animeData.coverImage.extraLarge)
+                cell.setCell(title: animeTitle, imageURL: animeData.coverImage.large)
             }
         } else {
             cell.setCell(title: "", imageURL: nil)
@@ -366,7 +377,7 @@ extension TrendingPageViewController: UICollectionViewDelegate {
 extension TrendingPageViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView == trendingCollectionView {
-            if let lastContentOffsetY = self.lastContentOffsetY {
+            if let lastContentOffsetY = self.lastContentOffsetY, scrollView.contentOffset.y > 0 {
                 if scrollView.contentOffset.y > lastContentOffsetY + 30 {
                     self.lastContentOffsetY = scrollView.contentOffset.y
                     navigationController?.setNavigationBarHidden(true, animated: true)
@@ -386,17 +397,15 @@ extension TrendingPageViewController: UIScrollViewDelegate {
             let frameHeight = scrollView.frame.size.height // scroll view畫面大小
             let cellHeight = ((scrollView as! UICollectionView).collectionViewLayout as! UICollectionViewFlowLayout).itemSize.height
 //            print("offsetY: \(offsetY)", "contentHeight: \(contentHeight)", "frameHeight: \(frameHeight)", "cellHeight: \(cellHeight)")
-            if offsetY + frameHeight >= contentHeight - 12 * cellHeight { // 還沒滑到最下面就先load data
-                if let hasNextPage = viewModel.animeTrendingData?.data.page.pageInfo.hasNextPage {
-                    if hasNextPage {
-                        viewModel.shouldLoadMoreTrendingData.send(())
-                    }
+            if offsetY + frameHeight >= contentHeight - 20 * cellHeight { // 還沒滑到最下面就先load data
+                if let hasNextPage = viewModel.animeTrendingData?.data.page.pageInfo.hasNextPage, hasNextPage {
+                    viewModel.shouldLoadMoreTrendingData.send(())
                 }
             }
         }
     }
 }
-
+// MARK: - config tab bar
 extension TrendingPageViewController {
     func setTabBar(hidden: Bool, animated: Bool) {
         guard let tabBar = self.tabBarController?.tabBar else { return }

@@ -36,17 +36,17 @@
                                         <rect key="frame" x="0.0" y="0.0" width="393" height="1000"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PzG-IS-DjE" userLabel="white back">
-                                                <rect key="frame" x="0.0" y="115.66666666666669" width="393" height="255"/>
+                                                <rect key="frame" x="0.0" y="100" width="393" height="255"/>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                             </view>
-                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="jjC-Pi-PAe" userLabel="Anime Banner">
-                                                <rect key="frame" x="0.0" y="0.0" width="393" height="235.66666666666666"/>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jjC-Pi-PAe" userLabel="Anime Banner">
+                                                <rect key="frame" x="0.0" y="0.0" width="393" height="245"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="width" secondItem="jjC-Pi-PAe" secondAttribute="height" multiplier="5:3" id="0yJ-9G-Cbx"/>
+                                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="235.66999999999999" id="IpM-9o-nxD"/>
                                                 </constraints>
                                             </imageView>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Jq8-j0-r5t" userLabel="Anime Thumbnail">
-                                                <rect key="frame" x="15" y="115.66666666666669" width="150" height="200"/>
+                                                <rect key="frame" x="15" y="100" width="150" height="200"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="200" id="AgE-c6-IbQ"/>
                                                     <constraint firstAttribute="width" constant="150" id="il8-6C-5tp"/>
@@ -58,7 +58,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </imageView>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="j7L-yH-ZtO">
-                                                <rect key="frame" x="185" y="281.33333333333331" width="41.666666666666657" height="34.333333333333314"/>
+                                                <rect key="frame" x="185" y="265.66666666666669" width="41.666666666666657" height="34.333333333333314"/>
                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="10" maxY="0.0"/>
                                                 <state key="normal" title="Add To Favorite">
                                                     <imageReference key="image" image="star.fill" catalog="system" symbolScale="small"/>
@@ -69,14 +69,14 @@
                                                 </buttonConfiguration>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HqN-mf-sJb">
-                                                <rect key="frame" x="246.66666666666666" y="281.33333333333331" width="39.333333333333343" height="34.333333333333314"/>
+                                                <rect key="frame" x="246.66666666666666" y="265.66666666666669" width="39.333333333333343" height="34.333333333333314"/>
                                                 <state key="normal" title="Button"/>
                                                 <buttonConfiguration key="configuration" style="tinted">
                                                     <imageReference key="image" image="bell.fill" catalog="system" symbolScale="small"/>
                                                 </buttonConfiguration>
                                             </button>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AnimeTitleLabel" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="fkA-eB-MiV">
-                                                <rect key="frame" x="5" y="330.66666666666669" width="383" height="40"/>
+                                                <rect key="frame" x="5" y="315" width="383" height="40"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="40" id="824-oN-JnX"/>
                                                 </constraints>
@@ -178,21 +178,20 @@
                                             <constraint firstItem="PzG-IS-DjE" firstAttribute="bottom" secondItem="fkA-eB-MiV" secondAttribute="bottom" id="ERg-DC-itq"/>
                                             <constraint firstItem="j7L-yH-ZtO" firstAttribute="leading" secondItem="Jq8-j0-r5t" secondAttribute="trailing" constant="20" id="IcX-IN-BbI"/>
                                             <constraint firstAttribute="bottom" secondItem="eAB-LW-nz3" secondAttribute="bottom" constant="20" id="K7n-PO-GEU"/>
-                                            <constraint firstItem="jjC-Pi-PAe" firstAttribute="leading" secondItem="M3f-9p-45f" secondAttribute="leading" id="MOF-2q-2oR"/>
+                                            <constraint firstItem="jjC-Pi-PAe" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="M3f-9p-45f" secondAttribute="leading" id="MOF-2q-2oR"/>
                                             <constraint firstItem="Jq8-j0-r5t" firstAttribute="bottom" secondItem="HqN-mf-sJb" secondAttribute="bottom" id="N2I-ek-etd"/>
-                                            <constraint firstItem="jjC-Pi-PAe" firstAttribute="width" secondItem="M3f-9p-45f" secondAttribute="width" id="NQW-0F-60T"/>
                                             <constraint firstAttribute="trailing" secondItem="eAB-LW-nz3" secondAttribute="trailing" id="PDU-V8-ZCg"/>
                                             <constraint firstItem="Jq8-j0-r5t" firstAttribute="leading" secondItem="M3f-9p-45f" secondAttribute="leading" constant="15" id="UjA-wx-Iil"/>
                                             <constraint firstItem="fkA-eB-MiV" firstAttribute="top" secondItem="Jq8-j0-r5t" secondAttribute="bottom" constant="15" id="Wh8-vf-Sm4"/>
                                             <constraint firstItem="fkA-eB-MiV" firstAttribute="leading" secondItem="M3f-9p-45f" secondAttribute="leading" constant="5" id="a9p-B4-7c9"/>
-                                            <constraint firstAttribute="trailing" secondItem="jjC-Pi-PAe" secondAttribute="trailing" id="dDt-g0-VT5"/>
+                                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="jjC-Pi-PAe" secondAttribute="trailing" id="dDt-g0-VT5"/>
                                             <constraint firstItem="PzG-IS-DjE" firstAttribute="top" secondItem="Jq8-j0-r5t" secondAttribute="top" id="dWM-kD-cFZ"/>
                                             <constraint firstItem="Jq8-j0-r5t" firstAttribute="bottom" secondItem="j7L-yH-ZtO" secondAttribute="bottom" id="iVx-gd-vFe"/>
-                                            <constraint firstItem="jjC-Pi-PAe" firstAttribute="top" secondItem="M3f-9p-45f" secondAttribute="top" id="jkv-3u-Fqp"/>
                                             <constraint firstAttribute="trailing" secondItem="PzG-IS-DjE" secondAttribute="trailing" id="nFs-FS-MhA"/>
-                                            <constraint firstItem="Jq8-j0-r5t" firstAttribute="top" secondItem="jjC-Pi-PAe" secondAttribute="bottom" constant="-120" id="sHr-Jr-ad3"/>
+                                            <constraint firstItem="Jq8-j0-r5t" firstAttribute="top" secondItem="M3f-9p-45f" secondAttribute="top" constant="100" id="sHr-Jr-ad3"/>
                                             <constraint firstAttribute="trailing" secondItem="fvB-6w-TdF" secondAttribute="trailing" constant="5" id="uy1-xV-rh1"/>
                                             <constraint firstItem="eAB-LW-nz3" firstAttribute="leading" secondItem="M3f-9p-45f" secondAttribute="leading" id="vfQ-UO-bsJ"/>
+                                            <constraint firstItem="fkA-eB-MiV" firstAttribute="top" secondItem="jjC-Pi-PAe" secondAttribute="bottom" constant="120" id="wRP-Uk-KdN"/>
                                             <constraint firstItem="eAB-LW-nz3" firstAttribute="top" secondItem="fkA-eB-MiV" secondAttribute="bottom" constant="70" id="wfr-q8-lIv"/>
                                             <constraint firstItem="PzG-IS-DjE" firstAttribute="leading" secondItem="M3f-9p-45f" secondAttribute="leading" id="wq7-6B-Cnd"/>
                                             <constraint firstAttribute="trailing" secondItem="fkA-eB-MiV" secondAttribute="trailing" constant="5" id="xPZ-ga-eNw"/>
@@ -207,6 +206,7 @@
                                     <constraint firstItem="M3f-9p-45f" firstAttribute="top" secondItem="8bi-s3-4Dj" secondAttribute="top" id="atA-6G-hbV"/>
                                     <constraint firstItem="M3f-9p-45f" firstAttribute="bottom" secondItem="8bi-s3-4Dj" secondAttribute="bottom" id="kkg-fA-AIO"/>
                                     <constraint firstItem="M3f-9p-45f" firstAttribute="trailing" secondItem="8bi-s3-4Dj" secondAttribute="trailing" id="wq6-pN-kFJ"/>
+                                    <constraint firstItem="jjC-Pi-PAe" firstAttribute="top" relation="lessThanOrEqual" secondItem="7nj-he-2dx" secondAttribute="top" id="xHU-Fa-4KZ"/>
                                 </constraints>
                                 <viewLayoutGuide key="contentLayoutGuide" id="8bi-s3-4Dj"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="7nj-he-2dx"/>

@@ -15,6 +15,7 @@ class TrendingPageViewModel {
     // MARK: - input
     let animeCollectionViewCellTap: PassthroughSubject<Int, Never> = .init()
     let shouldLoadMoreTrendingData: PassthroughSubject<Void, Never> = .init()
+    let shouldRefreshTrendingData: PassthroughSubject<Void, Never> = .init()
     // MARK: - output
     var shouldNavigateToDetailPage: AnyPublisher<Int, Never> = .empty
     // MARK: - data property
@@ -49,16 +50,36 @@ class TrendingPageViewModel {
     
     private func setupSubscriber() {
         shouldNavigateToDetailPage = animeCollectionViewCellTap.eraseToAnyPublisher()
+        
         shouldLoadMoreTrendingData
-            .throttle(for: 2, scheduler: RunLoop.main, latest: false)
+            .throttle(for: 0.5, scheduler: RunLoop.main, latest: false)
+//            .filter { !AnimeDataFetcher.shared.isFetchingData }
             .sink { _ in
                 guard let currentPage = self.animeTrendingData?.data.page.pageInfo.currentPage else {
                     return
                 }
-                
+                print("=========== call load more data")
                 self.fetchMoreTrendingAnimeData(currentPage: currentPage + 1)
             }
             .store(in: &self.cancellables)
+        
+        shouldRefreshTrendingData
+            .flatMap { _ in
+                AnimeDataFetcher.shared.fetchAnimeByTrending(page: 1)
+            }
+            .sink { completion in
+                switch completion {
+                    case .finished:
+                        break
+                    case .failure(let error):
+                        print(error)
+                        break
+                }
+            } receiveValue: { trendingData in
+                AnimeDataFetcher.shared.isFetchingData = false
+                self.animeTrendingData = trendingData
+            }
+            .store(in: &cancellables)
     }
     
     private func fetchMoreTrendingAnimeData(currentPage: Int) {
@@ -174,7 +195,7 @@ struct AnimeTrending: Codable {
                 }
                 
                 struct CoverImage: Codable {
-                    let extraLarge: String
+                    let large: String
                 }
             }
             
@@ -184,7 +205,4 @@ struct AnimeTrending: Codable {
             }
         }
     }
-    
-    
-    
 }

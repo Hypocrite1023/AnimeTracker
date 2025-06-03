@@ -72,7 +72,7 @@
 		CD2FF7B92C5CB9EF00924687 /* MediaCharacterPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaCharacterPreview.swift; sourceTree = "<group>"; };
 		CD2FF7BB2C5CBA0400924687 /* MediaResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaResponse.swift; sourceTree = "<group>"; };
 		CD2FF7BD2C5CC4ED00924687 /* FetchAnimeVoiceActorData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchAnimeVoiceActorData.swift; sourceTree = "<group>"; };
-		CD6FB7422C63C752006455D6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		CD6FB7422C63C752006455D6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CD7EF8C92C66456700DCBF7E /* AnimeNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeNotification.swift; sourceTree = "<group>"; };
 		CD8DD5C92C60987C00E0D7A2 /* OpenURLDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenURLDelegate.swift; sourceTree = "<group>"; };
 		CD9D4E672C4D0126003492C1 /* AnimeDescriptionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeDescriptionDelegate.swift; sourceTree = "<group>"; };

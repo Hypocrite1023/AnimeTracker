@@ -249,7 +249,7 @@ extension AnimeDetailPageViewController {
         animeBannerImage.kf.setImage(with: URL(string: data.bannerImage ?? (viewModel?.animeDetailData?.coverImage.extraLarge ?? "")))
         animeThumbnailImage.kf.setImage(with: URL(string: data.coverImage.extraLarge ?? ""))
         animeTitleLabel.text = data.title.native
-        if data.status.uppercased() != "RELEASING".uppercased() {
+        if data.status.uppercased() != AnimeInfo.AnimeStatus.releasing.rawValue {
             self.animeAiringNotifyBtn.isHidden = true
         }
     }
