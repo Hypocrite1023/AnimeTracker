@@ -56,6 +56,7 @@ class TrendingPageViewController: UIViewController {
         
         trendingCollectionView.refreshControl = refreshControl
         refreshControl.addTarget(self, action: #selector(refreshTrendingData), for: .valueChanged)
+        trendingCollectionView.accessibilityIdentifier = "trendingCollectionView"
     }
     
     private func setupSubscrition() {

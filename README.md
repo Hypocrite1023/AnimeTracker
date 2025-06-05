@@ -7,14 +7,14 @@
 #### Login page, Register Page, Reset password page  
 > Use Google Firebase Service    
 <p>
-	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/20240822/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-08-22%20at%2020.06.47.png" width = "200">
-	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/20240822/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-08-22%20at%2020.06.54.png" width = "200">
-	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/20240822/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-08-22%20at%2020.07.00.png" width = "200">
+	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/animeDetail1.png" width = "200">
+	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/animeDetail2.png" width = "200">
+	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/animeDetail3.png" width = "200">
 </p>  
 
 #### Trending Page  
 <p>
-	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/20240822/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-08-22%20at%2020.05.35.png" width = "200">
+	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/trending.png" width = "200">
 </p>
   
 #### Searching Page  

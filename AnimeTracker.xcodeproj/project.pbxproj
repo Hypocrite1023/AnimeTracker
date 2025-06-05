@@ -16,9 +16,18 @@
 		A30C69B62DDB5B2C004A7A88 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = A30C69B52DDB5B2C004A7A88 /* SnapKit */; };
 		A3619D182DD60E4700231B63 /* Publisher+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3619D172DD60E3A00231B63 /* Publisher+Ext.swift */; };
 		A3619D1A2DD61C4800231B63 /* UIButton+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3619D192DD61C4800231B63 /* UIButton+Ext.swift */; };
+		A3CB2ADD2DF096020070A7DF /* NSObject+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CB2ADC2DF096020070A7DF /* NSObject+Ext.swift */; };
+		A3CB2AE52DF1D9740070A7DF /* 20240822 2 in Resources */ = {isa = PBXBuildFile; fileRef = A3CB2AE02DF1D9740070A7DF /* 20240822 2 */; };
+		A3CB2AE62DF1D9740070A7DF /* Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56 2.png in Resources */ = {isa = PBXBuildFile; fileRef = A3CB2AE22DF1D9740070A7DF /* Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56 2.png */; };
+		A3CB2AE72DF1D9740070A7DF /* screenshot 2024-07-24 23.02.45 2.png in Resources */ = {isa = PBXBuildFile; fileRef = A3CB2AE12DF1D9740070A7DF /* screenshot 2024-07-24 23.02.45 2.png */; };
+		A3CB2AE82DF1D9740070A7DF /* Simulator Screenshot - iPhone 15 Pro - 2024-07-18 at 21.47.05 2.png in Resources */ = {isa = PBXBuildFile; fileRef = A3CB2AE32DF1D9740070A7DF /* Simulator Screenshot - iPhone 15 Pro - 2024-07-18 at 21.47.05 2.png */; };
+		A3CB2AE92DF1D9740070A7DF /* Simulator Screenshot - iPhone 15 Pro - 2024-07-20 at 23.33.46 2.png in Resources */ = {isa = PBXBuildFile; fileRef = A3CB2AE42DF1D9740070A7DF /* Simulator Screenshot - iPhone 15 Pro - 2024-07-20 at 23.33.46 2.png */; };
+		A3CB2AED2DF1DA520070A7DF /* animeDetail1.png in Resources */ = {isa = PBXBuildFile; fileRef = A3CB2AEA2DF1DA520070A7DF /* animeDetail1.png */; };
+		A3CB2AEE2DF1DA520070A7DF /* animeDetail2.png in Resources */ = {isa = PBXBuildFile; fileRef = A3CB2AEB2DF1DA520070A7DF /* animeDetail2.png */; };
+		A3CB2AEF2DF1DA520070A7DF /* trending.png in Resources */ = {isa = PBXBuildFile; fileRef = A3CB2AEC2DF1DA520070A7DF /* trending.png */; };
+		A3CB2AF12DF1DAB00070A7DF /* animeDetail3.png in Resources */ = {isa = PBXBuildFile; fileRef = A3CB2AF02DF1DAB00070A7DF /* animeDetail3.png */; };
 		A3FE0E9E2DAF79970044CA0E /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = A3FE0E9D2DAF79970044CA0E /* Kingfisher */; };
 		CD1AA0E52C49475D00993AEB /* UIImageViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1AA0E42C49475D00993AEB /* UIImageViewExtension.swift */; };
-		CD1AA0E72C49547100993AEB /* demo in Resources */ = {isa = PBXBuildFile; fileRef = CD1AA0E62C49547100993AEB /* demo */; };
 		CD1AA0ED2C4BA82D00993AEB /* AnimeDetailDataDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1AA0EC2C4BA82D00993AEB /* AnimeDetailDataDelegate.swift */; };
 		CD1AA0EF2C4BB30F00993AEB /* UILabelWithPadding.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1AA0EE2C4BB30F00993AEB /* UILabelWithPadding.swift */; };
 		CD2FF7A12C5B804F00924687 /* AnimeCharacterDataDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD2FF7A02C5B804F00924687 /* AnimeCharacterDataDelegate.swift */; };
@@ -52,14 +61,42 @@
 		CDE22E482C47F8B600080BAD /* AnimeDataDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE22E472C47F8B600080BAD /* AnimeDataDelegate.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		A3CB2AC52DF0712A0070A7DF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CDC14F152C453DBF00BC14FA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CDC14F1C2C453DBF00BC14FA;
+			remoteInfo = AnimeTracker;
+		};
+		A3CB2AD42DF0714C0070A7DF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CDC14F152C453DBF00BC14FA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CDC14F1C2C453DBF00BC14FA;
+			remoteInfo = AnimeTracker;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		07699B9B52E92D5AB8B9520E /* Pods-AnimeTracker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AnimeTracker.release.xcconfig"; path = "Target Support Files/Pods-AnimeTracker/Pods-AnimeTracker.release.xcconfig"; sourceTree = "<group>"; };
 		8EF066C15013076581D9308E /* Pods_AnimeTracker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AnimeTracker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9FC9250BE48481FE9A6EBF98 /* Pods-AnimeTracker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AnimeTracker.debug.xcconfig"; path = "Target Support Files/Pods-AnimeTracker/Pods-AnimeTracker.debug.xcconfig"; sourceTree = "<group>"; };
 		A3619D172DD60E3A00231B63 /* Publisher+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+Ext.swift"; sourceTree = "<group>"; };
 		A3619D192DD61C4800231B63 /* UIButton+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Ext.swift"; sourceTree = "<group>"; };
+		A3CB2AC12DF0712A0070A7DF /* AnimeTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AnimeTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A3CB2ACE2DF0714C0070A7DF /* AnimeTrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AnimeTrackerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A3CB2ADC2DF096020070A7DF /* NSObject+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+Ext.swift"; sourceTree = "<group>"; };
+		A3CB2AE02DF1D9740070A7DF /* 20240822 2 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "20240822 2"; sourceTree = "<group>"; };
+		A3CB2AE12DF1D9740070A7DF /* screenshot 2024-07-24 23.02.45 2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "screenshot 2024-07-24 23.02.45 2.png"; sourceTree = "<group>"; };
+		A3CB2AE22DF1D9740070A7DF /* Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56 2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56 2.png"; sourceTree = "<group>"; };
+		A3CB2AE32DF1D9740070A7DF /* Simulator Screenshot - iPhone 15 Pro - 2024-07-18 at 21.47.05 2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Simulator Screenshot - iPhone 15 Pro - 2024-07-18 at 21.47.05 2.png"; sourceTree = "<group>"; };
+		A3CB2AE42DF1D9740070A7DF /* Simulator Screenshot - iPhone 15 Pro - 2024-07-20 at 23.33.46 2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Simulator Screenshot - iPhone 15 Pro - 2024-07-20 at 23.33.46 2.png"; sourceTree = "<group>"; };
+		A3CB2AEA2DF1DA520070A7DF /* animeDetail1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = animeDetail1.png; sourceTree = "<group>"; };
+		A3CB2AEB2DF1DA520070A7DF /* animeDetail2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = animeDetail2.png; sourceTree = "<group>"; };
+		A3CB2AEC2DF1DA520070A7DF /* trending.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = trending.png; sourceTree = "<group>"; };
+		A3CB2AF02DF1DAB00070A7DF /* animeDetail3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = animeDetail3.png; sourceTree = "<group>"; };
 		CD1AA0E42C49475D00993AEB /* UIImageViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageViewExtension.swift; sourceTree = "<group>"; };
-		CD1AA0E62C49547100993AEB /* demo */ = {isa = PBXFileReference; lastKnownFileType = folder; name = demo; path = ../demo; sourceTree = "<group>"; };
 		CD1AA0EC2C4BA82D00993AEB /* AnimeDetailDataDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeDetailDataDelegate.swift; sourceTree = "<group>"; };
 		CD1AA0EE2C4BB30F00993AEB /* UILabelWithPadding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILabelWithPadding.swift; sourceTree = "<group>"; };
 		CD2FF7A02C5B804F00924687 /* AnimeCharacterDataDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeCharacterDataDelegate.swift; sourceTree = "<group>"; };
@@ -102,6 +139,9 @@
 		A3A0C7132DBA1614005CE24D /* TimeLinePage */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = TimeLinePage; sourceTree = "<group>"; };
 		A3A0C7142DBA1624005CE24D /* CategoryPage */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = CategoryPage; sourceTree = "<group>"; };
 		A3C69F462DBB79760097C7B9 /* Alert */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Alert; sourceTree = "<group>"; };
+		A3CB2AC22DF0712A0070A7DF /* AnimeTrackerTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = AnimeTrackerTests; sourceTree = "<group>"; };
+		A3CB2ACF2DF0714C0070A7DF /* AnimeTrackerUITests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = AnimeTrackerUITests; sourceTree = "<group>"; };
+		A3CB2AD92DF07A940070A7DF /* MockData */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = MockData; sourceTree = "<group>"; };
 		A3CF8CBD2DBB5D1200B4463F /* NavigationController */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = NavigationController; sourceTree = "<group>"; };
 		A3CF8CBE2DBB5DBB00B4463F /* TabBarController */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = TabBarController; sourceTree = "<group>"; };
 		A3CF8CC02DBB69DC00B4463F /* Login */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Login; sourceTree = "<group>"; };
@@ -115,6 +155,20 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		A3CB2ABE2DF0712A0070A7DF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A3CB2ACB2DF0714C0070A7DF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CDC14F1A2C453DBF00BC14FA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -157,6 +211,7 @@
 				CD1AA0E42C49475D00993AEB /* UIImageViewExtension.swift */,
 				CD9D4EDA2C550FB2003492C1 /* UIColorExtension.swift */,
 				A3619D192DD61C4800231B63 /* UIButton+Ext.swift */,
+				A3CB2ADC2DF096020070A7DF /* NSObject+Ext.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -211,6 +266,8 @@
 				CDE22E4E2C48115800080BAD /* README.md */,
 				CDE22E492C480F4100080BAD /* Demo */,
 				CDC14F1F2C453DBF00BC14FA /* AnimeTracker */,
+				A3CB2AC22DF0712A0070A7DF /* AnimeTrackerTests */,
+				A3CB2ACF2DF0714C0070A7DF /* AnimeTrackerUITests */,
 				CDC14F1E2C453DBF00BC14FA /* Products */,
 				4F4A73DB012A822DDAC6B03E /* Pods */,
 				4BD0FD07C1F42FF6706D6F82 /* Frameworks */,
@@ -221,6 +278,8 @@
 			isa = PBXGroup;
 			children = (
 				CDC14F1D2C453DBF00BC14FA /* AnimeTracker.app */,
+				A3CB2AC12DF0712A0070A7DF /* AnimeTrackerTests.xctest */,
+				A3CB2ACE2DF0714C0070A7DF /* AnimeTrackerUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -228,6 +287,7 @@
 		CDC14F1F2C453DBF00BC14FA /* AnimeTracker */ = {
 			isa = PBXGroup;
 			children = (
+				A3CB2AD92DF07A940070A7DF /* MockData */,
 				A3C69F462DBB79760097C7B9 /* Alert */,
 				A3CF8CC72DBB6B7E00B4463F /* Firebase */,
 				CD6FB7422C63C752006455D6 /* GoogleService-Info.plist */,
@@ -302,7 +362,15 @@
 		CDE22E492C480F4100080BAD /* Demo */ = {
 			isa = PBXGroup;
 			children = (
-				CD1AA0E62C49547100993AEB /* demo */,
+				A3CB2AF02DF1DAB00070A7DF /* animeDetail3.png */,
+				A3CB2AEA2DF1DA520070A7DF /* animeDetail1.png */,
+				A3CB2AEB2DF1DA520070A7DF /* animeDetail2.png */,
+				A3CB2AEC2DF1DA520070A7DF /* trending.png */,
+				A3CB2AE02DF1D9740070A7DF /* 20240822 2 */,
+				A3CB2AE12DF1D9740070A7DF /* screenshot 2024-07-24 23.02.45 2.png */,
+				A3CB2AE22DF1D9740070A7DF /* Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56 2.png */,
+				A3CB2AE32DF1D9740070A7DF /* Simulator Screenshot - iPhone 15 Pro - 2024-07-18 at 21.47.05 2.png */,
+				A3CB2AE42DF1D9740070A7DF /* Simulator Screenshot - iPhone 15 Pro - 2024-07-20 at 23.33.46 2.png */,
 			);
 			name = Demo;
 			path = demo;
@@ -311,6 +379,52 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		A3CB2AC02DF0712A0070A7DF /* AnimeTrackerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A3CB2AC92DF0712A0070A7DF /* Build configuration list for PBXNativeTarget "AnimeTrackerTests" */;
+			buildPhases = (
+				A3CB2ABD2DF0712A0070A7DF /* Sources */,
+				A3CB2ABE2DF0712A0070A7DF /* Frameworks */,
+				A3CB2ABF2DF0712A0070A7DF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A3CB2AC62DF0712A0070A7DF /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				A3CB2AC22DF0712A0070A7DF /* AnimeTrackerTests */,
+			);
+			name = AnimeTrackerTests;
+			packageProductDependencies = (
+			);
+			productName = AnimeTrackerTests;
+			productReference = A3CB2AC12DF0712A0070A7DF /* AnimeTrackerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		A3CB2ACD2DF0714C0070A7DF /* AnimeTrackerUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A3CB2AD62DF0714C0070A7DF /* Build configuration list for PBXNativeTarget "AnimeTrackerUITests" */;
+			buildPhases = (
+				A3CB2ACA2DF0714C0070A7DF /* Sources */,
+				A3CB2ACB2DF0714C0070A7DF /* Frameworks */,
+				A3CB2ACC2DF0714C0070A7DF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A3CB2AD52DF0714C0070A7DF /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				A3CB2ACF2DF0714C0070A7DF /* AnimeTrackerUITests */,
+			);
+			name = AnimeTrackerUITests;
+			packageProductDependencies = (
+			);
+			productName = AnimeTrackerUITests;
+			productReference = A3CB2ACE2DF0714C0070A7DF /* AnimeTrackerUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		CDC14F1C2C453DBF00BC14FA /* AnimeTracker */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CDC14F312C453DC000BC14FA /* Build configuration list for PBXNativeTarget "AnimeTracker" */;
@@ -331,6 +445,7 @@
 				A3A0C7132DBA1614005CE24D /* TimeLinePage */,
 				A3A0C7142DBA1624005CE24D /* CategoryPage */,
 				A3C69F462DBB79760097C7B9 /* Alert */,
+				A3CB2AD92DF07A940070A7DF /* MockData */,
 				A3CF8CBD2DBB5D1200B4463F /* NavigationController */,
 				A3CF8CBE2DBB5DBB00B4463F /* TabBarController */,
 				A3CF8CC02DBB69DC00B4463F /* Login */,
@@ -354,9 +469,17 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1540;
+				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1540;
 				TargetAttributes = {
+					A3CB2AC02DF0712A0070A7DF = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = CDC14F1C2C453DBF00BC14FA;
+					};
+					A3CB2ACD2DF0714C0070A7DF = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = CDC14F1C2C453DBF00BC14FA;
+					};
 					CDC14F1C2C453DBF00BC14FA = {
 						CreatedOnToolsVersion = 15.4;
 					};
@@ -382,11 +505,27 @@
 			projectRoot = "";
 			targets = (
 				CDC14F1C2C453DBF00BC14FA /* AnimeTracker */,
+				A3CB2AC02DF0712A0070A7DF /* AnimeTrackerTests */,
+				A3CB2ACD2DF0714C0070A7DF /* AnimeTrackerUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		A3CB2ABF2DF0712A0070A7DF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A3CB2ACC2DF0714C0070A7DF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CDC14F1B2C453DBF00BC14FA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -396,8 +535,16 @@
 				CDC14F2D2C453DC000BC14FA /* Base in Resources */,
 				CDC14F282C453DBF00BC14FA /* Base in Resources */,
 				CDA141F62C57CDDD00708A8B /* ThreadsView.xib in Resources */,
+				A3CB2AE52DF1D9740070A7DF /* 20240822 2 in Resources */,
+				A3CB2AE62DF1D9740070A7DF /* Simulator Screenshot - iPhone 15 Pro - 2024-07-17 at 22.38.56 2.png in Resources */,
+				A3CB2AE72DF1D9740070A7DF /* screenshot 2024-07-24 23.02.45 2.png in Resources */,
+				A3CB2AE82DF1D9740070A7DF /* Simulator Screenshot - iPhone 15 Pro - 2024-07-18 at 21.47.05 2.png in Resources */,
+				A3CB2AF12DF1DAB00070A7DF /* animeDetail3.png in Resources */,
+				A3CB2AE92DF1D9740070A7DF /* Simulator Screenshot - iPhone 15 Pro - 2024-07-20 at 23.33.46 2.png in Resources */,
+				A3CB2AED2DF1DA520070A7DF /* animeDetail1.png in Resources */,
+				A3CB2AEE2DF1DA520070A7DF /* animeDetail2.png in Resources */,
+				A3CB2AEF2DF1DA520070A7DF /* trending.png in Resources */,
 				CDA141F12C57C5DE00708A8B /* ThreadPreview.xib in Resources */,
-				CD1AA0E72C49547100993AEB /* demo in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -446,6 +593,20 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		A3CB2ABD2DF0712A0070A7DF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A3CB2ACA2DF0714C0070A7DF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CDC14F192C453DBF00BC14FA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -456,6 +617,7 @@
 				CD1AA0ED2C4BA82D00993AEB /* AnimeDetailDataDelegate.swift in Sources */,
 				CD2FF7B42C5CB98800924687 /* ThreadResponse.swift in Sources */,
 				CD9D4E6C2C4E654A003492C1 /* AnimeStreamingDetailDelegate.swift in Sources */,
+				A3CB2ADD2DF096020070A7DF /* NSObject+Ext.swift in Sources */,
 				CD2FF7AE2C5CB93000924687 /* VoiceActorDataResponse.swift in Sources */,
 				CD2FF7A12C5B804F00924687 /* AnimeCharacterDataDelegate.swift in Sources */,
 				A3619D182DD60E4700231B63 /* Publisher+Ext.swift in Sources */,
@@ -483,6 +645,19 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		A3CB2AC62DF0712A0070A7DF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CDC14F1C2C453DBF00BC14FA /* AnimeTracker */;
+			targetProxy = A3CB2AC52DF0712A0070A7DF /* PBXContainerItemProxy */;
+		};
+		A3CB2AD52DF0714C0070A7DF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CDC14F1C2C453DBF00BC14FA /* AnimeTracker */;
+			targetProxy = A3CB2AD42DF0714C0070A7DF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		CDC14F262C453DBF00BC14FA /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
@@ -503,6 +678,84 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		A3CB2AC72DF0712A0070A7DF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = P2CKQU8TPP;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Hypocrite.AnimeTrackerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AnimeTracker.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AnimeTracker";
+			};
+			name = Debug;
+		};
+		A3CB2AC82DF0712A0070A7DF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = P2CKQU8TPP;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Hypocrite.AnimeTrackerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AnimeTracker.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AnimeTracker";
+			};
+			name = Release;
+		};
+		A3CB2AD72DF0714C0070A7DF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = P2CKQU8TPP;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Hypocrite.AnimeTrackerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = AnimeTracker;
+			};
+			name = Debug;
+		};
+		A3CB2AD82DF0714C0070A7DF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = P2CKQU8TPP;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Hypocrite.AnimeTrackerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = AnimeTracker;
+			};
+			name = Release;
+		};
 		CDC14F2F2C453DC000BC14FA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -631,7 +884,7 @@
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = P2CKQU8TPP;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AnimeTracker/Info.plist;
@@ -668,7 +921,7 @@
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = P2CKQU8TPP;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AnimeTracker/Info.plist;
@@ -699,6 +952,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		A3CB2AC92DF0712A0070A7DF /* Build configuration list for PBXNativeTarget "AnimeTrackerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A3CB2AC72DF0712A0070A7DF /* Debug */,
+				A3CB2AC82DF0712A0070A7DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A3CB2AD62DF0714C0070A7DF /* Build configuration list for PBXNativeTarget "AnimeTrackerUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A3CB2AD72DF0714C0070A7DF /* Debug */,
+				A3CB2AD82DF0714C0070A7DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		CDC14F182C453DBF00BC14FA /* Build configuration list for PBXProject "AnimeTracker" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

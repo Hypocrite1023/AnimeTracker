@@ -12,55 +12,52 @@ import Combine
 
 class TabBarViewController: UITabBarController {
     
+    private let vm = TabBarViewModel()
     private var cancellables = Set<AnyCancellable>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        // logout
-        let logoutAction = UIAction(title: "Logout", image: UIImage(systemName: "figure.walk")) { action in
-            do {
-                AnimeNotification.shared.removeAllNotification() // remove all notification that record in user default
-                print("remove all notification.")
-                try Auth.auth().signOut()
-                let loginPage = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginPage")
-                self.navigationController?.setViewControllers([loginPage], animated: true) // navigate to login page
-            } catch {
-                print(error)
-            }
-        }
-        
-        let menu = UIMenu(title: "Options", children: [logoutAction])
-        if let userName = Auth.auth().currentUser?.displayName {
-            navigationItem.title = "Hello, \(userName)"
-            
-            navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "person.circle"), menu: menu)
-        }
-        requestNotificationPermission() // request notification permission
-            .sink { granted in
-                if granted {
-                    AnimeNotification.shared.checkNotification()
-                        .flatMap { (userUID, animeIDs) in
-                            animeIDs.map { ($0.key, AnimeInfo.AnimeStatus(rawValue: $0.value) ?? AnimeInfo.AnimeStatus.finished) }.publisher
-                                .flatMap(maxPublishers: .max(5)) { (animeID, status) -> AnyPublisher<Void, Never> in
-                                    FirebaseManager.shared.updateAnimeStatus(userUID: userUID, animeID: animeID, status: status)
-                                }
-                                .collect()
-                                .eraseToAnyPublisher()
-                        }
-                        .sink { _ in
-                            print("Notification check finished...")
-                        }
-                        .store(in: &self.cancellables)
-                } else {
-                    print("Notification permission denied.")
-                }
-            }
-            .store(in: &cancellables)
+        setupUI()
+        subscribeVM()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    func setupUI() {
+        if vm.isLogin {
+            let logoutAction = UIAction(title: "Logout", image: UIImage(systemName: "figure.walk.departure")) { [weak self] action in
+                self?.vm.signOut()
+            }
+            let menu = UIMenu(title: "Options", children: [logoutAction])
+            
+            if let userName = Auth.auth().currentUser?.displayName { // 已登入
+                self.navigationItem.title = "Hello, \(userName)"
+                
+                self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "person.circle"), menu: menu)
+            } else { // 已登入 未有 username
+                navigationItem.title = "Hello!"
+                self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "person.circle"), menu: menu)
+            }
+            requestNotificationPermission() // request notification permission
+                .sink { [weak self] granted in
+                    if granted {
+                        self?.vm.shouldCheckNotification.send(())
+                    }
+                }
+                .store(in: &cancellables)
+        } else {
+            navigationItem.title = "Hello!"
+            navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "figure.walk.arrival"), style: .plain, target: self, action: #selector(sendLoginSignal))
+        }
+    }
+    
+    func subscribeVM() {
+        vm.showLoginPage
+            .sink { [weak self] _ in
+                let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "LoginPage")
+                self?.navigationItem.backButtonTitle = "Trending"
+                self?.navigationController?.pushViewController(vc, animated: true)
+            }
+            .store(in: &self.cancellables)
     }
     
     func requestNotificationPermission() -> AnyPublisher<Bool, Never> {
@@ -76,6 +73,10 @@ class TabBarViewController: UITabBarController {
             }
         }
         .eraseToAnyPublisher()
+    }
+    
+    @objc func sendLoginSignal() {
+        self.vm.shouldShowLoginPage.send(())
     }
 }
 

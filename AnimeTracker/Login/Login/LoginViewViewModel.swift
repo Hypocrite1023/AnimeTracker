@@ -24,9 +24,11 @@ class LoginViewViewModel {
     @Published var userEmail: String?
     @Published var userPassword: String?
     @Published var errorMessage: Error?
+    private let loginDataProvider: FirebaseDataProvider
     private var cancellables: Set<AnyCancellable> = []
     
-    init() {
+    init(loginDataProvider: FirebaseDataProvider = FirebaseManager.shared) {
+        self.loginDataProvider = loginDataProvider
         setupPublisher()
     }
     
@@ -39,7 +41,7 @@ class LoginViewViewModel {
             return Fail(error: LoginError.passwordFieldEmpty).eraseToAnyPublisher()
         }
         
-        return FirebaseManager.shared.signIn(withEmail: userEmail, password: userPassword)
+        return loginDataProvider.signIn(withEmail: userEmail, password: userPassword)
     }
     
     private func setupPublisher() {

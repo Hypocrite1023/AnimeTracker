@@ -16,6 +16,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         FirebaseApp.configure()
         UNUserNotificationCenter.current().delegate = self
+        if ProcessInfo.processInfo.arguments.contains("UITEST_LOGOUT") {
+            FirebaseManager.shared.signOut()
+        }
         return true
     }
 

@@ -46,8 +46,8 @@ struct FavoriteAndNotify: Codable {
 
 protocol FirebaseDataProvider {
     func signIn(withEmail: String, password: String) -> AnyPublisher<Void, Error>
-    func register(withEmail: String, password: String, username: String) -> AnyPublisher<Void, Error>
-    func resetPassword(withEmail: String) -> AnyPublisher<Void, Error>
+//    func register(withEmail: String, password: String, username: String) -> AnyPublisher<Void, Error>
+//    func resetPassword(withEmail: String) -> AnyPublisher<Void, Error>
     
 }
 
@@ -126,6 +126,10 @@ extension FirebaseManager {
             }
         }
         .eraseToAnyPublisher()
+    }
+    
+    func signOut() {
+        try? Auth.auth().signOut()
     }
     
     func register(withEmail: String, password: String, username: String) -> AnyPublisher<Void, Error> {

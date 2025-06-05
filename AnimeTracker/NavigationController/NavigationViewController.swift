@@ -8,9 +8,9 @@
 import UIKit
 import Combine
 import Kingfisher
+import SnapKit
 
 class NavigationViewController: UINavigationController {
-
     private var cancellables = Set<AnyCancellable>()
     
     // when fetching data it will show
@@ -34,25 +34,17 @@ class NavigationViewController: UINavigationController {
             }
             .store(in: &cancellables)
         
-        fetchingDataIndicator.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(fetchingDataIndicator)
         fetchingDataIndicator.isHidden = true
-        fetchingDataIndicator.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        fetchingDataIndicator.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
+        fetchingDataIndicator.snp.makeConstraints { make in
+            make.centerX.centerY.equalToSuperview()
+        }
         
 //        clearAllUserDefaults()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        // check the user is email verify
-        guard FirebaseManager.shared.isAuthenticatedAndEmailVerified() else {
-            print("need login")
-            let loginPage = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginPage")
-            self.viewControllers = [loginPage]
-            return
-        }
-        print("login success")
         let mainPage = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TabBarController")
         self.viewControllers = [mainPage]
     }

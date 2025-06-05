@@ -33,11 +33,15 @@ class LoginViewController: UIViewController {
         userEmailTextField.returnKeyType = .next
         userEmailTextField.autocapitalizationType = .none
         userEmailTextField.autocorrectionType = .no
+        userEmailTextField.accessibilityIdentifier = "userEmailTextField"
         
         userPasswordTextField.keyboardType = .default
         userPasswordTextField.returnKeyType = .done
         userPasswordTextField.autocapitalizationType = .none
         userPasswordTextField.autocorrectionType = .no
+        userPasswordTextField.accessibilityIdentifier = "userPasswordTextField"
+        
+        loginBtn.accessibilityIdentifier = "loginBtn"
         
         userEmailTextField.delegate = self
         userPasswordTextField.delegate = self
