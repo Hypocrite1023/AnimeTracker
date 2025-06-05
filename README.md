@@ -14,7 +14,7 @@
 
 #### Trending Page  
 <p>
-	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/trending.png" width = "200">
+	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/trending.png" width = "200">
 </p>
   
 #### Searching Page  

@@ -19,9 +19,10 @@ class AnimeDetailPageViewModel {
     let shouldShowSocial: PassthroughSubject<Void, Never> = .init()
     let shouldShowStaff: PassthroughSubject<Void, Never> = .init()
     let shouldLoadMoreStaffs: PassthroughSubject<Void, Never> = .init()
-    let shouldShowAlert: PassthroughSubject<String, Never> = .init()
+    let shouldShowAlert: PassthroughSubject<AlertType, Never> = .init()
     let configFavorite: PassthroughSubject<Void, Never> = .init()
     let configNotification: PassthroughSubject<Void, Never> = .init()
+    let shouldShowLoginPage: PassthroughSubject<Void, Never> = .init()
     // MARK: - output
     private(set) var newCharacterData: AnyPublisher<[MediaResponse.MediaData.Media.CharacterPreview.Edges], Never> = .empty
     private(set) var newStaffData: AnyPublisher<[MediaResponse.MediaData.Media.StaffPreview.Edges], Never> = .empty
@@ -32,9 +33,10 @@ class AnimeDetailPageViewModel {
     private(set) var showStats: AnyPublisher<(MediaRanking.MediaData.Media?, MediaResponse.MediaData.Media.Stats?), Never> = .empty
     private(set) var showStaffs: AnyPublisher<[MediaResponse.MediaData.Media.StaffPreview.Edges], Never> = .empty
     private(set) var shouldUpdateStaffs: AnyPublisher<[MediaResponse.MediaData.Media.StaffPreview.Edges], Never> = .empty
-    private(set) var showAlert: AnyPublisher<String, Never> = .empty
+    private(set) var showAlert: AnyPublisher<AlertType, Never> = .empty
     private(set) var configFavoritePublisher: AnyPublisher<Bool, Never> = .empty
     private(set) var configNotificationPublisher: AnyPublisher<Bool, Never> = .empty
+    private(set) var showLoginPage: AnyPublisher<Void, Never> = .empty
     // MARK: - data property
     let animeID: Int
     let userUID: String?
@@ -79,7 +81,7 @@ class AnimeDetailPageViewModel {
                     case .finished:
                         break
                     case .failure(let error):
-                        self.shouldShowAlert.send(error.localizedDescription)
+                        self.shouldShowAlert.send(.apiError(message: error.localizedDescription))
                     }
                 }, receiveValue: { (favorite, notify, _) in
                     self.isFavorite = favorite ?? false
@@ -89,25 +91,25 @@ class AnimeDetailPageViewModel {
                 })
                 .store(in: &cancellable)
             
-            setupSubscriber(userUID: userUID)
+            
         }
-        
+        setupSubscriber()
         setupPublisher()
         
     }
     
-    private func setupSubscriber(userUID: String) {
+    private func setupSubscriber() {
         $isFavorite
             .combineLatest($isNotify)
             .dropFirst()
-            .filter { _ in self.isFirebaseDataInitFinished }
+            .filter { _ in self.isFirebaseDataInitFinished && FirebaseManager.shared.isAuthenticatedAndEmailVerified() }
             .flatMap { isFavorite, isNotify -> AnyPublisher<Void, Error> in
                 print("isFavorite: \(isFavorite); isNotify: \(isNotify)")
                 let animeStatus = self.animeDetailData?.status ?? ""
-                return FirebaseManager.shared.addAnimeRecord(userUID: userUID, animeID: self.animeID, isFavorite: isFavorite, isNotify: isNotify, status: animeStatus)
+                return FirebaseManager.shared.addAnimeRecord(userUID: self.userUID!, animeID: self.animeID, isFavorite: isFavorite, isNotify: isNotify, status: animeStatus)
             }
             .catch{ error in
-                self.shouldShowAlert.send(error.localizedDescription)
+                self.shouldShowAlert.send(.apiError(message: error.localizedDescription))
                 return Empty<Void, Never>(completeImmediately: true).eraseToAnyPublisher()
             }
             .sink { _ in
@@ -116,19 +118,29 @@ class AnimeDetailPageViewModel {
             .store(in: &cancellable)
         
         configFavorite
-            .sink { _ in
-                self.isFavorite.toggle()
+            .sink { [weak self] _ in
+                print("---")
+                if FirebaseManager.shared.isAuthenticatedAndEmailVerified() {
+                    self?.isFavorite.toggle()
+                } else {
+                    self?.shouldShowAlert.send(.needLogin)
+                }
             }
             .store(in: &cancellable)
         
         configNotification
-            .sink { _ in
-                self.isNotify.toggle()
+            .sink { [weak self] _ in
+                print("---")
+                if FirebaseManager.shared.isAuthenticatedAndEmailVerified() {
+                    self?.isNotify.toggle()
+                } else {
+                    self?.shouldShowAlert.send(.needLogin)
+                }
             }
             .store(in: &cancellable)
         
         $isNotify
-            .filter { _ in self.isFirebaseDataInitFinished }
+            .filter { _ in self.isFirebaseDataInitFinished && FirebaseManager.shared.isAuthenticatedAndEmailVerified() }
             .sink { isNotify in
                 if isNotify {
                     guard let animeTitle = self.animeDetailData?.title.native, let nextAiringEpisode = self.animeDetailData?.nextAiringEpisode, let episodes = self.animeDetailData?.episodes else { return }
@@ -193,7 +205,7 @@ class AnimeDetailPageViewModel {
                         return $0.characterPreview.edges
                     }
                     .catch { error -> AnyPublisher<[MediaResponse.MediaData.Media.CharacterPreview.Edges], Never> in
-                        self.shouldShowAlert.send(error.localizedDescription)
+                        self.shouldShowAlert.send(.apiError(message: error.localizedDescription))
                         return Just([]).eraseToAnyPublisher()
                     }
             }
@@ -205,7 +217,7 @@ class AnimeDetailPageViewModel {
                     return AnimeDataFetcher.shared.fetchRankingDataByMediaId(id: self.animeID)
                         .prefix(1)
                         .catch({ error in
-                            self.shouldShowAlert.send(error.localizedDescription)
+                            self.shouldShowAlert.send(.apiError(message: error.localizedDescription))
                             return Empty<MediaRanking.MediaData.Media, Never>(completeImmediately: true)
                                 .eraseToAnyPublisher()
                         })
@@ -249,7 +261,7 @@ class AnimeDetailPageViewModel {
                         return $0.data.media.staffPreview.edges
                     }
                     .catch { error in
-                        self.shouldShowAlert.send(error.localizedDescription)
+                        self.shouldShowAlert.send(.apiError(message: error.localizedDescription))
                         return Empty<[MediaResponse.MediaData.Media.StaffPreview.Edges], Never>(completeImmediately: true).eraseToAnyPublisher()
                     }
                     .eraseToAnyPublisher()
@@ -261,5 +273,9 @@ class AnimeDetailPageViewModel {
         configFavoritePublisher = $isFavorite.eraseToAnyPublisher()
         
         configNotificationPublisher = $isNotify.eraseToAnyPublisher()
+        
+        showLoginPage = shouldShowLoginPage
+            .filter({ !FirebaseManager.shared.isAuthenticatedAndEmailVerified() })
+            .eraseToAnyPublisher()
     }
 }
