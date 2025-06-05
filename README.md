@@ -7,9 +7,9 @@
 #### Login page, Register Page, Reset password page  
 > Use Google Firebase Service    
 <p>
-	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/animeDetail1.png" width = "200">
-	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/animeDetail2.png" width = "200">
-	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/animeDetail3.png" width = "200">
+	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/animeDetail1.png" width = "200">
+	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/animeDetail2.png" width = "200">
+	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/animeDetail3.png" width = "200">
 </p>  
 
 #### Trending Page  
