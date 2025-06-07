@@ -17,6 +17,7 @@ struct EpisodeAndNotificationID {
 class AnimeNotification {
     static let shared = AnimeNotification()
     private init() {}
+    @Published var notificationEnable: Bool = false
     
     private var cancellables: Set<AnyCancellable> = []
     
@@ -77,12 +78,10 @@ class AnimeNotification {
     
     func removeAllNotification() {
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        print("Remove all notification...")
     }
     
-    func checkNotification() -> AnyPublisher<(String, [Int: String]), Never> { // 需要回傳 status 已經不是 RELEASING 的動畫 id
-        guard let userUID = FirebaseManager.shared.getCurrentUserUID() else {
-            return Just(("", [:])).eraseToAnyPublisher()
-        }
+    func checkNotification(userUID: String) -> AnyPublisher<(String, [Int: String]), Never> { // 需要回傳 status 已經不是 RELEASING 的動畫 id
         return FirebaseManager.shared.loadUserNotificationAnime(userUID: userUID)
             .flatMap { animeIDs -> AnyPublisher<SimpleEpisodeData, Never> in
                 animeIDs.publisher

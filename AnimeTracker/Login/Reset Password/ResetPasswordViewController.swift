@@ -8,10 +8,12 @@
 import UIKit
 import FirebaseAuth
 import Combine
+import Lottie
 
 class ResetPasswordViewController: UIViewController {
 
     @IBOutlet weak var emailTextField: UITextField! // user email address textfield
+    @IBOutlet weak var resetPasswordAnimationImageContainer: UIView!
     
     private let viewModel: ResetPasswordViewModel = .init()
     private var cancellables: Set<AnyCancellable> = []
@@ -28,6 +30,23 @@ class ResetPasswordViewController: UIViewController {
         view.addGestureRecognizer(closeKeyboardGesture)
         
         emailTextField.delegate = self
+        
+        // tap the non textfield place to close the keyboard
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(closeKeyboard))
+        self.view.addGestureRecognizer(tapGesture)
+        
+        // Load animation
+        let animationView = LottieAnimationView(name: "forgetpass") // no .json
+        // Configure
+        animationView.contentMode = .scaleAspectFit
+        animationView.loopMode = .loop
+        animationView.animationSpeed = 1.0
+        resetPasswordAnimationImageContainer.addSubview(animationView)
+        animationView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        // Play
+        animationView.play()
     }
     
     @objc func closeKeyboard() {

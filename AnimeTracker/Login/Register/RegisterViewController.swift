@@ -9,12 +9,14 @@ import UIKit
 import FirebaseCore
 import FirebaseAuth
 import Combine
+import Lottie
 
 class RegisterViewController: UIViewController {
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var userEmailTextField: UITextField!
     @IBOutlet weak var userPasswordTextField: UITextField!
     @IBOutlet weak var secondCheckUserPasswordTextField: UITextField!
+    @IBOutlet weak var registerAnimationImageContainer: UIView!
     
     private let viewModel: RegisterViewModel = .init()
     private var cancellables: Set<AnyCancellable> = []
@@ -50,6 +52,19 @@ class RegisterViewController: UIViewController {
         // tap the non textfield place to close the keyboard
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(closeKeyboard))
         self.view.addGestureRecognizer(tapGesture)
+        
+        // Load animation
+        let animationView = LottieAnimationView(name: "register") // no .json
+        // Configure
+        animationView.contentMode = .scaleAspectFit
+        animationView.loopMode = .loop
+        animationView.animationSpeed = 1.0
+        registerAnimationImageContainer.addSubview(animationView)
+        animationView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        // Play
+        animationView.play()
     }
     
     @objc func closeKeyboard() {

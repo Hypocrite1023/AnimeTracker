@@ -178,7 +178,6 @@ class AnimeDetailPageViewController: UIViewController {
         addAnimeToFavoriteBtn.tapPublisher
             .sink { [weak self] _ in
                 guard let self = self, let viewModel = self.viewModel else { return }
-                print("+++")
                 viewModel.configFavorite.send(())
             }
             .store(in: &cancellables)

@@ -1,28 +1,40 @@
 #  AnimeTracker  
-### 4 main Tabs - Trending, Searching, Favorite, Timeline    
+### 5 main Tabs - Trending, Category, Searching, Favorite, Timeline    
 > Trending: Display trending anime right now.  
+> Category: Display trending anime by each category.  
 > Searching: Searching anime with genres, tags, year, season... etc.  
 > Favorite: Display your favorite anime at this page, your can cancel the favorite or cancel the notification.  
 > Timeline: List the anime from your favorite, and sort by the left time to airing. 
 #### Login page, Register Page, Reset password page  
 > Use Google Firebase Service    
 <p>
-	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/animeDetail1.png" width = "200">
-	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/animeDetail2.png" width = "200">
-	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/animeDetail3.png" width = "200">
+    <img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/login.png" width = "200">
+    <img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/register.png" width = "200">
+    <img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/resetpass.png" width = "200">
 </p>  
 
 #### Trending Page  
 <p>
 	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/trending.png" width = "200">
 </p>
+
+#### Category Page
+<p>
+    <img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/category.png" width = "200">
+</p>
+
+#### Anime Detail Page  
+<p>
+    <img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/animeDetail1.png" width = "200">
+    <img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/animeDetail2.png" width = "200">
+    <img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/animeDetail3.png" width = "200">
+</p> 
   
 #### Searching Page  
 <p>
-	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/20240822/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-08-22%20at%2020.05.42.png" width = "200">
-	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/20240822/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-08-22%20at%2020.05.45.png" width = "200">
-	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/20240822/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-08-22%20at%2020.05.51.png" width = "200">
-	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/20240822/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-08-22%20at%2020.06.13.png" width = "200">
+    <img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/searching1.png" width = "200">
+    <img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/searching2.png" width = "200">
+    <img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/searching3.png" width = "200">
 </p>
   
 #### Favorite Page  
@@ -39,9 +51,8 @@
 </p>
   
 ### Anime Detail Page
-[![Watch the video](https://img.youtube.com/vi/9i-IkybcsOQ/0.jpg)]
-(https://youtube.com/shorts/9i-IkybcsOQ?si=AVUDLoM01vDf2PCn)
-<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/screenshot%202024-07-24%2023.02.45.png" width = "200">
+[![Watch the video](https://img.youtube.com/vi/sTBPWBrYeRM/0.jpg)]
+(https://youtu.be/sTBPWBrYeRM?si=zuV5maqs7-jRM9j8)  
 
 #### 遇到的問題及紀錄
 > 2024.07.20

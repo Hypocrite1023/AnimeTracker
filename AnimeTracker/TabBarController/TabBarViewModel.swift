@@ -15,31 +15,11 @@ class TabBarViewModel {
     }
     private var cancellables: Set<AnyCancellable> = []
     // MARK: - input
-    let shouldCheckNotification: PassthroughSubject<Void, Never> = .init()
     let shouldShowLoginPage: PassthroughSubject<Void, Never> = .init()
     // MARK: - output
     private(set) var showLoginPage: AnyPublisher<Void, Never> = .empty
     
     init() {
-        shouldCheckNotification
-            .sink { [weak self] _ in
-                guard let self = self else { return }
-                AnimeNotification.shared.checkNotification()
-                    .flatMap { (userUID, animeIDs) in
-                        animeIDs.map { ($0.key, AnimeInfo.AnimeStatus(rawValue: $0.value) ?? AnimeInfo.AnimeStatus.finished) }.publisher
-                            .flatMap(maxPublishers: .max(5)) { (animeID, status) -> AnyPublisher<Void, Never> in
-                                FirebaseManager.shared.updateAnimeStatus(userUID: userUID, animeID: animeID, status: status)
-                            }
-                            .collect()
-                            .eraseToAnyPublisher()
-                    }
-                    .sink { _ in
-                        print("Notification check finished...")
-                    }
-                    .store(in: &self.cancellables)
-            }
-            .store(in: &cancellables)
-        
         showLoginPage = shouldShowLoginPage
             .map {
                 return $0

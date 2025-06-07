@@ -23,31 +23,39 @@ class TabBarViewController: UITabBarController {
     }
     
     func setupUI() {
-        if vm.isLogin {
-            let logoutAction = UIAction(title: "Logout", image: UIImage(systemName: "figure.walk.departure")) { [weak self] action in
-                self?.vm.signOut()
-            }
-            let menu = UIMenu(title: "Options", children: [logoutAction])
-            
-            if let userName = Auth.auth().currentUser?.displayName { // 已登入
-                self.navigationItem.title = "Hello, \(userName)"
-                
-                self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "person.circle"), menu: menu)
-            } else { // 已登入 未有 username
-                navigationItem.title = "Hello!"
-                self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "person.circle"), menu: menu)
-            }
-            requestNotificationPermission() // request notification permission
-                .sink { [weak self] granted in
-                    if granted {
-                        self?.vm.shouldCheckNotification.send(())
+        
+        UserCache.shared.$userUID
+            .removeDuplicates()
+            .sink { [weak self] userUID in
+                guard let self = self else { return }
+                if let userUID = userUID {
+                    let logoutAction = UIAction(title: "Logout", image: UIImage(systemName: "figure.walk.departure")) { action in
+                        self.vm.signOut()
                     }
+                    let menu = UIMenu(title: "Options", children: [logoutAction])
+                    
+                    if let userName = Auth.auth().currentUser?.displayName { // 已登入
+                        self.navigationItem.title = "Hello, \(userName)"
+                        
+                        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "person.circle"), menu: menu)
+                    } else { // 已登入 未有 username
+                        navigationItem.title = "Hello!"
+                        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "person.circle"), menu: menu)
+                    }
+                    requestNotificationPermission() // request notification permission
+                        .sink { granted in
+                            if granted {
+                                AnimeNotification.shared.notificationEnable = true
+                            }
+                        }
+                        .store(in: &self.cancellables)
+                } else {
+                    navigationItem.title = "Hello!"
+                    navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "figure.walk.arrival"), style: .plain, target: self, action: #selector(sendLoginSignal))
                 }
-                .store(in: &cancellables)
-        } else {
-            navigationItem.title = "Hello!"
-            navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "figure.walk.arrival"), style: .plain, target: self, action: #selector(sendLoginSignal))
-        }
+            }
+            .store(in: &cancellables)
+        
     }
     
     func subscribeVM() {

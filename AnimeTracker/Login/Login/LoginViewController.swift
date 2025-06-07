@@ -7,6 +7,8 @@
 
 import UIKit
 import Combine
+import Lottie
+import SnapKit
 
 class LoginViewController: UIViewController {
     //MARK: - email textField
@@ -16,12 +18,26 @@ class LoginViewController: UIViewController {
     // the textfield that user input their password which the password relate to the email
     @IBOutlet weak var userPasswordTextField: UITextField!
     @IBOutlet weak var loginBtn: UIButton!
+    @IBOutlet weak var lottieAnimationContainer: UIView!
     
     private let viewModel: LoginViewViewModel = .init()
     private var cancellables: Set<AnyCancellable> = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
         
         setupUI()
         setupPublisher()
@@ -48,6 +64,19 @@ class LoginViewController: UIViewController {
         
         let tapToCloseKeyboard = UITapGestureRecognizer(target: self, action: #selector(closeKeyboard)) // tap the view to stop editing and close the keyboard
         self.view.addGestureRecognizer(tapToCloseKeyboard)
+        
+        // Load animation
+        let animationView = LottieAnimationView(name: "Walking") // no .json
+        // Configure
+        animationView.contentMode = .scaleAspectFit
+        animationView.loopMode = .loop
+        animationView.animationSpeed = 1.0
+        lottieAnimationContainer.addSubview(animationView)
+        animationView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        // Play
+        animationView.play()
     }
     
     private func setupPublisher() {
@@ -123,6 +152,15 @@ class LoginViewController: UIViewController {
         self.view.endEditing(true)
         viewModel.didPressForgotPassword.send(())
     }
+    
+    @objc private func keyboardWillShow(notification: Notification) {
+        guard let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
+        self.view.frame.origin.y = -keyboardFrame.height / 2
+    }
+
+    @objc private func keyboardWillHide(notification: Notification) {
+        self.view.frame.origin.y = 0
+    }
 }
 
 extension LoginViewController: UITextFieldDelegate {
@@ -138,6 +176,8 @@ extension LoginViewController: UITextFieldDelegate {
         }
         return true
     }
+    
+    
 }
 
 extension UITextField {

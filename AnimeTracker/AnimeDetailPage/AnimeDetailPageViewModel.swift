@@ -119,8 +119,7 @@ class AnimeDetailPageViewModel {
         
         configFavorite
             .sink { [weak self] _ in
-                print("---")
-                if FirebaseManager.shared.isAuthenticatedAndEmailVerified() {
+                if UserCache.shared.userUID != nil {
                     self?.isFavorite.toggle()
                 } else {
                     self?.shouldShowAlert.send(.needLogin)
@@ -130,8 +129,7 @@ class AnimeDetailPageViewModel {
         
         configNotification
             .sink { [weak self] _ in
-                print("---")
-                if FirebaseManager.shared.isAuthenticatedAndEmailVerified() {
+                if UserCache.shared.userUID != nil {
                     self?.isNotify.toggle()
                 } else {
                     self?.shouldShowAlert.send(.needLogin)

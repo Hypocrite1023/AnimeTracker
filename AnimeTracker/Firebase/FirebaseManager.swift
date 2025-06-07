@@ -122,6 +122,7 @@ extension FirebaseManager {
                     promise(.failure(error))
                 } else {
                     promise(.success(()))
+                    UserCache.shared.userUID = self.getCurrentUserUID()
                 }
             }
         }
@@ -130,6 +131,7 @@ extension FirebaseManager {
     
     func signOut() {
         try? Auth.auth().signOut()
+        UserCache.shared.userUID = nil
     }
     
     func register(withEmail: String, password: String, username: String) -> AnyPublisher<Void, Error> {
