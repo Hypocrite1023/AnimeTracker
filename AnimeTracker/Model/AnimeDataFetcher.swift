@@ -1513,7 +1513,7 @@ extension AnimeDataFetcher {
     
     
     
-    func genreateGenreQuery(genere: [String]) -> String {
+    func genreateGenreQuery(genere: [String], sortBy: String, page: Int) -> String {
         var queryString = ""
         
         for (_, value) in genere.enumerated() {
@@ -1522,8 +1522,8 @@ extension AnimeDataFetcher {
                 .replacingOccurrences(of: " ", with: "_")
                 .replacingOccurrences(of: "-", with: "_")
             let genreTemplate = """
-                          \(genreKey): Page(perPage: 20) {
-                                media(genre: "\(value.lowercased())", type: ANIME, sort: POPULARITY_DESC) {
+                          \(genreKey): Page(perPage: 20, page: \(page)) {
+                                media(genre: "\(value.lowercased())", type: ANIME, sort: \(sortBy)) {
                                     id
                                     title {
                                       native
@@ -1539,7 +1539,7 @@ extension AnimeDataFetcher {
         return queryString
     }
     
-    func fetchAnimeByCategory(genere: [String]) -> AnyPublisher<AnimeCategoryResult, Error> {
+    func fetchAnimeByCategory(genere: [String], sortBy: String, page: Int) -> AnyPublisher<AnimeCategoryResult, Error> {
 //        isFetchingData = true
         var urlRequest = URLRequest(url: queryURL)
         urlRequest.httpMethod = "post"
@@ -1549,7 +1549,7 @@ extension AnimeDataFetcher {
         
         let query = """
             query {
-              \(genreateGenreQuery(genere: genere))
+              \(genreateGenreQuery(genere: genere, sortBy: sortBy, page: page))
             }
             """
         
