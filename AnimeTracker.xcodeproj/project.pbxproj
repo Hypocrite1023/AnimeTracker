@@ -18,6 +18,7 @@
 		A3619D182DD60E4700231B63 /* Publisher+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3619D172DD60E3A00231B63 /* Publisher+Ext.swift */; };
 		A3619D1A2DD61C4800231B63 /* UIButton+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3619D192DD61C4800231B63 /* UIButton+Ext.swift */; };
 		A39F82E92E0F0CAE00D7B2B6 /* AnimeTracker.xctestplan in Resources */ = {isa = PBXBuildFile; fileRef = A39F82E82E0F0CAE00D7B2B6 /* AnimeTracker.xctestplan */; };
+		A39F82EB2E0F26AF00D7B2B6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CD6FB7422C63C752006455D6 /* GoogleService-Info.plist */; };
 		A3A77A282DF33F7100DFF8D4 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = A3A77A272DF33F7100DFF8D4 /* Lottie */; };
 		A3A77A362DF48CA600DFF8D4 /* login.png in Resources */ = {isa = PBXBuildFile; fileRef = A3A77A352DF48CA500DFF8D4 /* login.png */; };
 		A3A77A382DF4903900DFF8D4 /* register.png in Resources */ = {isa = PBXBuildFile; fileRef = A3A77A372DF4903900DFF8D4 /* register.png */; };
@@ -47,7 +48,6 @@
 		CD2FF7B62C5CB9A500924687 /* MediaRanking.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD2FF7B52C5CB9A500924687 /* MediaRanking.swift */; };
 		CD2FF7B82C5CB9CD00924687 /* MediaStaffPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD2FF7B72C5CB9CD00924687 /* MediaStaffPreview.swift */; };
 		CD2FF7BE2C5CC4ED00924687 /* FetchAnimeVoiceActorData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD2FF7BD2C5CC4ED00924687 /* FetchAnimeVoiceActorData.swift */; };
-		CD6FB7432C63C752006455D6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CD6FB7422C63C752006455D6 /* GoogleService-Info.plist */; };
 		CD7EF8CA2C66456700DCBF7E /* AnimeNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7EF8C92C66456700DCBF7E /* AnimeNotification.swift */; };
 		CD8DD5CA2C60987C00E0D7A2 /* OpenURLDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8DD5C92C60987C00E0D7A2 /* OpenURLDelegate.swift */; };
 		CD9D4E682C4D0126003492C1 /* AnimeDescriptionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD9D4E672C4D0126003492C1 /* AnimeDescriptionDelegate.swift */; };
@@ -144,6 +144,11 @@
 		A33224C42DFD73740015B204 /* Api */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Api;
+			sourceTree = "<group>";
+		};
+		A39F82EC2E0F2E8900D7B2B6 /* ci_scripts */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ci_scripts;
 			sourceTree = "<group>";
 		};
 		A3A0C7092DBA0783005CE24D /* StaffDetailView */ = {
@@ -353,6 +358,7 @@
 		CDC14F142C453DBF00BC14FA = {
 			isa = PBXGroup;
 			children = (
+				A39F82EC2E0F2E8900D7B2B6 /* ci_scripts */,
 				CDE22E4E2C48115800080BAD /* README.md */,
 				CDE22E492C480F4100080BAD /* Demo */,
 				CDC14F1F2C453DBF00BC14FA /* AnimeTracker */,
@@ -488,6 +494,7 @@
 				A3CB2AC62DF0712A0070A7DF /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				A39F82EC2E0F2E8900D7B2B6 /* ci_scripts */,
 				A3CB2AC22DF0712A0070A7DF /* AnimeTrackerTests */,
 			);
 			name = AnimeTrackerTests;
@@ -628,8 +635,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A39F82EB2E0F26AF00D7B2B6 /* GoogleService-Info.plist in Resources */,
 				CDC14F2A2C453DC000BC14FA /* Assets.xcassets in Resources */,
-				CD6FB7432C63C752006455D6 /* GoogleService-Info.plist in Resources */,
 				CDC14F2D2C453DC000BC14FA /* Base in Resources */,
 				CDC14F282C453DBF00BC14FA /* Base in Resources */,
 				CDA141F62C57CDDD00708A8B /* ThreadsView.xib in Resources */,
