@@ -21,7 +21,7 @@ class TrendingPageViewModel {
     // MARK: - data property
     var selectedAnimeCell: UICollectionViewCell?
     var currentLongPressCellStatus: (isFavorite: Bool?, isNotify: Bool?, status: String?, animeID: Int?)
-    @Published var animeTrendingData: AnimeTrending?
+    @Published var animeTrendingData: Response.AnimeTrending?
     private var cancellables: Set<AnyCancellable> = []
     
     init() {
@@ -169,40 +169,4 @@ enum LocolNotificationError: Error {
     }
 }
 
-struct AnimeTrending: Codable {
-    var data: Page
-    
-    struct Page: Codable {
-        var page: PageInfoAndMedia
-        
-        enum CodingKeys: String, CodingKey {
-            case page = "Page"
-        }
-        
-        struct PageInfoAndMedia: Codable {
-            var media: [Anime]
-            var pageInfo: PageInfo
-            
-            struct Anime: Codable {
-                let id: Int
-                let title: Title
-                let coverImage: CoverImage
-                
-                struct Title: Codable {
-                    let native: String?
-                    let english: String?
-                    let romaji: String?
-                }
-                
-                struct CoverImage: Codable {
-                    let large: String
-                }
-            }
-            
-            struct PageInfo: Codable {
-                var currentPage: Int
-                var hasNextPage: Bool
-            }
-        }
-    }
-}
+

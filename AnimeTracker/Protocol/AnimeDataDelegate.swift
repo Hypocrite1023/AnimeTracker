@@ -6,7 +6,3 @@
 //
 
 import Foundation
-
-protocol AnimeDataDelegate: AnyObject {
-    func passAnimeData(animeData: AnimeSearchedOrTrending)
-}

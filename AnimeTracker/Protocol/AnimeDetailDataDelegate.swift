@@ -16,7 +16,7 @@ protocol AnimeDetailDataDelegate: AnyObject {
 }
 
 protocol AnimeOverViewDataDelegate: AnyObject {
-    func animeDetailDataDelegate(media: MediaResponse.MediaData.Media)
+    func animeDetailDataDelegate(media: Response.AnimeDetail.MediaData.Media)
 }
 
 protocol FetchAnimeDetailDataByID: AnyObject {

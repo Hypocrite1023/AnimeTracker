@@ -44,7 +44,7 @@ struct CharacterDetail: Decodable {
                         let isAdult: Bool
                         let bannerImage: String?
                         let title: Title
-                        let coverImage: MediaResponse.MediaData.Media.MediaCoverImage
+                        let coverImage: Response.AnimeDetail.MediaData.Media.MediaCoverImage
                         let startDate: StartDate
                         let mediaListEntry: MediaListEntry?
                         
@@ -64,7 +64,7 @@ struct CharacterDetail: Decodable {
                     
                     struct VoiceActorRoles: Decodable {
                         let roleNotes: String?
-                        let voiceActor: MediaResponse.MediaData.Media.CharacterPreview.Edges.VoiceActors
+                        let voiceActor: Response.AnimeDetail.MediaData.Media.CharacterPreview.Edges.VoiceActors
                         
                     }
                 }

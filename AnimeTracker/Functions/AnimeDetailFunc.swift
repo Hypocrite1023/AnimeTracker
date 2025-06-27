@@ -53,13 +53,15 @@ struct AnimeDetailFunc {
             return ""
         }
     }
-    static func getMainStudio(from studios: MediaResponse.MediaData.Media.Studios) -> String {
+    static func getMainStudio(from studios: Response.AnimeDetail.MediaData.Media.Studios?) -> String {
+        guard let studios else { return "" }
         let studioNames = studios.edges.filter({
             $0.isMain
         })
         return studioNames.first?.node.name ?? ""
     }
-    static func getProducers(from studios: MediaResponse.MediaData.Media.Studios) -> String {
+    static func getProducers(from studios: Response.AnimeDetail.MediaData.Media.Studios?) -> String {
+        guard let studios else { return "" }
         let studioNames = studios.edges.map({
             $0.node.name
         })

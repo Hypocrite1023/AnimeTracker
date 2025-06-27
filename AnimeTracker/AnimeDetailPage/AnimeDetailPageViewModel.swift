@@ -24,15 +24,15 @@ class AnimeDetailPageViewModel {
     let configNotification: PassthroughSubject<Void, Never> = .init()
     let shouldShowLoginPage: PassthroughSubject<Void, Never> = .init()
     // MARK: - output
-    private(set) var newCharacterData: AnyPublisher<[MediaResponse.MediaData.Media.CharacterPreview.Edges], Never> = .empty
-    private(set) var newStaffData: AnyPublisher<[MediaResponse.MediaData.Media.StaffPreview.Edges], Never> = .empty
-    private(set) var showOverview: AnyPublisher<MediaResponse.MediaData.Media?, Never> = .empty
-    private(set) var showWatch: AnyPublisher<[MediaResponse.MediaData.Media.StreamingEpisodes], Never> = .empty
-    private(set) var showCharacters: AnyPublisher<[MediaResponse.MediaData.Media.CharacterPreview.Edges], Never> = .empty
-    private(set) var shouldUpdateCharacters: AnyPublisher<[MediaResponse.MediaData.Media.CharacterPreview.Edges], Never> = .empty
-    private(set) var showStats: AnyPublisher<(MediaRanking.MediaData.Media?, MediaResponse.MediaData.Media.Stats?), Never> = .empty
-    private(set) var showStaffs: AnyPublisher<[MediaResponse.MediaData.Media.StaffPreview.Edges], Never> = .empty
-    private(set) var shouldUpdateStaffs: AnyPublisher<[MediaResponse.MediaData.Media.StaffPreview.Edges], Never> = .empty
+    private(set) var newCharacterData: AnyPublisher<[Response.AnimeDetail.MediaData.Media.CharacterPreview.Edges], Never> = .empty
+    private(set) var newStaffData: AnyPublisher<[Response.AnimeDetail.MediaData.Media.StaffPreview.Edges], Never> = .empty
+    private(set) var showOverview: AnyPublisher<Response.AnimeDetail.MediaData.Media?, Never> = .empty
+    private(set) var showWatch: AnyPublisher<[Response.AnimeDetail.MediaData.Media.StreamingEpisodes], Never> = .empty
+    private(set) var showCharacters: AnyPublisher<[Response.AnimeDetail.MediaData.Media.CharacterPreview.Edges], Never> = .empty
+    private(set) var shouldUpdateCharacters: AnyPublisher<[Response.AnimeDetail.MediaData.Media.CharacterPreview.Edges], Never> = .empty
+    private(set) var showStats: AnyPublisher<(MediaRanking.MediaData.Media?, Response.AnimeDetail.MediaData.Media.Stats?), Never> = .empty
+    private(set) var showStaffs: AnyPublisher<[Response.AnimeDetail.MediaData.Media.StaffPreview.Edges]?, Never> = .empty
+    private(set) var shouldUpdateStaffs: AnyPublisher<[Response.AnimeDetail.MediaData.Media.StaffPreview.Edges], Never> = .empty
     private(set) var showAlert: AnyPublisher<AlertType, Never> = .empty
     private(set) var configFavoritePublisher: AnyPublisher<Bool, Never> = .empty
     private(set) var configNotificationPublisher: AnyPublisher<Bool, Never> = .empty
@@ -43,12 +43,12 @@ class AnimeDetailPageViewModel {
     @Published var isFavorite: Bool = false
     @Published var isNotify: Bool = false
     var isFirebaseDataInitFinished: Bool = false
-    @Published var animeDetailData: MediaResponse.MediaData.Media?
-    @Published var animeCharacterData: [MediaResponse.MediaData.Media.CharacterPreview.Edges] = []
-    @Published var newAnimeCharacterData: [MediaResponse.MediaData.Media.CharacterPreview.Edges] = []
+    @Published var animeDetailData: Response.AnimeDetail.MediaData.Media?
+    @Published var animeCharacterData: [Response.AnimeDetail.MediaData.Media.CharacterPreview.Edges]? = []
+    @Published var newAnimeCharacterData: [Response.AnimeDetail.MediaData.Media.CharacterPreview.Edges]? = []
     @Published var animeRankingData: MediaRanking.MediaData.Media?
-    @Published var animeStaffData: [MediaResponse.MediaData.Media.StaffPreview.Edges] = []
-    let newAnimeStaffDataPassThrough: PassthroughSubject<[MediaResponse.MediaData.Media.StaffPreview.Edges], Never> = .init()
+    @Published var animeStaffData: [Response.AnimeDetail.MediaData.Media.StaffPreview.Edges]? = []
+    let newAnimeStaffDataPassThrough: PassthroughSubject<[Response.AnimeDetail.MediaData.Media.StaffPreview.Edges], Never> = .init()
     
     private var cancellable: Set<AnyCancellable> = []
     
@@ -68,8 +68,8 @@ class AnimeDetailPageViewModel {
                 }
             } receiveValue: { response in
                 self.animeDetailData = response.data.media
-                self.animeCharacterData = response.data.media.characterPreview.edges
-                self.animeStaffData = response.data.media.staffPreview.edges
+                self.animeCharacterData = response.data.media.characterPreview?.edges
+                self.animeStaffData = response.data.media.staffPreview?.edges
             }
             .store(in: &cancellable)
         
@@ -181,9 +181,9 @@ class AnimeDetailPageViewModel {
         
         shouldUpdateCharacters = shouldLoadMoreCharacters
             .throttle(for: 2, scheduler: RunLoop.main, latest: false)
-            .filter { self.animeDetailData?.characterPreview.pageInfo.hasNextPage == true }
+            .filter { self.animeDetailData?.characterPreview?.pageInfo.hasNextPage == true }
             .compactMap {
-                guard let animeID = self.animeDetailData?.id, let currentPage = self.animeDetailData?.characterPreview.pageInfo.currentPage else {
+                guard let animeID = self.animeDetailData?.id, let currentPage = self.animeDetailData?.characterPreview?.pageInfo.currentPage else {
                     return nil
                 }
                 return (animeID, currentPage)
@@ -199,10 +199,10 @@ class AnimeDetailPageViewModel {
                         }
                     )
                     .map {
-                        self.animeDetailData?.characterPreview.pageInfo = $0.characterPreview.pageInfo
+                        self.animeDetailData?.characterPreview?.pageInfo = $0.characterPreview.pageInfo
                         return $0.characterPreview.edges
                     }
-                    .catch { error -> AnyPublisher<[MediaResponse.MediaData.Media.CharacterPreview.Edges], Never> in
+                    .catch { error -> AnyPublisher<[Response.AnimeDetail.MediaData.Media.CharacterPreview.Edges], Never> in
                         self.shouldShowAlert.send(.apiError(message: error.localizedDescription))
                         return Just([]).eraseToAnyPublisher()
                     }
@@ -242,9 +242,9 @@ class AnimeDetailPageViewModel {
         
         shouldUpdateStaffs = shouldLoadMoreStaffs
             .throttle(for: 2, scheduler: RunLoop.main, latest: false)
-            .filter { self.animeDetailData?.staffPreview.pageInfo.hasNextPage ?? false }
+            .filter { self.animeDetailData?.staffPreview?.pageInfo.hasNextPage ?? false }
             .compactMap {
-                return self.animeDetailData?.staffPreview.pageInfo.currentPage
+                return self.animeDetailData?.staffPreview?.pageInfo.currentPage
             }
             .flatMap { currentPage in
                 return AnimeDataFetcher.shared.fetchStaffPreviewByMediaId(id: self.animeID, page: currentPage + 1)
@@ -254,13 +254,13 @@ class AnimeDetailPageViewModel {
                         AnimeDataFetcher.shared.isFetchingData = false
                     })
                     .map {
-                        self.animeDetailData?.staffPreview.pageInfo = $0.data.media.staffPreview.pageInfo
-                        self.animeStaffData.append(contentsOf: $0.data.media.staffPreview.edges)
+                        self.animeDetailData?.staffPreview?.pageInfo = $0.data.media.staffPreview.pageInfo
+                        self.animeStaffData?.append(contentsOf: $0.data.media.staffPreview.edges)
                         return $0.data.media.staffPreview.edges
                     }
                     .catch { error in
                         self.shouldShowAlert.send(.apiError(message: error.localizedDescription))
-                        return Empty<[MediaResponse.MediaData.Media.StaffPreview.Edges], Never>(completeImmediately: true).eraseToAnyPublisher()
+                        return Empty<[Response.AnimeDetail.MediaData.Media.StaffPreview.Edges], Never>(completeImmediately: true).eraseToAnyPublisher()
                     }
                     .eraseToAnyPublisher()
             }

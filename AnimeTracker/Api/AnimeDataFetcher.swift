@@ -8,30 +8,6 @@
 import Foundation
 import Combine
 
-struct SimpleAnimeData: Codable {
-    let data: DataResponse
-    
-    struct DataResponse: Codable {
-        let Media: SimpleMedia
-        
-        struct SimpleMedia: Codable {
-            let id: Int
-            let title: Title
-            let coverImage: CoverImage
-            let status: String
-            
-            struct Title: Codable {
-                let native: String
-                let romaji: String?
-                let english: String?
-            }
-            struct CoverImage: Codable {
-                let large: String
-            }
-        }
-    }
-}
-
 struct SimpleEpisodeData: Codable {
     let data: DataResponse
     
@@ -91,7 +67,7 @@ struct AnimeTimeLineInfo: Codable {
 }
 
 struct DynamicSimpleAnimeDataResponse: Codable {
-    let data: [String: SimpleAnimeData.DataResponse.SimpleMedia]
+    let data: [String: Response.AnimeEssentialData]
 }
 
 struct DynamicSimpleEpisodeDataResponse: Codable {
@@ -168,7 +144,7 @@ class AnimeDataFetcher {
     }
     
     // TODO: - 這些 function 要改成回傳 Publisher
-    func fetchAnimeSimpleDataByIDs(id: [Int], completion: @escaping ([SimpleAnimeData.DataResponse.SimpleMedia?]) -> Void) {
+    func fetchAnimeSimpleDataByIDs(id: [Int], completion: @escaping ([Response.AnimeEssentialData?]) -> Void) {
         isFetchingData = true
 //        print(id)
         var urlRequest = URLRequest(url: queryURL)
@@ -226,7 +202,7 @@ class AnimeDataFetcher {
                 let mediaDictionary = Dictionary(uniqueKeysWithValues: media.data.map { ($0.value.id, $0.value) })
 
                 // Create the result array based on the original idArray order
-                let orderedMediaArray: [SimpleAnimeData.DataResponse.SimpleMedia] = id.compactMap { mediaDictionary[$0] }
+                let orderedMediaArray: [Response.AnimeEssentialData] = id.compactMap { mediaDictionary[$0] }
                 
                 completion(orderedMediaArray)
                 self.isFetchingData = false
@@ -382,7 +358,7 @@ query {
 // MARK: - Anime Relate
 extension AnimeDataFetcher {
     // MARK: - anime
-    func fetchAnimeByID(id: Int) -> AnyPublisher<MediaResponse, Error> {
+    func fetchAnimeByID(id: Int) -> AnyPublisher<Response.AnimeDetail, Error> {
         isFetchingData = true
         var urlRequest = URLRequest(url: queryURL)
         urlRequest.httpMethod = "post"
@@ -608,7 +584,7 @@ query {
                 self.isFetchingData = false
                 return data
             }
-            .decode(type: MediaResponse.self, decoder: JSONDecoder())
+            .decode(type: Response.AnimeDetail.self, decoder: JSONDecoder())
             .eraseToAnyPublisher()
     }
     
@@ -658,7 +634,7 @@ query {
             .eraseToAnyPublisher()
     }
     
-    func fetchAnimeSimpleDataByID(id: Int) -> AnyPublisher<SimpleAnimeData, Error> {
+    func fetchAnimeSimpleDataByID(id: Int) -> AnyPublisher<Response.AnimeEssentialData, Error> {
         isFetchingData = true
         print(id)
         var urlRequest = URLRequest(url: queryURL)
@@ -705,7 +681,7 @@ query {
 //                print(String(data: data, encoding: .utf8))
                 return data
             }
-            .decode(type: SimpleAnimeData.self, decoder: JSONDecoder())
+            .decode(type: Response.AnimeEssentialData.self, decoder: JSONDecoder())
             .eraseToAnyPublisher()
     }
     
@@ -1441,7 +1417,7 @@ query {
 
 // MARK: - Trending
 extension AnimeDataFetcher {
-    func fetchAnimeByTrending(page: Int) -> AnyPublisher<AnimeTrending, Error> {
+    func fetchAnimeByTrending(page: Int) -> AnyPublisher<Response.AnimeTrending, Error> {
         isFetchingData = true
         var urlRequest = URLRequest(url: queryURL)
         urlRequest.httpMethod = "post"
@@ -1479,7 +1455,7 @@ extension AnimeDataFetcher {
             .map {
                 return $0
             }
-            .decode(type: AnimeTrending.self, decoder: JSONDecoder())
+            .decode(type: Response.AnimeTrending.self, decoder: JSONDecoder())
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }

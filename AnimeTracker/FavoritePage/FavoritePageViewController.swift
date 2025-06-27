@@ -25,7 +25,7 @@ struct FavoriteAnime: Hashable {
     let isFavorite: Bool
     let isNotify: Bool
     var status: String
-    var animeData: SimpleAnimeData.DataResponse.SimpleMedia?
+    var animeData: Response.AnimeEssentialData?
 }
 
 enum StatusSection: CaseIterable {
@@ -45,7 +45,7 @@ class FavoritePageViewController: UIViewController {
     
     var favoriteAnimeList: [FavoriteAnime] = []
 //    var tmpFavoriteAnimeList: [FavoriteAnime] = []
-    var tableViewData: [SimpleAnimeData.DataResponse.SimpleMedia] = []
+    var tableViewData: [Response.AnimeEssentialData] = []
 //    var tmpTableViewData: [SimpleAnimeData.DataResponse.SimpleMedia] = []
     var isEnableLoadMoreData: Bool = false
     
@@ -84,7 +84,7 @@ class FavoritePageViewController: UIViewController {
     func configDataSource() {
         tableViewDataSource = UITableViewDiffableDataSource(tableView: favoriteTableView, cellProvider: { tableView, indexPath, itemIdentifier in
             let cell = tableView.dequeueReusableCell(withIdentifier: "FavoriteAnimeTableViewCell", for: indexPath) as! FavoriteTableViewCell
-            cell.animeCoverImageView.loadImage(from: itemIdentifier.animeData?.coverImage.large)
+            cell.animeCoverImageView.loadImage(from: itemIdentifier.animeData?.coverImage?.large)
             cell.animeID = itemIdentifier.animeID
             cell.animeTitleLabel.text = itemIdentifier.animeData?.title.native
             cell.configNotify = self

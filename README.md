@@ -1,220 +1,75 @@
-#  AnimeTracker  
-### 5 main Tabs - Trending, Category, Searching, Favorite, Timeline    
-> Trending: Display trending anime right now.  
-> Category: Display trending anime by each category.  
-> Searching: Searching anime with genres, tags, year, season... etc.  
-> Favorite: Display your favorite anime at this page, your can cancel the favorite or cancel the notification.  
-> Timeline: List the anime from your favorite, and sort by the left time to airing. 
-#### Login page, Register Page, Reset password page  
-> Use Google Firebase Service    
-<p>
-    <img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/login.png" width = "200">
-    <img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/register.png" width = "200">
-    <img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/resetpass.png" width = "200">
-</p>  
+# AnimeTracker
 
-#### Trending Page  
-<p>
-	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/trending.png" width = "200">
+AnimeTracker is an iOS application that allows users to track their favorite anime series. The app provides information about trending anime, allows users to search for anime, and helps them keep track of their favorite shows.
+
+<p align="center">
+  <img src="https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/login.png" width="200">
+  <img src="https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/register.png" width="200">
+  <img src="https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/resetpass.png" width="200">
 </p>
 
-#### Category Page
-<p>
-    <img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/category.png" width = "200">
+## Features
+
+- **Trending Page**: Displays the most popular anime series at the moment.
+- **Category Page**: Shows trending anime by category.
+- **Search Page**: Allows users to search for anime by genre, tags, year, season, and more.
+- **Favorite Page**: Displays a user's favorite anime series, with the ability to unfavorite or disable notifications.
+- **Timeline Page**: Lists a user's favorite anime, sorted by the time remaining until the next episode airs.
+- **Anime Detail Page**: Provides detailed information about a selected anime series.
+
+<p align="center">
+  <img src="https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/trending.png" width="200">
+  <img src="https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/category.png" width="200">
+  <img src="https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/animeDetail1.png" width="200">
 </p>
 
-#### Anime Detail Page  
-<p>
-    <img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/animeDetail1.png" width = "200">
-    <img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/animeDetail2.png" width = "200">
-    <img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/animeDetail3.png" width = "200">
-</p> 
-  
-#### Searching Page  
-<p>
-    <img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/searching1.png" width = "200">
-    <img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/searching2.png" width = "200">
-    <img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/searching3.png" width = "200">
-</p>
-  
-#### Favorite Page  
-> Filter by releasing and finished  
-<p>
-	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/20240822/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-08-22%20at%2020.06.21.png" width = "200">
-	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/20240822/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-08-22%20at%2020.06.30.png" width = "200">
-</p>
-  
-#### Timeline Page  
-> Sort by the left time of that anime episode will airing
-<p>
-	<img src = "https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/20240822/Simulator%20Screenshot%20-%20iPhone%2015%20Pro%20-%202024-08-22%20at%2020.06.38.png" width = "200">
-</p>
-  
-### Anime Detail Page
-[![Watch the video](https://img.youtube.com/vi/sTBPWBrYeRM/0.jpg)]
-(https://youtu.be/sTBPWBrYeRM?si=zuV5maqs7-jRM9j8)  
+## Installation
 
-#### 遇到的問題及紀錄
-> 2024.07.20
->> UIScrollView沒辦法上或下滑動，後來發現如果是使用AutoLayout 加入UIScrollView的最後一個物件，他的trailing anchor一定要設成那個UIScrollView的trailing anchor  
->> 這個問題是我在寫動畫詳細介紹頁面的時候遇到的，有６個按鈕但我怕一般直立的裝置沒辦法全部擠進去，所以使用了scroll view
-   
-> 2024.07.24
->> storyboard中的UIScrollView有content layout guide 和 frame layout guide  
->> content layout guide  
->> 定義:
-	•	表示捲動視圖中可捲動內容的大小和位置。  
-	•	約束這個 guide 可以用來確定捲動視圖內容的大小和位置。  
-	•	換句話說，它代表的是捲動視圖的整個內容區域，包括所有可捲動的部分，而不僅僅是目前可見的部分。  
->> 用途:  
-	•	如果你需要設置捲動視圖的內容大小，比如確定內容的總高度或寬度，你需要使用這個 guide。  
->> frame layout guide
->> 定義:  
-	•	表示捲動視圖本身的邊界和位置。  
-	•	約束這個 guide 可以用來確定捲動視圖的實際大小和位置。  
-	•	它代表的是捲動視圖的可見區域，即不包含任何超出邊界的捲動內容部分。  
->> 用途:  
-	•	這個 guide 用於約束捲動視圖本身的大小和位置。
+To run the AnimeTracker app on your local machine, follow these steps:
 
-> 2024.07.25
->> frame layout guide的用途：
->> 如果在scroll view中想讓某個view不要離開畫面，便可以利用這個屬性
+1. **Clone the repository**:
 
-> 2024.08.06
->> 自己寫code需要更細心，今天寫浮動按鈕跳轉頁面，我想說明明tabBarController selectedIndex是設定正確的，但每次跳到的頁面都是同一頁，問了chatgpt也不知道哪裡有問題  
-後來發現原來是我設定的page不對，越簡單的code越需要細心啊  
-```
-let goToTrendingPageGesture = FloatingButtonTapGesture(target: self, action: #selector(navigateTo), navigateTo: 0)
-trendingBtn.addGestureRecognizer(goToTrendingPageGesture)
-let goToSearchingPageGesture = FloatingButtonTapGesture(target: self, action: #selector(navigateTo), navigateTo: 1)
-searchingBtn.addGestureRecognizer(goToSearchingPageGesture)
-let goToFavoritePageGesture = FloatingButtonTapGesture(target: self, action: #selector(navigateTo), navigateTo: 2)
-favoriteBtn.addGestureRecognizer(goToFavoritePageGesture)
-```
-> 2024.08.07
->> 使用singleton pattern: 當同個物件會在整個project中不斷地使用．使用singleton pattern的物件只能有一個實例，被呼叫才會create  
->> Sandbox: rsync.samba(3701) deny(1) file-write-create /Users/rex/Library/Developer/Xcode/DerivedData/AnimeTracker-djkxbuuynisxwxgyttsguaxwcvps/Build/Products/Debug-iphonesimulator/AnimeTracker.app/Frameworks/openssl_grpc.framework/_CodeSignature  
->>> User Script Sandboxing Yes -> No  
-  
-> 2024.08.21  
->> 傳遞非同步資料該使用delegate or escape closure?  
->>> 我一開始寫的時候因為對escape closure還不熟，所以在傳遞從非同步的資料都是使用delegate，但後來需要傳遞的資料種類越來越多，每種傳遞的資料都需要寫一個protocol  
->>> 有時候又會忘記設定delegate的對象，後來對escape closure比較熟後，只要是非同步資料的傳遞我都喜歡使用escape closure，因為簡單而且不會忘記寫delegate的對象  
->> 當character preview 被 tap，要通知viewController使用api來獲得資料並在獲得資料後更新UI  
-  
->> 使用delegate(利用protocol):  
->>> 1. character preview(UIView)透過UITapGestureRecognizer知道他被點了  
->>> 2. 透過delegate通知viewController要拿資料(MVC，view不處理資料)  
->>> 3. viewController透過AnimeDataFetcher拿到資料(需要實現相關的protocol)  
->>> 4. AnimeDataFetcher再透過delegate傳資料到viewController  
->>> 5. viewController拿到資料並更新UI  
-  
->> 使用completion handler(escaping closure):  
->>> 1. character preview(UIView)透過UITapGestureRecognizer知道他被點了  
->>> 2. 透過delegate通知viewController要拿資料(MVC，view不處理資料)  
->>> 3. viewController透過AnimeDataFetcher拿到資料再經由completion handler更新UI  
->>>> 從上面例子可以看到 delegate 會比 completion handler 使用上來的複雜一點，不過當一次抓的資料種類比較多，使用delegate可以為不同的資料加入不同的function，
-比如說我同時獲得了character和voice actor的資料，這兩種資料更新的UI是不同的，這時候就可以透過不同的function處理，使用completion handler時，處理不同資料的程式碼
-都混再一起，所以使用delegate程式碼的結構會比較清楚  
-  
-> 2024.08.22  
->> 使用UITableView with UITableViewDiffableDataSource遇到的問題  
->>> 在其他頁面更改了資料的值，更新了snapshot也把snapshot apply給data source，但tableview的顯示的資料沒有更新  
->>> 解決 -> 修改hashable的 == 及 hash function，讓DiffableDataSource檢測到資料的變動  
-```
-// 原本
-struct FavoriteAnime: Hashable {
-    static func == (lhs: FavoriteAnime, rhs: FavoriteAnime) -> Bool {
-        return lhs.animeID == rhs.animeID
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(animeID)
-    }
-    
-    let animeID: Int
-    let isFavorite: Bool
-    let isNotify: Bool
-    let status: String
-    var animeData: SimpleAnimeData.DataResponse.SimpleMedia?
-}
-// 修改後
-struct FavoriteAnime: Hashable {
-    static func == (lhs: FavoriteAnime, rhs: FavoriteAnime) -> Bool {
-        return lhs.animeID == rhs.animeID && lhs.isFavorite == rhs.isFavorite && lhs.isNotify == rhs.isNotify
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(animeID)
-        hasher.combine(isFavorite)
-        hasher.combine(isNotify)
-    }
-    
-    let animeID: Int
-    let isFavorite: Bool
-    let isNotify: Bool
-    let status: String
-    var animeData: SimpleAnimeData.DataResponse.SimpleMedia?
-}
-```
----
-## 2025.4.22
-```
-class AnimeVoiceActorViewController: UIViewController {
-    @IBOutlet weak var relationCollectionView: UICollectionView!
-    let loadMoreVoiceActorDataTrigger: PassthroughSubject<Void, Never> = PassthroughSubject<Void, Never>()
-}
-extension AnimeVoiceActorViewController: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if scrollView == relationCollectionView {
-            if let hasNextPage = viewModel?.voiceActorData?.characterMedia?.pageInfo.hasNextPage, hasNextPage && (scrollView.contentOffset.x + scrollView.bounds.width > scrollView.contentSize.width + 10) && !AnimeDataFetcher.shared.isFetchingData {
-                loadMoreVoiceActorDataTrigger.send()
-            }
-        }
-    }
-}
+   ```
+   git clone https://github.com/Hypocrite1023/AnimeTracker.git
+   ```
 
-class AnimeVoiceActorPageViewModel {
-    private var cancellables: Set<AnyCancellable> = []
-    func bindLoadMoreVoiceActorTriggerToViewModel(trigger: PassthroughSubject<Void, Never>) {
-        trigger
-            .throttle(for: .seconds(2), scheduler: DispatchQueue.main, latest: false)
-            .sink { _ in
-                self.fetchMoreVoiceActorData()
-            }
-            .store(in: &cancellables)
-    }
-}
-```
-### 利用 PassthroughSubject 搭配 throttle 將 Api 請求次數限制在最多2秒一次
-當 CollectionView.contentOffset.x 加上 CollectionView 的寬度大於 CollectionView 的contentSize.width(也就是可滑動的view的大小的寬度)，loadMoreVoiceActorDataTrigger 就 send 一個 Void 的值， 而 viewModel 因為 viewController 使用了 bindLoadMoreVoiceActorTriggerToViewModel()，所以 viewModel 當 loadMoreVoiceActorDataTrigger send 值時就能觀察到
----
-## 2025.4.24
-```
-let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(swipeAction))
-swipeGesture.direction = .right
-self.view.addGestureRecognizer(swipeGesture)
+2. **Install the dependencies**:
 
-@objc func swipeAction(sender: UISwipeGestureRecognizer?) {
-    print("right swipe")
-    navigationController?.popViewController(animated: true)
-}
-```
-### 我在 AnimeDetailViewController viewDidLoad() 加入了上面的程式碼 且 在 TrendingPageViewController 的 viewDidLoad() 中 設定了 `navigationController?.hidesBarsOnSwipe = true`
-> 這樣在 AnimeDetailView 會沒辦法透過往右滑來回到上一頁 
-```
-swipeGesture.delegate = self
+   The project uses CocoaPods to manage its dependencies. To install the required pods, run the following command in the project's root directory:
 
-extension AnimeDetailPageViewController: UIGestureRecognizerDelegate {
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return true
-    }
-}
-```
-### 需要加上 `swipeGesture.delegate = self` 並且 `func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool { return true }`
-> 這樣允許了 NavigationController 辨識的 swipe gesture 跟我們設定的右滑回上頁的 gesture 能同時被辨識
+   ```
+   pod install
+   ```
 
-___
-## 2025.5.20
-### UIScrollView 的 content view 因為有 Navigation Bar 的關係最上方會留個空間，但我不想要
-> 調整 scrollView 的 `contentInsetAdjustmentBehavior` 為 .never
+3. **Open the project in Xcode**:
+
+   Open the `AnimeTracker.xcworkspace` file in Xcode.
+
+4. **Run the app**:
+
+   Select a simulator or a physical device and click the "Run" button to build and run the app.
+
+## Usage
+
+Once the app is running, you can perform the following actions:
+
+- **Browse trending anime**: The "Trending" tab displays the most popular anime series.
+- **Search for anime**: The "Search" tab allows you to search for anime by various criteria.
+- **View anime details**: Tap on an anime series to view its details, including a summary, characters, and more.
+- **Add to favorites**: On the anime detail page, you can add an anime to your favorites list.
+- **Track your favorite anime**: The "Favorite" tab displays your favorite anime, and the "Timeline" tab shows you when the next episode will air.
+
+## Technical Details
+
+- **Architecture**: The project follows the **Model-View-ViewModel (MVVM)** architectural pattern.
+- **Frameworks**: The app is built using **Swift** and the **UIKit** framework.
+- **Asynchronous Programming**: The app uses the **Combine** framework for handling asynchronous operations.
+- **Dependencies**: The project uses **CocoaPods** for dependency management. The main dependencies include:
+  - **Firebase**: For user authentication and other backend services.
+  - **gRPC**: For communication with the backend.
+
+For more information about the project's architecture, see the `ARCHITECTURE.md` file.
+
+## Development Log
+
+For a detailed log of the project's development, see the `CHANGELOG.md` file.

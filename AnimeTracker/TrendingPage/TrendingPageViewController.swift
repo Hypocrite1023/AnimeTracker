@@ -213,7 +213,7 @@ class TrendingPageViewController: UIViewController {
                         print(error)
                     }
                 } receiveValue: { simpleAnimeData in
-                    animeStatus = simpleAnimeData.data.Media.status
+                    animeStatus = simpleAnimeData.status
 //                    FirebaseManager.shared.getAnimeRecord(userUID: userUID, animeID: animeID) { favorite, notify, _, error in
 //                        self.viewModel.currentLongPressCellStatus = (favorite == nil ? false : favorite, notify == nil ? false : notify, animeStatus, animeID)
 //                        if let favorite = favorite {
@@ -352,11 +352,11 @@ extension TrendingPageViewController: UICollectionViewDataSource {
             let longTapGesture = AnimeCellLongPressGesture(target: self, action: #selector(cellLongTap), animeID: animeData.id)
             cell.addGestureRecognizer(longTapGesture)
             if let animeTitle = animeData.title.native {
-                cell.setCell(title: animeTitle, imageURL: animeData.coverImage.large)
+                cell.setCell(title: animeTitle, imageURL: animeData.coverImage?.large)
             } else if let animeTitle = animeData.title.english {
-                cell.setCell(title: animeTitle, imageURL: animeData.coverImage.large)
+                cell.setCell(title: animeTitle, imageURL: animeData.coverImage?.large)
             } else if let animeTitle = animeData.title.romaji {
-                cell.setCell(title: animeTitle, imageURL: animeData.coverImage.large)
+                cell.setCell(title: animeTitle, imageURL: animeData.coverImage?.large)
             }
         } else {
             cell.setCell(title: "", imageURL: nil)

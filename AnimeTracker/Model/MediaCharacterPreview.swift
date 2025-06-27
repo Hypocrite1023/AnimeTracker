@@ -2,7 +2,7 @@
 //  MediaCharacterPreview.swift
 //  AnimeTracker
 //
-//  Created by 邱翊均 on 2024/8/2.
+//  Created by YI-CHUN CHIU on 2025/6/14.
 //
 
 import Foundation
@@ -17,7 +17,7 @@ struct MediaCharacterPreview: Decodable {
             case media = "Media"
         }
         struct Media: Decodable {
-            let characterPreview: MediaResponse.MediaData.Media.CharacterPreview
+            let characterPreview: Response.AnimeDetail.MediaData.Media.CharacterPreview
         }
     }
 }

@@ -17,7 +17,7 @@ struct MediaStaffPreview: Decodable {
             case media = "Media"
         }
         struct Media: Decodable {
-            let staffPreview: MediaResponse.MediaData.Media.StaffPreview
+            let staffPreview: Response.AnimeDetail.MediaData.Media.StaffPreview
         }
     }
 }

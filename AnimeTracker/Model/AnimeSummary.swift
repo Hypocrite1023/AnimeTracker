@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct AnimeSearchedOrTrending: Codable {
+struct AnimeSummary: Codable {
     var data: Page
     
     struct Page: Codable {
@@ -37,7 +37,4 @@ struct AnimeSearchedOrTrending: Codable {
             }
         }
     }
-    
-    
-    
 }

@@ -35,7 +35,7 @@ class AnimeDetailPageViewController: UIViewController {
     // data property
     var viewModel: AnimeDetailPageViewModel?
     private var cancellables: Set<AnyCancellable> = []
-    private var characterData: [MediaResponse.MediaData.Media.CharacterPreview.Edges] = []
+    private var characterData: [Response.AnimeDetail.MediaData.Media.CharacterPreview.Edges] = []
     
     let loadMoreStaffDataTrigger: PassthroughSubject<Void, Never> = .init()
     
@@ -110,7 +110,7 @@ class AnimeDetailPageViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .sink { characters in
                 
-                self.viewModel?.animeCharacterData.append(contentsOf: characters)
+                self.viewModel?.animeCharacterData?.append(contentsOf: characters)
                 guard let container = self.container.subviews.first(where: {$0 is AnimeCharactersView}) as? AnimeCharactersView else { return }
                 self.updateCharacters(container: container, edges: characters)
             }
@@ -264,18 +264,18 @@ class AnimeDetailPageViewController: UIViewController {
 // MARK: - UI func
 extension AnimeDetailPageViewController {
     // MARK: - Base
-    func setupBaseView(data: MediaResponse.MediaData.Media?) {
+    func setupBaseView(data: Response.AnimeDetail.MediaData.Media?) {
         guard let data = data else { return }
-        backgroundImageView.kf.setImage(with: URL(string: data.coverImage.extraLarge ?? ""))
-        animeBannerImage.kf.setImage(with: URL(string: data.bannerImage ?? (viewModel?.animeDetailData?.coverImage.extraLarge ?? "")))
-        animeThumbnailImage.kf.setImage(with: URL(string: data.coverImage.extraLarge ?? ""))
+        backgroundImageView.kf.setImage(with: URL(string: data.coverImage?.extraLarge ?? ""))
+        animeBannerImage.kf.setImage(with: URL(string: data.bannerImage ?? (viewModel?.animeDetailData?.coverImage?.extraLarge ?? "")))
+        animeThumbnailImage.kf.setImage(with: URL(string: data.coverImage?.extraLarge ?? ""))
         animeTitleLabel.text = data.title.native
-        if data.status.uppercased() != AnimeInfo.AnimeStatus.releasing.rawValue {
+        if data.status?.uppercased() != AnimeInfo.AnimeStatus.releasing.rawValue {
             self.animeAiringNotifyBtn.isHidden = true
         }
     }
     // MARK: - Overview
-    func setupOverview(data: MediaResponse.MediaData.Media?) {
+    func setupOverview(data: Response.AnimeDetail.MediaData.Media?) {
         let overview = Overview()
         container.addSubview(overview)
         overview.snp.makeConstraints { make in
@@ -296,7 +296,7 @@ extension AnimeDetailPageViewController {
         setupAnimeTagsVStack(overview: overview, animeDetailData: data)
     }
     // MARK: - Setting up overview sub functions
-    func setupAnimeInformation(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
+    func setupAnimeInformation(overview: Overview, animeDetailData: Response.AnimeDetail.MediaData.Media) {
         if let nextAiringEpisode = animeDetailData.nextAiringEpisode {
             overview.airingLabel.text =  "Ep \(nextAiringEpisode.episode): \(AnimeDetailFunc.timeLeft(from: nextAiringEpisode.airingAt))"
         } else {
@@ -318,7 +318,7 @@ extension AnimeDetailPageViewController {
             overview.episodesDurationLabel.text = ""
         }
         overview.statusLabel.text = animeDetailData.status
-        if let year = animeDetailData.startDate.year, let month = animeDetailData.startDate.month, let day = animeDetailData.startDate.day {
+        if let year = animeDetailData.startDate?.year, let month = animeDetailData.startDate?.month, let day = animeDetailData.startDate?.day {
             overview.startDateLabel.text = AnimeDetailFunc.startDateString(year: year, month: month, day: day)
         } else {
             overview.startDateLabel.text = ""
@@ -345,22 +345,22 @@ extension AnimeDetailPageViewController {
         overview.producersLabel.text = AnimeDetailFunc.getProducers(from: animeDetailData.studios)
         overview.sourceLabel.text = animeDetailData.source
         overview.hashTagLabel.text = animeDetailData.hashtag
-        overview.genresLabel.text = animeDetailData.genres.joined(separator: ",")
+        overview.genresLabel.text = animeDetailData.genres?.joined(separator: ",")
         overview.romajiLabel.text = animeDetailData.title.romaji
         overview.englishLabel.text = animeDetailData.title.english
         overview.nativeLabel.text = animeDetailData.title.native
-        overview.synonymsLabel.text = animeDetailData.synonyms.joined(separator: ",")
+        overview.synonymsLabel.text = animeDetailData.synonyms?.joined(separator: ",")
         overview.informationScrollView.layer.cornerRadius = 10
         overview.informationScrollView.clipsToBounds = true
     }
     
-    func setupAnimeDescription(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
-        overview.descriptionContextLabel.attributedText = AnimeDetailFunc.updateAnimeDescription(animeDescription: animeDetailData.description)
+    func setupAnimeDescription(overview: Overview, animeDetailData: Response.AnimeDetail.MediaData.Media) {
+        overview.descriptionContextLabel.attributedText = AnimeDetailFunc.updateAnimeDescription(animeDescription: animeDetailData.description ?? "")
         overview.layer.cornerRadius = 10
         overview.descriptionContextLabel.clipsToBounds = true
     }
     
-    func setupAnimeRelation(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
+    func setupAnimeRelation(overview: Overview, animeDetailData: Response.AnimeDetail.MediaData.Media) {
         if let relations = animeDetailData.relations {
             for edge in relations.edges {
                 let relationPreview = RelationPreview(frame: .zero, mediaID: edge.node.id)
@@ -382,8 +382,8 @@ extension AnimeDetailPageViewController {
         }
     }
     
-    func setupAnimeCharacter(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
-        let characters = animeDetailData.characterPreview.edges
+    func setupAnimeCharacter(overview: Overview, animeDetailData: Response.AnimeDetail.MediaData.Media) {
+        guard let characters = animeDetailData.characterPreview?.edges else { return }
         for edge in characters {
             let characterPreview = CharacterPreview(frame: .zero, characterID: edge.node.id, voiceActorID: edge.voiceActors.first?.id ?? nil)
             characterPreview.characterIdPassDelegate = self
@@ -404,8 +404,8 @@ extension AnimeDetailPageViewController {
         }
     }
     
-    func setupAnimeStaff(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
-        let staffs = animeDetailData.staffPreview.edges
+    func setupAnimeStaff(overview: Overview, animeDetailData: Response.AnimeDetail.MediaData.Media) {
+        guard let staffs = animeDetailData.staffPreview?.edges else { return }
         for edge in staffs {
             let staffPreview = StaffPreview(frame: .zero, staffID: edge.node.id)
             staffPreview.staffImageView.kf.setImage(with: URL(string: edge.node.image.large))
@@ -421,9 +421,9 @@ extension AnimeDetailPageViewController {
         }
     }
     
-    func setupAnimeStatusDistribution(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
+    func setupAnimeStatusDistribution(overview: Overview, animeDetailData: Response.AnimeDetail.MediaData.Media) {
         let animeDetailData = animeDetailData
-        let statusDistribution = animeDetailData.stats.statusDistribution.sorted(by: {$0.amount > $1.amount})
+        guard let statusDistribution = animeDetailData.stats?.statusDistribution.sorted(by: {$0.amount > $1.amount}) else { return }
         let totalAmount = statusDistribution.reduce(0) { (result, statusDistribution) -> Int in
             return result + statusDistribution.amount
         }
@@ -470,11 +470,12 @@ extension AnimeDetailPageViewController {
         }
     }
     
-    func setupAnimeScoreDistriubtionView(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
-        let scoreAmountTotal = animeDetailData.stats.scoreDistribution.reduce(0) { ( result, scoreDistribution) -> Int in
+    func setupAnimeScoreDistriubtionView(overview: Overview, animeDetailData: Response.AnimeDetail.MediaData.Media) {
+        let scoreAmountTotal = animeDetailData.stats?.scoreDistribution.reduce(0) { ( result, scoreDistribution) -> Int in
             return result + scoreDistribution.amount
         }
-        let scoreDistribution = animeDetailData.stats.scoreDistribution
+        guard let scoreAmountTotal = scoreAmountTotal else { return }
+        guard let scoreDistribution = animeDetailData.stats?.scoreDistribution else { return }
         for (index, score) in scoreDistribution.enumerated() {
             let percent = AnimeDetailFunc.partOfAmount(value: score.amount, totalValue: scoreAmountTotal)
             let scoreView = UIView() // 顏色條
@@ -523,7 +524,7 @@ extension AnimeDetailPageViewController {
         }
     }
     
-    func setupAnimeWatchHStack(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
+    func setupAnimeWatchHStack(overview: Overview, animeDetailData: Response.AnimeDetail.MediaData.Media) {
         let streamingEpisodes = animeDetailData.streamingEpisodes
         guard !streamingEpisodes.isEmpty else {
             let voidLabel = UILabel()
@@ -558,8 +559,8 @@ extension AnimeDetailPageViewController {
         }
     }
     
-    func setupAnimeRecommendationsHStack(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
-        let recommendations = animeDetailData.recommendations.nodes
+    func setupAnimeRecommendationsHStack(overview: Overview, animeDetailData: Response.AnimeDetail.MediaData.Media) {
+        guard let recommendations = animeDetailData.recommendations?.nodes else { return }
         for recommendation in recommendations {
             let recommendationsPreview = RecommendationsAnimePreview(frame: .zero, animeID: recommendation.mediaRecommendation?.id)
             
@@ -579,8 +580,8 @@ extension AnimeDetailPageViewController {
         
     }
     
-    func setupAnimeReviewsVStack(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
-        let reviews = animeDetailData.reviewPreview.nodes
+    func setupAnimeReviewsVStack(overview: Overview, animeDetailData: Response.AnimeDetail.MediaData.Media) {
+        guard let reviews = animeDetailData.reviewPreview?.nodes else { return }
         if reviews.count == 0 {
             let voidLabel = UILabel()
             voidLabel.backgroundColor = .white
@@ -605,8 +606,8 @@ extension AnimeDetailPageViewController {
         }
     }
     
-    func setupAnimeExternalLinkVStack(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
-        let externalLinks = animeDetailData.externalLinks
+    func setupAnimeExternalLinkVStack(overview: Overview, animeDetailData: Response.AnimeDetail.MediaData.Media) {
+        guard let externalLinks = animeDetailData.externalLinks else { return }
         for externalLink in externalLinks {
             let externalLinkPreview = ExternalLinkPreview(frame: .zero, url: externalLink.url, siteName: externalLink.site)
 //                externalLinkPreview.openURLDelegate = self
@@ -629,8 +630,8 @@ extension AnimeDetailPageViewController {
         }
     }
     
-    func setupAnimeTagsVStack(overview: Overview, animeDetailData: MediaResponse.MediaData.Media) {
-        let tags = animeDetailData.tags
+    func setupAnimeTagsVStack(overview: Overview, animeDetailData: Response.AnimeDetail.MediaData.Media) {
+        guard let tags = animeDetailData.tags else { return }
         for tag in tags {
             let tagPreview = TagPreview()
             tagPreview.tagName.text = tag.name
@@ -674,7 +675,7 @@ extension AnimeDetailPageViewController {
         }
     }
     // MARK: - Watch
-    func setupWatch(streamingEpisodes: [MediaResponse.MediaData.Media.StreamingEpisodes]) {
+    func setupWatch(streamingEpisodes: [Response.AnimeDetail.MediaData.Media.StreamingEpisodes]) {
         print(streamingEpisodes)
         let animeWatchView = AnimeWatchView()
         container.addSubview(animeWatchView)
@@ -695,7 +696,7 @@ extension AnimeDetailPageViewController {
         }
     }
     // MARK: - Characters
-    func setupCharacters(characters: [MediaResponse.MediaData.Media.CharacterPreview.Edges]) {
+    func setupCharacters(characters: [Response.AnimeDetail.MediaData.Media.CharacterPreview.Edges]) {
         let animeCharactersView = AnimeCharactersView()
         container.addSubview(animeCharactersView)
         animeCharactersView.snp.makeConstraints { make in
@@ -723,7 +724,7 @@ extension AnimeDetailPageViewController {
         }
     }
     
-    func updateCharacters(container: AnimeCharactersView, edges: [MediaResponse.MediaData.Media.CharacterPreview.Edges]) {
+    func updateCharacters(container: AnimeCharactersView, edges: [Response.AnimeDetail.MediaData.Media.CharacterPreview.Edges]) {
         
         for edge in edges {
             let characterPreview = CharacterPreview(frame: .zero, characterID: edge.node.id, voiceActorID: edge.voiceActors.first?.id ?? nil)
@@ -746,7 +747,7 @@ extension AnimeDetailPageViewController {
         
     }
     // MARK: - Stats
-    func setupStats(rankingData: MediaRanking.MediaData.Media, stats: MediaResponse.MediaData.Media.Stats) {
+    func setupStats(rankingData: MediaRanking.MediaData.Media, stats: Response.AnimeDetail.MediaData.Media.Stats) {
         let statsView = AnimeStatsView()
         
         let rankingData = rankingData
@@ -808,7 +809,7 @@ extension AnimeDetailPageViewController {
         let scoreAmountTotal = stats.scoreDistribution.reduce(0) { ( result, scoreDistribution) -> Int in
             return result + scoreDistribution.amount
         }
-        if let scoreDistribution = viewModel?.animeDetailData?.stats.scoreDistribution {
+        if let scoreDistribution = viewModel?.animeDetailData?.stats?.scoreDistribution {
             for (index, score) in scoreDistribution.enumerated() {
                 let percent = AnimeDetailFunc.partOfAmount(value: score.amount, totalValue: scoreAmountTotal)
                 let scoreView = UIView()
@@ -862,14 +863,14 @@ extension AnimeDetailPageViewController {
         
     }
     // MARK: - Staff
-    func setupStaff(staffData: [MediaResponse.MediaData.Media.StaffPreview.Edges]) {
+    func setupStaff(staffData: [Response.AnimeDetail.MediaData.Media.StaffPreview.Edges]?) {
         let staffView = AnimeStaffView()
         container.addSubview(staffView)
         staffView.snp.makeConstraints { make in
             make.leading.trailing.top.bottom.equalToSuperview()
         }
         
-        let animeStaffData = staffData
+        guard let animeStaffData = staffData else { return }
         for (_, edge) in animeStaffData.enumerated() {
             let staffPreview = StaffPreview(frame: .zero, staffID: edge.node.id)
             
@@ -885,7 +886,7 @@ extension AnimeDetailPageViewController {
         }
     }
     
-    func updateStaffs(container: AnimeStaffView, edges: [MediaResponse.MediaData.Media.StaffPreview.Edges]) {
+    func updateStaffs(container: AnimeStaffView, edges: [Response.AnimeDetail.MediaData.Media.StaffPreview.Edges]) {
         let edges = edges
         for (_, edge) in edges.enumerated() {
             let staffPreview = StaffPreview(frame: .zero, staffID: edge.node.id)
