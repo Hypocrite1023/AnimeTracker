@@ -3,9 +3,9 @@
 AnimeTracker is an iOS application that allows users to track their favorite anime series. The app provides information about trending anime, allows users to search for anime, and helps them keep track of their favorite shows.
 
 <p align="center">
-  <img src="https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/login.png" width="200">
-  <img src="https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/register.png" width="200">
-  <img src="https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/resetpass.png" width="200">
+  <img src="https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/login.png" width="200">
+  <img src="https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/register.png" width="200">
+  <img src="https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/resetpass.png" width="200">
 </p>
 
 ## Features
@@ -18,9 +18,9 @@ AnimeTracker is an iOS application that allows users to track their favorite ani
 - **Anime Detail Page**: Provides detailed information about a selected anime series.
 
 <p align="center">
-  <img src="https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/trending.png" width="200">
-  <img src="https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/category.png" width="200">
-  <img src="https://github.com/Hypocrite1023/AnimeTracker/blob/testWithCombine/demo/animeDetail1.png" width="200">
+  <img src="https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/trending.png" width="200">
+  <img src="https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/category.png" width="200">
+  <img src="https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/animeDetail1.png" width="200">
 </p>
 
 ## Installation
