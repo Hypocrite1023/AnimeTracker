@@ -208,10 +208,8 @@ extension FirebaseManager {
                         animeRef.getDocument { document, error in
                             if let _ = error {
                                 promise(.success(false))
-                            } else if let _ = document {
-                                promise(.success(true))
                             } else {
-                                promise(.success(false))
+                                promise(.success(document?.exists ?? false))
                             }
                         }
                     } else {

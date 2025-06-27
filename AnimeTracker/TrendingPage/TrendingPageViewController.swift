@@ -254,7 +254,7 @@ class TrendingPageViewController: UIViewController {
                                 print("Error fetching anime record: \(error.localizedDescription)")
                             }
                         } receiveValue: { (favorite, notify, status) in
-                            self.viewModel.currentLongPressCellStatus = (favorite, notify, animeStatus, animeID)
+                            self.viewModel.currentLongPressCellStatus = (favorite ?? false, notify ?? false, animeStatus ?? "FINISHED", animeID)
                             
                             if let favorite = favorite {
                                 self.updateConfigButton(btn: self.favoriteBtn, isTrue: favorite)
@@ -308,7 +308,7 @@ class TrendingPageViewController: UIViewController {
                 cellSnapShotWithPaddingContainer.heightAnchor.constraint(equalToConstant: cellSnapShot.bounds.height + 20).isActive = true
                 cellSnapShotWithPaddingContainer.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
                 cellSnapShotWithPaddingContainer.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
-                let buttonStackView = UIStackView(arrangedSubviews: self.viewModel.currentLongPressCellStatus.status == "RELEASING" ? [self.favoriteBtn, self.notifyBtn] : [self.favoriteBtn])
+                let buttonStackView = UIStackView(arrangedSubviews: animeStatus == "RELEASING" ? [self.favoriteBtn, self.notifyBtn] : [self.favoriteBtn])
                 buttonStackView.axis = .horizontal
                 buttonStackView.spacing = 30
                 buttonStackView.translatesAutoresizingMaskIntoConstraints = false

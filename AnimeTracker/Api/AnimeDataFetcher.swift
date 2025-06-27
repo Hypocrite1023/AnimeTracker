@@ -672,14 +672,19 @@ query {
                 return $0
             }
             .tryMap { data, response in
-                print(response)
                 guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                    print("Invalid response")
                     throw URLError(.badServerResponse)
                 }
                 self.isFetchingData = false
-//                print(String(data: data, encoding: .utf8))
-                return data
+
+                // 解析 JSON
+                let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+                guard let mediaDict = (json?["data"] as? [String: Any])?["Media"] else {
+                    throw URLError(.cannotParseResponse)
+                }
+
+                let mediaData = try JSONSerialization.data(withJSONObject: mediaDict)
+                return mediaData
             }
             .decode(type: Response.AnimeEssentialData.self, decoder: JSONDecoder())
             .eraseToAnyPublisher()
@@ -709,6 +714,7 @@ query {
     coverImage {
       large
     }
+    status
   }
 }
 """
