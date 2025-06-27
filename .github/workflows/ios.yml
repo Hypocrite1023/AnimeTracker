@@ -22,7 +22,7 @@ jobs:
         env:
           GOOGLE_SERVICE_INFO_PLIST: ${{ secrets.GOOGLE_SERVICE_INFO_PLIST }}
 
-      - name: Debug: Check if GoogleService-Info.plist exists
+      - name: Check if GoogleService-Info.plist exists
         run: |
           ls -l AnimeTracker/AnimeTracker/GoogleService-Info.plist
           
