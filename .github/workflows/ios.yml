@@ -19,6 +19,11 @@ jobs:
         with:
           ruby-version: '3.2'
           bundler-cache: true
+      - name: Restore GoogleService-Info.plist
+        run: |
+          echo "$GOOGLE_SERVICE_INFO_PLIST" | base64 --decode > AnimeTracker/AnimeTracker/GoogleService-Info.plist
+        env:
+          GOOGLE_SERVICE_INFO_PLIST: ${{ secrets.GOOGLE_SERVICE_INFO_PLIST }}
       - name: Install CocoaPods
         run: |
           gem install cocoapods
