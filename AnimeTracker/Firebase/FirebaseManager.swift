@@ -248,12 +248,33 @@ extension FirebaseManager {
         }
         .eraseToAnyPublisher()
     }
+
+    func updateAnimeRecord(userUID: String, animeID: Int, isFavorite: Bool, isNotify: Bool, status: String) -> AnyPublisher<Void, Error> {
+        let animeRef = db.collection(FireStoreKeyString.USER_COLLECTION).document(userUID).collection(FireStoreKeyString.WATCHED_ANIME).document("\(animeID)")
+        var data: [String: Any] = [:]
+        data[FireStoreKeyString.IS_FAVORITE] = isFavorite
+        data[FireStoreKeyString.IS_NOTIFY] = isNotify
+        data[FireStoreKeyString.STATUS] = status
+        
+        return Future<Void, Error> { promise in
+            animeRef.updateData(data) { error in
+                if let error = error {
+                    promise(.failure(error))
+                } else {
+                    promise(.success(()))
+                }
+            }
+        }
+        .eraseToAnyPublisher()
+    }
     
     func getAnimeRecord(userUID: String, animeID: Int) -> AnyPublisher<(Bool?, Bool?, String?), Error> {
         let animeRef = db.collection(FireStoreKeyString.USER_COLLECTION).document(userUID).collection(FireStoreKeyString.WATCHED_ANIME).document("\(animeID)")
         return Future<(Bool?, Bool?, String?), Error> { promise in
             self.isAnimeExist(userUID: userUID, animeID: animeID)
-                .sink { isExist in
+                .sink { _ in 
+                    // Handle completion if needed, but for now, we only care about the value
+                } receiveValue: { isExist in
                     if isExist {
                         animeRef.getDocument { document, error in
                             if let error = error {

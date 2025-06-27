@@ -1,0 +1,51 @@
+# Xcode
+.DS_Store
+/build/
+/*.pbxuser
+!default.pbxuser
+/*.mode1v3
+!default.mode1v3
+/*.mode2v3
+!default.mode2v3
+/*.pbxlop
+!default.pbxlop
+/*.xcappdata
+/*.xcscheme
+!default.xcscheme
+xcuserdata/
+DerivedData/
+.idea/
+.vscode/
+
+# CocoaPods
+Pods/
+.bundle/
+
+# Swift Package Manager
+.swiftpm/
+
+# Carthage
+Carthage/Build/
+
+# General
+.env
+*.dSYM.zip
+*.ipa
+*.xcworkspace/
+GoogleService-Info.plist
+
+# Fastlane
+fastlane/report.xml
+fastlane/screenshots/
+
+# Dependencies (if not managed by CocoaPods/SPM)
+vendor/
+
+# Logs and temporary files
+*.log
+*.temp
+*.tmp
+
+# Gemfile and Gemfile.lock (as per user request)
+Gemfile
+Gemfile.lock

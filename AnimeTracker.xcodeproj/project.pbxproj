@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -139,26 +139,106 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		A33224C42DFD73740015B204 /* Api */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Api; sourceTree = "<group>"; };
-		A3A0C7092DBA0783005CE24D /* StaffDetailView */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = StaffDetailView; sourceTree = "<group>"; };
-		A3A0C7122DBA1601005CE24D /* FavoritePage */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = FavoritePage; sourceTree = "<group>"; };
-		A3A0C7132DBA1614005CE24D /* TimeLinePage */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = TimeLinePage; sourceTree = "<group>"; };
-		A3A0C7142DBA1624005CE24D /* CategoryPage */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = CategoryPage; sourceTree = "<group>"; };
-		A3A77A2B2DF3454800DFF8D4 /* UserCache */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = UserCache; sourceTree = "<group>"; };
-		A3C69F462DBB79760097C7B9 /* Alert */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Alert; sourceTree = "<group>"; };
-		A3CB2AC22DF0712A0070A7DF /* AnimeTrackerTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = AnimeTrackerTests; sourceTree = "<group>"; };
-		A3CB2ACF2DF0714C0070A7DF /* AnimeTrackerUITests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = AnimeTrackerUITests; sourceTree = "<group>"; };
-		A3CB2AD92DF07A940070A7DF /* MockData */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = MockData; sourceTree = "<group>"; };
-		A3CF8CBD2DBB5D1200B4463F /* NavigationController */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = NavigationController; sourceTree = "<group>"; };
-		A3CF8CBE2DBB5DBB00B4463F /* TabBarController */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = TabBarController; sourceTree = "<group>"; };
-		A3CF8CC02DBB69DC00B4463F /* Login */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Login; sourceTree = "<group>"; };
-		A3CF8CC12DBB6A2100B4463F /* FloatingButton */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = FloatingButton; sourceTree = "<group>"; };
-		A3CF8CC72DBB6B7E00B4463F /* Firebase */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Firebase; sourceTree = "<group>"; };
-		A3FE0E9F2DAF79F60044CA0E /* TrendingPage */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = TrendingPage; sourceTree = "<group>"; };
-		A3FE0EAB2DB0AD1E0044CA0E /* SearchPage */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = SearchPage; sourceTree = "<group>"; };
-		A3FE0EAE2DB0E3E80044CA0E /* AnimeDetailPage */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = AnimeDetailPage; sourceTree = "<group>"; };
-		A3FE0EDA2DB62E6A0044CA0E /* CharacterPage */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = CharacterPage; sourceTree = "<group>"; };
-		A3FE0EDE2DB75DC90044CA0E /* VoiceActorPage */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = VoiceActorPage; sourceTree = "<group>"; };
+		A33224C42DFD73740015B204 /* Api */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Api;
+			sourceTree = "<group>";
+		};
+		A3A0C7092DBA0783005CE24D /* StaffDetailView */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = StaffDetailView;
+			sourceTree = "<group>";
+		};
+		A3A0C7122DBA1601005CE24D /* FavoritePage */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = FavoritePage;
+			sourceTree = "<group>";
+		};
+		A3A0C7132DBA1614005CE24D /* TimeLinePage */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = TimeLinePage;
+			sourceTree = "<group>";
+		};
+		A3A0C7142DBA1624005CE24D /* CategoryPage */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = CategoryPage;
+			sourceTree = "<group>";
+		};
+		A3A77A2B2DF3454800DFF8D4 /* UserCache */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = UserCache;
+			sourceTree = "<group>";
+		};
+		A3C69F462DBB79760097C7B9 /* Alert */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Alert;
+			sourceTree = "<group>";
+		};
+		A3CB2AC22DF0712A0070A7DF /* AnimeTrackerTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = AnimeTrackerTests;
+			sourceTree = "<group>";
+		};
+		A3CB2ACF2DF0714C0070A7DF /* AnimeTrackerUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = AnimeTrackerUITests;
+			sourceTree = "<group>";
+		};
+		A3CB2AD92DF07A940070A7DF /* MockData */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MockData;
+			sourceTree = "<group>";
+		};
+		A3CF8CBD2DBB5D1200B4463F /* NavigationController */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = NavigationController;
+			sourceTree = "<group>";
+		};
+		A3CF8CBE2DBB5DBB00B4463F /* TabBarController */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = TabBarController;
+			sourceTree = "<group>";
+		};
+		A3CF8CC02DBB69DC00B4463F /* Login */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Login;
+			sourceTree = "<group>";
+		};
+		A3CF8CC12DBB6A2100B4463F /* FloatingButton */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = FloatingButton;
+			sourceTree = "<group>";
+		};
+		A3CF8CC72DBB6B7E00B4463F /* Firebase */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Firebase;
+			sourceTree = "<group>";
+		};
+		A3FE0E9F2DAF79F60044CA0E /* TrendingPage */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = TrendingPage;
+			sourceTree = "<group>";
+		};
+		A3FE0EAB2DB0AD1E0044CA0E /* SearchPage */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SearchPage;
+			sourceTree = "<group>";
+		};
+		A3FE0EAE2DB0E3E80044CA0E /* AnimeDetailPage */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = AnimeDetailPage;
+			sourceTree = "<group>";
+		};
+		A3FE0EDA2DB62E6A0044CA0E /* CharacterPage */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = CharacterPage;
+			sourceTree = "<group>";
+		};
+		A3FE0EDE2DB75DC90044CA0E /* VoiceActorPage */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = VoiceActorPage;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -500,7 +580,6 @@
 				};
 			};
 			buildConfigurationList = CDC14F182C453DBF00BC14FA /* Build configuration list for PBXProject "AnimeTracker" */;
-			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -515,6 +594,7 @@
 				A30AA2B92DDB879600E24670 /* XCRemoteSwiftPackageReference "LookinServer" */,
 				A3A77A262DF33F7100DFF8D4 /* XCRemoteSwiftPackageReference "lottie-ios" */,
 			);
+			preferredProjectObjectVersion = 77;
 			productRefGroup = CDC14F1E2C453DBF00BC14FA /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
