@@ -17,6 +17,7 @@
 		A33224C92DFD7ACD0015B204 /* MediaCharacterPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = A33224C82DFD7ACD0015B204 /* MediaCharacterPreview.swift */; };
 		A3619D182DD60E4700231B63 /* Publisher+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3619D172DD60E3A00231B63 /* Publisher+Ext.swift */; };
 		A3619D1A2DD61C4800231B63 /* UIButton+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3619D192DD61C4800231B63 /* UIButton+Ext.swift */; };
+		A39F82E92E0F0CAE00D7B2B6 /* AnimeTracker.xctestplan in Resources */ = {isa = PBXBuildFile; fileRef = A39F82E82E0F0CAE00D7B2B6 /* AnimeTracker.xctestplan */; };
 		A3A77A282DF33F7100DFF8D4 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = A3A77A272DF33F7100DFF8D4 /* Lottie */; };
 		A3A77A362DF48CA600DFF8D4 /* login.png in Resources */ = {isa = PBXBuildFile; fileRef = A3A77A352DF48CA500DFF8D4 /* login.png */; };
 		A3A77A382DF4903900DFF8D4 /* register.png in Resources */ = {isa = PBXBuildFile; fileRef = A3A77A372DF4903900DFF8D4 /* register.png */; };
@@ -88,6 +89,7 @@
 		A33224C82DFD7ACD0015B204 /* MediaCharacterPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaCharacterPreview.swift; sourceTree = "<group>"; };
 		A3619D172DD60E3A00231B63 /* Publisher+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+Ext.swift"; sourceTree = "<group>"; };
 		A3619D192DD61C4800231B63 /* UIButton+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Ext.swift"; sourceTree = "<group>"; };
+		A39F82E82E0F0CAE00D7B2B6 /* AnimeTracker.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = AnimeTracker.xctestplan; sourceTree = "<group>"; };
 		A3A77A352DF48CA500DFF8D4 /* login.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = login.png; sourceTree = "<group>"; };
 		A3A77A372DF4903900DFF8D4 /* register.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = register.png; sourceTree = "<group>"; };
 		A3A77A392DF4904700DFF8D4 /* resetpass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = resetpass.png; sourceTree = "<group>"; };
@@ -405,6 +407,7 @@
 				A3FE0E9F2DAF79F60044CA0E /* TrendingPage */,
 				CDC14F352C45544800BC14FA /* View */,
 				A3FE0EDE2DB75DC90044CA0E /* VoiceActorPage */,
+				A39F82E82E0F0CAE00D7B2B6 /* AnimeTracker.xctestplan */,
 			);
 			path = AnimeTracker;
 			sourceTree = "<group>";
@@ -636,6 +639,7 @@
 				A3CB2AE82DF1D9740070A7DF /* Simulator Screenshot - iPhone 15 Pro - 2024-07-18 at 21.47.05 2.png in Resources */,
 				A3A77A3C2DF4912900DFF8D4 /* category.png in Resources */,
 				A3A77A362DF48CA600DFF8D4 /* login.png in Resources */,
+				A39F82E92E0F0CAE00D7B2B6 /* AnimeTracker.xctestplan in Resources */,
 				A3CB2AF12DF1DAB00070A7DF /* animeDetail3.png in Resources */,
 				A3CB2AE92DF1D9740070A7DF /* Simulator Screenshot - iPhone 15 Pro - 2024-07-20 at 23.33.46 2.png in Resources */,
 				A3CB2AED2DF1DA520070A7DF /* animeDetail1.png in Resources */,

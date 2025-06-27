@@ -1,0 +1,31 @@
+{
+  "configurations" : [
+    {
+      "id" : "78AB4805-5393-4C7D-B9B8-CE0EE977E9F9",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:AnimeTracker.xcodeproj",
+        "identifier" : "A3CB2ACD2DF0714C0070A7DF",
+        "name" : "AnimeTrackerUITests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:AnimeTracker.xcodeproj",
+        "identifier" : "A3CB2AC02DF0712A0070A7DF",
+        "name" : "AnimeTrackerTests"
+      }
+    }
+  ],
+  "version" : 1
+}
