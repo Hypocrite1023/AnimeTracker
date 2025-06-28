@@ -19,7 +19,7 @@ jobs:
         env:
           GOOGLE_SERVICE_INFO_PLIST: ${{ secrets.GOOGLE_SERVICE_INFO_PLIST }}
         run: |
-          echo $GOOGLE_SERVICE_INFO_PLIST | base64 -d > ./AnimeTracker/AnimeTracker/GoogleService-Info.plist
+          echo $GOOGLE_SERVICE_INFO_PLIST | base64 -d > AnimeTracker/GoogleService-Info.plist
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -30,12 +30,10 @@ jobs:
       - name: Install CocoaPods
         run: |
           gem install cocoapods
-          cd AnimeTracker
           pod install
           
       - name: Debug ls
         run: |
-          cd AnimeTracker
           ls -l
           
       - name: Cache CocoaPods
@@ -43,8 +41,8 @@ jobs:
         with:
           path: |
             ~/.cocoapods
-            AnimeTracker/Pods
-            AnimeTracker/AnimeTracker.xcworkspace
+            Pods
+            AnimeTracker.xcworkspace
           key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-pods-
@@ -56,7 +54,6 @@ jobs:
 
       - name: Build for testing
         run: |
-          cd AnimeTracker
           xcodebuild build-for-testing \
             -workspace AnimeTracker.xcworkspace \
             -scheme AnimeTracker \
@@ -65,7 +62,6 @@ jobs:
 
       - name: Run tests
         run: |
-          cd AnimeTracker
           xcodebuild test-without-building \
             -workspace AnimeTracker.xcworkspace \
             -scheme AnimeTracker \
