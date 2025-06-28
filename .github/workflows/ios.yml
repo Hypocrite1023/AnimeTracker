@@ -19,6 +19,7 @@ jobs:
         env:
           GOOGLE_SERVICE_INFO_PLIST: ${{ secrets.GOOGLE_SERVICE_INFO_PLIST }}
         run: |
+          mkdir -p AnimeTracker
           echo $GOOGLE_SERVICE_INFO_PLIST | base64 -d > AnimeTracker/GoogleService-Info.plist
 
       - name: Set up Ruby
@@ -57,6 +58,8 @@ jobs:
           xcodebuild build-for-testing \
             -workspace AnimeTracker.xcworkspace \
             -scheme AnimeTracker \
+            -configuration Release \
+            -xcconfig Configs/Release.xcconfig \
             -destination "platform=iOS Simulator,name=iPhone 16" \
             -quiet
 
@@ -65,5 +68,7 @@ jobs:
           xcodebuild test-without-building \
             -workspace AnimeTracker.xcworkspace \
             -scheme AnimeTracker \
+            -configuration Release \
+            -xcconfig Configs/Release.xcconfig \
             -destination "platform=iOS Simulator,name=iPhone 16" \
             -quiet

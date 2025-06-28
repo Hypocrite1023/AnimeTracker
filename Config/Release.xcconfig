@@ -1,0 +1,11 @@
+//
+//  Release.xcconfig
+//  AnimeTracker
+//
+//  Created by YI-CHUN CHIU on 2025/6/28.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+#include "Pods/Target Support Files/Pods-AnimeTracker/Pods-AnimeTracker.release.xcconfig"
+USE_GOOGLE_PLIST = NO
