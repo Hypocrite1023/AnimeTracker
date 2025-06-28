@@ -8,18 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		064724EF74FD01F36D6E2B4F /* Pods_AnimeTracker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EF066C15013076581D9308E /* Pods_AnimeTracker.framework */; };
-		A30AA2BB2DDB879600E24670 /* LookinServer in Frameworks */ = {isa = PBXBuildFile; productRef = A30AA2BA2DDB879600E24670 /* LookinServer */; };
-		A30C69A82DD84381004A7A88 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = A30C69A72DD84381004A7A88 /* Kingfisher */; };
-		A30C69AB2DDB5701004A7A88 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = A30C69AA2DDB5701004A7A88 /* SnapKit */; };
-		A30C69B02DDB5812004A7A88 /* CombineCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = A30C69AF2DDB5812004A7A88 /* CombineCocoa */; };
-		A30C69B32DDB5A9B004A7A88 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = A30C69B22DDB5A9B004A7A88 /* SnapKit */; };
-		A30C69B62DDB5B2C004A7A88 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = A30C69B52DDB5B2C004A7A88 /* SnapKit */; };
 		A33224C92DFD7ACD0015B204 /* MediaCharacterPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = A33224C82DFD7ACD0015B204 /* MediaCharacterPreview.swift */; };
 		A3619D182DD60E4700231B63 /* Publisher+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3619D172DD60E3A00231B63 /* Publisher+Ext.swift */; };
 		A3619D1A2DD61C4800231B63 /* UIButton+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3619D192DD61C4800231B63 /* UIButton+Ext.swift */; };
 		A39F82E92E0F0CAE00D7B2B6 /* AnimeTracker.xctestplan in Resources */ = {isa = PBXBuildFile; fileRef = A39F82E82E0F0CAE00D7B2B6 /* AnimeTracker.xctestplan */; };
 		A39F82EB2E0F26AF00D7B2B6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CD6FB7422C63C752006455D6 /* GoogleService-Info.plist */; };
-		A3A77A282DF33F7100DFF8D4 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = A3A77A272DF33F7100DFF8D4 /* Lottie */; };
 		A3A77A362DF48CA600DFF8D4 /* login.png in Resources */ = {isa = PBXBuildFile; fileRef = A3A77A352DF48CA500DFF8D4 /* login.png */; };
 		A3A77A382DF4903900DFF8D4 /* register.png in Resources */ = {isa = PBXBuildFile; fileRef = A3A77A372DF4903900DFF8D4 /* register.png */; };
 		A3A77A3A2DF4904700DFF8D4 /* resetpass.png in Resources */ = {isa = PBXBuildFile; fileRef = A3A77A392DF4904700DFF8D4 /* resetpass.png */; };
@@ -37,7 +30,6 @@
 		A3CB2AEE2DF1DA520070A7DF /* animeDetail2.png in Resources */ = {isa = PBXBuildFile; fileRef = A3CB2AEB2DF1DA520070A7DF /* animeDetail2.png */; };
 		A3CB2AEF2DF1DA520070A7DF /* trending.png in Resources */ = {isa = PBXBuildFile; fileRef = A3CB2AEC2DF1DA520070A7DF /* trending.png */; };
 		A3CB2AF12DF1DAB00070A7DF /* animeDetail3.png in Resources */ = {isa = PBXBuildFile; fileRef = A3CB2AF02DF1DAB00070A7DF /* animeDetail3.png */; };
-		A3FE0E9E2DAF79970044CA0E /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = A3FE0E9D2DAF79970044CA0E /* Kingfisher */; };
 		CD1AA0E52C49475D00993AEB /* UIImageViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1AA0E42C49475D00993AEB /* UIImageViewExtension.swift */; };
 		CD1AA0ED2C4BA82D00993AEB /* AnimeDetailDataDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1AA0EC2C4BA82D00993AEB /* AnimeDetailDataDelegate.swift */; };
 		CD1AA0EF2C4BB30F00993AEB /* UILabelWithPadding.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1AA0EE2C4BB30F00993AEB /* UILabelWithPadding.swift */; };
@@ -267,15 +259,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A30C69B62DDB5B2C004A7A88 /* SnapKit in Frameworks */,
-				A30C69A82DD84381004A7A88 /* Kingfisher in Frameworks */,
-				A3A77A282DF33F7100DFF8D4 /* Lottie in Frameworks */,
-				A30C69AB2DDB5701004A7A88 /* SnapKit in Frameworks */,
-				A30C69B32DDB5A9B004A7A88 /* SnapKit in Frameworks */,
-				A3FE0E9E2DAF79970044CA0E /* Kingfisher in Frameworks */,
-				A30C69B02DDB5812004A7A88 /* CombineCocoa in Frameworks */,
 				064724EF74FD01F36D6E2B4F /* Pods_AnimeTracker.framework in Frameworks */,
-				A30AA2BB2DDB879600E24670 /* LookinServer in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -598,11 +582,6 @@
 			);
 			mainGroup = CDC14F142C453DBF00BC14FA;
 			packageReferences = (
-				A3FE0E9C2DAF79970044CA0E /* XCRemoteSwiftPackageReference "Kingfisher" */,
-				A30C69AE2DDB5812004A7A88 /* XCRemoteSwiftPackageReference "CombineCocoa" */,
-				A30C69B42DDB5B2C004A7A88 /* XCRemoteSwiftPackageReference "SnapKit" */,
-				A30AA2B92DDB879600E24670 /* XCRemoteSwiftPackageReference "LookinServer" */,
-				A3A77A262DF33F7100DFF8D4 /* XCRemoteSwiftPackageReference "lottie-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CDC14F1E2C453DBF00BC14FA /* Products */;
@@ -1097,108 +1076,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		A30AA2B92DDB879600E24670 /* XCRemoteSwiftPackageReference "LookinServer" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/QMUI/LookinServer/";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.2.8;
-			};
-		};
-		A30C69A92DDB5701004A7A88 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SnapKit/SnapKit";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.7.1;
-			};
-		};
-		A30C69AE2DDB5812004A7A88 /* XCRemoteSwiftPackageReference "CombineCocoa" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/CombineCommunity/CombineCocoa";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.4.1;
-			};
-		};
-		A30C69B12DDB5A9B004A7A88 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SnapKit/SnapKit";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.7.1;
-			};
-		};
-		A30C69B42DDB5B2C004A7A88 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SnapKit/SnapKit";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.7.1;
-			};
-		};
-		A3A77A262DF33F7100DFF8D4 /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/airbnb/lottie-ios.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.5.2;
-			};
-		};
-		A3FE0E9C2DAF79970044CA0E /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/onevcat/Kingfisher";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 8.3.2;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		A30AA2BA2DDB879600E24670 /* LookinServer */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = A30AA2B92DDB879600E24670 /* XCRemoteSwiftPackageReference "LookinServer" */;
-			productName = LookinServer;
-		};
-		A30C69A72DD84381004A7A88 /* Kingfisher */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = A3FE0E9C2DAF79970044CA0E /* XCRemoteSwiftPackageReference "Kingfisher" */;
-			productName = Kingfisher;
-		};
-		A30C69AA2DDB5701004A7A88 /* SnapKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = A30C69A92DDB5701004A7A88 /* XCRemoteSwiftPackageReference "SnapKit" */;
-			productName = SnapKit;
-		};
-		A30C69AF2DDB5812004A7A88 /* CombineCocoa */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = A30C69AE2DDB5812004A7A88 /* XCRemoteSwiftPackageReference "CombineCocoa" */;
-			productName = CombineCocoa;
-		};
-		A30C69B22DDB5A9B004A7A88 /* SnapKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = A30C69B12DDB5A9B004A7A88 /* XCRemoteSwiftPackageReference "SnapKit" */;
-			productName = SnapKit;
-		};
-		A30C69B52DDB5B2C004A7A88 /* SnapKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = A30C69B42DDB5B2C004A7A88 /* XCRemoteSwiftPackageReference "SnapKit" */;
-			productName = SnapKit;
-		};
-		A3A77A272DF33F7100DFF8D4 /* Lottie */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = A3A77A262DF33F7100DFF8D4 /* XCRemoteSwiftPackageReference "lottie-ios" */;
-			productName = Lottie;
-		};
-		A3FE0E9D2DAF79970044CA0E /* Kingfisher */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = A3FE0E9C2DAF79970044CA0E /* XCRemoteSwiftPackageReference "Kingfisher" */;
-			productName = Kingfisher;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CDC14F152C453DBF00BC14FA /* Project object */;
 }
