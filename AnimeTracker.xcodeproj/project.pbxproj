@@ -678,10 +678,11 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"${SRCROOT}/AnimeTracker/GoogleService-Info.plist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\necho \"$GOOGLE_SERVICE_INFO_PLIST\" | base64 -d > \"${SRCROOT}/AnimeTracker/GoogleService-Info.plist\"\n";
+			shellScript = "if [ -n \"$GOOGLE_SERVICE_INFO_PLIST\" ]; then\n  echo \"$GOOGLE_SERVICE_INFO_PLIST\" | base64 -d > \"${SRCROOT}/AnimeTracker/GoogleService-Info.plist\"\nfi\n";
 		};
 		AAD891B7180D4B24000DD62F /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
