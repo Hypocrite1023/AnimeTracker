@@ -33,6 +33,11 @@ jobs:
           cd AnimeTracker
           pod install
           
+      - name: Debug ls
+        run: |
+          cd AnimeTracker
+          ls -l
+          
       - name: Cache CocoaPods
         uses: actions/cache@v4
         with:
@@ -51,16 +56,18 @@ jobs:
 
       - name: Build for testing
         run: |
+          cd AnimeTracker
           xcodebuild build-for-testing \
-            -workspace AnimeTracker/AnimeTracker.xcworkspace \
+            -workspace AnimeTracker.xcworkspace \
             -scheme AnimeTracker \
             -destination "platform=iOS Simulator,name=iPhone 16" \
             -quiet
 
       - name: Run tests
         run: |
+          cd AnimeTracker
           xcodebuild test-without-building \
-            -workspace AnimeTracker/AnimeTracker.xcworkspace \
+            -workspace AnimeTracker.xcworkspace \
             -scheme AnimeTracker \
             -destination "platform=iOS Simulator,name=iPhone 16" \
             -quiet
