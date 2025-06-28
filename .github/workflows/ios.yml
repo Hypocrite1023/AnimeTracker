@@ -59,7 +59,7 @@ jobs:
             -workspace AnimeTracker.xcworkspace \
             -scheme AnimeTracker \
             -configuration Release \
-            -xcconfig Configs/Release.xcconfig \
+            -xcconfig Config/Release.xcconfig \
             -destination "platform=iOS Simulator,name=iPhone 16" \
             -quiet
 
@@ -69,6 +69,6 @@ jobs:
             -workspace AnimeTracker.xcworkspace \
             -scheme AnimeTracker \
             -configuration Release \
-            -xcconfig Configs/Release.xcconfig \
+            -xcconfig Config/Release.xcconfig \
             -destination "platform=iOS Simulator,name=iPhone 16" \
             -quiet
