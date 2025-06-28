@@ -6,10 +6,6 @@ on:
   pull_request:
     branches: [ "main" ]
 
-defaults:
-  run:
-    working-directory: AnimeTracker
-
 jobs:
   build:
     name: Build and Test using iPhone simulator
@@ -23,7 +19,7 @@ jobs:
         env:
           GOOGLE_SERVICE_INFO_PLIST: ${{ secrets.GOOGLE_SERVICE_INFO_PLIST }}
         run: |
-          echo $GOOGLE_SERVICE_INFO_PLIST | base64 -d > ./AnimeTracker/GoogleService-Info.plist
+          echo $GOOGLE_SERVICE_INFO_PLIST | base64 -d > ./AnimeTracker/AnimeTracker/GoogleService-Info.plist
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -34,6 +30,7 @@ jobs:
       - name: Install CocoaPods
         run: |
           gem install cocoapods
+          cd AnimeTracker
           pod install
           
       - name: Cache CocoaPods
@@ -41,8 +38,8 @@ jobs:
         with:
           path: |
             ~/.cocoapods
-            Pods
-            AnimeTracker.xcworkspace
+            AnimeTracker/Pods
+            AnimeTracker/AnimeTracker.xcworkspace
           key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-pods-
@@ -55,7 +52,7 @@ jobs:
       - name: Build for testing
         run: |
           xcodebuild build-for-testing \
-            -workspace AnimeTracker.xcworkspace \
+            -workspace AnimeTracker/AnimeTracker.xcworkspace \
             -scheme AnimeTracker \
             -destination "platform=iOS Simulator,name=iPhone 16" \
             -quiet
@@ -63,7 +60,7 @@ jobs:
       - name: Run tests
         run: |
           xcodebuild test-without-building \
-            -workspace AnimeTracker.xcworkspace \
+            -workspace AnimeTracker/AnimeTracker.xcworkspace \
             -scheme AnimeTracker \
             -destination "platform=iOS Simulator,name=iPhone 16" \
             -quiet
