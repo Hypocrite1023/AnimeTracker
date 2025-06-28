@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ "main" ]
 
+defaults:
+  run:
+    working-directory: AnimeTracker
+
 jobs:
   build:
     name: Build and Test using iPhone simulator
@@ -17,12 +21,10 @@ jobs:
 
       - name: Restore GoogleService-Info.plist
         env:
-          DATA: ${{ secrets.GOOGLE_SERVICE_INFO_PLIST }}
-        run: |
-          echo $DATA | base64 -di > ./AnimeTracker/AnimeTracker/GoogleService-Info.plist
-        env:
           GOOGLE_SERVICE_INFO_PLIST: ${{ secrets.GOOGLE_SERVICE_INFO_PLIST }}
-          
+        run: |
+          echo $GOOGLE_SERVICE_INFO_PLIST | base64 -di > ./AnimeTracker/GoogleService-Info.plist
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -32,19 +34,18 @@ jobs:
       - name: Install CocoaPods
         run: |
           gem install cocoapods
-          cd AnimeTracker
           pod install
           
       - name: Cache CocoaPods
         uses: actions/cache@v4
         with:
-        path: |
-          ~/.cocoapods
-          Pods
-          AnimeTracker/AnimeTracker.xcworkspace
-        key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-pods-
+          path: |
+            ~/.cocoapods
+            Pods
+            AnimeTracker.xcworkspace
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
 
       - name: Set up Xcode
         uses: maxim-lobanov/setup-xcode@v1
@@ -53,18 +54,16 @@ jobs:
 
       - name: Build for testing
         run: |
-          cd AnimeTracker
           xcodebuild build-for-testing \
-            -workspace .AnimeTracker/AnimeTracker.xcworkspace \
+            -workspace AnimeTracker.xcworkspace \
             -scheme AnimeTracker \
             -destination "platform=iOS Simulator,name=iPhone 16" \
             -quiet
 
       - name: Run tests
         run: |
-          cd AnimeTracker
           xcodebuild test-without-building \
-            -workspace .AnimeTracker/AnimeTracker.xcworkspace \
+            -workspace AnimeTracker.xcworkspace \
             -scheme AnimeTracker \
             -destination "platform=iOS Simulator,name=iPhone 16" \
             -quiet
