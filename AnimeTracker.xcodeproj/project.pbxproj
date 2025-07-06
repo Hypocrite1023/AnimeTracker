@@ -683,7 +683,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo \"USE_GOOGLE_PLIST=$USE_GOOGLE_PLIST\"\n\nif [ \"$USE_GOOGLE_PLIST\" == \"NO\" ]; then\n  echo \"🛠️ CI 環境還原 plist\"\n  echo \"$GOOGLE_SERVICE_INFO_PLIST\" | base64 -d > \"${SRCROOT}/AnimeTracker/GoogleService-Info.plist\"\nelse\n  echo \"💻 本地開發使用本地 plist\"\nfi\n";
+			shellScript = "echo \"USE_GOOGLE_PLIST=${USE_GOOGLE_PLIST}\"\n\nif [ \"$USE_GOOGLE_PLIST\" == \"NO\" ]; then\n  echo \"🛠️ CI 環境還原 plist\"\n  echo \"$GOOGLE_SERVICE_INFO_PLIST\" | base64 -d > \"${SRCROOT}/AnimeTracker/GoogleService-Info.plist\"\nelse\n  echo \"💻 本地開發使用本地 plist\"\nfi\n";
 		};
 		AAD891B7180D4B24000DD62F /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
