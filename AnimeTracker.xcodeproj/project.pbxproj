@@ -12,7 +12,6 @@
 		A3619D182DD60E4700231B63 /* Publisher+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3619D172DD60E3A00231B63 /* Publisher+Ext.swift */; };
 		A3619D1A2DD61C4800231B63 /* UIButton+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3619D192DD61C4800231B63 /* UIButton+Ext.swift */; };
 		A39F82E92E0F0CAE00D7B2B6 /* AnimeTracker.xctestplan in Resources */ = {isa = PBXBuildFile; fileRef = A39F82E82E0F0CAE00D7B2B6 /* AnimeTracker.xctestplan */; };
-		A39F83B92E0FCFEF00D7B2B6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CD6FB7422C63C752006455D6 /* GoogleService-Info.plist */; };
 		A3A77A362DF48CA600DFF8D4 /* login.png in Resources */ = {isa = PBXBuildFile; fileRef = A3A77A352DF48CA500DFF8D4 /* login.png */; };
 		A3A77A382DF4903900DFF8D4 /* register.png in Resources */ = {isa = PBXBuildFile; fileRef = A3A77A372DF4903900DFF8D4 /* register.png */; };
 		A3A77A3A2DF4904700DFF8D4 /* resetpass.png in Resources */ = {isa = PBXBuildFile; fileRef = A3A77A392DF4904700DFF8D4 /* resetpass.png */; };
@@ -30,6 +29,7 @@
 		A3CB2AEE2DF1DA520070A7DF /* animeDetail2.png in Resources */ = {isa = PBXBuildFile; fileRef = A3CB2AEB2DF1DA520070A7DF /* animeDetail2.png */; };
 		A3CB2AEF2DF1DA520070A7DF /* trending.png in Resources */ = {isa = PBXBuildFile; fileRef = A3CB2AEC2DF1DA520070A7DF /* trending.png */; };
 		A3CB2AF12DF1DAB00070A7DF /* animeDetail3.png in Resources */ = {isa = PBXBuildFile; fileRef = A3CB2AF02DF1DAB00070A7DF /* animeDetail3.png */; };
+		A9C44A5C2E1ACEC900C02BFD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CD6FB7422C63C752006455D6 /* GoogleService-Info.plist */; };
 		CD1AA0E52C49475D00993AEB /* UIImageViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1AA0E42C49475D00993AEB /* UIImageViewExtension.swift */; };
 		CD1AA0ED2C4BA82D00993AEB /* AnimeDetailDataDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1AA0EC2C4BA82D00993AEB /* AnimeDetailDataDelegate.swift */; };
 		CD1AA0EF2C4BB30F00993AEB /* UILabelWithPadding.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD1AA0EE2C4BB30F00993AEB /* UILabelWithPadding.swift */; };
@@ -616,6 +616,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9C44A5C2E1ACEC900C02BFD /* GoogleService-Info.plist in Resources */,
 				CDC14F2A2C453DC000BC14FA /* Assets.xcassets in Resources */,
 				CDC14F2D2C453DC000BC14FA /* Base in Resources */,
 				CDC14F282C453DBF00BC14FA /* Base in Resources */,
@@ -638,7 +639,6 @@
 				A3A77A3A2DF4904700DFF8D4 /* resetpass.png in Resources */,
 				A3CB2AEF2DF1DA520070A7DF /* trending.png in Resources */,
 				CDA141F12C57C5DE00708A8B /* ThreadPreview.xib in Resources */,
-				A39F83B92E0FCFEF00D7B2B6 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
