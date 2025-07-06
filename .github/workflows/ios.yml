@@ -29,22 +29,22 @@ jobs:
           bundler-cache: true
 
       - name: Install CocoaPods
+        working-directory: AnimeTracker
         run: |
-          cd AnimeTracker
           gem install cocoapods
           pod install
-          
+
       - name: Debug Pod Install Output
         run: |
-          ls -l AnimeTracker/Pods/Target\ Support\ Files/GoogleAppMeasurement/
-          
+          ls -l AnimeTracker/Pods/Target\ Support\ Files/GoogleAppMeasurement/ || echo "❌ GoogleAppMeasurement not found"
+
       - name: Cache CocoaPods
         uses: actions/cache@v4
         with:
           path: |
             ~/.cocoapods
-            Pods
-          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+            AnimeTracker/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('AnimeTracker/Podfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-pods-
 
@@ -54,21 +54,21 @@ jobs:
           xcode-version: '16.2'
 
       - name: Build for testing
+        working-directory: AnimeTracker
         run: |
           xcodebuild build-for-testing \
             -workspace AnimeTracker.xcworkspace \
             -scheme AnimeTracker \
             -configuration Release \
             -xcconfig Config/Release.xcconfig \
-            -destination "platform=iOS Simulator,name=iPhone 16" \
-            -quiet
+            -destination "platform=iOS Simulator,name=iPhone 16"
 
       - name: Run tests
+        working-directory: AnimeTracker
         run: |
           xcodebuild test-without-building \
             -workspace AnimeTracker.xcworkspace \
             -scheme AnimeTracker \
             -configuration Release \
             -xcconfig Config/Release.xcconfig \
-            -destination "platform=iOS Simulator,name=iPhone 16" \
-            -quiet
+            -destination "platform=iOS Simulator,name=iPhone 16"
