@@ -54,21 +54,19 @@ jobs:
           xcode-version: '16.2'
 
       - name: Build for testing
-        working-directory: AnimeTracker
         run: |
           xcodebuild build-for-testing \
-            -workspace AnimeTracker.xcworkspace \
+            -workspace AnimeTracker/AnimeTracker.xcworkspace \
             -scheme AnimeTracker \
             -configuration Release \
-            -xcconfig Config/Release.xcconfig \
+            -xcconfig AnimeTracker/Config/Release.xcconfig \
             -destination "platform=iOS Simulator,name=iPhone 16"
 
       - name: Run tests
-        working-directory: AnimeTracker
         run: |
           xcodebuild test-without-building \
-            -workspace AnimeTracker.xcworkspace \
+            -workspace AnimeTracker/AnimeTracker.xcworkspace \
             -scheme AnimeTracker \
             -configuration Release \
-            -xcconfig Config/Release.xcconfig \
+            -xcconfig AnimeTracker/Config/Release.xcconfig \
             -destination "platform=iOS Simulator,name=iPhone 16"
