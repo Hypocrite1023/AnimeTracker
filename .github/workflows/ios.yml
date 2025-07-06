@@ -30,12 +30,13 @@ jobs:
 
       - name: Install CocoaPods
         run: |
+          cd AnimeTracker
           gem install cocoapods
           pod install
           
-      - name: Debug ls
+      - name: Debug Pod Install Output
         run: |
-          ls -l
+          ls -l AnimeTracker/Pods/Target\ Support\ Files/GoogleAppMeasurement/
           
       - name: Cache CocoaPods
         uses: actions/cache@v4
@@ -43,7 +44,6 @@ jobs:
           path: |
             ~/.cocoapods
             Pods
-            AnimeTracker.xcworkspace
           key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-pods-
