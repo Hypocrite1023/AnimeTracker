@@ -29,7 +29,6 @@ jobs:
           bundler-cache: true
 
       - name: Install CocoaPods
-        working-directory: AnimeTracker/AnimeTracker
         run: |
           gem install cocoapods
           pod install

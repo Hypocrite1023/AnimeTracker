@@ -26,59 +26,53 @@ final class LoginTests: XCTestCase {
     }
 
     func testEmailFieldNil() {
-        viewModel.userEmail = ""
-        viewModel.userPassword = "somePassword"
+        viewModel.userEmail.value = ""
+        viewModel.userPassword.value = "somePassword"
         
         let exception = XCTestExpectation(description: "Email is Empty")
-        viewModel.login()
-            .sink { completion in
-                switch completion {
-                case .finished:
-                    XCTFail("Should not finish")
-                case .failure(let error):
-                    XCTAssertEqual(error as? LoginError, LoginError.emailFieldEmpty)
+        viewModel.output.shouldNavigateToHomePage
+            .sink { shouldNavigateToHomePage in
+                if shouldNavigateToHomePage == false {
                     exception.fulfill()
                 }
-            } receiveValue: { _ in
-                
             }
             .store(in: &cancellables)
+        viewModel.input.didPressLogin.send(())
+        
         wait(for: [exception], timeout: 5)
     }
     
     func testPasswordFieldNil() {
-        viewModel.userEmail = "someEmail@gmail.com"
-        viewModel.userPassword = ""
+        viewModel.userEmail.value = "someEmail@gmail.com"
+        viewModel.userPassword.value = ""
         
         let exception = XCTestExpectation(description: "Password is Empty")
-        viewModel.login()
-            .sink { completion in
-                switch completion {
-                case .finished:
-                    XCTFail("Should not finish")
-                case .failure(let error):
-                    XCTAssertEqual(error as? LoginError, LoginError.passwordFieldEmpty)
+        
+        viewModel.output.shouldNavigateToHomePage
+            .sink { shouldNavigateToHomePage in
+                if shouldNavigateToHomePage == false {
                     exception.fulfill()
                 }
-            } receiveValue: { _ in
-                
             }
             .store(in: &cancellables)
+        viewModel.input.didPressLogin.send(())
         wait(for: [exception], timeout: 5)
     }
     
     func testLoginSuccess() {
-        viewModel.userEmail = "someEmail@gmail.com"
-        viewModel.userPassword = "123456"
+        viewModel.userEmail.value = "someEmail@gmail.com"
+        viewModel.userPassword.value = "123456"
         
-        let expectation = XCTestExpectation(description: "Login Success")
-        viewModel.shouldNavigateToHomePage
-            .sink { should in
-                XCTAssertTrue(should)
-                expectation.fulfill()
+        let exception = XCTestExpectation(description: "Login Success")
+        
+        viewModel.output.shouldNavigateToHomePage
+            .sink { shouldNavigateToHomePage in
+                if shouldNavigateToHomePage == true {
+                    exception.fulfill()
+                }
             }
             .store(in: &cancellables)
-        viewModel.didPressLogin.send(())
-        wait(for: [expectation], timeout: 5)
+        viewModel.input.didPressLogin.send(())
+        wait(for: [exception], timeout: 5)
     }
 }

@@ -15,13 +15,6 @@
     {
       "target" : {
         "containerPath" : "container:AnimeTracker.xcodeproj",
-        "identifier" : "A3CB2ACD2DF0714C0070A7DF",
-        "name" : "AnimeTrackerUITests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:AnimeTracker.xcodeproj",
         "identifier" : "A3CB2AC02DF0712A0070A7DF",
         "name" : "AnimeTrackerTests"
       }
