@@ -7,22 +7,30 @@
 
 import Foundation
 import Combine
+import CombineExt
 
 class LoginViewViewModel {
     // MARK: - input
-    let didPressLogin: PassthroughSubject<Void, Never> = .init()
-    let didPressRegister: PassthroughSubject<Void, Never> = .init()
-    let didPressForgotPassword: PassthroughSubject<Void, Never> = .init()
+    struct Input {
+        let didPressLogin: PassthroughSubject<Void, Never> = .init()
+        let didPressRegister: PassthroughSubject<Void, Never> = .init()
+        let didPressForgotPassword: PassthroughSubject<Void, Never> = .init()
+    }
     
     // MARK: - output
-    var shouldNavigateToHomePage: AnyPublisher<Bool, Never> = .empty
-    var shouldNavigateToRegister: AnyPublisher<Void, Never> = .empty
-    var shouldNavigateToForgotPassword: AnyPublisher<Void, Never> = .empty
-    var shouldShowError: AnyPublisher<Error, Never> = .empty
+    struct Output {
+        var shouldNavigateToHomePage: AnyPublisher<Bool, Never> = .empty
+        var shouldNavigateToRegister: AnyPublisher<Void, Never> = .empty
+        var shouldNavigateToForgotPassword: AnyPublisher<Void, Never> = .empty
+        var shouldShowError: AnyPublisher<Error, Never> = .empty
+        var isLoggingProcessing: CurrentValueSubject<Bool, Never> = .init(false)
+    }
     
     // MARK: - data property
-    @Published var userEmail: String?
-    @Published var userPassword: String?
+    let input = Input()
+    private(set) var output = Output()
+    var userEmail = CurrentValueSubject<String, Never>("")
+    var userPassword = CurrentValueSubject<String, Never>("")
     @Published var errorMessage: Error?
     private let loginDataProvider: FirebaseDataProvider
     private var cancellables: Set<AnyCancellable> = []
@@ -33,19 +41,20 @@ class LoginViewViewModel {
     }
     
     func login() -> AnyPublisher<Void, Error> {
-        guard let userEmail, userEmail != "" else {
-            return Fail(error: LoginError.emailFieldEmpty).eraseToAnyPublisher()
+        switch validateCredentials() {
+        case .success(let (email, password)):
+            return loginDataProvider.signIn(withEmail: email, password: password)
+        case .failure(let error):
+            return Fail(error: error).eraseToAnyPublisher()
         }
-        
-        guard let userPassword, userPassword != "" else {
-            return Fail(error: LoginError.passwordFieldEmpty).eraseToAnyPublisher()
-        }
-        
-        return loginDataProvider.signIn(withEmail: userEmail, password: userPassword)
     }
     
     private func setupPublisher() {
-        shouldNavigateToHomePage = didPressLogin
+        output.shouldNavigateToHomePage = input.didPressLogin
+            .throttle(for: .seconds(1), scheduler: DispatchQueue.main, latest: false)
+            .handleEvents(receiveOutput: { [weak self] _ in
+                self?.output.isLoggingProcessing.value = true
+            })
             .flatMap { [weak self] _ -> AnyPublisher<Bool, Never> in
                 guard let self else {
                     return Just(false).eraseToAnyPublisher()
@@ -57,19 +66,36 @@ class LoginViewViewModel {
                         self.errorMessage = error
                         return Just(false).eraseToAnyPublisher()
                     }
+                    .handleEvents(receiveOutput: { _ in
+                        self.output.isLoggingProcessing.value = false
+                    })
                     .eraseToAnyPublisher()
             }
             .eraseToAnyPublisher()
         
-        shouldNavigateToRegister = didPressRegister
+        output.shouldNavigateToRegister = input.didPressRegister
+            .throttle(for: .seconds(1), scheduler: DispatchQueue.main, latest: false)
             .eraseToAnyPublisher()
         
-        shouldNavigateToForgotPassword = didPressForgotPassword
+        output.shouldNavigateToForgotPassword = input.didPressForgotPassword
+            .throttle(for: .seconds(1), scheduler: DispatchQueue.main, latest: false)
             .eraseToAnyPublisher()
         
-        shouldShowError = $errorMessage
+        output.shouldShowError = $errorMessage
             .compactMap{ $0 }
             .eraseToAnyPublisher()
+    }
+    
+    private func validateCredentials() -> Result<(String, String), LoginError> {
+        guard !userEmail.value.isEmpty else {
+            return .failure(.emailFieldEmpty)
+        }
+        
+        guard !userPassword.value.isEmpty else {
+            return .failure(.passwordFieldEmpty)
+        }
+        
+        return .success((userEmail.value, userPassword.value))
     }
 }
 

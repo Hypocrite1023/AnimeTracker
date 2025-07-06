@@ -7,6 +7,7 @@
 
 import UIKit
 import Combine
+import CombineExt
 import Lottie
 import SnapKit
 
@@ -17,7 +18,10 @@ class LoginViewController: UIViewController {
     //MARK: - password textField
     // the textfield that user input their password which the password relate to the email
     @IBOutlet weak var userPasswordTextField: UITextField!
+    
     @IBOutlet weak var loginBtn: UIButton!
+    @IBOutlet weak var registerBtn: UIButton!
+    @IBOutlet weak var forgotPassBtn: UIButton!
     @IBOutlet weak var lottieAnimationContainer: UIView!
     
     private let viewModel: LoginViewViewModel = .init()
@@ -82,39 +86,64 @@ class LoginViewController: UIViewController {
     private func setupPublisher() {
         userEmailTextField.publisher(for: \.text)
             .removeDuplicates()
-            .assign(to: \.userEmail, on: viewModel)
+            .replaceNil(with: "")
+            .assign(to: \.userEmail.value, on: viewModel)
             .store(in: &cancellables)
         
         userPasswordTextField.publisher(for: \.text)
             .removeDuplicates()
-            .assign(to: \.userPassword, on: viewModel)
+            .replaceNil(with: "")
+            .assign(to: \.userPassword.value, on: viewModel)
+            .store(in: &cancellables)
+        
+        loginBtn.tapPublisher
+            .sink { [weak self] _ in
+                self?.userEmailTextField.errorBorder(show: false)
+                self?.userPasswordTextField.errorBorder(show: false)
+                self?.view.endEditing(true)
+                self?.viewModel.input.didPressLogin.send(())
+            }
+            .store(in: &cancellables)
+        
+        registerBtn.tapPublisher
+            .sink { [weak self] _ in
+                self?.view.endEditing(true)
+                self?.viewModel.input.didPressRegister.send(())
+            }
+            .store(in: &cancellables)
+        
+        forgotPassBtn.tapPublisher
+            .sink { [weak self] _ in
+                self?.view.endEditing(true)
+                self?.viewModel.input.didPressForgotPassword.send(())
+            }
             .store(in: &cancellables)
     }
     
     private func setupSubscriber() {
-        viewModel.shouldNavigateToHomePage
+        viewModel.output.shouldNavigateToHomePage
             .filter{ $0 }
-            .sink { _ in
+            .sink { [weak self] _ in
                 let mainPage = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TabBarController")
-                self.navigationController?.setViewControllers([mainPage], animated: true)
+                self?.navigationController?.setViewControllers([mainPage], animated: true)
             }
             .store(in: &cancellables)
         
-        viewModel.shouldNavigateToRegister
-            .sink { _ in
+        viewModel.output.shouldNavigateToRegister
+            .sink { [weak self] _ in
                 let registerPage = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "RegisterViewController")
-                self.navigationController?.pushViewController(registerPage, animated: true)
+                self?.navigationController?.pushViewController(registerPage, animated: true)
             }
             .store(in: &cancellables)
         
-        viewModel.shouldNavigateToForgotPassword
-            .sink { _ in
+        viewModel.output.shouldNavigateToForgotPassword
+            .sink { [weak self] _ in
                 let resetPasswordPage = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ResetPasswordViewController")
-                self.navigationController?.pushViewController(resetPasswordPage, animated: true)
+                self?.navigationController?.pushViewController(resetPasswordPage, animated: true)
             }
             .store(in: &cancellables)
         
-        viewModel.shouldShowError
+        viewModel.output.shouldShowError
             .sink { error in
                 if let error = error as? LoginError {
                     switch error {
@@ -131,26 +160,16 @@ class LoginViewController: UIViewController {
                 AlertWithMessageController.setupAlertController(title: "Login Error", message: error.localizedDescription, viewController: self)
             }
             .store(in: &cancellables)
+        
+        viewModel.output.isLoggingProcessing
+            .sink { [weak self] isProcessing in
+                self?.loginBtn.isEnabled = !isProcessing
+            }
+            .store(in: &cancellables)
     }
     
     @objc func closeKeyboard() {
         self.view.endEditing(true)
-    }
-    @IBAction func goRegister(_ sender: UIButton) {
-        self.view.endEditing(true)
-        viewModel.didPressRegister.send(())
-    }
-    
-    @IBAction func login(_ sender: UIButton) {
-        self.view.endEditing(true)
-        userEmailTextField.errorBorder(show: false)
-        userPasswordTextField.errorBorder(show: false)
-        viewModel.didPressLogin.send(())
-    }
-    
-    @IBAction func goResetPassword(_ sender: UIButton) {
-        self.view.endEditing(true)
-        viewModel.didPressForgotPassword.send(())
     }
     
     @objc private func keyboardWillShow(notification: Notification) {
@@ -167,7 +186,9 @@ extension LoginViewController: UITextFieldDelegate {
     // when user tap keyboard enter, the cursor will move to the next textfield
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == userPasswordTextField {
-            login(loginBtn)
+            userEmailTextField.errorBorder(show: false)
+            userPasswordTextField.errorBorder(show: false)
+            viewModel.input.didPressLogin.send(())
             return true
         }
         if let nextTextField = view.viewWithTag(textField.tag + 1) {

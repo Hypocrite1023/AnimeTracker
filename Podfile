@@ -21,4 +21,5 @@ target 'AnimeTracker' do
   pod 'LookinServer'
   pod 'lottie-ios'
   pod 'SnapKit'
+  pod 'CombineExt'
 end

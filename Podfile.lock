@@ -1152,6 +1152,7 @@ PODS:
     - BoringSSL-GRPC/Interface (= 0.0.36)
   - BoringSSL-GRPC/Interface (0.0.36)
   - CombineCocoa (0.4.1)
+  - CombineExt (1.8.0)
   - FirebaseAnalytics (11.0.0):
     - FirebaseAnalytics/AdIdSupport (= 11.0.0)
     - FirebaseCore (~> 11.0)
@@ -1370,6 +1371,7 @@ PODS:
 
 DEPENDENCIES:
   - CombineCocoa
+  - CombineExt
   - FirebaseAnalytics
   - FirebaseAuth
   - FirebaseFirestore
@@ -1383,6 +1385,7 @@ SPEC REPOS:
     - abseil
     - BoringSSL-GRPC
     - CombineCocoa
+    - CombineExt
     - FirebaseAnalytics
     - FirebaseAppCheckInterop
     - FirebaseAuth
@@ -1412,6 +1415,7 @@ SPEC CHECKSUMS:
   abseil: d121da9ef7e2ff4cab7666e76c5a3e0915ae08c3
   BoringSSL-GRPC: ca6a8e5d04812fce8ffd6437810c2d46f925eaeb
   CombineCocoa: e5210dbfb480ff251078929459ac17e750e7af1d
+  CombineExt: c4daa97ef75754d8ef319bd79edeef82652f3eea
   FirebaseAnalytics: 27eb78b97880ea4a004839b9bac0b58880f5a92a
   FirebaseAppCheckInterop: 6f63b3cf004e8bfd8f577e2221a95b4f0b6dc4c5
   FirebaseAuth: d5cf28be74d7e82257f6a3f717509eff70d3cf4a
@@ -1437,6 +1441,6 @@ SPEC CHECKSUMS:
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
   SnapKit: d612e99e678a2d3b95bf60b0705ed0a35c03484a
 
-PODFILE CHECKSUM: bc28d9989a83f7f88e1536b4eff3e89f3de0f55e
+PODFILE CHECKSUM: b617b55db195a31064a6a8a54d03128a3ca64669
 
 COCOAPODS: 1.16.2
