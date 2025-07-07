@@ -7,5 +7,5 @@
 
 // Configuration settings file format documentation can be found at:
 // https://help.apple.com/xcode/#/dev745c5c974
-#include "AnimeTracker/Pods/Target Support Files/Pods-AnimeTracker/Pods-AnimeTracker.release.xcconfig"
+#include "Pods/Target Support Files/Pods-AnimeTracker/Pods-AnimeTracker.release.xcconfig"
 USE_GOOGLE_PLIST = NO
