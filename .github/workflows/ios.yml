@@ -29,6 +29,7 @@ jobs:
           bundler-cache: true
 
       - name: Install CocoaPods
+        working-directory: AnimeTracker
         run: |
           gem install cocoapods
           pod install
@@ -55,19 +56,21 @@ jobs:
           xcode-version: '16.2'
 
       - name: Build for testing
+        working-directory: AnimeTracker
         run: |
-          xcodebuild build-for-testing \
+         xcodebuild build-for-testing \
             -workspace AnimeTracker.xcworkspace \
             -scheme AnimeTracker \
             -configuration Release \
-            -xcconfig Config/Release.xcconfig \
+            -xcconfig ../Config/Release.xcconfig \
             -destination "platform=iOS Simulator,name=iPhone 16"
 
       - name: Run tests
+        working-directory: AnimeTracker
         run: |
           xcodebuild test-without-building \
             -workspace AnimeTracker.xcworkspace \
             -scheme AnimeTracker \
             -configuration Release \
-            -xcconfig Config/Release.xcconfig \
+            -xcconfig ../Config/Release.xcconfig \
             -destination "platform=iOS Simulator,name=iPhone 16"
