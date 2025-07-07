@@ -12,6 +12,10 @@ jobs:
     runs-on: macos-15
 
     steps:
+      - name: Print working directory
+        run: |
+          pwd
+          ls -l
       - name: Checkout
         uses: actions/checkout@v4
 
