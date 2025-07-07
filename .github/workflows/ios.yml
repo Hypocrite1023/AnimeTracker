@@ -27,10 +27,6 @@ jobs:
         with:
           ruby-version: '3.2'
           bundler-cache: true
-          
-      - name: Clean misplaced xcfilelist files
-        run: |
-          find AnimeTracker -name "*-xcframeworks-*.xc*" -delete
 
       - name: Install CocoaPods
         run: |
