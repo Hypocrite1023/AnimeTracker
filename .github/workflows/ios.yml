@@ -27,6 +27,10 @@ jobs:
         with:
           ruby-version: '3.2'
           bundler-cache: true
+          
+      - name: Clean misplaced xcfilelist files
+        run: |
+          find AnimeTracker -name "*-xcframeworks-*.xc*" -delete
 
       - name: Install CocoaPods
         working-directory: AnimeTracker
@@ -56,7 +60,6 @@ jobs:
           xcode-version: '16.2'
 
       - name: Build for testing
-        working-directory: AnimeTracker
         run: |
          xcodebuild build-for-testing \
             -workspace AnimeTracker.xcworkspace \
@@ -66,7 +69,6 @@ jobs:
             -destination "platform=iOS Simulator,name=iPhone 16"
 
       - name: Run tests
-        working-directory: AnimeTracker
         run: |
           xcodebuild test-without-building \
             -workspace AnimeTracker.xcworkspace \
