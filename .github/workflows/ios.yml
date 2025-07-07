@@ -35,15 +35,17 @@ jobs:
 
       - name: Debug Pod Install Output
         run: |
-          ls -l AnimeTracker/AnimeTracker/Pods/Target\ Support\ Files/GoogleAppMeasurement/ || echo "❌ GoogleAppMeasurement not found"
+          ls -a
+          pwd
+          ls -l Pods/Target\ Support\ Files/GoogleAppMeasurement/ || echo "❌ GoogleAppMeasurement not found"
 
       - name: Cache CocoaPods
         uses: actions/cache@v4
         with:
           path: |
             ~/.cocoapods
-            AnimeTracker/AnimeTracker/Pods
-          key: ${{ runner.os }}-pods-${{ hashFiles('AnimeTracker/AnimeTracker/Podfile.lock') }}
+            Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('Podfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-pods-
 
