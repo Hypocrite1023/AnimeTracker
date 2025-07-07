@@ -143,11 +143,6 @@
 			path = ci_scripts;
 			sourceTree = "<group>";
 		};
-		A39F83BA2E0FD0B600D7B2B6 /* Config */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Config;
-			sourceTree = "<group>";
-		};
 		A3A0C7092DBA0783005CE24D /* StaffDetailView */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = StaffDetailView;
@@ -347,7 +342,6 @@
 		CDC14F142C453DBF00BC14FA = {
 			isa = PBXGroup;
 			children = (
-				A39F83BA2E0FD0B600D7B2B6 /* Config */,
 				A39F82EC2E0F2E8900D7B2B6 /* ci_scripts */,
 				CDE22E4E2C48115800080BAD /* README.md */,
 				CDE22E492C480F4100080BAD /* Demo */,
@@ -485,7 +479,6 @@
 			);
 			fileSystemSynchronizedGroups = (
 				A39F82EC2E0F2E8900D7B2B6 /* ci_scripts */,
-				A39F83BA2E0FD0B600D7B2B6 /* Config */,
 				A3CB2AC22DF0712A0070A7DF /* AnimeTrackerTests */,
 			);
 			name = AnimeTrackerTests;
@@ -986,8 +979,6 @@
 		};
 		CDC14F322C453DC000BC14FA /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = A39F83BA2E0FD0B600D7B2B6 /* Config */;
-			baseConfigurationReferenceRelativePath = Debug.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -1024,8 +1015,6 @@
 		};
 		CDC14F332C453DC000BC14FA /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = A39F83BA2E0FD0B600D7B2B6 /* Config */;
-			baseConfigurationReferenceRelativePath = Release.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
