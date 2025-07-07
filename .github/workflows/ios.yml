@@ -39,6 +39,8 @@ jobs:
 
       - name: Debug Pod Install Output
         run: |
+          echo "PODS_ROOT=${PODS_ROOT}"
+          echo "FRAMEWORK_SEARCH_PATHS=${FRAMEWORK_SEARCH_PATHS}"
           ls -a
           pwd
           ls -l Pods/Target\ Support\ Files/GoogleAppMeasurement/ || echo "❌ GoogleAppMeasurement not found"
