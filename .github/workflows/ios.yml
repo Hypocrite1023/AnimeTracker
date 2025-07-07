@@ -60,7 +60,7 @@ jobs:
             -workspace AnimeTracker.xcworkspace \
             -scheme AnimeTracker \
             -configuration Release \
-            -xcconfig ../Release.xcconfig \
+            -xcconfig Release.xcconfig \
             -destination "platform=iOS Simulator,name=iPhone 16"
 
       - name: Run tests
@@ -69,5 +69,5 @@ jobs:
             -workspace AnimeTracker.xcworkspace \
             -scheme AnimeTracker \
             -configuration Release \
-            -xcconfig ../Release.xcconfig \
+            -xcconfig Release.xcconfig \
             -destination "platform=iOS Simulator,name=iPhone 16"
