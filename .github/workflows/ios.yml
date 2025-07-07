@@ -33,7 +33,6 @@ jobs:
           find AnimeTracker -name "*-xcframeworks-*.xc*" -delete
 
       - name: Install CocoaPods
-        working-directory: AnimeTracker
         run: |
           gem install cocoapods
           pod install
@@ -65,7 +64,7 @@ jobs:
             -workspace AnimeTracker.xcworkspace \
             -scheme AnimeTracker \
             -configuration Release \
-            -xcconfig ../Config/Release.xcconfig \
+            -xcconfig Config/Release.xcconfig \
             -destination "platform=iOS Simulator,name=iPhone 16"
 
       - name: Run tests
@@ -74,5 +73,5 @@ jobs:
             -workspace AnimeTracker.xcworkspace \
             -scheme AnimeTracker \
             -configuration Release \
-            -xcconfig ../Config/Release.xcconfig \
+            -xcconfig Config/Release.xcconfig \
             -destination "platform=iOS Simulator,name=iPhone 16"
