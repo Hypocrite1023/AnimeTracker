@@ -61,7 +61,7 @@ jobs:
          xcodebuild build-for-testing \
             -workspace AnimeTracker.xcworkspace \
             -scheme AnimeTracker \
-            -configuration Release \
+            -configuration Debug \
             -destination "platform=iOS Simulator,name=iPhone 16"
 
       - name: Run tests
@@ -72,5 +72,5 @@ jobs:
           xcodebuild test-without-building \
             -workspace AnimeTracker.xcworkspace \
             -scheme AnimeTracker \
-            -configuration Release \
+            -configuration Debug \
             -destination "platform=iOS Simulator,name=iPhone 16"
