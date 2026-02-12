@@ -8,7 +8,7 @@
 import Foundation
 
 protocol AnimeCharacterDataDelegate: AnyObject {
-    func animeCharacterDataDelegate(characterData: CharacterDetail)
+    func animeCharacterDataDelegate(characterData: Response.CharacterDetail)
 }
 
 protocol GetAnimeCharacterDataDelegate: AnyObject {

@@ -9,10 +9,10 @@ import Foundation
 
 protocol AnimeDetailDataDelegate: AnyObject {
 //    func animeDetailDataDelegate(media: MediaResponse.MediaData.Media)
-    func animeDetailCharacterDataDelegate(characterData: MediaCharacterPreview)
-    func animeDetailStaffDataDelegate(staffData: MediaStaffPreview)
-    func animeDetailRankingDataDelegate(rankingData: MediaRanking.MediaData.Media)
-    func animeDetailThreadDataDelegate(threadData: ThreadResponse.PageData)
+    func animeDetailCharacterDataDelegate(characterData: Response.MediaCharacterPreview)
+    func animeDetailStaffDataDelegate(staffData: Response.MediaStaffPreview)
+    func animeDetailRankingDataDelegate(rankingData: Response.MediaRanking.MediaData.Media)
+    func animeDetailThreadDataDelegate(threadData: Response.ThreadResponse.PageData)
 }
 
 protocol AnimeOverViewDataDelegate: AnyObject {

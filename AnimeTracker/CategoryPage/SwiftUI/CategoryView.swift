@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Kingfisher
+import SkeletonUI
 
 struct CategoryView: View {
     @StateObject private var vm: CategoryViewModel = CategoryViewModel()
@@ -22,47 +23,56 @@ struct CategoryView: View {
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 20) {
-                ForEach(vm.categories) { category in
-                    VStack(alignment: .leading) {
-                        HStack {
-                            Text(category.category.capitalized.replacingOccurrences(of: "_", with: " "))
-                                .bold()
-                                .font(.title2)
-                                .padding(.leading)
-                            Spacer()
-                            CategoryButton(categoryUUID: category.id, selectedCategorySortBy: vm.eachCategorySortBy[category.id] ?? .popularity, categoryOnChange: { uuid, categorySort in
-                                self.vm.eachCategorySortBy[uuid] = categorySort
-                            })
-                                .padding(.trailing)
-                        }
-                        ScrollViewReader { proxy in
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                LazyHStack(spacing: 16) {
-                                    ForEach(Array(category.items.enumerated()), id: \.element.id) { (index, anime) in
-                                        animeCard(animeID: anime.animeID, animeTitle: anime.animeName, animeImage: anime.animeThumbnailURL, onTap: {
-                                            self.vm.didSelectAnime.send($0)
-                                        })
-                                        .id("\(category.id.uuidString)-\(index)") // 確保每個 category 的 scroll id 是唯一的
-                                        .onAppear {
-                                            if anime == category.items[category.items.count - 3] {
-                                                self.vm.shouldLoadMoreSpecifyCategory.send(category.id)
+                // --- START: Conditional Display --- 
+                if vm.isLoadingCategoryData {
+                    // Display skeleton views while loading
+                    ForEach(0..<3) { _ in // Show a few placeholder categories
+                        CategorySkeletonView()
+                    }
+                } else {
+                    // Display actual content when not loading
+                    ForEach(vm.categories) { category in
+                        VStack(alignment: .leading) {
+                            HStack {
+                                Text(category.category.capitalized.replacingOccurrences(of: "_", with: " "))
+                                    .bold()
+                                    .font(.title2)
+                                    .padding(.leading)
+                                Spacer()
+                                CategoryButton(categoryUUID: category.id, selectedCategorySortBy: vm.eachCategorySortBy[category.id] ?? .popularity, categoryOnChange: { uuid, categorySort in
+                                    self.vm.eachCategorySortBy[uuid] = categorySort
+                                })
+                                    .padding(.trailing)
+                            }
+                            ScrollViewReader { proxy in
+                                ScrollView(.horizontal, showsIndicators: false) {
+                                    LazyHStack(spacing: 16) {
+                                        ForEach(Array(category.items.enumerated()), id: \.element.id) { (index, anime) in
+                                            animeCard(animeID: anime.animeID, animeTitle: anime.animeName, animeImage: anime.animeThumbnailURL, onTap: { 
+                                                self.vm.didSelectAnime.send($0)
+                                            })
+                                            .onAppear {
+                                                if anime == category.items[category.items.count - 3] {
+                                                    self.vm.shouldLoadMoreSpecifyCategory.send(category.id)
+                                                }
                                             }
                                         }
                                     }
+                                    .padding(.horizontal)
+                                    
                                 }
-                                .padding(.horizontal)
-                                
-                            }
-                            .onReceive(vm.categoryScrollViewScrollToLeading) { uuid in
-                                if category.id == uuid {
-                                    withAnimation {
-                                        proxy.scrollTo("\(uuid.uuidString)-0", anchor: .leading)
+                                .onReceive(vm.categoryScrollViewScrollToLeading) { uuid in
+                                    if category.id == uuid {
+                                        withAnimation {
+                                            proxy.scrollTo("\(uuid.uuidString)-0", anchor: .leading)
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
+                // --- END: Conditional Display --- 
             }
             .padding(.vertical)
         }
@@ -71,6 +81,43 @@ struct CategoryView: View {
         }
     }
 }
+
+// --- START: Skeleton View Definitions --- 
+
+struct CategorySkeletonView: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            // Placeholder for category title
+            Text("")
+                .skeleton(with: true, size: CGSize(width: 150, height: 25), shape: .rectangle)
+
+            // Placeholder for horizontal anime cards
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack(spacing: 16) {
+                    ForEach(0..<5) { _ in // Show 5 placeholder cards
+                        AnimeCardSkeletonView()
+                    }
+                }
+                
+            }
+        }
+        .padding(.horizontal)
+    }
+}
+
+struct AnimeCardSkeletonView: View {
+    var body: some View {
+        VStack(spacing: 8) {
+            Text("")
+                .skeleton(with: true, size: CGSize(width: 150, height: 200), shape: .rectangle)
+            
+            Text("")
+                .skeleton(with: true, size: CGSize(width: 150, height: 40), shape: .rectangle)
+        }
+    }
+}
+
+// --- END: Skeleton View Definitions --- 
 
 struct animeCard: View {
     let animeID: Int
@@ -87,7 +134,7 @@ struct animeCard: View {
                 .cornerRadius(10)
                 .clipped()
             
-            Text(animeTitle)
+            Text("\(animeTitle)")
                 .frame(width: 150, height: 40)
                 .fixedSize(horizontal: false, vertical: true)
                 .multilineTextAlignment(.center)
@@ -112,7 +159,8 @@ struct CategoryButton: View {
     
     var body: some View {
         Menu {
-            ForEach(Category.sortBy.allCases, id: \.self) { category in
+            ForEach(Category.sortBy.allCases, id: \.self) {
+                category in
                 Button(action: {
                     // change the category sort way to the eachcategorysort accroding to category uuid
                     categoryOnChange(categoryUUID, category)
@@ -121,10 +169,17 @@ struct CategoryButton: View {
                 }
             }
         } label: {
-            Text(selectedCategorySortBy.title)
-                .padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
-                .background(Color.gray.opacity(0.2))
-                .cornerRadius(10)
+            if #available(iOS 26.0, *) {
+                Text(selectedCategorySortBy.title)
+                    .padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
+                    .cornerRadius(10)
+//                    .glassEffect(.clear.tint(.orange).interactive())
+            } else {
+                Text(selectedCategorySortBy.title)
+                    .padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
+                    .background(Color.gray.opacity(0.2))
+                    .cornerRadius(10)
+            }
         }
     }
 }

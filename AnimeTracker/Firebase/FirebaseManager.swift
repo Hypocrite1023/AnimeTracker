@@ -48,11 +48,26 @@ protocol FirebaseDataProvider {
     func signIn(withEmail: String, password: String) -> AnyPublisher<Void, Error>
 //    func register(withEmail: String, password: String, username: String) -> AnyPublisher<Void, Error>
 //    func resetPassword(withEmail: String) -> AnyPublisher<Void, Error>
+    func loadUserFavorite(perFetch: Int) -> AnyPublisher<[Response.FirebaseAnimeRecord], Error>
+    func resetFavoritePagination()
+    
+    func updateAnimeRecord(userUID: String, animeID: Int, isFavorite: Bool, isNotify: Bool, status: String) -> AnyPublisher<Response.FirebaseAnimeRecord, Error>
+    
+    func getCurrentUserUID() -> String?
+}
+
+extension FirebaseDataProvider {
+    func loadUserFavorite() -> AnyPublisher<[Response.FirebaseAnimeRecord], Error> {
+        loadUserFavorite(perFetch: 50)
+    }
 }
 
 struct FirebaseError {
     enum Reason: Error {
         case documentNotExist
+        case cannotGetUserUID
+        case dbError
+        case other
     }
 }
 
@@ -74,21 +89,6 @@ class FirebaseManager: FirebaseDataProvider {
     
     private let db = Firestore.firestore()
     private var cancellables = Set<AnyCancellable>()
-    
-    
-    
-    func loadUserFavorite(userUID: String, perFetch: Int, completion: @escaping ([DocumentSnapshot]?, Error?) -> Void) {
-        let userRef = db.collection(FireStoreKeyString.USER_COLLECTION).document(userUID).collection(FireStoreKeyString.WATCHED_ANIME)
-        
-        userRef.whereField(FireStoreKeyString.IS_FAVORITE, isEqualTo: true).getDocuments { snapshot, error in
-            if let error = error {
-                completion(nil, error)
-            } else {
-                completion(snapshot?.documents, nil)
-            }
-            print("fetch")
-        }
-    }
     
     func loadUserFavoriteAndReleasing(userUID: String, perFetch: Int, completion: @escaping ([DocumentSnapshot]?, Error?) -> Void) {
         let userRef = db.collection(FireStoreKeyString.USER_COLLECTION).document(userUID).collection(FireStoreKeyString.WATCHED_ANIME)
@@ -247,19 +247,19 @@ extension FirebaseManager {
         .eraseToAnyPublisher()
     }
 
-    func updateAnimeRecord(userUID: String, animeID: Int, isFavorite: Bool, isNotify: Bool, status: String) -> AnyPublisher<Void, Error> {
+    func updateAnimeRecord(userUID: String, animeID: Int, isFavorite: Bool, isNotify: Bool, status: String) -> AnyPublisher<Response.FirebaseAnimeRecord, Error> {
         let animeRef = db.collection(FireStoreKeyString.USER_COLLECTION).document(userUID).collection(FireStoreKeyString.WATCHED_ANIME).document("\(animeID)")
         var data: [String: Any] = [:]
         data[FireStoreKeyString.IS_FAVORITE] = isFavorite
         data[FireStoreKeyString.IS_NOTIFY] = isNotify
         data[FireStoreKeyString.STATUS] = status
         
-        return Future<Void, Error> { promise in
+        return Future<Response.FirebaseAnimeRecord, Error> { promise in
             animeRef.updateData(data) { error in
                 if let error = error {
                     promise(.failure(error))
                 } else {
-                    promise(.success(()))
+                    promise(.success(.init(id: animeID, isFavorite: isFavorite, isNotify: isNotify)))
                 }
             }
         }
@@ -323,6 +323,62 @@ extension FirebaseManager {
                     print("Document successfully updated")
                 }
                 promise(.success(()))
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+}
+
+// MARK: - Load Favorite Data
+extension FirebaseManager {
+    
+    func resetFavoritePagination() {
+        self.userFavoriteLastFetchDocument = nil
+    }
+    
+    func loadUserFavorite(perFetch: Int = 50) -> AnyPublisher<[Response.FirebaseAnimeRecord], Error> {
+        
+        return Future<[Response.FirebaseAnimeRecord], Error> { [weak self] promise in
+            guard let self = self else { return }
+            guard let userUID = self.getCurrentUserUID() else {
+                promise(.failure(FirebaseError.Reason.cannotGetUserUID))
+                return
+            }
+            
+            let userRef = self.db.collection(FireStoreKeyString.USER_COLLECTION).document(userUID).collection(FireStoreKeyString.WATCHED_ANIME)
+            
+            var query = userRef
+                .whereField(FireStoreKeyString.IS_FAVORITE, isEqualTo: true)
+                .order(by: FieldPath.documentID())
+                .limit(to: perFetch)
+            
+            if let lastDoc = self.userFavoriteLastFetchDocument {
+                query = query.start(afterDocument: lastDoc)
+            }
+            
+            query.getDocuments { snapshot, error in
+                if let error = error {
+                    promise(.failure(error))
+                } else if let snapshot = snapshot {
+                    
+                    if let lastVisible = snapshot.documents.last {
+                        self.userFavoriteLastFetchDocument = lastVisible
+                    }
+                    
+                    let result = snapshot.documents.compactMap { document -> Response.FirebaseAnimeRecord? in
+                        let animeInfo = document.data()
+                        guard let animeId = Int(document.documentID),
+                              let isFavorite = animeInfo[FirebaseManager.FireStoreKeyString.IS_FAVORITE] as? Bool,
+                              let isNotify = animeInfo[FirebaseManager.FireStoreKeyString.IS_NOTIFY] as? Bool else {
+                            return nil
+                        }
+                        return Response.FirebaseAnimeRecord(id: animeId, isFavorite: isFavorite, isNotify: isNotify)
+                    }
+                    promise(.success(result))
+                } else {
+                    promise(.success([]))
+                }
+                print("fetch user favorite")
             }
         }
         .eraseToAnyPublisher()

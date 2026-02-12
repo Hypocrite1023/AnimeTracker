@@ -30,7 +30,7 @@ class AnimeDetailPageViewModel {
     private(set) var showWatch: AnyPublisher<[Response.AnimeDetail.MediaData.Media.StreamingEpisodes], Never> = .empty
     private(set) var showCharacters: AnyPublisher<[Response.AnimeDetail.MediaData.Media.CharacterPreview.Edges], Never> = .empty
     private(set) var shouldUpdateCharacters: AnyPublisher<[Response.AnimeDetail.MediaData.Media.CharacterPreview.Edges], Never> = .empty
-    private(set) var showStats: AnyPublisher<(MediaRanking.MediaData.Media?, Response.AnimeDetail.MediaData.Media.Stats?), Never> = .empty
+    private(set) var showStats: AnyPublisher<(Response.MediaRanking.MediaData.Media?, Response.AnimeDetail.MediaData.Media.Stats?), Never> = .empty
     private(set) var showStaffs: AnyPublisher<[Response.AnimeDetail.MediaData.Media.StaffPreview.Edges]?, Never> = .empty
     private(set) var shouldUpdateStaffs: AnyPublisher<[Response.AnimeDetail.MediaData.Media.StaffPreview.Edges], Never> = .empty
     private(set) var showAlert: AnyPublisher<AlertType, Never> = .empty
@@ -46,7 +46,7 @@ class AnimeDetailPageViewModel {
     @Published var animeDetailData: Response.AnimeDetail.MediaData.Media?
     @Published var animeCharacterData: [Response.AnimeDetail.MediaData.Media.CharacterPreview.Edges]? = []
     @Published var newAnimeCharacterData: [Response.AnimeDetail.MediaData.Media.CharacterPreview.Edges]? = []
-    @Published var animeRankingData: MediaRanking.MediaData.Media?
+    @Published var animeRankingData: Response.MediaRanking.MediaData.Media?
     @Published var animeStaffData: [Response.AnimeDetail.MediaData.Media.StaffPreview.Edges]? = []
     let newAnimeStaffDataPassThrough: PassthroughSubject<[Response.AnimeDetail.MediaData.Media.StaffPreview.Edges], Never> = .init()
     
@@ -210,13 +210,13 @@ class AnimeDetailPageViewModel {
             .eraseToAnyPublisher()
         
         showStats = shouldShowStats
-            .flatMap { _ -> AnyPublisher<MediaRanking.MediaData.Media, Never> in
+            .flatMap { _ -> AnyPublisher<Response.MediaRanking.MediaData.Media, Never> in
                 guard let animeRankingData = self.animeRankingData else {
                     return AnimeDataFetcher.shared.fetchRankingDataByMediaId(id: self.animeID)
                         .prefix(1)
                         .catch({ error in
                             self.shouldShowAlert.send(.apiError(message: error.localizedDescription))
-                            return Empty<MediaRanking.MediaData.Media, Never>(completeImmediately: true)
+                            return Empty<Response.MediaRanking.MediaData.Media, Never>(completeImmediately: true)
                                 .eraseToAnyPublisher()
                         })
                         .eraseToAnyPublisher()

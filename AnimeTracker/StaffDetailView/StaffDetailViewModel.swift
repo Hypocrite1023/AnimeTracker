@@ -9,9 +9,9 @@ import Foundation
 import Combine
 
 class StaffDetailViewModel {
-    @Published var staffData: StaffDetailData.StaffData.Staff?
-    @Published var staffAnimeData: [StaffDetailData.StaffData.Staff.StaffMedia.Edge] = []
-    @Published var staffMangaData: [StaffDetailData.StaffData.Staff.StaffMedia.Edge] = []
+    @Published var staffData: Response.StaffDetailData.StaffData.Staff?
+    @Published var staffAnimeData: [Response.StaffDetailData.StaffData.Staff.StaffMedia.Edge] = []
+    @Published var staffMangaData: [Response.StaffDetailData.StaffData.Staff.StaffMedia.Edge] = []
     private var cancellables: Set<AnyCancellable> = []
     
     init(staffId: Int) {
