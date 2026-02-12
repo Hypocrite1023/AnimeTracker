@@ -15,6 +15,16 @@ class TrendingAnimeCollectionViewCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        setupUI()
+    }
+    
+    private func setupUI() {
+        animeNameLabel.font = .atSubheadline
+        animeNameLabel.lineBreakMode = .byTruncatingTail
+        animeNameLabel.textAlignment = .center
+        
+        animeThumbnail.layer.cornerRadius = 5
+        animeThumbnail.clipsToBounds = true
     }
     
     func setCell(title: String, imageURL: String?) {
@@ -26,11 +36,6 @@ class TrendingAnimeCollectionViewCell: UICollectionViewCell {
                 .memoryCacheExpiration(.seconds(30)),
             ]
         )
-        
-//        animeThumbnail.kf.setImage(with: URL(string: imageURL ?? ""))
-        
-        animeThumbnail.layer.cornerRadius = 5
-        animeThumbnail.clipsToBounds = true
     }
 
 }

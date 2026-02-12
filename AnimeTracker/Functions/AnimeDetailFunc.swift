@@ -68,36 +68,72 @@ struct AnimeDetailFunc {
         return studioNames.joined(separator: ",")
     }
     static func updateAnimeDescription(animeDescription: String) -> NSMutableAttributedString? {
-        var finalAttributedString = NSMutableAttributedString()
-        let animeDescriptionAddFontSize = "<div style=\"font-size: 20px;\"><br>\(animeDescription)</div>"
-        guard let data = animeDescriptionAddFontSize.data(using: .utf8) else { return nil }
+        // 1. Clean up <br> tags which might cause excessive spacing
+        let cleanedDescription = animeDescription
+            .replacingOccurrences(of: "<br><br>", with: "<br>")
+            .replacingOccurrences(of: "\n", with: "") // Remove raw newlines, let HTML handle <br>
+        
+        guard let data = cleanedDescription.data(using: .utf8) else { return nil }
+        
         do {
-            // Create attributed string from HTML
-            let attributedString = try NSAttributedString(
+            // 2. Create attributed string from HTML
+            // Note: This resets font to Times New Roman and color to black by default
+            let attributedString = try NSMutableAttributedString(
                 data: data,
                 options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding: String.Encoding.utf8.rawValue],
                 documentAttributes: nil
             )
-
-            // Create and apply additional paragraph style
+            
+            let fullRange = NSRange(location: 0, length: attributedString.length)
+            
+            // 3. Define Base Font and Color from Design System
+            let baseFont = UIFont.atBody
+            let boldFont = UIFont.atHeadline // Semibold Rounded for Bold
+            let italicFont = UIFont.atBody.withTraits(traits: .traitItalic) // Regular Rounded + Italic
+            let baseColor = UIColor.atLabel
+            
+            // 4. Enumerate existing attributes to preserve traits (Bold/Italic) while changing Font Family
+            attributedString.enumerateAttribute(.font, in: fullRange, options: []) { (value, range, stop) in
+                if let currentFont = value as? UIFont {
+                    let traits = currentFont.fontDescriptor.symbolicTraits
+                    
+                    var newFont = baseFont
+                    
+                    if traits.contains(.traitBold) {
+                        newFont = boldFont
+                    } else if traits.contains(.traitItalic) {
+                        // Try to create Rounded Italic
+                        if let roundedDescriptor = baseFont.fontDescriptor.withDesign(.rounded),
+                           let italicDescriptor = roundedDescriptor.withSymbolicTraits(.traitItalic) {
+                             newFont = UIFont(descriptor: italicDescriptor, size: baseFont.pointSize)
+                        } else {
+                            // Fallback to Standard System Italic if Rounded Italic is unavailable
+                            newFont = UIFont.italicSystemFont(ofSize: baseFont.pointSize)
+                        }
+                    }
+                    
+                    attributedString.addAttribute(.font, value: newFont, range: range)
+                }
+            }
+            
+            // 5. Apply Global Color (Fix for Dark Mode)
+            attributedString.addAttribute(.foregroundColor, value: baseColor, range: fullRange)
+            
+            // 6. Apply Paragraph Style
             let paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.firstLineHeadIndent = 3
-            paragraphStyle.headIndent = 3
-            paragraphStyle.tailIndent = -3
-            paragraphStyle.paragraphSpacingBefore = 20
-
-            // Combine HTML attributed string with additional paragraph style
-            let fullAttributes: [NSAttributedString.Key: Any] = [
-                .paragraphStyle: paragraphStyle
-            ]
-
-            finalAttributedString = NSMutableAttributedString(attributedString: attributedString)
-            finalAttributedString.addAttributes(fullAttributes, range: NSRange(location: 0, length: finalAttributedString.length))
-
+            paragraphStyle.firstLineHeadIndent = 0 // Reset indent
+            paragraphStyle.headIndent = 0
+            paragraphStyle.paragraphSpacing = 12 // Spacing between paragraphs
+            paragraphStyle.lineHeightMultiple = 1.2 // Better readability
+            
+            attributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: fullRange)
+            
+            return attributedString
+            
         } catch {
-            print("Error creating attributed string from HTML")
+            print("Error creating attributed string from HTML: \(error)")
+            return NSMutableAttributedString(string: animeDescription) // Fallback to raw string
         }
-        return finalAttributedString
     }
     
     static func logScale(value: CGFloat, maxValue: CGFloat) -> CGFloat {

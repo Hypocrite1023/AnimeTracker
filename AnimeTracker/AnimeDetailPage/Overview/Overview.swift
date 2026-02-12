@@ -32,6 +32,7 @@ class Overview: UIView {
     @IBOutlet weak var nativeLabel: UILabel!
     @IBOutlet weak var synonymsLabel: UILabel!
     // description
+    @IBOutlet weak var descriptionContainer: UIView!
     @IBOutlet weak var descriptionContextLabel: UILabel!
     // relation
     @IBOutlet weak var relationHStackView: UIStackView!
@@ -69,11 +70,13 @@ class Overview: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         commonInit()
+        setupUI()
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         commonInit()
+        setupUI()
     }
     
     private func commonInit() {
@@ -81,5 +84,12 @@ class Overview: UIView {
         addSubview(contentView)
         contentView.frame = self.bounds
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+    }
+    
+    private func setupUI() {
+        descriptionContainer.layer.cornerRadius = 8
+        descriptionContainer.clipsToBounds = true
+        
+        descriptionContextLabel.backgroundColor = .clear
     }
 }

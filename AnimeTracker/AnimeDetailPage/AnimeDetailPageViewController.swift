@@ -267,10 +267,11 @@ extension AnimeDetailPageViewController {
     // MARK: - Base
     func setupBaseView(data: Response.AnimeDetail.MediaData.Media?) {
         guard let data = data else { return }
-        backgroundImageView.kf.setImage(with: URL(string: data.coverImage?.extraLarge ?? ""))
-        animeBannerImage.kf.setImage(with: URL(string: data.bannerImage ?? (viewModel?.animeDetailData?.coverImage?.extraLarge ?? "")))
-        animeThumbnailImage.kf.setImage(with: URL(string: data.coverImage?.extraLarge ?? ""))
+        backgroundImageView.kf.setImage(with: URL(string: data.coverImage?.extraLarge ?? .empty))
+        animeBannerImage.kf.setImage(with: URL(string: data.bannerImage ?? (viewModel?.animeDetailData?.coverImage?.extraLarge ?? .empty)))
+        animeThumbnailImage.kf.setImage(with: URL(string: data.coverImage?.extraLarge ?? .empty))
         animeTitleLabel.text = data.title.native
+        animeTitleLabel.font = .atTitle1
         if data.status?.uppercased() != AnimeInfo.AnimeStatus.releasing.rawValue {
             self.animeAiringNotifyBtn.isHidden = true
         }
