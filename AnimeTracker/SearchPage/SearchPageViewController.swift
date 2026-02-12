@@ -303,11 +303,11 @@ extension SearchPageViewController: UICollectionViewDataSource, UICollectionView
         if let animeAllData = viewModel.searchingResult {
             let animeOneData = animeAllData.data.Page.media[indexPath.item]
             if let animeTitle = animeOneData.title.native {
-                cell.setCell(title: animeTitle, imageURL: animeOneData.coverImage.extraLarge)
+                cell.setCell(title: animeTitle, imageURL: animeOneData.coverImage?.extraLarge)
             } else if let animeTitle = animeOneData.title.english {
-                cell.setCell(title: animeTitle, imageURL: animeOneData.coverImage.extraLarge)
+                cell.setCell(title: animeTitle, imageURL: animeOneData.coverImage?.extraLarge)
             } else if let animeTitle = animeOneData.title.romaji {
-                cell.setCell(title: animeTitle, imageURL: animeOneData.coverImage.extraLarge)
+                cell.setCell(title: animeTitle, imageURL: animeOneData.coverImage?.extraLarge)
             }
         } else {
             cell.setCell(title: "", imageURL: nil)

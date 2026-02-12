@@ -49,17 +49,18 @@ class AnimeDetailPageViewController: UIViewController {
         super.viewDidLoad()
 //        navigationController?.hidesBarsOnSwipe = true
         
-        swipePopGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(swipeAction))
-        swipePopGestureRecognizer?.direction = .right
-        swipePopGestureRecognizer?.delegate = self
-        self.view.addGestureRecognizer(swipePopGestureRecognizer!)
+//        swipePopGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(swipeAction))
+//        swipePopGestureRecognizer?.direction = .right
+//        swipePopGestureRecognizer?.delegate = self
+//        self.view.addGestureRecognizer(swipePopGestureRecognizer!)
         
         let backButton = UIBarButtonItem(title: nil, style: .plain, target: self, action: #selector(swipeAction))
         backButton.image = UIImage(systemName: "chevron.backward")
         navigationItem.leftBarButtonItem = backButton
         
         wholePageScrollView.delegate = self
-        
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+        navigationController?.interactivePopGestureRecognizer?.delegate = self
         
         setupSubscriber()
         setupPublisher()
@@ -747,7 +748,7 @@ extension AnimeDetailPageViewController {
         
     }
     // MARK: - Stats
-    func setupStats(rankingData: MediaRanking.MediaData.Media, stats: Response.AnimeDetail.MediaData.Media.Stats) {
+    func setupStats(rankingData: Response.MediaRanking.MediaData.Media, stats: Response.AnimeDetail.MediaData.Media.Stats) {
         let statsView = AnimeStatsView()
         
         let rankingData = rankingData
@@ -991,7 +992,7 @@ extension AnimeDetailPageViewController: StaffIdDelegate {
 
 extension AnimeDetailPageViewController: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return false
+        return true
     }
 }
 

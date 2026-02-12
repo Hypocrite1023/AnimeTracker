@@ -4,14 +4,14 @@ platform :ios, '16.0'
 target 'AnimeTracker' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
-
+  
   # Pods for AnimeTracker
   # Add the Firebase pod for Google Analytics
   pod 'FirebaseAnalytics'
-
+  
   # For Analytics without IDFA collection capability, use this pod instead
   # pod ‘Firebase/AnalyticsWithoutAdIdSupport’
-
+  
   # Add the pods for any other Firebase products you want to use in your app
   # For example, to use Firebase Authentication and Cloud Firestore
   pod 'FirebaseAuth'
@@ -22,4 +22,5 @@ target 'AnimeTracker' do
   pod 'lottie-ios'
   pod 'SnapKit'
   pod 'CombineExt'
+  pod 'SkeletonUI'
 end

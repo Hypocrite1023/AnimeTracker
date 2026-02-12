@@ -83,11 +83,11 @@ class AnimeNotification {
     
     func checkNotification(userUID: String) -> AnyPublisher<(String, [Int: String]), Never> { // 需要回傳 status 已經不是 RELEASING 的動畫 id
         return FirebaseManager.shared.loadUserNotificationAnime(userUID: userUID)
-            .flatMap { animeIDs -> AnyPublisher<SimpleEpisodeData, Never> in
+            .flatMap { animeIDs -> AnyPublisher<Response.SimpleEpisodeData, Never> in
                 animeIDs.publisher
                     .flatMap(maxPublishers: .max(5)) { animeID in
                         AnimeDataFetcher.shared.fetchAnimeEpisodeDataByID(id: animeID)
-                            .catch { _ in Empty<SimpleEpisodeData, Never>(completeImmediately: true) }
+                            .catch { _ in Empty<Response.SimpleEpisodeData, Never>(completeImmediately: true) }
                             .eraseToAnyPublisher()
                     }
                     .eraseToAnyPublisher()

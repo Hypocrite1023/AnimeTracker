@@ -9,8 +9,8 @@ import Foundation
 import Combine
 
 class AnimeVoiceActorPageViewModel {
-    @Published var voiceActorData: VoiceActorDataResponse.DataClass.StaffData?
-    @Published var voiceActorDataEachYear: [Int: [VoiceActorDataResponse.DataClass.StaffData.CharacterMedia.Edge]] = [:]
+    @Published var voiceActorData: Response.VoiceActorDataResponse.DataClass.StaffData?
+    @Published var voiceActorDataEachYear: [Int: [Response.VoiceActorDataResponse.DataClass.StaffData.CharacterMedia.Edge]] = [:]
     private var cancellables: Set<AnyCancellable> = []
     var lastTimeFetch: Date?
     var yearSet: Set<Int> = []
@@ -25,7 +25,7 @@ class AnimeVoiceActorPageViewModel {
                 AnimeDataFetcher.shared.isFetchingData = false
                 self.voiceActorData = voiceActorData
                 guard let edges = voiceActorData.characterMedia?.edges else { return }
-                var tmpVoiceActorDataEachYear: [Int: [VoiceActorDataResponse.DataClass.StaffData.CharacterMedia.Edge]] = [:]
+                var tmpVoiceActorDataEachYear: [Int: [Response.VoiceActorDataResponse.DataClass.StaffData.CharacterMedia.Edge]] = [:]
                 for (_, data) in edges.enumerated() {
                     if let year = data.node.startDate.year {
                         if !self.yearSet.contains(year) {
@@ -52,7 +52,7 @@ class AnimeVoiceActorPageViewModel {
                 } receiveValue: { voiceActorData in
                     AnimeDataFetcher.shared.isFetchingData = false
                     guard let edges = voiceActorData?.edges else { return }
-                    var tmpVoiceActorDataEachYear: [Int: [VoiceActorDataResponse.DataClass.StaffData.CharacterMedia.Edge]] = [:]
+                    var tmpVoiceActorDataEachYear: [Int: [Response.VoiceActorDataResponse.DataClass.StaffData.CharacterMedia.Edge]] = [:]
                     for (_, data) in edges.enumerated() {
                         if let year = data.node.startDate.year {
                             if !self.yearSet.contains(year) {

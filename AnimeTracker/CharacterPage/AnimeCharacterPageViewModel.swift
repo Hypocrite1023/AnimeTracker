@@ -10,7 +10,7 @@ import Combine
 
 class AnimeCharacterPageViewModel {
     var voiceActorLanguageTypeSet: Set<String> = Set<String>()
-    @Published var characterData: CharacterDetail? {
+    @Published var characterData: Response.CharacterDetail? {
         didSet {
             let _ = characterData?.data.Character.media?.edges.map { characterDetail in
                 if let voiceActorRoles = characterDetail.voiceActorRoles {
@@ -31,7 +31,7 @@ class AnimeCharacterPageViewModel {
             
         }
     }
-    @Published var characterDataFiltered: CharacterDetail?
+    @Published var characterDataFiltered: Response.CharacterDetail?
     private var cancellable: Set<AnyCancellable> = []
     
     init(characterID: Int) {
@@ -49,13 +49,13 @@ class AnimeCharacterPageViewModel {
     }
     
     func filterCharacterDataBy(language lan: String) {
-        var tmpCharacterDataFiltered: CharacterDetail? = characterData ?? nil
-        var filteredCharacterData: [CharacterDetail.CharacterData.CharacterDataInData.Media.Edge] = []
+        var tmpCharacterDataFiltered: Response.CharacterDetail? = characterData ?? nil
+        var filteredCharacterData: [Response.CharacterDetail.CharacterData.CharacterDataInData.Media.Edge] = []
         if let characterData = characterData?.data.Character.media?.edges {
             for (index, cData) in characterData.enumerated() {
                 if let voiceActorRoles = cData.voiceActorRoles {
                     if voiceActorRoles.count != 0 {
-                        var tmpFilteredData: [CharacterDetail.CharacterData.CharacterDataInData.Media.Edge.VoiceActorRoles] = []
+                        var tmpFilteredData: [Response.CharacterDetail.CharacterData.CharacterDataInData.Media.Edge.VoiceActorRoles] = []
                         for (_, voiceActorData) in voiceActorRoles.enumerated() {
                             if voiceActorData.voiceActor.language == lan {
                                 tmpFilteredData.append(voiceActorData)

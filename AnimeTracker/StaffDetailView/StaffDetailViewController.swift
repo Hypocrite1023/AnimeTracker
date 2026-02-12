@@ -57,7 +57,7 @@ class StaffDetailViewController: UIViewController {
         FloatingButtonManager.shared.bringFloatingButtonToFront(in: self.view)
     }
     
-    private func setupView(staffData: StaffDetailData.StaffData.Staff) {
+    private func setupView(staffData: Response.StaffDetailData.StaffData.Staff) {
         staffName.text = staffData.name.native
         staffNickName.text = staffData.primaryOccupations.joined(separator: ", ")
         staffCoverImage.loadImage(from: staffData.image.large)

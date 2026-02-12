@@ -42,6 +42,9 @@ class TrendingPageViewController: UIViewController {
     
     private func setupUI() {
         navigationController?.setNavigationBarHidden(false, animated: false)
+//        if #available(iOS 26.0, *) {
+//            tabBarController?.tabBarMinimizeBehavior = .onScrollDown
+//        }
         
         trendingCollectionView.dataSource = self
         trendingCollectionView.delegate = self
@@ -402,11 +405,11 @@ extension TrendingPageViewController: UICollectionViewDataSource {
             let longTapGesture = AnimeCellLongPressGesture(target: self, action: #selector(cellLongTap), animeID: animeData.id)
             cell.addGestureRecognizer(longTapGesture)
             if let animeTitle = animeData.title.native {
-                cell.setCell(title: animeTitle, imageURL: animeData.coverImage?.large)
+                cell.setCell(title: animeTitle, imageURL: animeData.coverImage?.extraLarge)
             } else if let animeTitle = animeData.title.english {
-                cell.setCell(title: animeTitle, imageURL: animeData.coverImage?.large)
+                cell.setCell(title: animeTitle, imageURL: animeData.coverImage?.extraLarge)
             } else if let animeTitle = animeData.title.romaji {
-                cell.setCell(title: animeTitle, imageURL: animeData.coverImage?.large)
+                cell.setCell(title: animeTitle, imageURL: animeData.coverImage?.extraLarge)
             }
         } else {
             cell.setCell(title: "", imageURL: nil)
