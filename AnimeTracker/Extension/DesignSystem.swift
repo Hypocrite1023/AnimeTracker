@@ -59,10 +59,46 @@ extension UIColor {
     static let atSecondaryBackground = createDynamicColor(light: DesignSystem.Palette.bgLightSecondary, dark: DesignSystem.Palette.bgDarkSecondary)
     static let atTertiaryBackground = createDynamicColor(light: DesignSystem.Palette.bgLightTertiary, dark: DesignSystem.Palette.bgDarkTertiary)
 
-    // 動態文字色
-    static let atLabel = createDynamicColor(light: DesignSystem.Palette.labelLight, dark: DesignSystem.Palette.labelDark)
-    static let atSecondaryLabel = createDynamicColor(light: DesignSystem.Palette.labelLightSecondary, dark: DesignSystem.Palette.labelDarkSecondary)
-    static let atTertiaryLabel = createDynamicColor(light: DesignSystem.Palette.labelLightTertiary, dark: DesignSystem.Palette.labelDarkTertiary)
+    // MARK: - 動態文字色
+    
+    /// 主要文字顏色 (Primary Text)
+    /// - 用途：用於標題、主要內文。
+    /// - 特色：在淺色模式下接近黑色，深色模式下接近白色，確保最高對比度。
+    static let atTextPrimary = createDynamicColor(light: DesignSystem.Palette.labelLight, dark: DesignSystem.Palette.labelDark)
+    
+    /// 次要文字顏色 (Secondary Text)
+    /// - 用途：用於副標題、次要描述、中繼資料（如日期、作者）。
+    /// - 特色：顏色較淺，用於建立視覺層級。
+    static let atTextSecondary = createDynamicColor(light: DesignSystem.Palette.labelLightSecondary, dark: DesignSystem.Palette.labelDarkSecondary)
+    
+    /// 三級文字顏色 (Tertiary Text)
+    /// - 用途：用於輔助說明、版權宣告、已停用的項目。
+    static let atTextTertiary = createDynamicColor(light: DesignSystem.Palette.labelLightTertiary, dark: DesignSystem.Palette.labelDarkTertiary)
+    
+    /// 佔位符文字顏色 (Placeholder Text)
+    /// - 用途：用於輸入框 (TextField) 的提示文字。
+    static let atTextPlaceholder = createDynamicColor(light: "#ADB5BD", dark: "#495057")
+    
+    /// 連結文字顏色 (Link Text)
+    /// - 用途：用於可點擊的文字、超連結。
+    static let atTextLink = atPrimary
+    
+    /// 成功狀態文字顏色 (Success Text)
+    /// - 用途：用於正向回饋、成功訊息。
+    static let atTextSuccess = atSuccess
+    
+    /// 警告狀態文字顏色 (Warning Text)
+    /// - 用途：用於警示資訊、中性警告。
+    static let atTextWarning = atWarning
+    
+    /// 錯誤狀態文字顏色 (Error Text)
+    /// - 用途：用於錯誤提示、危險操作警告。
+    static let atTextError = atError
+    
+    /// 高對比反轉文字顏色 (On-Primary Text)
+    /// - 用途：用於深色背景（如 Primary 按鈕）上的文字。
+    /// - 特色：固定為白色，不隨系統模式切換。
+    static let atTextOnPrimary = UIColor.white
     
     // 分隔線
     static let atSeparator = createDynamicColor(light: "#DEE2E6", dark: "#38383A")
@@ -89,9 +125,24 @@ extension Color {
     static let atSecondaryBackground = Color(uiColor: .atSecondaryBackground)
     static let atTertiaryBackground = Color(uiColor: .atTertiaryBackground)
 
-    static let atLabel = Color(uiColor: .atLabel)
-    static let atSecondaryLabel = Color(uiColor: .atSecondaryLabel)
-    static let atTertiaryLabel = Color(uiColor: .atTertiaryLabel)
+    /// 主要文字顏色 (Primary Text)
+    static let atTextPrimary = Color(uiColor: .atTextPrimary)
+    /// 次要文字顏色 (Secondary Text)
+    static let atTextSecondary = Color(uiColor: .atTextSecondary)
+    /// 三級文字顏色 (Tertiary Text)
+    static let atTextTertiary = Color(uiColor: .atTextTertiary)
+    /// 佔位符文字顏色 (Placeholder Text)
+    static let atTextPlaceholder = Color(uiColor: .atTextPlaceholder)
+    /// 連結文字顏色 (Link Text)
+    static let atTextLink = Color(uiColor: .atTextLink)
+    /// 成功狀態文字顏色 (Success Text)
+    static let atTextSuccess = Color(uiColor: .atTextSuccess)
+    /// 警告狀態文字顏色 (Warning Text)
+    static let atTextWarning = Color(uiColor: .atTextWarning)
+    /// 錯誤狀態文字顏色 (Error Text)
+    static let atTextError = Color(uiColor: .atTextError)
+    /// 高對比反轉文字顏色 (On-Primary Text)
+    static let atTextOnPrimary = Color(uiColor: .atTextOnPrimary)
     
     static let atSeparator = Color(uiColor: .atSeparator)
 }
@@ -137,6 +188,11 @@ extension Font {
     /// - 用途：標籤文字、極小說明 (Caption)。
     /// - 特色：用於佔位符、法律聲明或不重要的註解。
     static let atCaption = Font.system(size: 13, weight: .regular, design: .rounded)
+    
+    /// 11pt, Regular, Rounded
+    /// - 用途：極微小文字 (Micro)。
+    /// - 特色：用於極小的標籤或補充資訊，比 Caption 更小。
+    static let atMicro = Font.system(size: 11, weight: .regular, design: .rounded)
 }
 
 // MARK: - Typography (UIKit)
@@ -172,6 +228,10 @@ extension UIFont {
     /// 13pt, Regular, Rounded
     /// - 用途：標籤文字、極小說明 (Caption)。
     static let atCaption = UIFont.systemFont(ofSize: 13, weight: .regular).rounded()
+
+    /// 11pt, Regular, Rounded
+    /// - 用途：極微小文字 (Micro)。
+    static let atMicro = UIFont.systemFont(ofSize: 11, weight: .regular).rounded()
 
     private func rounded() -> UIFont {
         guard let descriptor = self.fontDescriptor.withDesign(.rounded) else { return self }

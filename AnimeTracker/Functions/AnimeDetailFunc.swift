@@ -90,7 +90,7 @@ struct AnimeDetailFunc {
             let baseFont = UIFont.atBody
             let boldFont = UIFont.atHeadline // Semibold Rounded for Bold
             let italicFont = UIFont.atBody.withTraits(traits: .traitItalic) // Regular Rounded + Italic
-            let baseColor = UIColor.atLabel
+            let baseColor = UIColor.atTextPrimary
             
             // 4. Enumerate existing attributes to preserve traits (Bold/Italic) while changing Font Family
             attributedString.enumerateAttribute(.font, in: fullRange, options: []) { (value, range, stop) in

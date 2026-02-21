@@ -21,6 +21,11 @@ class StaffPreview: UIView {
         commonInit()
     }
     
+    init() {
+        super.init(frame: .zero)
+        commonInit()
+    }
+    
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         self.staffID = nil
@@ -35,15 +40,42 @@ class StaffPreview: UIView {
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(showStaffDetail))
         contentView.addGestureRecognizer(tapGesture)
+        setStyle()
     }
     
     @objc func showStaffDetail() {
-        print(staffID)
         if let staffID = staffID {
             staffIdDelegate?.showStaffPage(staffID: staffID)
         }
     }
+    
+    func bind(_ model: Model) {
+        staffImageView.kf.setImage(with: model.staffImageURL)
+        staffNameLabel.text = model.staffName
+        staffRoleLabel.text = model.staffRole
+        staffID = model.staffID
+    }
+    
+    func setStyle() {
+        staffNameLabel.font = .atBody
+        staffNameLabel.textColor = .atTextPrimary
+        
+        staffRoleLabel.font = .atCaption
+        staffRoleLabel.textColor = .atTextSecondary
+        
+        contentView.backgroundColor = .atSecondaryBackground
+        self.layer.cornerRadius = 8
+        self.clipsToBounds = true
+    }
+}
 
+extension StaffPreview {
+    struct Model {
+        let staffImageURL: URL?
+        let staffName: String?
+        let staffRole: String?
+        let staffID: Int?
+    }
 }
 
 protocol StaffIdDelegate: AnyObject {

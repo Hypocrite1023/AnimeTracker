@@ -388,8 +388,6 @@ extension AnimeDetailPageViewController {
         guard let characters = animeDetailData.characterPreview?.edges else { return }
         for edge in characters {
             let characterPreview = CharacterPreview(frame: .zero, characterID: edge.node.id, voiceActorID: edge.voiceActors.first?.id ?? nil)
-            characterPreview.characterIdPassDelegate = self
-            characterPreview.voiceActorIdPassDelegate = self
             characterPreview.characterImageView.kf.setImage(with: URL(string: edge.node.image.large))
             characterPreview.characterNameLabel.text = edge.node.name.userPreferred
             characterPreview.characterRoleLabel.text = edge.role
@@ -708,9 +706,6 @@ extension AnimeDetailPageViewController {
         for edge in characters {
             let characterPreview = CharacterPreview(frame: .zero, characterID: edge.node.id, voiceActorID: edge.voiceActors.first?.id ?? nil)
             
-            characterPreview.characterIdPassDelegate = self
-            characterPreview.voiceActorIdPassDelegate = self
-            
             characterPreview.characterImageView.kf.setImage(with: URL(string: edge.node.image.large))
             characterPreview.characterNameLabel.text = edge.node.name.userPreferred
             characterPreview.characterRoleLabel.text = edge.role
@@ -730,9 +725,6 @@ extension AnimeDetailPageViewController {
         
         for edge in edges {
             let characterPreview = CharacterPreview(frame: .zero, characterID: edge.node.id, voiceActorID: edge.voiceActors.first?.id ?? nil)
-            
-            characterPreview.characterIdPassDelegate = self
-            characterPreview.voiceActorIdPassDelegate = self
             
             characterPreview.characterImageView.loadImage(from: edge.node.image.large)
             characterPreview.characterNameLabel.text = edge.node.name.userPreferred
@@ -964,22 +956,6 @@ extension AnimeDetailPageViewController: UIScrollViewDelegate {
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         contentSwitchBtnScrollView.alpha = 1.0
-    }
-}
-
-extension AnimeDetailPageViewController: CharacterIdDelegate {
-    func showCharacterPage(characterId: Int) {
-        let vc = UIStoryboard(name: "AnimeCharacterPage", bundle: nil).instantiateViewController(identifier: "AnimeCharacterPage") as! AnimeCharacterPageViewController
-        vc.viewModel = AnimeCharacterPageViewModel(characterID: characterId)
-        navigationController?.pushViewController(vc, animated: true)
-    }
-}
-
-extension AnimeDetailPageViewController: VoiceActorIdDelegate {
-    func showVoiceActorPage(voiceActorId: Int) {
-        let vc = UIStoryboard(name: "AnimeVoiceActorPage", bundle: nil).instantiateViewController(withIdentifier: "VoiceActorPage") as! AnimeVoiceActorViewController
-        vc.viewModel = AnimeVoiceActorPageViewModel(voiceActorID: voiceActorId)
-        navigationController?.pushViewController(vc, animated: true)
     }
 }
 

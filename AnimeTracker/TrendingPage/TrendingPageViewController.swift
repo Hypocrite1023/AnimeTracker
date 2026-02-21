@@ -73,8 +73,9 @@ class TrendingPageViewController: UIViewController {
         
         viewModel.shouldNavigateToDetailPage
             .sink { animeId in
-                let vc = UIStoryboard(name: "AnimeDetailPage", bundle: nil).instantiateViewController(identifier: "AnimeDetailView") as! AnimeDetailPageViewController
-                vc.viewModel = AnimeDetailPageViewModel(animeID: animeId)
+//                let vc = UIStoryboard(name: "AnimeDetailPage", bundle: nil).instantiateViewController(identifier: "AnimeDetailView") as! AnimeDetailPageViewController
+//                vc.viewModel = AnimeDetailPageViewModel(animeID: animeId)
+                let vc = AnimeDetailsViewController(animeID: animeId)
                 self.navigationController?.pushViewController(vc, animated: true)
             }
             .store(in: &cancellables)

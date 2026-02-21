@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		064724EF74FD01F36D6E2B4F /* Pods_AnimeTracker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EF066C15013076581D9308E /* Pods_AnimeTracker.framework */; };
+		3EE0E5A52EC48707C3E83B15 /* UIView+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1230D79559C844EDDEE0FC2 /* UIView+Ext.swift */; };
 		A3619D182DD60E4700231B63 /* Publisher+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3619D172DD60E3A00231B63 /* Publisher+Ext.swift */; };
 		A3619D1A2DD61C4800231B63 /* UIButton+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3619D192DD61C4800231B63 /* UIButton+Ext.swift */; };
 		A39F82E92E0F0CAE00D7B2B6 /* AnimeTracker.xctestplan in Resources */ = {isa = PBXBuildFile; fileRef = A39F82E82E0F0CAE00D7B2B6 /* AnimeTracker.xctestplan */; };
@@ -75,6 +76,7 @@
 		07699B9B52E92D5AB8B9520E /* Pods-AnimeTracker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AnimeTracker.release.xcconfig"; path = "Target Support Files/Pods-AnimeTracker/Pods-AnimeTracker.release.xcconfig"; sourceTree = "<group>"; };
 		8EF066C15013076581D9308E /* Pods_AnimeTracker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AnimeTracker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9FC9250BE48481FE9A6EBF98 /* Pods-AnimeTracker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AnimeTracker.debug.xcconfig"; path = "Target Support Files/Pods-AnimeTracker/Pods-AnimeTracker.debug.xcconfig"; sourceTree = "<group>"; };
+		A1230D79559C844EDDEE0FC2 /* UIView+Ext.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "UIView+Ext.swift"; sourceTree = "<group>"; };
 		A3619D172DD60E3A00231B63 /* Publisher+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+Ext.swift"; sourceTree = "<group>"; };
 		A3619D192DD61C4800231B63 /* UIButton+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Ext.swift"; sourceTree = "<group>"; };
 		A39F82E82E0F0CAE00D7B2B6 /* AnimeTracker.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = AnimeTracker.xctestplan; sourceTree = "<group>"; };
@@ -232,6 +234,11 @@
 			path = VoiceActorPage;
 			sourceTree = "<group>";
 		};
+		A9D818212F4A05D700D624C2 /* Component */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Component;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -288,6 +295,7 @@
 				A3CB2ADC2DF096020070A7DF /* NSObject+Ext.swift */,
 				A9F64A562F1E5C7D0058198C /* Int+Ext.swift */,
 				A98F80AB2F3E199900F69B42 /* String+Ext.swift */,
+				A1230D79559C844EDDEE0FC2 /* UIView+Ext.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -364,6 +372,7 @@
 		CDC14F1F2C453DBF00BC14FA /* AnimeTracker */ = {
 			isa = PBXGroup;
 			children = (
+				A9D818212F4A05D700D624C2 /* Component */,
 				A33224C42DFD73740015B204 /* Api */,
 				A3A77A2B2DF3454800DFF8D4 /* UserCache */,
 				A3CB2AD92DF07A940070A7DF /* MockData */,
@@ -532,6 +541,7 @@
 				A3FE0EAE2DB0E3E80044CA0E /* AnimeDetailPage */,
 				A3FE0EDA2DB62E6A0044CA0E /* CharacterPage */,
 				A3FE0EDE2DB75DC90044CA0E /* VoiceActorPage */,
+				A9D818212F4A05D700D624C2 /* Component */,
 			);
 			name = AnimeTracker;
 			productName = AnimeTracker;
@@ -732,6 +742,7 @@
 				CD7EF8CA2C66456700DCBF7E /* AnimeNotification.swift in Sources */,
 				CDC14F232C453DBF00BC14FA /* SceneDelegate.swift in Sources */,
 				CDC14F382C4554F500BC14FA /* PickerData.swift in Sources */,
+				3EE0E5A52EC48707C3E83B15 /* UIView+Ext.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
