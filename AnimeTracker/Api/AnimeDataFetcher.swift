@@ -27,6 +27,10 @@ extension AnimeDataFetcher {
         return performGraphQLRequest(operation: .fetchAnimeDetail(id: id))
     }
     
+    func fetchAnimeDetailByID(id: Int) -> AnyPublisher<Result<Response.AnimeDetail, Error>, Never> {
+        return performGraphQLRequest(operation: .fetchAnimeDetail(id: id))
+    }
+    
     func fetchRankingDataByMediaId(id: Int) -> AnyPublisher<Response.MediaRanking.MediaData.Media, Error> {
         return performGraphQLRequest(operation: .fetchRanking(mediaId: id))
             .map { (response: Response.MediaRanking) in
@@ -185,6 +189,38 @@ private extension AnimeDataFetcher {
                 DispatchQueue.main.async { self?.isFetchingData = false }
             })
             .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
+    }
+    
+    func performGraphQLRequest<T: Decodable>(operation: AnimeRequestGraphQL) -> AnyPublisher<Result<T, Error>, Never> {
+        var urlRequest = URLRequest(url: queryURL)
+        urlRequest.httpMethod = "POST"
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        do {
+            let requestBody = ["query": operation.query]
+            urlRequest.httpBody = try JSONSerialization.data(withJSONObject: requestBody, options: [])
+        } catch {
+            return Just(.failure(error)).eraseToAnyPublisher()
+        }
+        
+        self.isFetchingData = true
+        
+        return URLSession.shared.dataTaskPublisher(for: urlRequest)
+            .tryMap { data, response in
+                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                    throw URLError(.badServerResponse)
+                }
+                return data
+            }
+            .decode(type: T.self, decoder: JSONDecoder())
+            .handleEvents(receiveCompletion: { [weak self] _ in
+                DispatchQueue.main.async { self?.isFetchingData = false }
+            }, receiveCancel: { [weak self] in
+                DispatchQueue.main.async { self?.isFetchingData = false }
+            })
+            .receive(on: DispatchQueue.main)
+            .mapToResult()
             .eraseToAnyPublisher()
     }
 }

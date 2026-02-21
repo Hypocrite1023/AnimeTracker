@@ -8,6 +8,40 @@
 import Foundation
 import Combine
 
+struct AnimeDetailDataModel {
+    let title: String
+    let animeBannerImageURL: URL?
+    let animeThumbnailURL: URL?
+    let basicInfomation: AnimeBasicInfo
+    let animeDescription: String?
+    let animeRelations: [RelationPreview.Model]
+    let animeCharacters: [CharacterPreview.Model]
+    let animeStaffs: [StaffPreview.Model]
+    let animeRecommendations: [RecommendationsAnimePreview.Model]
+    let animeReviews: [AnimeReview.Model]
+    let scoreDistribution: ScoreDistributionPreview.Model
+    let userStatusDistribution: UserStatusDistributionPreview.Model
+    let animeTags: [TagPreview.Model]
+}
+
+struct AnimeBasicInfo {
+    typealias NextAiringEpisode = Response.AnimeDetail.MediaData.Media.NextAiringEpisode
+    typealias StartDate = Response.AnimeDetail.MediaData.Media.StartDate
+    let seasonYear: Int?
+    let season: String?
+    let nextAiringEpisode: NextAiringEpisode?
+    let format: String?
+    let episodes: Int?
+    let duration: Int? // minute
+    let status: String?
+    let startDate: StartDate?
+    let averageScore: Int?
+    let meanScore: Int?
+    let popularity: Int?
+    let favourites: Int?
+    let source: String?
+}
+
 class AnimeDetailPageViewModel {
     
     // MARK: - input
@@ -23,7 +57,29 @@ class AnimeDetailPageViewModel {
     let configFavorite: PassthroughSubject<Void, Never> = .init()
     let configNotification: PassthroughSubject<Void, Never> = .init()
     let shouldShowLoginPage: PassthroughSubject<Void, Never> = .init()
+    
+    let shouldShowCharacterDetailPage: PassthroughSubject<Int?, Never> = .init()
+    let shouldShowVoiceActorDetailPage: PassthroughSubject<Int?, Never> = .init()
+    let shouldShowAnimeDetailPage: PassthroughSubject<Int?, Never> = .init()
     // MARK: - output
+    var animeDetailPublisher: AnyPublisher<AnimeDetailDataModel, Never> = .empty
+    var showCharacterDetailPage: AnyPublisher<Int, Never> {
+        shouldShowCharacterDetailPage
+            .compactMap { $0 }
+            .eraseToAnyPublisher()
+    }
+    var showVoiceActorDetailPage: AnyPublisher<Int, Never> {
+        shouldShowVoiceActorDetailPage
+            .compactMap { $0 }
+            .eraseToAnyPublisher()
+    }
+    
+    var showAnimeDetailPage: AnyPublisher<Int, Never> {
+        shouldShowAnimeDetailPage
+            .compactMap { $0 }
+            .eraseToAnyPublisher()
+    }
+    
     private(set) var newCharacterData: AnyPublisher<[Response.AnimeDetail.MediaData.Media.CharacterPreview.Edges], Never> = .empty
     private(set) var newStaffData: AnyPublisher<[Response.AnimeDetail.MediaData.Media.StaffPreview.Edges], Never> = .empty
     private(set) var showOverview: AnyPublisher<Response.AnimeDetail.MediaData.Media?, Never> = .empty
@@ -56,6 +112,69 @@ class AnimeDetailPageViewModel {
         self.animeID = animeID
         let userUidOptional: String? = FirebaseManager.shared.getCurrentUserUID()
         userUID = userUidOptional
+        
+        animeDetailPublisher = AnimeDataFetcher.shared.fetchAnimeDetailByID(id: animeID)
+            .compactMap { result -> Response.AnimeDetail.MediaData.Media? in
+                switch result {
+                case .success(let response):
+                    return response.data.media
+                case .failure(let error):
+                    return nil
+                }
+            }
+            .map { detail in
+                let title: String = detail.title.native ?? .empty
+                let bannerImageURL: URL? = URL(string: detail.bannerImage ?? .empty)
+                let thumbnailURL: URL? = URL(string: detail.coverImage?.extraLarge ?? .empty)
+                let basicInfomation = AnimeBasicInfo(seasonYear: detail.seasonYear, season: detail.season, nextAiringEpisode: detail.nextAiringEpisode, format: detail.format, episodes: detail.episodes, duration: detail.duration, status: detail.status, startDate: detail.startDate, averageScore: detail.averageScore, meanScore: detail.meanScore, popularity: detail.popularity, favourites: detail.favourites, source: detail.source)
+                let animeDescription: String? = detail.description
+                
+                let relations: [RelationPreview.Model] = detail.relations?.edges.map { anime in
+                    return .init(animeID: anime.id,animeThumbnailURL: URL(string: anime.node.coverImage.large), source: anime.node.format, animeTitle: anime.node.title.userPreferred, animeType: anime.node.type, animeStatus: anime.node.status)
+                } ?? []
+                
+                let characters: [CharacterPreview.Model] = detail.characterPreview?.edges.map { character in
+                    return .init(characterImageURL: URL(string: character.node.image.large), characterName: character.node.name.userPreferred, characterRole: character.role, characterID: character.node.id, voiceActorImageURL: URL(string: character.voiceActors.first?.image.large ?? .empty), voiceActorName: character.voiceActors.first?.name.userPreferred, voiceActorCountry: character.voiceActors.first?.language, voiceActorID: character.voiceActors.first?.id)
+                } ?? []
+                
+                let staffs: [StaffPreview.Model] = detail.staffPreview?.edges.map { staff in
+                    return .init(staffImageURL: URL(string: staff.node.image.large), staffName: staff.node.name.userPreferred, staffRole: staff.role, staffID: staff.node.id)
+                } ?? []
+                
+                let recommendations: [RecommendationsAnimePreview.Model] = detail.recommendations?.nodes.map { anime in
+                    return .init(animeID: anime.mediaRecommendation?.id, animeThumbnailURL: URL(string: anime.mediaRecommendation?.coverImage?.large ?? .empty), animeTitle: anime.mediaRecommendation?.title.userPreferred)
+                } ?? []
+                
+                let reviews: [AnimeReview.Model] = detail.reviewPreview?.nodes.map { review in
+                    return .init(userAvatarURL: URL(string: review.user.avatar?.large ?? .empty), userReview: review.summary)
+                } ?? []
+                
+                let scoreDistribution: ScoreDistributionPreview.Model = .init(scoreAmountDict: Dictionary(uniqueKeysWithValues: detail.stats?.scoreDistribution.map { score in ("\(score.score)", score.amount) } ?? []))
+                
+                let userStatusDistribution: UserStatusDistributionPreview.Model = .init(statusAmoutDict: Dictionary(uniqueKeysWithValues: detail.stats?.statusDistribution.map { status in (status.status, status.amount)} ?? []))
+                
+                let animeTags: [TagPreview.Model] = detail.tags?.map { tag in
+                    return .init(tagName: tag.name, tagDescription: tag.description, isMediaSpoiler: tag.isMediaSpoiler, rank: tag.rank)
+                } ?? []
+                
+                return AnimeDetailDataModel(
+                    title: title,
+                    animeBannerImageURL: bannerImageURL,
+                    animeThumbnailURL: thumbnailURL,
+                    basicInfomation: basicInfomation,
+                    animeDescription: animeDescription,
+                    animeRelations: relations,
+                    animeCharacters: characters,
+                    animeStaffs: staffs,
+                    animeRecommendations: recommendations,
+                    animeReviews: reviews,
+                    scoreDistribution: scoreDistribution,
+                    userStatusDistribution: userStatusDistribution,
+                    animeTags: animeTags
+                )
+            }
+            .share()
+            .eraseToAnyPublisher()
         
         AnimeDataFetcher.shared.fetchAnimeByID(id: animeID)
             .receive(on: DispatchQueue.main)

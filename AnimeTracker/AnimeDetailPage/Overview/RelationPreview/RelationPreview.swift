@@ -8,14 +8,6 @@
 import UIKit
 
 class RelationPreview: UIView {
-
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
-    }
-    */
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var previewImage: UIImageView!
     @IBOutlet weak var sourceLabel: UILabel!
@@ -51,17 +43,43 @@ class RelationPreview: UIView {
             self.addGestureRecognizer(relationPreviewGestureRecognizer)
         }
         
+        layer.cornerRadius = 8
+        clipsToBounds = true
+    }
+    
+    func bind(_ model: Model) {
+        previewImage.kf.setImage(with: model.animeThumbnailURL)
+        if let source = model.source {
+            sourceLabel.text = source
+        }
+        if let title = model.animeTitle {
+            titleLabel.text = title
+        }
+        if let type = model.animeType {
+            typeLabel.text = type
+        }
+        if let status = model.animeStatus {
+            statusLabel.text = status
+        }
     }
     
     @objc func relationPreviewTapped(sender: RelationPreviewGestureRecognizer) {
         print(sender.mediaID)
-//        AnimeDataFetcher.shared.passAnimeID(animeID: sender.mediaID)
     }
+}
 
+extension RelationPreview {
+    struct Model {
+        let animeID: Int
+        let animeThumbnailURL: URL?
+        let source: String?
+        let animeTitle: String?
+        let animeType: String?
+        let animeStatus: String?
+    }
 }
 
 class RelationPreviewGestureRecognizer: UITapGestureRecognizer {
-    
     let mediaID: Int
     init(mediaID: Int, target: Any?, action: Selector) {
         self.mediaID = mediaID

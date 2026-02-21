@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 class CharacterPreview: UIView {
     
@@ -21,17 +22,19 @@ class CharacterPreview: UIView {
     
     var characterID: Int?
     var voiceActorID: Int?
-//    weak var animeCharacterDataManager: GetAnimeCharacterDataDelegate?
-//    weak var voiceActorDataManager: FetchAnimeVoiceActorData?
     
-    weak var characterIdPassDelegate: CharacterIdDelegate?
-    weak var voiceActorIdPassDelegate: VoiceActorIdDelegate?
-
+    private(set) var characterTapSubject: PassthroughSubject<Int?, Never> = .init()
+    private(set) var voiceActorTapSubject: PassthroughSubject<Int?, Never> = .init()
     
     init(frame: CGRect, characterID: Int?, voiceActorID: Int?) {
         self.characterID = characterID
         self.voiceActorID = voiceActorID
         super.init(frame: frame)
+        commonInit()
+    }
+    
+    init() {
+        super.init(frame: .zero)
         commonInit()
     }
     
@@ -46,21 +49,47 @@ class CharacterPreview: UIView {
         addSubview(contentView)
         contentView.frame = self.bounds
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        
-        if let characterID = characterID {
-            let characterSideGesture = CharacterTapGesture(target: self, action: #selector(loadCharacterData), characterID: characterID)
-            characterSideView.addGestureRecognizer(characterSideGesture)
-        }
-        
-        if let voiceActorID = voiceActorID {
-            let voiceActorSideGesture = VoiceActorTapGesture(target: self, action: #selector(loadVoiceActorData), voiceActorID: voiceActorID)
-            voiceActorSideView.addGestureRecognizer(voiceActorSideGesture)
-        }
+        setStyle()
     }
     
-    @objc func loadCharacterData(sender: CharacterTapGesture) {
-        print(sender.characterID)
+    func bind(_ model: Model) {
+        characterImageView.kf.setImage(with: model.characterImageURL)
+        characterNameLabel.text = model.characterName
+        characterRoleLabel.text = model.characterRole
+        characterID = model.characterID
         
+        voiceActorImageView.kf.setImage(with: model.voiceActorImageURL)
+        voiceActorNameLabel.text = model.voiceActorName
+        voiceActorCountryLabel.text = model.voiceActorCountry
+        voiceActorID = model.voiceActorID
+        
+        let characterSideGesture = UITapGestureRecognizer(target: self, action: #selector(passCharacterID))
+        characterSideView.addGestureRecognizer(characterSideGesture)
+        
+        let voiceActorSideGesture = UITapGestureRecognizer(target: self, action: #selector(passVoiceActorID))
+        voiceActorSideView.addGestureRecognizer(voiceActorSideGesture)
+    }
+    
+    func setStyle() {
+        contentView.backgroundColor = .clear
+        characterSideView.backgroundColor = .clear
+        voiceActorSideView.backgroundColor = .clear
+        backgroundColor = .atSecondaryBackground
+        layer.cornerRadius = 8
+        clipsToBounds = true
+        
+        characterNameLabel.font = .atBody
+        characterNameLabel.textColor = .atTextPrimary
+        characterRoleLabel.font = .atCaption
+        characterRoleLabel.textColor = .atTextSecondary
+        
+        voiceActorNameLabel.font = .atBody
+        voiceActorNameLabel.textColor = .atTextPrimary
+        voiceActorCountryLabel.font = .atCaption
+        voiceActorCountryLabel.textColor = .atTextSecondary
+    }
+    
+    @objc func passCharacterID(sender: UIGestureRecognizer) {
         guard let view = sender.view?.superview else { return }
                 
         // Animate scaling effect
@@ -74,11 +103,10 @@ class CharacterPreview: UIView {
                            }
                        })
         
-//        animeCharacterDataManager?.getAnimeCharacterData(id: sender.characterID, page: 1)
-        characterIdPassDelegate?.showCharacterPage(characterId: sender.characterID)
+        characterTapSubject.send(characterID)
     }
-    @objc func loadVoiceActorData(sender: VoiceActorTapGesture) {
-        print(sender.voiceActorID)
+    
+    @objc func passVoiceActorID(sender: UIGestureRecognizer) {
         guard let view = sender.view?.superview else { return }
                 
         // Animate scaling effect
@@ -91,35 +119,21 @@ class CharacterPreview: UIView {
                                view.transform = CGAffineTransform.identity
                            }
                        })
-//        voiceActorDataManager?.fetchAnimeVoiceActorData(id: sender.voiceActorID, page: 1)
-        voiceActorIdPassDelegate?.showVoiceActorPage(voiceActorId: sender.voiceActorID)
+        
+        voiceActorTapSubject.send(voiceActorID)
     }
 }
 
-class CharacterTapGesture: UITapGestureRecognizer {
-    let characterID: Int
-    
-    init(target: Any?, action: Selector?, characterID: Int) {
-        self.characterID = characterID
-        super.init(target: target, action: action)
+extension CharacterPreview {
+    struct Model {
+        let characterImageURL: URL?
+        let characterName: String?
+        let characterRole: String?
+        let characterID: Int?
+        
+        let voiceActorImageURL: URL?
+        let voiceActorName: String?
+        let voiceActorCountry: String?
+        let voiceActorID: Int?
     }
-    
-}
-
-class VoiceActorTapGesture: UITapGestureRecognizer {
-    let voiceActorID: Int
-    
-    init(target: Any?, action: Selector?, voiceActorID: Int) {
-        self.voiceActorID = voiceActorID
-        super.init(target: target, action: action)
-    }
-    
-}
-
-protocol CharacterIdDelegate: AnyObject {
-    func showCharacterPage(characterId: Int)
-}
-
-protocol VoiceActorIdDelegate: AnyObject {
-    func showVoiceActorPage(voiceActorId: Int)
 }

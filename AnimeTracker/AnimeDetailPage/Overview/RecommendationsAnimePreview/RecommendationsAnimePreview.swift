@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 class RecommendationsAnimePreview: UIView {
     
@@ -13,12 +14,20 @@ class RecommendationsAnimePreview: UIView {
     @IBOutlet weak var coverImageView: UIImageView!
     @IBOutlet weak var animeTitle: UILabel!
     
-    let animeID: Int?
+    var animeID: Int?
+    
+    private(set) var recommendationAnimeTapSubject: PassthroughSubject<Int?, Never> = .init()
+    
     weak var recommendationDelegate: RecommendationDelegate?
     
     init(frame: CGRect, animeID: Int?) {
         self.animeID = animeID
         super.init(frame: frame)
+        commonInit()
+    }
+    
+    init() {
+        super.init(frame: .zero)
         commonInit()
     }
     
@@ -32,29 +41,40 @@ class RecommendationsAnimePreview: UIView {
         
         Bundle.main.loadNibNamed("RecommendationsAnimePreview", owner: self, options: nil)
         addSubview(contentView)
-        contentView.frame = self.bounds
-        contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        
-        let recommendationTapGesture = AnimeRecommendationTapGesture(target: self, action: #selector(loadRecommendation), animeID: self.animeID)
-        self.addGestureRecognizer(recommendationTapGesture)
-        
-        coverImageView.layer.cornerRadius = 10
-        coverImageView.clipsToBounds = true
-    }
-
-    @objc func loadRecommendation(sender: AnimeRecommendationTapGesture) {
-        if let animeID = sender.animeID {
-            print("recommend \(animeID)")
-            recommendationDelegate?.passRecommendationAnimeID(animeID)
+        contentView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
+        
+        let recommendationTapGesture = UITapGestureRecognizer(target: self, action: #selector(loadRecommendation))
+        self.addGestureRecognizer(recommendationTapGesture)
+        setStyle()
+    }
+    
+    func bind(_ model: Model) {
+        animeID = model.animeID
+        animeTitle.text = model.animeTitle
+        coverImageView.kf.setImage(with: model.animeThumbnailURL)
+    }
+    
+    private func setStyle() {
+        coverImageView.contentMode = .scaleAspectFill
+        animeTitle.font = .atCaption
+        animeTitle.textColor = .atTextPrimary
+        backgroundColor = .atSecondaryBackground
+        layer.cornerRadius = 8
+        clipsToBounds = true
+    }
+    
+    @objc func loadRecommendation(sender: UIGestureRecognizer) {
+        recommendationAnimeTapSubject.send(animeID)
     }
 }
 
-class AnimeRecommendationTapGesture: UITapGestureRecognizer {
-    let animeID: Int?
-    init(target: Any?, action: Selector?, animeID: Int?) {
-        self.animeID = animeID
-        super.init(target: target, action: action)
+extension RecommendationsAnimePreview {
+    struct Model {
+        let animeID: Int?
+        let animeThumbnailURL: URL?
+        let animeTitle: String?
     }
 }
 

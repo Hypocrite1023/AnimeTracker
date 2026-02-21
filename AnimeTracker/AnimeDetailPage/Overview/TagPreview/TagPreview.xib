@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24128" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -12,6 +13,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="TagPreview" customModule="AnimeTracker" customModuleProvider="target">
             <connections>
                 <outlet property="contentView" destination="iN0-l3-epB" id="PEV-BC-299"/>
+                <outlet property="tagInfoButton" destination="kPE-Fn-wSX" id="VWu-Zc-g8Y"/>
                 <outlet property="tagName" destination="6W8-Fm-X4s" id="b9u-vk-usN"/>
                 <outlet property="tagPercent" destination="5GD-g6-7uP" id="JOV-zc-qE1"/>
             </connections>
@@ -33,17 +35,30 @@
                     <color key="textColor" red="0.27144057160000001" green="0.53038689510000003" blue="0.80987185240000004" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kPE-Fn-wSX">
+                    <rect key="frame" x="51.333333333333336" y="12.666666666666664" width="20.000000000000007" height="20"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="20" id="9iw-VY-yTK"/>
+                        <constraint firstAttribute="width" constant="20" id="kJr-Bl-D9J"/>
+                    </constraints>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="plain">
+                        <imageReference key="image" image="info.circle" catalog="system" symbolScale="small"/>
+                    </buttonConfiguration>
+                </button>
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="5GD-g6-7uP" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6W8-Fm-X4s" secondAttribute="trailing" id="BTV-2r-Cx9"/>
                 <constraint firstAttribute="trailing" secondItem="5GD-g6-7uP" secondAttribute="trailing" constant="5" id="Def-cn-6NI"/>
+                <constraint firstItem="kPE-Fn-wSX" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="Mhu-Ew-fBb"/>
                 <constraint firstAttribute="bottom" secondItem="5GD-g6-7uP" secondAttribute="bottom" constant="5" id="XC1-fL-dT6"/>
                 <constraint firstItem="6W8-Fm-X4s" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="5" id="YiH-Tq-8Mm"/>
                 <constraint firstAttribute="bottom" secondItem="6W8-Fm-X4s" secondAttribute="bottom" constant="5" id="iTI-Wn-HTP"/>
                 <constraint firstItem="5GD-g6-7uP" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="5" id="jKB-2K-ZoJ"/>
                 <constraint firstItem="6W8-Fm-X4s" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="5" id="lf3-vU-B2C"/>
+                <constraint firstItem="kPE-Fn-wSX" firstAttribute="leading" secondItem="6W8-Fm-X4s" secondAttribute="trailing" constant="5" id="pKl-Zo-cVW"/>
             </constraints>
             <nil key="simulatedTopBarMetrics"/>
             <nil key="simulatedBottomBarMetrics"/>
@@ -52,6 +67,7 @@
         </view>
     </objects>
     <resources>
+        <image name="info.circle" catalog="system" width="128" height="123"/>
         <systemColor name="secondaryLabelColor">
             <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
