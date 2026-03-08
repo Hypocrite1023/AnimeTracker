@@ -32,6 +32,7 @@ Carthage/Build/
 *.dSYM.zip
 *.ipa
 *.xcworkspace/
+*.xcodeproj/
 GoogleService-Info.plist
 
 # Fastlane
