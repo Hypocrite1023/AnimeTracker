@@ -162,3 +162,13 @@ ___
 ## 2025.5.20
 ### UIScrollView 的 content view 因為有 Navigation Bar 的關係最上方會留個空間，但我不想要
 > 調整 scrollView 的 `contentInsetAdjustmentBehavior` 為 .never
+
+___
+## 2026.6.5
+### 更新並重構專案文件 (README, ARCHITECTURE, AnimeDetail)
+> 1. 原本文件中關於 `CocoaPods` 的描述（例如 `pod install` 和 `AnimeTracker.xcworkspace`）已不符合目前的 XcodeGen 配置，更新為使用 `xcodegen generate` 並開啟 `AnimeTracker.xcodeproj` 的步驟。
+> 2. 將專案依賴管理工具說明更新為 `Swift Package Manager (SPM)`，並列出 `project.yml` 所配置的第三方套件（如 SnapKit, Kingfisher, Lottie, Firebase 等）。
+> 3. 修正網路請求說明，將誤寫的 `gRPC` 修正為 `GraphQL` 請求 AniList API。
+> 4. 新增專案目前採用 UIKit 與 SwiftUI 混編的說明（例如 SwiftUI 實作的 `CategoryPage`）。
+> 5. 將主要文件（README.md, ARCHITECTURE.md, AnimeDetail_Documentation.md）重構並翻譯為繁體中文，方便後續維護。
+
