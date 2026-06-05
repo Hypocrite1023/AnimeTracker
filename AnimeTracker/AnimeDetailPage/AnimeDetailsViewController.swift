@@ -73,6 +73,8 @@ class AnimeDetailsViewController: UIViewController {
     
     private let vm: AnimeDetailPageViewModel
     private var cancellables: Set<AnyCancellable> = []
+    private var favoriteBarButton: UIBarButtonItem?
+    private var notifyBarButton: UIBarButtonItem?
     
     init(animeID: Int) {
         vm = .init(animeID: animeID)
@@ -95,6 +97,12 @@ class AnimeDetailsViewController: UIViewController {
     }
     
     private func setupUI() {
+        let favoriteBtn = UIBarButtonItem(image: UIImage(systemName: "star"), style: .plain, target: self, action: #selector(favoriteButtonTapped))
+        let notifyBtn = UIBarButtonItem(image: UIImage(systemName: "bell"), style: .plain, target: self, action: #selector(notifyButtonTapped))
+        self.favoriteBarButton = favoriteBtn
+        self.notifyBarButton = notifyBtn
+        navigationItem.rightBarButtonItems = [favoriteBtn, notifyBtn]
+        
         view.addSubview(scrollView)
         scrollView.forSelf {
             $0.snp.makeConstraints { make in
@@ -167,6 +175,13 @@ class AnimeDetailsViewController: UIViewController {
                 self?.setupAnimeScoreDistribution(detail.scoreDistribution)
                 self?.setupAnimeStatusDistribution(detail.userStatusDistribution)
                 self?.setupAnimeTags(detail.animeTags)
+                
+                // Hide notify button if not releasing
+                if detail.basicInfomation.status?.uppercased() != AnimeInfo.AnimeStatus.releasing.rawValue {
+                    self?.navigationItem.rightBarButtonItems = [self?.favoriteBarButton].compactMap { $0 }
+                } else {
+                    self?.navigationItem.rightBarButtonItems = [self?.favoriteBarButton, self?.notifyBarButton].compactMap { $0 }
+                }
             }
             .store(in: &cancellables)
         
@@ -196,6 +211,22 @@ class AnimeDetailsViewController: UIViewController {
                 guard let self = self else { return }
                 let vc = AnimeDetailsViewController(animeID: animeID)
                 self.navigationController?.pushViewController(vc, animated: true)
+            }
+            .store(in: &cancellables)
+        
+        vm.configFavoritePublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isFavorite in
+                self?.favoriteBarButton?.image = UIImage(systemName: isFavorite ? "star.fill" : "star")
+                self?.favoriteBarButton?.tintColor = isFavorite ? .systemYellow : .systemGray
+            }
+            .store(in: &cancellables)
+        
+        vm.configNotificationPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isNotify in
+                self?.notifyBarButton?.image = UIImage(systemName: isNotify ? "bell.fill" : "bell")
+                self?.notifyBarButton?.tintColor = isNotify ? .systemBlue : .systemGray
             }
             .store(in: &cancellables)
     }
@@ -603,6 +634,14 @@ private extension AnimeDetailsViewController {
         }
         
         animeDetailsContainerStackView.addArrangedSubview(container)
+    }
+    
+    @objc func favoriteButtonTapped() {
+        vm.configFavorite.send(())
+    }
+    
+    @objc func notifyButtonTapped() {
+        vm.configNotification.send(())
     }
 }
 

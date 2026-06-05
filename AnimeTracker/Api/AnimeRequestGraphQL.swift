@@ -260,6 +260,7 @@ enum AnimeRequestGraphQL {
                   english
                 }
                 coverImage {
+                  extraLarge
                   large
                 }
                 status
@@ -300,6 +301,7 @@ enum AnimeRequestGraphQL {
                   english
                 }
                 coverImage {
+                  extraLarge
                   large
                 }
                 status

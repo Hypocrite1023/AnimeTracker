@@ -50,7 +50,8 @@ extension Response {
         }
         
         struct CoverImage: Codable {
-            let extraLarge: String
+            let extraLarge: String?
+            let large: String?
         }
     }
     
@@ -642,7 +643,8 @@ extension Response {
                         let romaji: String?
                     }
                     struct CoverImage: Decodable {
-                        let extraLarge: String
+                        let extraLarge: String?
+                        let large: String?
                     }
                 }
                 struct PageInfo: Decodable {
@@ -688,7 +690,8 @@ extension Response {
         }
         
         struct CoverImage: Codable {
-            let extraLarge: String
+            let extraLarge: String?
+            let large: String?
         }
         
         struct NextAiringEpisode: Decodable {

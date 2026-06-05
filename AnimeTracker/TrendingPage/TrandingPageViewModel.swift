@@ -100,12 +100,12 @@ class TrendingPageViewModel {
     }
     
     func createOrUpdateAnimeRecord() -> AnyPublisher<Void, Error> {
-        guard let userUID = FirebaseManager.shared.getCurrentUserUID(), let animeID = currentLongPressCellStatus.animeID, let isFavorite = currentLongPressCellStatus.isFavorite, let isNotify = currentLongPressCellStatus.isNotify, let status = currentLongPressCellStatus.status else {
-            return Fail(error: FirebaseAnimeRecordError.dataError)
+        guard let animeID = currentLongPressCellStatus.animeID, let isFavorite = currentLongPressCellStatus.isFavorite, let isNotify = currentLongPressCellStatus.isNotify, let status = currentLongPressCellStatus.status else {
+            return Fail(error: LocalAnimeRecordError.dataError)
                 .eraseToAnyPublisher()
         }
         
-        return FirebaseManager.shared.addAnimeRecord(userUID: userUID, animeID: animeID, isFavorite: isFavorite, isNotify: isNotify, status: status)
+        return LocalRecordManager.shared.addAnimeRecord(animeID: animeID, isFavorite: isFavorite, isNotify: isNotify, status: status)
     }
     
     func createLocolNotification() -> AnyPublisher<Void, Error> {
@@ -147,7 +147,7 @@ class TrendingPageViewModel {
     }
 }
 
-enum FirebaseAnimeRecordError: Error {
+enum LocalAnimeRecordError: Error {
     case dataError
     
     var description: String {

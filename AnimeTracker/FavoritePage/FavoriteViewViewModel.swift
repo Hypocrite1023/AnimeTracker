@@ -16,16 +16,16 @@ class FavoriteViewViewModel: ObservableObject {
     
     @Published var favorites: [Response.AnimeEssentialData] = []
     
-    private let fireBaseDataProvider: FirebaseDataProvider
+    private let userDataProvider: UserDataProvider
     private let animeDataFetcher: AnimeDataFetcher
     @Published var animeStatusDict: [Int: (isFavorite: Bool, isNotify: Bool)] = [:]
     private var cancellables: Set<AnyCancellable> = []
     
     init(
-        fireBaseDataProvider: FirebaseDataProvider = FirebaseManager.shared,
+        userDataProvider: UserDataProvider = LocalRecordManager.shared,
          animeDataFetcher: AnimeDataFetcher = AnimeDataFetcher.shared
     ) {
-        self.fireBaseDataProvider = fireBaseDataProvider
+        self.userDataProvider = userDataProvider
         self.animeDataFetcher = animeDataFetcher
         
         print("### init")
@@ -33,7 +33,7 @@ class FavoriteViewViewModel: ObservableObject {
         // Trigger for both reload and load more
         let fetchTrigger = shouldReloadData
             .handleEvents(receiveOutput: { [weak self] _ in
-                fireBaseDataProvider.resetFavoritePagination()
+                userDataProvider.resetFavoritePagination()
             })
             .map { true } // isReload
             .merge(with: shouldLoadMoreData.map { false }) // isReload = false
@@ -42,7 +42,7 @@ class FavoriteViewViewModel: ObservableObject {
 
         let favoriteAnimePublisher = fetchTrigger
             .flatMap { isReload in
-                fireBaseDataProvider.loadUserFavorite(perFetch: 10)
+                userDataProvider.loadUserFavorite(perFetch: 10)
                     .map { (isReload, $0) }
             }
             .share()
@@ -86,19 +86,22 @@ class FavoriteViewViewModel: ObservableObject {
             .handleEvents(receiveOutput: { [weak self] animeId in
                 self?.animeStatusDict[animeId]?.isNotify.toggle()
             })
-            .compactMap { [weak self] animeId -> (userUID: String, animeId: Int, isFavorite: Bool, isNotify: Bool)? in
-                guard let userUID = fireBaseDataProvider.getCurrentUserUID(),
-                      let isFavorite = self?.animeStatusDict[animeId]?.isFavorite,
+            .compactMap { [weak self] animeId -> (animeId: Int, isFavorite: Bool, isNotify: Bool)? in
+                guard let isFavorite = self?.animeStatusDict[animeId]?.isFavorite,
                       let isNotify = self?.animeStatusDict[animeId]?.isNotify
                 else {
                     return nil
                 }
                 
-                return (userUID, animeId, isFavorite, isNotify)
+                return (animeId, isFavorite, isNotify)
             }
-            .flatMap { parameter in
-                let (userUID, animeId, isFavorite, isNotify) = parameter
-                return fireBaseDataProvider.updateAnimeRecord(userUID: userUID, animeID: animeId, isFavorite: isFavorite, isNotify: isNotify, status: Response.AnimeStatus.airing.rawValue)
+            .flatMap { [weak self] parameter -> AnyPublisher<Response.LocalAnimeRecord, Error> in
+                guard let self = self else {
+                    return Fail(error: NSError(domain: "FavoriteViewViewModel", code: -1, userInfo: nil))
+                        .eraseToAnyPublisher()
+                }
+                let (animeId, isFavorite, isNotify) = parameter
+                return self.userDataProvider.updateAnimeRecord(animeID: animeId, isFavorite: isFavorite, isNotify: isNotify, status: Response.AnimeStatus.airing.rawValue)
             }
             .handleEvents(receiveOutput: { record in
                 if !record.isNotify {

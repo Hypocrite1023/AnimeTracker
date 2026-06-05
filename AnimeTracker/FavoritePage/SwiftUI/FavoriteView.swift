@@ -21,7 +21,7 @@ struct FavoriteView: View {
         .padding(.horizontal)
         .scrollIndicators(.hidden, axes: .vertical)
         .onAppear {
-            FirebaseManager.shared.resetFavoritePagination()
+            LocalRecordManager.shared.resetFavoritePagination()
             viewModel.shouldReloadData.send(())
         }
     }

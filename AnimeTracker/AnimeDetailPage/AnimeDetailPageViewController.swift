@@ -7,8 +7,6 @@
 
 import UIKit
 import Combine
-import FirebaseAuth
-import FirebaseFirestoreInternal
 import Kingfisher
 import SnapKit
 import CombineCocoa
@@ -160,19 +158,12 @@ class AnimeDetailPageViewController: UIViewController {
                 case .apiError(let message):
                     AlertWithMessageController.setupAlertController(title: alertType.title, message: message, viewController: self)
                 case .needLogin:
-                    AlertWithMessageController.setupTwoChoiceAlertController(title: alertType.title, message: alertType.message, viewController: self, choice1: "Cancel", choice2: "Login", action2:  { [weak self] _ in
-                        self?.viewModel?.shouldShowLoginPage.send(())
-                    })
+                    break
                 }
             }
             .store(in: &cancellables)
         
-        viewModel.showLoginPage
-            .sink { [weak self] _ in
-                let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "LoginPage")
-                self?.navigationController?.pushViewController(vc, animated: true)
-            }
-            .store(in: &cancellables)
+
     }
     
     private func setupPublisher() {

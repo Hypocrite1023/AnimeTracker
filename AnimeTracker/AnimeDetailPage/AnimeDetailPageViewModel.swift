@@ -56,7 +56,6 @@ class AnimeDetailPageViewModel {
     let shouldShowAlert: PassthroughSubject<AlertType, Never> = .init()
     let configFavorite: PassthroughSubject<Void, Never> = .init()
     let configNotification: PassthroughSubject<Void, Never> = .init()
-    let shouldShowLoginPage: PassthroughSubject<Void, Never> = .init()
     
     let shouldShowCharacterDetailPage: PassthroughSubject<Int?, Never> = .init()
     let shouldShowVoiceActorDetailPage: PassthroughSubject<Int?, Never> = .init()
@@ -92,13 +91,11 @@ class AnimeDetailPageViewModel {
     private(set) var showAlert: AnyPublisher<AlertType, Never> = .empty
     private(set) var configFavoritePublisher: AnyPublisher<Bool, Never> = .empty
     private(set) var configNotificationPublisher: AnyPublisher<Bool, Never> = .empty
-    private(set) var showLoginPage: AnyPublisher<Void, Never> = .empty
     // MARK: - data property
     let animeID: Int
-    let userUID: String?
     @Published var isFavorite: Bool = false
     @Published var isNotify: Bool = false
-    var isFirebaseDataInitFinished: Bool = false
+    var isLocalDataInitFinished: Bool = false
     @Published var animeDetailData: Response.AnimeDetail.MediaData.Media?
     @Published var animeCharacterData: [Response.AnimeDetail.MediaData.Media.CharacterPreview.Edges]? = []
     @Published var newAnimeCharacterData: [Response.AnimeDetail.MediaData.Media.CharacterPreview.Edges]? = []
@@ -110,8 +107,6 @@ class AnimeDetailPageViewModel {
     
     init(animeID: Int) {
         self.animeID = animeID
-        let userUidOptional: String? = FirebaseManager.shared.getCurrentUserUID()
-        userUID = userUidOptional
         
         animeDetailPublisher = AnimeDataFetcher.shared.fetchAnimeDetailByID(id: animeID)
             .compactMap { result -> Response.AnimeDetail.MediaData.Media? in
@@ -192,26 +187,21 @@ class AnimeDetailPageViewModel {
             }
             .store(in: &cancellable)
         
-        if let userUID = userUidOptional {
-            FirebaseManager.shared.getAnimeRecord(userUID: userUID, animeID: self.animeID)
-                .sink(receiveCompletion: { completion in
-                    switch completion {
-                        
-                    case .finished:
-                        break
-                    case .failure(let error):
-                        self.shouldShowAlert.send(.apiError(message: error.localizedDescription))
-                    }
-                }, receiveValue: { (favorite, notify, _) in
-                    self.isFavorite = favorite ?? false
-                    self.isNotify = notify ?? false
-                    self.isFirebaseDataInitFinished = true
-                    print("isFavorite: \(self.isFavorite); isNotify: \(self.isNotify)")
-                })
-                .store(in: &cancellable)
-            
-            
-        }
+        LocalRecordManager.shared.getAnimeRecord(animeID: self.animeID)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    self.shouldShowAlert.send(.apiError(message: error.localizedDescription))
+                }
+            }, receiveValue: { (favorite, notify, _) in
+                self.isFavorite = favorite ?? false
+                self.isNotify = notify ?? false
+                self.isLocalDataInitFinished = true
+                print("isFavorite: \(self.isFavorite); isNotify: \(self.isNotify)")
+            })
+            .store(in: &cancellable)
         setupSubscriber()
         setupPublisher()
         
@@ -221,11 +211,11 @@ class AnimeDetailPageViewModel {
         $isFavorite
             .combineLatest($isNotify)
             .dropFirst()
-            .filter { _ in self.isFirebaseDataInitFinished && FirebaseManager.shared.isAuthenticatedAndEmailVerified() }
+            .filter { _ in self.isLocalDataInitFinished }
             .flatMap { isFavorite, isNotify -> AnyPublisher<Void, Error> in
                 print("isFavorite: \(isFavorite); isNotify: \(isNotify)")
                 let animeStatus = self.animeDetailData?.status ?? ""
-                return FirebaseManager.shared.addAnimeRecord(userUID: self.userUID!, animeID: self.animeID, isFavorite: isFavorite, isNotify: isNotify, status: animeStatus)
+                return LocalRecordManager.shared.addAnimeRecord(animeID: self.animeID, isFavorite: isFavorite, isNotify: isNotify, status: animeStatus)
             }
             .catch{ error in
                 self.shouldShowAlert.send(.apiError(message: error.localizedDescription))
@@ -238,26 +228,18 @@ class AnimeDetailPageViewModel {
         
         configFavorite
             .sink { [weak self] _ in
-                if UserCache.shared.userUID != nil {
-                    self?.isFavorite.toggle()
-                } else {
-                    self?.shouldShowAlert.send(.needLogin)
-                }
+                self?.isFavorite.toggle()
             }
             .store(in: &cancellable)
         
         configNotification
             .sink { [weak self] _ in
-                if UserCache.shared.userUID != nil {
-                    self?.isNotify.toggle()
-                } else {
-                    self?.shouldShowAlert.send(.needLogin)
-                }
+                self?.isNotify.toggle()
             }
             .store(in: &cancellable)
         
         $isNotify
-            .filter { _ in self.isFirebaseDataInitFinished && FirebaseManager.shared.isAuthenticatedAndEmailVerified() }
+            .filter { _ in self.isLocalDataInitFinished }
             .sink { isNotify in
                 if isNotify {
                     guard let animeTitle = self.animeDetailData?.title.native, let nextAiringEpisode = self.animeDetailData?.nextAiringEpisode, let episodes = self.animeDetailData?.episodes else { return }
@@ -390,9 +372,5 @@ class AnimeDetailPageViewModel {
         configFavoritePublisher = $isFavorite.eraseToAnyPublisher()
         
         configNotificationPublisher = $isNotify.eraseToAnyPublisher()
-        
-        showLoginPage = shouldShowLoginPage
-            .filter({ !FirebaseManager.shared.isAuthenticatedAndEmailVerified() })
-            .eraseToAnyPublisher()
     }
 }
