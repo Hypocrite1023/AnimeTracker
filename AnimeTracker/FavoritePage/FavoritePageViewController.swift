@@ -7,8 +7,6 @@
 
 import UIKit
 import SwiftUI
-import FirebaseFirestore
-import FirebaseAuth
 import Combine
 
 /*

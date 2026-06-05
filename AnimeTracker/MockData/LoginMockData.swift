@@ -7,9 +7,8 @@
 
 import Foundation
 import Combine
-import FirebaseFirestore
 
-final class LoginMockData: FirebaseDataProvider {
+final class LoginMockData: UserDataProvider {
     
     func resetFavoritePagination() {
         // Do nothing
@@ -27,12 +26,6 @@ final class LoginMockData: FirebaseDataProvider {
     
     func loadUserFavorite(perFetch: Int) -> AnyPublisher<[Response.FirebaseAnimeRecord], any Error> {
         return Just([])
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
-    }
-    
-    func signIn(withEmail: String, password: String) -> AnyPublisher<Void, any Error> {
-        return Just(())
             .setFailureType(to: Error.self)
             .eraseToAnyPublisher()
     }

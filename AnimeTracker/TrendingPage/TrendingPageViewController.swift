@@ -117,10 +117,6 @@ class TrendingPageViewController: UIViewController {
                 return
             }
 
-            if FirebaseManager.shared.getCurrentUserUID() == nil {
-                self.showLoginAlert()
-                return
-            }
 
             self.viewModel.currentLongPressCellStatus.isFavorite?.toggle()
             let isFavorite = self.viewModel.currentLongPressCellStatus.isFavorite ?? true // Default to true if nil
@@ -153,10 +149,6 @@ class TrendingPageViewController: UIViewController {
                 return
             }
 
-            if FirebaseManager.shared.getCurrentUserUID() == nil {
-                self.showLoginAlert()
-                return
-            }
 
             self.viewModel.currentLongPressCellStatus.isNotify?.toggle()
             let isNotify = self.viewModel.currentLongPressCellStatus.isNotify ?? true // Default to true if nil
@@ -247,8 +239,8 @@ class TrendingPageViewController: UIViewController {
                 self.favoriteBtn = self.setConfigButton(backgroundColor: .systemYellow, tintColor: .white, buttonImage: UIImage(systemName: "star.fill"), isTrue: false)
                 self.notifyBtn = self.setConfigButton(backgroundColor: .systemBlue, tintColor: .white, buttonImage: UIImage(systemName: "bell.fill"), isTrue: false)
                 
-                if let userUID = FirebaseManager.shared.getCurrentUserUID() {
-                    FirebaseManager.shared.getAnimeRecord(userUID: userUID, animeID: animeID)
+                if let userUID = LocalRecordManager.shared.getCurrentUserUID() {
+                    LocalRecordManager.shared.getAnimeRecord(userUID: userUID, animeID: animeID)
                         .receive(on: DispatchQueue.main)
                         .sink { completion in
                             switch completion {
@@ -369,24 +361,7 @@ class TrendingPageViewController: UIViewController {
         }
     }
     
-    func showLoginAlert() {
-        let alertController = UIAlertController(title: "Login Required", message: "You need to be logged in to perform this action.", preferredStyle: .alert)
-        
-        let loginAction = UIAlertAction(title: "Login", style: .default) { _ in
-            // Navigate to login page
-            let loginVC = UIStoryboard(name: "Login", bundle: nil).instantiateViewController(identifier: "LoginViewController") as! LoginViewController
-            loginVC.modalPresentationStyle = .fullScreen
-            self.present(loginVC, animated: true)
-        }
-        alertController.addAction(loginAction)
-        
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
-            // Keep the blur view and buttons visible
-        }
-        alertController.addAction(cancelAction)
-        
-        present(alertController, animated: true, completion: nil)
-    }
+
 
     deinit {
         print("TrendingPageViewController deinit")

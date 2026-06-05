@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import FirebaseAuth
 
 struct AnimeTimeLineData {
     let animeTitle: String
@@ -32,33 +31,6 @@ class AnimeTimeLineTableViewViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        if let userUID = Auth.auth().currentUser?.uid {
-//            loadFavoriteAndReleasingEpisodeData(userUID) {
-//                print("completion")
-//                if !self.episodeDatas.isEmpty {
-//                    for episodeData in self.episodeDatas {
-//                        print(episodeData)
-//                        
-//                        if let nextAiringEpisode = episodeData.nextAiringEpisode?.episode, let totalEpisode = episodeData.episodes, let nextAiringTime = episodeData.nextAiringEpisode?.timeUntilAiring {
-//                            for (index, episode) in (nextAiringEpisode...totalEpisode).enumerated() {
-//                                print(index)
-//                                self.animeTimeLineData.append(AnimeTimeLineData(animeTitle: "\(episodeData.title.native) Ep.\(episode)", animeCoverImage: episodeData.coverImage.large, airingLeft: TimeInterval(nextAiringTime + (604800 * index))))
-//                            }
-//                        }
-//                    }
-//                    self.animeTimeLineData.sort { lhs, rhs in
-//                        lhs.airingLeft < rhs.airingLeft
-//                    }
-//                    print(self.animeTimeLineData)
-//                    DispatchQueue.main.async {
-//                        print("reloadData")
-//                        self.animeTimeLineTableView.reloadData()
-//                    }
-//                }
-//                
-//                
-//            }
-        }
     }
     
     override func viewDidLoad() {

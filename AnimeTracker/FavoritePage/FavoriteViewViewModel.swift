@@ -16,13 +16,13 @@ class FavoriteViewViewModel: ObservableObject {
     
     @Published var favorites: [Response.AnimeEssentialData] = []
     
-    private let fireBaseDataProvider: FirebaseDataProvider
+    private let fireBaseDataProvider: UserDataProvider
     private let animeDataFetcher: AnimeDataFetcher
     @Published var animeStatusDict: [Int: (isFavorite: Bool, isNotify: Bool)] = [:]
     private var cancellables: Set<AnyCancellable> = []
     
     init(
-        fireBaseDataProvider: FirebaseDataProvider = FirebaseManager.shared,
+        fireBaseDataProvider: UserDataProvider = LocalRecordManager.shared,
          animeDataFetcher: AnimeDataFetcher = AnimeDataFetcher.shared
     ) {
         self.fireBaseDataProvider = fireBaseDataProvider

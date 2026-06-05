@@ -15,9 +15,6 @@ packages:
   Lottie:
     url: https://github.com/airbnb/lottie-ios.git
     from: 4.6.0
-  Firebase:
-    url: https://github.com/firebase/firebase-ios-sdk.git
-    from: 12.10.0
   CombineCocoa:
     url: https://github.com/CombineCommunity/CombineCocoa.git
     from: 0.4.1
@@ -60,10 +57,6 @@ targets:
       - package: CombineExt
       - package: SkeletonUI
       - package: LookinServer
-      - package: Firebase
-        product: FirebaseAuth
-      - package: Firebase
-        product: FirebaseFirestore
 
   # 4. 測試 Target
   AnimeTrackerTests:

@@ -10,7 +10,7 @@ import Combine
 
 class UserCache {
     static let shared = UserCache()
-    @Published var userUID: String? = FirebaseManager.shared.getCurrentUserUID()
+    @Published var userUID: String? = LocalRecordManager.shared.getCurrentUserUID()
     
     private init() {
         $userUID
@@ -21,7 +21,7 @@ class UserCache {
                         .flatMap { (userUID, animeIDs) in
                             animeIDs.map { ($0.key, AnimeInfo.AnimeStatus(rawValue: $0.value) ?? AnimeInfo.AnimeStatus.finished) }.publisher
                                 .flatMap(maxPublishers: .max(5)) { (animeID, status) -> AnyPublisher<Void, Never> in
-                                    FirebaseManager.shared.updateAnimeStatus(userUID: userUID, animeID: animeID, status: status)
+                                    LocalRecordManager.shared.updateAnimeStatus(userUID: userUID, animeID: animeID, status: status)
                                 }
                                 .collect()
                                 .eraseToAnyPublisher()

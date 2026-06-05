@@ -7,8 +7,6 @@
 
 import UIKit
 import Combine
-import FirebaseAuth
-import FirebaseFirestoreInternal
 import Kingfisher
 import SnapKit
 import CombineCocoa
