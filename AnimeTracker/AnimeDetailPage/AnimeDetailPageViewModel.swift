@@ -95,7 +95,6 @@ class AnimeDetailPageViewModel {
     private(set) var showLoginPage: AnyPublisher<Void, Never> = .empty
     // MARK: - data property
     let animeID: Int
-    let userUID: String?
     @Published var isFavorite: Bool = false
     @Published var isNotify: Bool = false
     var isLocalDataInitFinished: Bool = false
@@ -110,8 +109,6 @@ class AnimeDetailPageViewModel {
     
     init(animeID: Int) {
         self.animeID = animeID
-        let userUidOptional: String? = LocalRecordManager.shared.getCurrentUserUID()
-        userUID = userUidOptional
         
         animeDetailPublisher = AnimeDataFetcher.shared.fetchAnimeDetailByID(id: animeID)
             .compactMap { result -> Response.AnimeDetail.MediaData.Media? in
@@ -192,26 +189,21 @@ class AnimeDetailPageViewModel {
             }
             .store(in: &cancellable)
         
-        if let userUID = userUidOptional {
-            LocalRecordManager.shared.getAnimeRecord(userUID: userUID, animeID: self.animeID)
-                .sink(receiveCompletion: { completion in
-                    switch completion {
-                        
-                    case .finished:
-                        break
-                    case .failure(let error):
-                        self.shouldShowAlert.send(.apiError(message: error.localizedDescription))
-                    }
-                }, receiveValue: { (favorite, notify, _) in
-                    self.isFavorite = favorite ?? false
-                    self.isNotify = notify ?? false
-                    self.isLocalDataInitFinished = true
-                    print("isFavorite: \(self.isFavorite); isNotify: \(self.isNotify)")
-                })
-                .store(in: &cancellable)
-            
-            
-        }
+        LocalRecordManager.shared.getAnimeRecord(animeID: self.animeID)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    self.shouldShowAlert.send(.apiError(message: error.localizedDescription))
+                }
+            }, receiveValue: { (favorite, notify, _) in
+                self.isFavorite = favorite ?? false
+                self.isNotify = notify ?? false
+                self.isLocalDataInitFinished = true
+                print("isFavorite: \(self.isFavorite); isNotify: \(self.isNotify)")
+            })
+            .store(in: &cancellable)
         setupSubscriber()
         setupPublisher()
         
@@ -221,11 +213,11 @@ class AnimeDetailPageViewModel {
         $isFavorite
             .combineLatest($isNotify)
             .dropFirst()
-            .filter { _ in self.isLocalDataInitFinished && LocalRecordManager.shared.isAuthenticatedAndEmailVerified() }
+            .filter { _ in self.isLocalDataInitFinished }
             .flatMap { isFavorite, isNotify -> AnyPublisher<Void, Error> in
                 print("isFavorite: \(isFavorite); isNotify: \(isNotify)")
                 let animeStatus = self.animeDetailData?.status ?? ""
-                return LocalRecordManager.shared.addAnimeRecord(userUID: self.userUID!, animeID: self.animeID, isFavorite: isFavorite, isNotify: isNotify, status: animeStatus)
+                return LocalRecordManager.shared.addAnimeRecord(animeID: self.animeID, isFavorite: isFavorite, isNotify: isNotify, status: animeStatus)
             }
             .catch{ error in
                 self.shouldShowAlert.send(.apiError(message: error.localizedDescription))
@@ -238,26 +230,18 @@ class AnimeDetailPageViewModel {
         
         configFavorite
             .sink { [weak self] _ in
-                if UserCache.shared.userUID != nil {
-                    self?.isFavorite.toggle()
-                } else {
-                    self?.shouldShowAlert.send(.needLogin)
-                }
+                self?.isFavorite.toggle()
             }
             .store(in: &cancellable)
         
         configNotification
             .sink { [weak self] _ in
-                if UserCache.shared.userUID != nil {
-                    self?.isNotify.toggle()
-                } else {
-                    self?.shouldShowAlert.send(.needLogin)
-                }
+                self?.isNotify.toggle()
             }
             .store(in: &cancellable)
         
         $isNotify
-            .filter { _ in self.isLocalDataInitFinished && LocalRecordManager.shared.isAuthenticatedAndEmailVerified() }
+            .filter { _ in self.isLocalDataInitFinished }
             .sink { isNotify in
                 if isNotify {
                     guard let animeTitle = self.animeDetailData?.title.native, let nextAiringEpisode = self.animeDetailData?.nextAiringEpisode, let episodes = self.animeDetailData?.episodes else { return }
@@ -391,8 +375,6 @@ class AnimeDetailPageViewModel {
         
         configNotificationPublisher = $isNotify.eraseToAnyPublisher()
         
-        showLoginPage = shouldShowLoginPage
-            .filter({ !LocalRecordManager.shared.isAuthenticatedAndEmailVerified() })
-            .eraseToAnyPublisher()
+        showLoginPage = Empty<Void, Never>().eraseToAnyPublisher()
     }
 }

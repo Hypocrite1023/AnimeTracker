@@ -81,8 +81,8 @@ class AnimeNotification {
         print("Remove all notification...")
     }
     
-    func checkNotification(userUID: String) -> AnyPublisher<(String, [Int: String]), Never> { // 需要回傳 status 已經不是 RELEASING 的動畫 id
-        return LocalRecordManager.shared.loadUserNotificationAnime(userUID: userUID)
+    func checkNotification() -> AnyPublisher<[Int: String], Never> { // 需要回傳 status 已經不是 RELEASING 的動畫 id
+        return LocalRecordManager.shared.loadUserNotificationAnime()
             .flatMap { animeIDs -> AnyPublisher<Response.SimpleEpisodeData, Never> in
                 animeIDs.publisher
                     .flatMap(maxPublishers: .max(5)) { animeID in
@@ -104,7 +104,7 @@ class AnimeNotification {
                     }
                 }
                 
-                return (userUID, needUpdateAnimeIDs)
+                return needUpdateAnimeIDs
             }
             .eraseToAnyPublisher()
     }

@@ -28,16 +28,11 @@ struct AnimeInfo {
 protocol UserDataProvider {
     func loadUserFavorite(perFetch: Int) -> AnyPublisher<[Response.LocalAnimeRecord], Error>
     func resetFavoritePagination()
-    func updateAnimeRecord(userUID: String, animeID: Int, isFavorite: Bool, isNotify: Bool, status: String) -> AnyPublisher<Response.LocalAnimeRecord, Error>
-    func getCurrentUserUID() -> String?
+    func updateAnimeRecord(animeID: Int, isFavorite: Bool, isNotify: Bool, status: String) -> AnyPublisher<Response.LocalAnimeRecord, Error>
 }
 
 class LocalRecordManager: UserDataProvider {
     static let shared = LocalRecordManager()
-    
-    func isAuthenticatedAndEmailVerified() -> Bool {
-        return true
-    }
     
     private let fileName = "favorites.json"
     private var favoritesMap: [Int: LocalAnimeRecord] = [:]
@@ -75,21 +70,21 @@ class LocalRecordManager: UserDataProvider {
     
     // MARK: - Database APIs
     
-    func getAnimeRecord(userUID: String, animeID: Int) -> AnyPublisher<(Bool?, Bool?, String?), Error> {
+    func getAnimeRecord(animeID: Int) -> AnyPublisher<(Bool?, Bool?, String?), Error> {
         let record = favoritesMap[animeID]
         return Just((record?.isFavorite, record?.isNotify, record?.status))
             .setFailureType(to: Error.self)
             .eraseToAnyPublisher()
     }
     
-    func addAnimeRecord(userUID: String, animeID: Int, isFavorite: Bool, isNotify: Bool, status: String) -> AnyPublisher<Void, Error> {
+    func addAnimeRecord(animeID: Int, isFavorite: Bool, isNotify: Bool, status: String) -> AnyPublisher<Void, Error> {
         updateRecord(animeID: animeID, isFavorite: isFavorite, isNotify: isNotify, status: status)
         return Just(())
             .setFailureType(to: Error.self)
             .eraseToAnyPublisher()
     }
     
-    func updateAnimeRecord(userUID: String, animeID: Int, isFavorite: Bool, isNotify: Bool, status: String) -> AnyPublisher<Response.LocalAnimeRecord, Error> {
+    func updateAnimeRecord(animeID: Int, isFavorite: Bool, isNotify: Bool, status: String) -> AnyPublisher<Response.LocalAnimeRecord, Error> {
         updateRecord(animeID: animeID, isFavorite: isFavorite, isNotify: isNotify, status: status)
         return Just(Response.LocalAnimeRecord(id: animeID, isFavorite: isFavorite, isNotify: isNotify))
             .setFailureType(to: Error.self)
@@ -110,14 +105,14 @@ class LocalRecordManager: UserDataProvider {
         saveToDisk()
     }
     
-    func loadUserNotificationAnime(userUID: String) -> AnyPublisher<[Int], Never> {
+    func loadUserNotificationAnime() -> AnyPublisher<[Int], Never> {
         let notifyingIDs = favoritesMap.values
             .filter { $0.isNotify && $0.status == AnimeInfo.AnimeStatus.releasing.rawValue }
             .map { $0.id }
         return Just(notifyingIDs).eraseToAnyPublisher()
     }
     
-    func updateAnimeStatus(userUID: String, animeID: Int, status: AnimeInfo.AnimeStatus) -> AnyPublisher<Void, Never> {
+    func updateAnimeStatus(animeID: Int, status: AnimeInfo.AnimeStatus) -> AnyPublisher<Void, Never> {
         if var record = favoritesMap[animeID] {
             record.status = status.rawValue
             favoritesMap[animeID] = record
@@ -151,9 +146,5 @@ class LocalRecordManager: UserDataProvider {
         return Just(subList)
             .setFailureType(to: Error.self)
             .eraseToAnyPublisher()
-    }
-    
-    func getCurrentUserUID() -> String? {
-        return "local_user"
     }
 }

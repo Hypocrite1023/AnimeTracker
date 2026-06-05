@@ -239,31 +239,26 @@ class TrendingPageViewController: UIViewController {
                 self.favoriteBtn = self.setConfigButton(backgroundColor: .systemYellow, tintColor: .white, buttonImage: UIImage(systemName: "star.fill"), isTrue: false)
                 self.notifyBtn = self.setConfigButton(backgroundColor: .systemBlue, tintColor: .white, buttonImage: UIImage(systemName: "bell.fill"), isTrue: false)
                 
-                if let userUID = LocalRecordManager.shared.getCurrentUserUID() {
-                    LocalRecordManager.shared.getAnimeRecord(userUID: userUID, animeID: animeID)
-                        .receive(on: DispatchQueue.main)
-                        .sink { completion in
-                            switch completion {
-                            case .finished:
-                                break
-                            case .failure(let error):
-                                print("Error fetching anime record: \(error.localizedDescription)")
-                            }
-                        } receiveValue: { (favorite, notify, status) in
-                            self.viewModel.currentLongPressCellStatus = (favorite ?? false, notify ?? false, animeStatus ?? "FINISHED", animeID)
-                            
-                            if let favorite = favorite {
-                                self.updateConfigButton(btn: self.favoriteBtn, isTrue: favorite)
-                            }
-                            if let notify = notify {
-                                self.updateConfigButton(btn: self.notifyBtn, isTrue: notify)
-                            }
+                LocalRecordManager.shared.getAnimeRecord(animeID: animeID)
+                    .receive(on: DispatchQueue.main)
+                    .sink { completion in
+                        switch completion {
+                        case .finished:
+                            break
+                        case .failure(let error):
+                            print("Error fetching anime record: \(error.localizedDescription)")
                         }
-                        .store(in: &self.cancellables)
-                } else {
-                    // If not logged in, set default status for display
-                    self.viewModel.currentLongPressCellStatus = (false, false, animeStatus, animeID)
-                }
+                    } receiveValue: { (favorite, notify, status) in
+                        self.viewModel.currentLongPressCellStatus = (favorite ?? false, notify ?? false, animeStatus ?? "FINISHED", animeID)
+                        
+                        if let favorite = favorite {
+                            self.updateConfigButton(btn: self.favoriteBtn, isTrue: favorite)
+                        }
+                        if let notify = notify {
+                            self.updateConfigButton(btn: self.notifyBtn, isTrue: notify)
+                        }
+                    }
+                    .store(in: &self.cancellables)
                 
                 self.favoriteBtn.addTarget(self, action: #selector(self.favoriteBtnTap), for: .touchUpInside)
                 self.notifyBtn.addTarget(self, action: #selector(self.notifyBtnTap), for: .touchUpInside)

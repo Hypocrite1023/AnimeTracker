@@ -28,6 +28,21 @@ class TabBarViewController: UITabBarController {
                 guard let self = self else { return }
                 if granted {
                     AnimeNotification.shared.notificationEnable = true
+                    
+                    // 執行本地通知檢查與狀態更新（原本由 UserCache 執行）
+                    AnimeNotification.shared.checkNotification()
+                        .flatMap { animeIDs in
+                            animeIDs.map { ($0.key, AnimeInfo.AnimeStatus(rawValue: $0.value) ?? AnimeInfo.AnimeStatus.finished) }.publisher
+                                .flatMap(maxPublishers: .max(5)) { (animeID, status) -> AnyPublisher<Void, Never> in
+                                    LocalRecordManager.shared.updateAnimeStatus(animeID: animeID, status: status)
+                                }
+                                .collect()
+                                .eraseToAnyPublisher()
+                        }
+                        .sink { _ in
+                            print("Notification check finished...")
+                        }
+                        .store(in: &self.cancellables)
                 }
             }
             .store(in: &cancellables)

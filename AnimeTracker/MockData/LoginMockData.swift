@@ -14,14 +14,10 @@ final class LoginMockData: UserDataProvider {
         // Do nothing
     }
     
-    func updateAnimeRecord(userUID: String, animeID: Int, isFavorite: Bool, isNotify: Bool, status: String) -> AnyPublisher<Response.LocalAnimeRecord, any Error> {
+    func updateAnimeRecord(animeID: Int, isFavorite: Bool, isNotify: Bool, status: String) -> AnyPublisher<Response.LocalAnimeRecord, any Error> {
         return Just(Response.LocalAnimeRecord(id: 0, isFavorite: false, isNotify: false))
             .setFailureType(to: Error.self)
             .eraseToAnyPublisher()
-    }
-    
-    func getCurrentUserUID() -> String? {
-        return nil
     }
     
     func loadUserFavorite(perFetch: Int) -> AnyPublisher<[Response.LocalAnimeRecord], any Error> {
