@@ -98,7 +98,7 @@ class AnimeDetailPageViewModel {
     let userUID: String?
     @Published var isFavorite: Bool = false
     @Published var isNotify: Bool = false
-    var isFirebaseDataInitFinished: Bool = false
+    var isLocalDataInitFinished: Bool = false
     @Published var animeDetailData: Response.AnimeDetail.MediaData.Media?
     @Published var animeCharacterData: [Response.AnimeDetail.MediaData.Media.CharacterPreview.Edges]? = []
     @Published var newAnimeCharacterData: [Response.AnimeDetail.MediaData.Media.CharacterPreview.Edges]? = []
@@ -205,7 +205,7 @@ class AnimeDetailPageViewModel {
                 }, receiveValue: { (favorite, notify, _) in
                     self.isFavorite = favorite ?? false
                     self.isNotify = notify ?? false
-                    self.isFirebaseDataInitFinished = true
+                    self.isLocalDataInitFinished = true
                     print("isFavorite: \(self.isFavorite); isNotify: \(self.isNotify)")
                 })
                 .store(in: &cancellable)
@@ -221,7 +221,7 @@ class AnimeDetailPageViewModel {
         $isFavorite
             .combineLatest($isNotify)
             .dropFirst()
-            .filter { _ in self.isFirebaseDataInitFinished && LocalRecordManager.shared.isAuthenticatedAndEmailVerified() }
+            .filter { _ in self.isLocalDataInitFinished && LocalRecordManager.shared.isAuthenticatedAndEmailVerified() }
             .flatMap { isFavorite, isNotify -> AnyPublisher<Void, Error> in
                 print("isFavorite: \(isFavorite); isNotify: \(isNotify)")
                 let animeStatus = self.animeDetailData?.status ?? ""
@@ -257,7 +257,7 @@ class AnimeDetailPageViewModel {
             .store(in: &cancellable)
         
         $isNotify
-            .filter { _ in self.isFirebaseDataInitFinished && LocalRecordManager.shared.isAuthenticatedAndEmailVerified() }
+            .filter { _ in self.isLocalDataInitFinished && LocalRecordManager.shared.isAuthenticatedAndEmailVerified() }
             .sink { isNotify in
                 if isNotify {
                     guard let animeTitle = self.animeDetailData?.title.native, let nextAiringEpisode = self.animeDetailData?.nextAiringEpisode, let episodes = self.animeDetailData?.episodes else { return }

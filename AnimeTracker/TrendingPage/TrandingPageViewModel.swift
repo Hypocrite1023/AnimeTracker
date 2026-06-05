@@ -101,7 +101,7 @@ class TrendingPageViewModel {
     
     func createOrUpdateAnimeRecord() -> AnyPublisher<Void, Error> {
         guard let userUID = LocalRecordManager.shared.getCurrentUserUID(), let animeID = currentLongPressCellStatus.animeID, let isFavorite = currentLongPressCellStatus.isFavorite, let isNotify = currentLongPressCellStatus.isNotify, let status = currentLongPressCellStatus.status else {
-            return Fail(error: FirebaseAnimeRecordError.dataError)
+            return Fail(error: LocalAnimeRecordError.dataError)
                 .eraseToAnyPublisher()
         }
         
@@ -147,7 +147,7 @@ class TrendingPageViewModel {
     }
 }
 
-enum FirebaseAnimeRecordError: Error {
+enum LocalAnimeRecordError: Error {
     case dataError
     
     var description: String {

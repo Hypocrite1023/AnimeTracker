@@ -26,9 +26,9 @@ struct AnimeInfo {
 }
 
 protocol UserDataProvider {
-    func loadUserFavorite(perFetch: Int) -> AnyPublisher<[Response.FirebaseAnimeRecord], Error>
+    func loadUserFavorite(perFetch: Int) -> AnyPublisher<[Response.LocalAnimeRecord], Error>
     func resetFavoritePagination()
-    func updateAnimeRecord(userUID: String, animeID: Int, isFavorite: Bool, isNotify: Bool, status: String) -> AnyPublisher<Response.FirebaseAnimeRecord, Error>
+    func updateAnimeRecord(userUID: String, animeID: Int, isFavorite: Bool, isNotify: Bool, status: String) -> AnyPublisher<Response.LocalAnimeRecord, Error>
     func getCurrentUserUID() -> String?
 }
 
@@ -89,9 +89,9 @@ class LocalRecordManager: UserDataProvider {
             .eraseToAnyPublisher()
     }
     
-    func updateAnimeRecord(userUID: String, animeID: Int, isFavorite: Bool, isNotify: Bool, status: String) -> AnyPublisher<Response.FirebaseAnimeRecord, Error> {
+    func updateAnimeRecord(userUID: String, animeID: Int, isFavorite: Bool, isNotify: Bool, status: String) -> AnyPublisher<Response.LocalAnimeRecord, Error> {
         updateRecord(animeID: animeID, isFavorite: isFavorite, isNotify: isNotify, status: status)
-        return Just(Response.FirebaseAnimeRecord(id: animeID, isFavorite: isFavorite, isNotify: isNotify))
+        return Just(Response.LocalAnimeRecord(id: animeID, isFavorite: isFavorite, isNotify: isNotify))
             .setFailureType(to: Error.self)
             .eraseToAnyPublisher()
     }
@@ -132,11 +132,11 @@ class LocalRecordManager: UserDataProvider {
         lastFetchIndex = 0
     }
     
-    func loadUserFavorite(perFetch: Int = 10) -> AnyPublisher<[Response.FirebaseAnimeRecord], Error> {
+    func loadUserFavorite(perFetch: Int = 10) -> AnyPublisher<[Response.LocalAnimeRecord], Error> {
         let allFavorites = favoritesMap.values
             .filter { $0.isFavorite }
             .sorted { $0.id < $1.id }
-            .map { Response.FirebaseAnimeRecord(id: $0.id, isFavorite: $0.isFavorite, isNotify: $0.isNotify) }
+            .map { Response.LocalAnimeRecord(id: $0.id, isFavorite: $0.isFavorite, isNotify: $0.isNotify) }
         
         if lastFetchIndex >= allFavorites.count {
             return Just([])

@@ -14,8 +14,8 @@ final class LoginMockData: UserDataProvider {
         // Do nothing
     }
     
-    func updateAnimeRecord(userUID: String, animeID: Int, isFavorite: Bool, isNotify: Bool, status: String) -> AnyPublisher<Response.FirebaseAnimeRecord, any Error> {
-        return Just(Response.FirebaseAnimeRecord(id: 0, isFavorite: false, isNotify: false))
+    func updateAnimeRecord(userUID: String, animeID: Int, isFavorite: Bool, isNotify: Bool, status: String) -> AnyPublisher<Response.LocalAnimeRecord, any Error> {
+        return Just(Response.LocalAnimeRecord(id: 0, isFavorite: false, isNotify: false))
             .setFailureType(to: Error.self)
             .eraseToAnyPublisher()
     }
@@ -24,7 +24,7 @@ final class LoginMockData: UserDataProvider {
         return nil
     }
     
-    func loadUserFavorite(perFetch: Int) -> AnyPublisher<[Response.FirebaseAnimeRecord], any Error> {
+    func loadUserFavorite(perFetch: Int) -> AnyPublisher<[Response.LocalAnimeRecord], any Error> {
         return Just([])
             .setFailureType(to: Error.self)
             .eraseToAnyPublisher()
