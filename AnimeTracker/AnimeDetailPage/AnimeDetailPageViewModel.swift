@@ -56,7 +56,6 @@ class AnimeDetailPageViewModel {
     let shouldShowAlert: PassthroughSubject<AlertType, Never> = .init()
     let configFavorite: PassthroughSubject<Void, Never> = .init()
     let configNotification: PassthroughSubject<Void, Never> = .init()
-    let shouldShowLoginPage: PassthroughSubject<Void, Never> = .init()
     
     let shouldShowCharacterDetailPage: PassthroughSubject<Int?, Never> = .init()
     let shouldShowVoiceActorDetailPage: PassthroughSubject<Int?, Never> = .init()
@@ -92,7 +91,6 @@ class AnimeDetailPageViewModel {
     private(set) var showAlert: AnyPublisher<AlertType, Never> = .empty
     private(set) var configFavoritePublisher: AnyPublisher<Bool, Never> = .empty
     private(set) var configNotificationPublisher: AnyPublisher<Bool, Never> = .empty
-    private(set) var showLoginPage: AnyPublisher<Void, Never> = .empty
     // MARK: - data property
     let animeID: Int
     @Published var isFavorite: Bool = false
@@ -374,7 +372,5 @@ class AnimeDetailPageViewModel {
         configFavoritePublisher = $isFavorite.eraseToAnyPublisher()
         
         configNotificationPublisher = $isNotify.eraseToAnyPublisher()
-        
-        showLoginPage = Empty<Void, Never>().eraseToAnyPublisher()
     }
 }
