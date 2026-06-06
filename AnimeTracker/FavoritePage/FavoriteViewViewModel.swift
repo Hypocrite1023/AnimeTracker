@@ -36,6 +36,7 @@ class FavoriteViewViewModel: ObservableObject {
         // Trigger reload when filter or sort option changes
         Publishers.CombineLatest($selectedStatusFilter, $selectedSortOption)
             .dropFirst()
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] _, _ in
                 self?.shouldReloadData.send(())
             }
