@@ -208,6 +208,7 @@ struct AnimePosterCard: View {
                     .foregroundColor(.white)
                     .multilineTextAlignment(.leading)
                     .lineLimit(2)
+                    .minimumScaleFactor(0.8)
                     .padding(.horizontal, 8)
                     .padding(.bottom, 8)
                     .shadow(radius: 2)
@@ -264,11 +265,13 @@ struct SpotlightBanner: View {
                         .fontWeight(.bold)
                         .foregroundColor(.white)
                         .lineLimit(1)
+                        .minimumScaleFactor(0.8)
                     
                     Text("Explore details, ratings, and active discussions.")
                         .font(.caption)
                         .foregroundColor(.white.opacity(0.8))
                         .lineLimit(1)
+                        .minimumScaleFactor(0.8)
                 }
                 .padding(16)
             }
