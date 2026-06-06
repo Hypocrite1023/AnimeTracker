@@ -68,7 +68,7 @@ class CategoryViewModel: ObservableObject {
     @Published var categories: [Category] = []
     @Published var eachCategorySortBy: [UUID: Category.sortBy] = [:]
     @Published private var genres: [String] = []
-    @Published var isLoadingCategoryData: Bool = false // <-- ADDED
+    @Published var isLoadingCategoryData: Bool = true
     private var initializeDone: Bool = false
     private var cancellables: Set<AnyCancellable> = []
     // MARK: - input
@@ -153,23 +153,27 @@ class CategoryViewModel: ObservableObject {
             .store(in: &cancellables)
         
         shouldReloadSpecifyCategory
-            .handleEvents(receiveSubscription: { [weak self] _ in
-                self?.isLoadingCategoryData = true
-                print("➡️ [Debug] isLoadingCategoryData set to TRUE") // <-- ADDED
-            })
-            .compactMap { uuid, sortBy -> (UUID, String, Category.sortBy)? in
-                guard let category = self.categories.first(where: { $0.id == uuid })?.category else { return nil }
-                return (uuid, category, sortBy)
+            .compactMap { [weak self] uuid, sortBy -> (UUID, String, Category.sortBy)? in
+                guard let self = self, let categoryKey = self.categories.first(where: { $0.id == uuid })?.category else { return nil }
+                // Map key back to original genre to ensure case-sensitive/spaced matching on AniList API
+                let originalGenre = self.genres.first(where: {
+                    $0.lowercased()
+                      .replacingOccurrences(of: " ", with: "_")
+                      .replacingOccurrences(of: "-", with: "_") == categoryKey
+                }) ?? categoryKey
+                return (uuid, originalGenre, sortBy)
             }
-            .flatMap { uuid, category, sortBy -> AnyPublisher<(UUID, Response.AnimeCategoryResult), Error> in
-                print("➡️ [Debug] CategoryViewModel: flatMap received publisher from fetchAnimeByCategory.") // <-- ADDED
+            .map { [weak self] uuid, category, sortBy -> AnyPublisher<(UUID, Response.AnimeCategoryResult), Error> in
+                guard let self = self else {
+                    return Fail(error: NSError(domain: "CategoryViewModel", code: -1)).eraseToAnyPublisher()
+                }
                 return AnimeDataFetcher.shared.fetchAnimeByCategory(genere: [category], sortBy: sortBy.apiParameter, page: 1)
                     .map { result in (uuid, result)}
                     .eraseToAnyPublisher()
             }
+            .switchToLatest()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
-                print("⬅️ [Debug] isLoadingCategoryData set to FALSE (completion: \(completion))") // <-- ADDED
                 switch completion {
                 case .finished:
                     break
@@ -178,7 +182,6 @@ class CategoryViewModel: ObservableObject {
                 }
             } receiveValue: { [weak self] result in
                 guard let self = self else { return }
-                print("✅ [Debug] Received new data in receiveValue.") // <-- ADDED
                 var newCategories = self.categories
                 for (_, (_, animes)) in result.1.data.enumerated() {
                     guard let index = newCategories.firstIndex(where: { $0.id == result.0 }) else { continue }
@@ -198,9 +201,12 @@ class CategoryViewModel: ObservableObject {
             .store(in: &cancellables)
         
         shouldLoadMoreSpecifyCategory
-            .compactMap { uuid -> (UUID, String, Category.sortBy, Int)? in
+            .compactMap { [weak self] uuid -> (UUID, String, Category.sortBy, Int)? in
                 print("should load more")
-                guard let category = self.categories.first(where: { $0.id == uuid })?.category, let sortBy = self.eachCategorySortBy[uuid], let animeCount = self.categories.first(where: { $0.id == uuid })?.items.count else { return nil }
+                guard let self = self,
+                      let category = self.categories.first(where: { $0.id == uuid })?.category,
+                      let sortBy = self.eachCategorySortBy[uuid],
+                      let animeCount = self.categories.first(where: { $0.id == uuid })?.items.count else { return nil }
                 return (uuid, category, sortBy, animeCount / 20 + 1)
             }
             .flatMap { uuid, category, sortBy, page -> AnyPublisher<(UUID, Response.AnimeCategoryResult), Error> in
@@ -215,7 +221,8 @@ class CategoryViewModel: ObservableObject {
                 case .failure(let error):
                     self?.shouldShowAlert.send(error.localizedDescription)
                 }
-            } receiveValue: { result in
+            } receiveValue: { [weak self] result in
+                guard let self = self else { return }
                 for (_, (_, animes)) in result.1.data.enumerated() {
                     guard let index = self.categories.firstIndex(where: { $0.id == result.0 }) else { continue }
                     self.categories[index].items.append(contentsOf: animes.media.map { AnimeCellItem(animeID: $0.id, animeName: $0.title.native ?? "", animeThumbnailURL: URL(string: $0.coverImage.large)) })
