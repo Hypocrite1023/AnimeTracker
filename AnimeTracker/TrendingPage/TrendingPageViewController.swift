@@ -31,7 +31,6 @@ class TrendingPageViewController: UIViewController {
     }
     
     private func setupUI() {
-        navigationController?.setNavigationBarHidden(false, animated: false)
         trendingCollectionView?.isHidden = true // Hide the collection view storyboard element
         
         let swiftUIView = TrendingView(
@@ -46,11 +45,9 @@ class TrendingPageViewController: UIViewController {
                 if let lastContentOffsetY = self.lastContentOffsetY, contentOffsetY > 0 {
                     if contentOffsetY > lastContentOffsetY + 30 {
                         self.lastContentOffsetY = contentOffsetY
-                        self.navigationController?.setNavigationBarHidden(true, animated: true)
                         self.setTabBar(hidden: true, animated: true)
                     } else if contentOffsetY < lastContentOffsetY - 30 {
                         self.lastContentOffsetY = contentOffsetY
-                        self.navigationController?.setNavigationBarHidden(false, animated: true)
                         self.setTabBar(hidden: false, animated: true)
                     }
                 }
