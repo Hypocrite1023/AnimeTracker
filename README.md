@@ -11,6 +11,13 @@ AnimeTracker 是一款 iOS 應用程式，旨在幫助使用者追蹤與管理�
 - **追蹤時間線 (Timeline Page)**：展示使用者收藏的動漫清單，並依據距離下一集播出的倒數時間進行排序。
 - **詳細資訊頁面 (Anime Detail Page)**：提供豐富的動漫詳情，包含故事大綱、登場角色、聲優、製作團隊及相關作品等。
 
+<p align="center">
+  <img src="demo/trending.png" width="180" title="Trending Page">
+  <img src="demo/category.png" width="180" title="Category Page">
+  <img src="demo/favorite.png" width="180" title="Favorite Page">
+  <img src="demo/timeline.png" width="180" title="Timeline Page">
+</p>
+
 ## 安裝與執行說明
 
 本專案使用 **XcodeGen** 來管理 Xcode 專案結構，並採用 **Swift Package Manager (SPM)** 處理第三方套件。因此，請依照以下步驟在本地端設定並執行專案：
