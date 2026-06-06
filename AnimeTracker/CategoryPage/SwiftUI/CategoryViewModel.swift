@@ -201,9 +201,12 @@ class CategoryViewModel: ObservableObject {
             .store(in: &cancellables)
         
         shouldLoadMoreSpecifyCategory
-            .compactMap { uuid -> (UUID, String, Category.sortBy, Int)? in
+            .compactMap { [weak self] uuid -> (UUID, String, Category.sortBy, Int)? in
                 print("should load more")
-                guard let category = self.categories.first(where: { $0.id == uuid })?.category, let sortBy = self.eachCategorySortBy[uuid], let animeCount = self.categories.first(where: { $0.id == uuid })?.items.count else { return nil }
+                guard let self = self,
+                      let category = self.categories.first(where: { $0.id == uuid })?.category,
+                      let sortBy = self.eachCategorySortBy[uuid],
+                      let animeCount = self.categories.first(where: { $0.id == uuid })?.items.count else { return nil }
                 return (uuid, category, sortBy, animeCount / 20 + 1)
             }
             .flatMap { uuid, category, sortBy, page -> AnyPublisher<(UUID, Response.AnimeCategoryResult), Error> in
@@ -218,7 +221,8 @@ class CategoryViewModel: ObservableObject {
                 case .failure(let error):
                     self?.shouldShowAlert.send(error.localizedDescription)
                 }
-            } receiveValue: { result in
+            } receiveValue: { [weak self] result in
+                guard let self = self else { return }
                 for (_, (_, animes)) in result.1.data.enumerated() {
                     guard let index = self.categories.firstIndex(where: { $0.id == result.0 }) else { continue }
                     self.categories[index].items.append(contentsOf: animes.media.map { AnimeCellItem(animeID: $0.id, animeName: $0.title.native ?? "", animeThumbnailURL: URL(string: $0.coverImage.large)) })

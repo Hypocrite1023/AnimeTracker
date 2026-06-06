@@ -16,9 +16,9 @@ class CategoryViewController: UIViewController {
         super.viewDidLoad()
 
         let swiftUIView = CategoryView(
-            onAnimeTap: { animeID in
+            onAnimeTap: { [weak self] animeID in
                 let vc = AnimeDetailsViewController(animeID: animeID)
-                self.navigationController?.pushViewController(vc, animated: true)
+                self?.navigationController?.pushViewController(vc, animated: true)
             }
         )
         
