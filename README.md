@@ -2,15 +2,9 @@
 
 AnimeTracker 是一款 iOS 應用程式，旨在幫助使用者追蹤與管理他們喜愛的動漫系列。本應用程式提供最新熱門動漫資訊、強大的動漫搜尋功能，並能讓使用者建立個人的收藏清單與追蹤新番播出時間表。
 
-<p align="center">
-  <img src="https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/login.png" width="200">
-  <img src="https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/register.png" width="200">
-  <img src="https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/resetpass.png" width="200">
-</p>
-
 ## 核心功能
 
-- **熱門動漫 (Trending Page)**：展示當前最受歡迎的動漫作品。
+- **熱門動漫 (Trending Page)**：基於 SwiftUI 實作，以精美網格展示當前最受歡迎的動漫作品，並支援長按彈出式操作選單。
 - **分類瀏覽 (Category Page)**：基於 SwiftUI 實作，依照不同類別與風格推薦熱門動漫。
 - **動漫搜尋 (Search Page)**：支援依據類型（Genre）、標籤（Tags）、年份、季度等條件進行多維度搜尋。
 - **個人收藏 (Favorite Page)**：顯示使用者收藏的動漫，並提供取消收藏或開啟/關閉新番更新通知的功能。
@@ -18,9 +12,10 @@ AnimeTracker 是一款 iOS 應用程式，旨在幫助使用者追蹤與管理�
 - **詳細資訊頁面 (Anime Detail Page)**：提供豐富的動漫詳情，包含故事大綱、登場角色、聲優、製作團隊及相關作品等。
 
 <p align="center">
-  <img src="https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/trending.png" width="200">
-  <img src="https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/category.png" width="200">
-  <img src="https://github.com/Hypocrite1023/AnimeTracker/blob/main/demo/animeDetail1.png" width="200">
+  <img src="demo/trending.png" width="180" title="Trending Page">
+  <img src="demo/category.png" width="180" title="Category Page">
+  <img src="demo/favorite.png" width="180" title="Favorite Page">
+  <img src="demo/timeline.png" width="180" title="Timeline Page">
 </p>
 
 ## 安裝與執行說明
