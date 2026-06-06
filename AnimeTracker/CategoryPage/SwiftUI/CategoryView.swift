@@ -94,32 +94,23 @@ struct CategoryView: View {
                                         .padding(.trailing)
                                     }
                                     
-                                    ScrollViewReader { horizontalProxy in
-                                        ScrollView(.horizontal, showsIndicators: false) {
-                                            LazyHStack(spacing: 12) {
-                                                ForEach(Array(category.items.enumerated()), id: \.element.id) { (index, anime) in
-                                                    AnimePosterCard(animeID: anime.animeID, animeTitle: anime.animeName, animeImage: anime.animeThumbnailURL, onTap: { 
-                                                        self.vm.didSelectAnime.send($0)
-                                                    })
-                                                    .id("\(category.id.uuidString)-\(index)")
-                                                    .onAppear {
-                                                        if anime == category.items[category.items.count - 3] {
-                                                            self.vm.shouldLoadMoreSpecifyCategory.send(category.id)
-                                                        }
+                                    ScrollView(.horizontal, showsIndicators: false) {
+                                        LazyHStack(spacing: 12) {
+                                            ForEach(Array(category.items.enumerated()), id: \.element.id) { (index, anime) in
+                                                AnimePosterCard(animeID: anime.animeID, animeTitle: anime.animeName, animeImage: anime.animeThumbnailURL, onTap: { 
+                                                    self.vm.didSelectAnime.send($0)
+                                                })
+                                                .onAppear {
+                                                    if index == max(0, category.items.count - 3) {
+                                                        self.vm.shouldLoadMoreSpecifyCategory.send(category.id)
                                                     }
                                                 }
                                             }
-                                            .padding(.horizontal)
-                                            .padding(.bottom, 4)
                                         }
-                                        .onReceive(vm.categoryScrollViewScrollToLeading) { uuid in
-                                            if category.id == uuid {
-                                                withAnimation(.spring) {
-                                                    horizontalProxy.scrollTo("\(uuid.uuidString)-0", anchor: .leading)
-                                                }
-                                            }
-                                        }
+                                        .padding(.horizontal)
+                                        .padding(.bottom, 4)
                                     }
+                                    .id("\(category.id.uuidString)-\(vm.eachCategorySortBy[category.id]?.title ?? "POPULARITY")")
                                 }
                                 .id(category.id.uuidString) // Anchor for vertical scrollProxy
                             }
