@@ -31,32 +31,35 @@ struct TrendingView: View {
     var body: some View {
         ZStack {
             ScrollView {
-                LazyVGrid(columns: columns, spacing: 16) {
+                VStack(spacing: 0) {
                     if viewModel.animeTrendingData == nil {
                         // Skeleton views during initial loading
                         TrendingSkeletonView()
                             .padding(.top, 16)
+                            .padding(.horizontal)
                     } else if let mediaList = viewModel.animeTrendingData?.data.page.media {
-                        ForEach(mediaList, id: \.id) { anime in
-                            TrendingAnimeCard(
-                                anime: anime,
-                                onTap: {
-                                    onAnimeTap(anime.id)
-                                },
-                                onLongPress: {
-                                    presentPopupMenu(for: anime)
-                                }
-                            )
-                            .onAppear {
-                                if anime.id == mediaList.last?.id {
-                                    viewModel.shouldLoadMoreTrendingData.send(())
+                        LazyVGrid(columns: columns, spacing: 16) {
+                            ForEach(mediaList, id: \.id) { anime in
+                                TrendingAnimeCard(
+                                    anime: anime,
+                                    onTap: {
+                                        onAnimeTap(anime.id)
+                                    },
+                                    onLongPress: {
+                                        presentPopupMenu(for: anime)
+                                    }
+                                )
+                                .onAppear {
+                                    if anime.id == mediaList.last?.id {
+                                        viewModel.shouldLoadMoreTrendingData.send(())
+                                    }
                                 }
                             }
                         }
+                        .padding(.horizontal)
+                        .padding(.vertical, 16)
                     }
                 }
-                .padding(.horizontal)
-                .padding(.vertical, 16)
                 .background(
                     GeometryReader { proxy in
                         Color.clear
