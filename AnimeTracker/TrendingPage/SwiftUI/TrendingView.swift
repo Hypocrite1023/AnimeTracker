@@ -75,17 +75,7 @@ struct TrendingView: View {
                 onScroll?(value)
             }
             .refreshable {
-                await withCheckedContinuation { continuation in
-                    var cancellable: AnyCancellable?
-                    cancellable = viewModel.$animeTrendingData
-                        .dropFirst()
-                        .first()
-                        .sink { _ in
-                            continuation.resume()
-                            cancellable?.cancel()
-                        }
-                    viewModel.shouldRefreshTrendingData.send(())
-                }
+                await viewModel.refreshData()
             }
             
             // Pop-up Long Press Detail Menu
@@ -207,31 +197,35 @@ struct TrendingView: View {
     }
     
     private func toggleFavorite(for anime: Response.AnimeEssentialData) {
-        viewModel.toggleFavorite(
-            animeID: anime.id,
-            isNotify: isNotifyForMenu,
-            status: anime.status ?? "FINISHED",
-            currentFavorite: isFavoriteForMenu
-        )
-        .receive(on: DispatchQueue.main)
-        .sink(receiveCompletion: { _ in }, receiveValue: { newFavorite in
-            isFavoriteForMenu = newFavorite
-        })
-        .store(in: &viewModel.cancellables)
+        Task {
+            do {
+                let newFavorite = try await viewModel.toggleFavorite(
+                    animeID: anime.id,
+                    isNotify: isNotifyForMenu,
+                    status: anime.status ?? "FINISHED",
+                    currentFavorite: isFavoriteForMenu
+                )
+                isFavoriteForMenu = newFavorite
+            } catch {
+                print("Error toggling favorite: \(error)")
+            }
+        }
     }
     
     private func toggleNotification(for anime: Response.AnimeEssentialData) {
-        viewModel.toggleNotification(
-            animeID: anime.id,
-            isFavorite: isFavoriteForMenu,
-            status: anime.status ?? "FINISHED",
-            currentNotify: isNotifyForMenu
-        )
-        .receive(on: DispatchQueue.main)
-        .sink(receiveCompletion: { _ in }, receiveValue: { newNotify in
-            isNotifyForMenu = newNotify
-        })
-        .store(in: &viewModel.cancellables)
+        Task {
+            do {
+                let newNotify = try await viewModel.toggleNotification(
+                    animeID: anime.id,
+                    isFavorite: isFavoriteForMenu,
+                    status: anime.status ?? "FINISHED",
+                    currentNotify: isNotifyForMenu
+                )
+                isNotifyForMenu = newNotify
+            } catch {
+                print("Error toggling notification: \(error)")
+            }
+        }
     }
 }
 

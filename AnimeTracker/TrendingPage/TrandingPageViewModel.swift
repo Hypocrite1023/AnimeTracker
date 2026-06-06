@@ -14,7 +14,6 @@ class TrendingPageViewModel: ObservableObject {
     // MARK: - input
     let animeCollectionViewCellTap: PassthroughSubject<Int, Never> = .init()
     let shouldLoadMoreTrendingData: PassthroughSubject<Void, Never> = .init()
-    let shouldRefreshTrendingData: PassthroughSubject<Void, Never> = .init()
     
     // MARK: - output
     var shouldNavigateToDetailPage: AnyPublisher<Int, Never> = .empty
@@ -62,23 +61,6 @@ class TrendingPageViewModel: ObservableObject {
                 self.fetchMoreTrendingAnimeData(currentPage: currentPage + 1)
             }
             .store(in: &self.cancellables)
-        
-        shouldRefreshTrendingData
-            .flatMap { _ in
-                AnimeDataFetcher.shared.fetchAnimeByTrending(page: 1)
-            }
-            .sink { completion in
-                switch completion {
-                case .finished:
-                    break
-                case .failure(let error):
-                    print(error)
-                }
-            } receiveValue: { [weak self] trendingData in
-                AnimeDataFetcher.shared.isFetchingData = false
-                self?.animeTrendingData = trendingData
-            }
-            .store(in: &cancellables)
     }
     
     private func fetchMoreTrendingAnimeData(currentPage: Int) {
@@ -99,116 +81,71 @@ class TrendingPageViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-    // MARK: - Core Data & Notification Helper APIs (SwiftUI Refactored)
+    // MARK: - Core Data & Notification Helper APIs (SwiftUI Refactored - Async/Await)
     
     func getLocalRecord(for animeID: Int) -> AnyPublisher<Response.LocalAnimeRecord?, Error> {
         return LocalRecordManager.shared.getAnimeRecord(animeID: animeID)
     }
     
-    func toggleFavorite(animeID: Int, isNotify: Bool, status: String, currentFavorite: Bool) -> AnyPublisher<Bool, Error> {
-        let newFavorite = !currentFavorite
-        return LocalRecordManager.shared.addAnimeRecord(animeID: animeID, isFavorite: newFavorite, isNotify: isNotify, status: status)
-            .map { newFavorite }
-            .eraseToAnyPublisher()
-    }
-    
-    func toggleNotification(animeID: Int, isFavorite: Bool, status: String, currentNotify: Bool) -> AnyPublisher<Bool, Error> {
-        let newNotify = !currentNotify
-        let updateDb = LocalRecordManager.shared.addAnimeRecord(animeID: animeID, isFavorite: isFavorite, isNotify: newNotify, status: status)
-        
-        let handleNotification: AnyPublisher<Void, Error>
-        if newNotify {
-            handleNotification = createLocalNotification(for: animeID)
-        } else {
-            handleNotification = removeLocalNotification(for: animeID)
-        }
-        
-        return handleNotification
-            .flatMap { updateDb }
-            .map { newNotify }
-            .eraseToAnyPublisher()
-    }
-    
-    private func createLocalNotification(for animeID: Int) -> AnyPublisher<Void, Error> {
-        return Future<Void, Error> { [weak self] promise in
-            guard let self = self else {
-                promise(.failure(NSError(domain: "TrendingPageViewModel", code: -1)))
-                return
+    @MainActor
+    func refreshData() async {
+        do {
+            for try await trendingData in AnimeDataFetcher.shared.fetchAnimeByTrending(page: 1).values {
+                self.animeTrendingData = trendingData
+                break
             }
-            AnimeDataFetcher.shared.fetchAnimeEpisodeDataByID(id: animeID)
-                .sink { completion in
-                    switch completion {
-                    case .finished:
-                        promise(.success(()))
-                    case .failure(let error):
-                        promise(.failure(error))
-                    }
-                } receiveValue: { episodesData in
-                    AnimeDataFetcher.shared.isFetchingData = false
-                    if let nextAiringEpisode = episodesData.data.Media.nextAiringEpisode, let episodes = episodesData.data.Media.episodes {
-                        AnimeNotification.shared.setupAllEpisodeNotification(animeID: animeID, animeTitle: episodesData.data.Media.title.native, nextAiringEpsode: nextAiringEpisode.episode, nextAiringInterval: TimeInterval(nextAiringEpisode.timeUntilAiring), totalEpisode: episodes)
-                    }
-                }
-                .store(in: &self.cancellables)
+        } catch {
+            print("Error refreshing data: \(error)")
         }
-        .eraseToAnyPublisher()
     }
     
-    private func removeLocalNotification(for animeID: Int) -> AnyPublisher<Void, Error> {
-        AnimeNotification.shared.removeAllEpisodeNotification(for: animeID)
-        return Just(())
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
+    @MainActor
+    func toggleFavorite(animeID: Int, isNotify: Bool, status: String, currentFavorite: Bool) async throws -> Bool {
+        let newFavorite = !currentFavorite
+        for try await _ in LocalRecordManager.shared.addAnimeRecord(animeID: animeID, isFavorite: newFavorite, isNotify: isNotify, status: status).values {
+            break
+        }
+        return newFavorite
     }
     
-    // MARK: - Legacy methods (kept for backward compatibility if needed)
-    
-    func createOrUpdateAnimeRecord() -> AnyPublisher<Void, Error> {
-        guard let animeID = currentLongPressCellStatus.animeID, let isFavorite = currentLongPressCellStatus.isFavorite, let isNotify = currentLongPressCellStatus.isNotify, let status = currentLongPressCellStatus.status else {
-            return Fail(error: LocalAnimeRecordError.dataError)
-                .eraseToAnyPublisher()
+    @MainActor
+    func toggleNotification(animeID: Int, isFavorite: Bool, status: String, currentNotify: Bool) async throws -> Bool {
+        let newNotify = !currentNotify
+        
+        if newNotify {
+            try await createLocalNotification(for: animeID)
+        } else {
+            removeLocalNotification(for: animeID)
         }
         
-        return LocalRecordManager.shared.addAnimeRecord(animeID: animeID, isFavorite: isFavorite, isNotify: isNotify, status: status)
+        for try await _ in LocalRecordManager.shared.addAnimeRecord(animeID: animeID, isFavorite: isFavorite, isNotify: newNotify, status: status).values {
+            break
+        }
+        
+        return newNotify
     }
     
-    func createLocolNotification() -> AnyPublisher<Void, Error> {
-        guard let animeId = currentLongPressCellStatus.animeID else {
-            return Fail(error: LocolNotificationError.dataError)
-                .eraseToAnyPublisher()
+    private func createLocalNotification(for animeID: Int) async throws {
+        for try await episodesData in AnimeDataFetcher.shared.fetchAnimeEpisodeDataByID(id: animeID).values {
+            if let nextAiringEpisode = episodesData.data.Media.nextAiringEpisode,
+               let episodes = episodesData.data.Media.episodes {
+                AnimeNotification.shared.setupAllEpisodeNotification(
+                    animeID: animeID,
+                    animeTitle: episodesData.data.Media.title.native,
+                    nextAiringEpsode: nextAiringEpisode.episode,
+                    nextAiringInterval: TimeInterval(nextAiringEpisode.timeUntilAiring),
+                    totalEpisode: episodes
+                )
+            }
+            break
         }
-        return Future<Void, Error> { [weak self] promise in
-            guard let self = self else { return }
-            AnimeDataFetcher.shared.fetchAnimeEpisodeDataByID(id: animeId)
-                .sink { completion in
-                    switch completion {
-                    case .finished:
-                        promise(.success(()))
-                    case .failure(let error):
-                        promise(.failure(error))
-                    }
-                } receiveValue: { episodesData in
-                    AnimeDataFetcher.shared.isFetchingData = false
-                    if let nextAiringEpisode = episodesData.data.Media.nextAiringEpisode, let episodes = episodesData.data.Media.episodes {
-                        AnimeNotification.shared.setupAllEpisodeNotification(animeID: animeId, animeTitle: episodesData.data.Media.title.native, nextAiringEpsode: nextAiringEpisode.episode, nextAiringInterval: TimeInterval(nextAiringEpisode.timeUntilAiring), totalEpisode: episodes)
-                    }
-                }
-                .store(in: &self.cancellables)
-        }
-        .eraseToAnyPublisher()
     }
     
-    func removeLocolNotification() -> AnyPublisher<Void, Error> {
-        guard let animeId = currentLongPressCellStatus.animeID else {
-            return Fail(error: LocolNotificationError.dataError)
-                .eraseToAnyPublisher()
-        }
-        AnimeNotification.shared.removeAllEpisodeNotification(for: animeId)
-        return Just(())
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
+    private func removeLocalNotification(for animeID: Int) {
+        AnimeNotification.shared.removeAllEpisodeNotification(for: animeID)
     }
 }
+
 
 enum LocalAnimeRecordError: Error {
     case dataError
