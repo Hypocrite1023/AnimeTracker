@@ -39,6 +39,7 @@ extension Response {
         let title: Title
         let coverImage: CoverImage?
         let status: String?
+        let averageScore: Int?
         var statusInfo: AnimeStatus {
             AnimeStatus(rawValue: status ?? "") ?? .unknown
         }

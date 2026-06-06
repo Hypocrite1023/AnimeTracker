@@ -50,3 +50,7 @@ vendor/
 # Gemfile and Gemfile.lock (as per user request)
 Gemfile
 Gemfile.lock
+
+# Markdown Specs & Preferences
+user_preferences.md
+favorite_enhancement_spec.md

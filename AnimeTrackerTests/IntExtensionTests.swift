@@ -11,13 +11,13 @@ import XCTest
 final class IntExtensionTests: XCTestCase {
 
     func testMakeTimeString() {
-        XCTAssertEqual(100.makeTimeString(), "1min40sec")
-        XCTAssertEqual(60.makeTimeString(), "1min")
-        XCTAssertEqual(59.makeTimeString(), "59sec")
-        XCTAssertEqual(3661.makeTimeString(), "1hr1min1sec")
-        XCTAssertEqual(86400.makeTimeString(), "1day")
-        XCTAssertEqual(0.makeTimeString(), "0sec")
-        XCTAssertEqual(90061.makeTimeString(), "1day1hr1min1sec")
+        XCTAssertEqual(100.makeTimeString(), "1M")
+        XCTAssertEqual(60.makeTimeString(), "1M")
+        XCTAssertEqual(59.makeTimeString(), "59S")
+        XCTAssertEqual(3661.makeTimeString(), "1H1M")
+        XCTAssertEqual(86400.makeTimeString(), "1D")
+        XCTAssertEqual(0.makeTimeString(), "0 second")
+        XCTAssertEqual(90061.makeTimeString(), "1D1H1M")
     }
 
 }
