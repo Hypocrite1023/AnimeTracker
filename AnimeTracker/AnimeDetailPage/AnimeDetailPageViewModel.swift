@@ -91,10 +91,12 @@ class AnimeDetailPageViewModel {
     private(set) var showAlert: AnyPublisher<AlertType, Never> = .empty
     private(set) var configFavoritePublisher: AnyPublisher<Bool, Never> = .empty
     private(set) var configNotificationPublisher: AnyPublisher<Bool, Never> = .empty
+    private(set) var configUserStatusPublisher: AnyPublisher<UserAnimeStatus, Never> = .empty
     // MARK: - data property
     let animeID: Int
     @Published var isFavorite: Bool = false
     @Published var isNotify: Bool = false
+    @Published var userStatus: UserAnimeStatus = .planToWatch
     var isLocalDataInitFinished: Bool = false
     @Published var animeDetailData: Response.AnimeDetail.MediaData.Media?
     @Published var animeCharacterData: [Response.AnimeDetail.MediaData.Media.CharacterPreview.Edges]? = []
@@ -195,11 +197,12 @@ class AnimeDetailPageViewModel {
                 case .failure(let error):
                     self.shouldShowAlert.send(.apiError(message: error.localizedDescription))
                 }
-            }, receiveValue: { (favorite, notify, _) in
-                self.isFavorite = favorite ?? false
-                self.isNotify = notify ?? false
+            }, receiveValue: { record in
+                self.isFavorite = record?.isFavorite ?? false
+                self.isNotify = record?.isNotify ?? false
+                self.userStatus = record?.userStatus ?? .planToWatch
                 self.isLocalDataInitFinished = true
-                print("isFavorite: \(self.isFavorite); isNotify: \(self.isNotify)")
+                print("isFavorite: \(self.isFavorite); isNotify: \(self.isNotify); userStatus: \(self.userStatus)")
             })
             .store(in: &cancellable)
         setupSubscriber()
@@ -208,22 +211,28 @@ class AnimeDetailPageViewModel {
     }
     
     private func setupSubscriber() {
-        $isFavorite
-            .combineLatest($isNotify)
+        Publishers.CombineLatest3($isFavorite, $isNotify, $userStatus)
             .dropFirst()
             .filter { _ in self.isLocalDataInitFinished }
-            .flatMap { isFavorite, isNotify -> AnyPublisher<Void, Error> in
-                print("isFavorite: \(isFavorite); isNotify: \(isNotify)")
+            .flatMap { [weak self] isFavorite, isNotify, userStatus -> AnyPublisher<Response.LocalAnimeRecord, Error> in
+                guard let self = self else {
+                    return Fail(error: NSError(domain: "", code: -1)).eraseToAnyPublisher()
+                }
+                print("Saving record - isFavorite: \(isFavorite); isNotify: \(isNotify); userStatus: \(userStatus)")
                 let animeStatus = self.animeDetailData?.status ?? ""
-                return LocalRecordManager.shared.addAnimeRecord(animeID: self.animeID, isFavorite: isFavorite, isNotify: isNotify, status: animeStatus)
+                return LocalRecordManager.shared.updateAnimeRecord(
+                    animeID: self.animeID,
+                    isFavorite: isFavorite,
+                    isNotify: isNotify,
+                    status: animeStatus,
+                    userStatus: isFavorite ? userStatus : nil
+                )
             }
-            .catch{ error in
+            .catch { error in
                 self.shouldShowAlert.send(.apiError(message: error.localizedDescription))
-                return Empty<Void, Never>(completeImmediately: true).eraseToAnyPublisher()
+                return Empty<Response.LocalAnimeRecord, Never>(completeImmediately: true).eraseToAnyPublisher()
             }
-            .sink { _ in
-                
-            }
+            .sink { _ in }
             .store(in: &cancellable)
         
         configFavorite
@@ -372,5 +381,7 @@ class AnimeDetailPageViewModel {
         configFavoritePublisher = $isFavorite.eraseToAnyPublisher()
         
         configNotificationPublisher = $isNotify.eraseToAnyPublisher()
+        
+        configUserStatusPublisher = $userStatus.eraseToAnyPublisher()
     }
 }

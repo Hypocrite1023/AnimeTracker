@@ -248,15 +248,13 @@ class TrendingPageViewController: UIViewController {
                         case .failure(let error):
                             print("Error fetching anime record: \(error.localizedDescription)")
                         }
-                    } receiveValue: { (favorite, notify, status) in
-                        self.viewModel.currentLongPressCellStatus = (favorite ?? false, notify ?? false, animeStatus ?? "FINISHED", animeID)
+                    } receiveValue: { record in
+                        let favorite = record?.isFavorite ?? false
+                        let notify = record?.isNotify ?? false
+                        self.viewModel.currentLongPressCellStatus = (favorite, notify, animeStatus ?? "FINISHED", animeID)
                         
-                        if let favorite = favorite {
-                            self.updateConfigButton(btn: self.favoriteBtn, isTrue: favorite)
-                        }
-                        if let notify = notify {
-                            self.updateConfigButton(btn: self.notifyBtn, isTrue: notify)
-                        }
+                        self.updateConfigButton(btn: self.favoriteBtn, isTrue: favorite)
+                        self.updateConfigButton(btn: self.notifyBtn, isTrue: notify)
                     }
                     .store(in: &self.cancellables)
                 

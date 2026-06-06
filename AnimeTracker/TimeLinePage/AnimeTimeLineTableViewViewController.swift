@@ -1,87 +1,27 @@
-//
-//  AnimeTimeLineTableViewViewController.swift
-//  AnimeTracker
-//
-//  Created by 邱翊均 on 2024/8/10.
-//
-
 import UIKit
-
-struct AnimeTimeLineData {
-    let animeTitle: String
-    let animeCoverImage: String
-    let airingLeft: TimeInterval
-}
-
+import SwiftUI
+import SnapKit
 
 class AnimeTimeLineTableViewViewController: UIViewController {
     
-    // animeTitle, animeCoverImage, timeLeftToAiring, animeID, Ep,
     @IBOutlet weak var animeTimeLineTableView: UITableView!
-    
-//    let serialQueue = DispatchQueue(label: "episodeDatasQueue")
-    var episodeDatas = [Response.SimpleEpisodeData.DataResponse.SimpleMedia]()
-    var animeTimeLineData = [AnimeTimeLineData]()
-
-//    func appendToArray(_ newElements: [SimpleEpisodeData.DataResponse.SimpleMedia]) {
-//        serialQueue.async {
-//            self.episodeDatas += newElements
-//        }
-//    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
-        animeTimeLineTableView.dataSource = self
-        animeTimeLineTableView.delegate = self
-//        animeTimeLineTableView.register(AnimeTimeLineTableViewCell.self, forCellReuseIdentifier: "AnimeTimeLineTableViewCell")
+        // Embed the SwiftUI TimelineView using UIHostingController
+        let timelineUIHostingController = UIHostingController(rootView: TimelineView())
+        let timelineView = timelineUIHostingController.view!
+        self.addChild(timelineUIHostingController)
+        self.view.addSubview(timelineView)
         
+        timelineView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
         
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
+        timelineUIHostingController.didMove(toParent: self)
         
-        
-        
+        // Hide the original storyboard table view
+        animeTimeLineTableView.isHidden = true
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
-}
-
-extension AnimeTimeLineTableViewViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return animeTimeLineData.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "AnimeTimeLineTableViewCell") as! AnimeTimeLineTableViewCell
-        cell.animeTitleLabel.text = self.animeTimeLineData[indexPath.row].animeTitle
-        cell.animeCoverImageView.loadImage(from: self.animeTimeLineData[indexPath.row].animeCoverImage)
-        cell.airingLeftTimeLabel.text = AnimeDetailFunc.airingTime(from: self.animeTimeLineData[indexPath.row].airingLeft)
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 200
-    }
-}
-
-extension AnimeTimeLineTableViewViewController: UITableViewDelegate {
-    
 }

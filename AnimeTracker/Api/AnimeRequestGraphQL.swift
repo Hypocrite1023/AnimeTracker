@@ -264,6 +264,7 @@ enum AnimeRequestGraphQL {
                   large
                 }
                 status
+                averageScore
               }
             }
             """
@@ -305,6 +306,7 @@ enum AnimeRequestGraphQL {
                   large
                 }
                 status
+                averageScore
               }
             """
             }

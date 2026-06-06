@@ -214,11 +214,10 @@ class AnimeDetailsViewController: UIViewController {
             }
             .store(in: &cancellables)
         
-        vm.configFavoritePublisher
+        Publishers.CombineLatest(vm.configFavoritePublisher, vm.configUserStatusPublisher)
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] isFavorite in
-                self?.favoriteBarButton?.image = UIImage(systemName: isFavorite ? "star.fill" : "star")
-                self?.favoriteBarButton?.tintColor = isFavorite ? .systemYellow : .systemGray
+            .sink { [weak self] isFavorite, userStatus in
+                self?.updateFavoriteMenu(isFavorite: isFavorite, currentStatus: userStatus)
             }
             .store(in: &cancellables)
         
@@ -642,6 +641,34 @@ private extension AnimeDetailsViewController {
     
     @objc func notifyButtonTapped() {
         vm.configNotification.send(())
+    }
+    
+    func updateFavoriteMenu(isFavorite: Bool, currentStatus: UserAnimeStatus) {
+        guard let button = favoriteBarButton else { return }
+        
+        if !isFavorite {
+            button.menu = nil
+            button.image = UIImage(systemName: "star")
+            button.tintColor = .systemGray
+        } else {
+            button.image = UIImage(systemName: "star.fill")
+            button.tintColor = .systemYellow
+            
+            let planAction = UIAction(title: UserAnimeStatus.planToWatch.localizedTitle, state: currentStatus == .planToWatch ? .on : .off) { [weak self] _ in
+                self?.vm.userStatus = .planToWatch
+            }
+            let watchingAction = UIAction(title: UserAnimeStatus.watching.localizedTitle, state: currentStatus == .watching ? .on : .off) { [weak self] _ in
+                self?.vm.userStatus = .watching
+            }
+            let completedAction = UIAction(title: UserAnimeStatus.completed.localizedTitle, state: currentStatus == .completed ? .on : .off) { [weak self] _ in
+                self?.vm.userStatus = .completed
+            }
+            let unfavoriteAction = UIAction(title: "Unfavorite", attributes: .destructive) { [weak self] _ in
+                self?.vm.isFavorite = false
+            }
+            
+            button.menu = UIMenu(title: "Watch List Status", children: [planAction, watchingAction, completedAction, unfavoriteAction])
+        }
     }
 }
 
