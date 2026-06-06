@@ -69,7 +69,6 @@ class CategoryViewModel: ObservableObject {
     @Published var eachCategorySortBy: [UUID: Category.sortBy] = [:]
     @Published private var genres: [String] = []
     @Published var isLoadingCategoryData: Bool = true
-    @Published var loadingCategoryIds: Set<UUID> = []
     private var initializeDone: Bool = false
     private var cancellables: Set<AnyCancellable> = []
     // MARK: - input
@@ -154,12 +153,15 @@ class CategoryViewModel: ObservableObject {
             .store(in: &cancellables)
         
         shouldReloadSpecifyCategory
-            .handleEvents(receiveOutput: { [weak self] result in
-                self?.loadingCategoryIds.insert(result.categoryKey)
-            })
             .compactMap { [weak self] uuid, sortBy -> (UUID, String, Category.sortBy)? in
-                guard let self = self, let category = self.categories.first(where: { $0.id == uuid })?.category else { return nil }
-                return (uuid, category, sortBy)
+                guard let self = self, let categoryKey = self.categories.first(where: { $0.id == uuid })?.category else { return nil }
+                // Map key back to original genre to ensure case-sensitive/spaced matching on AniList API
+                let originalGenre = self.genres.first(where: {
+                    $0.lowercased()
+                      .replacingOccurrences(of: " ", with: "_")
+                      .replacingOccurrences(of: "-", with: "_") == categoryKey
+                }) ?? categoryKey
+                return (uuid, originalGenre, sortBy)
             }
             .map { [weak self] uuid, category, sortBy -> AnyPublisher<(UUID, Response.AnimeCategoryResult), Error> in
                 guard let self = self else {
@@ -167,15 +169,6 @@ class CategoryViewModel: ObservableObject {
                 }
                 return AnimeDataFetcher.shared.fetchAnimeByCategory(genere: [category], sortBy: sortBy.apiParameter, page: 1)
                     .map { result in (uuid, result)}
-                    .handleEvents(receiveCompletion: { _ in
-                        DispatchQueue.main.async {
-                            self.loadingCategoryIds.remove(uuid)
-                        }
-                    }, receiveCancel: {
-                        DispatchQueue.main.async {
-                            self.loadingCategoryIds.remove(uuid)
-                        }
-                    })
                     .eraseToAnyPublisher()
             }
             .switchToLatest()
@@ -189,7 +182,6 @@ class CategoryViewModel: ObservableObject {
                 }
             } receiveValue: { [weak self] result in
                 guard let self = self else { return }
-                self.loadingCategoryIds.remove(result.0)
                 var newCategories = self.categories
                 for (_, (_, animes)) in result.1.data.enumerated() {
                     guard let index = newCategories.firstIndex(where: { $0.id == result.0 }) else { continue }

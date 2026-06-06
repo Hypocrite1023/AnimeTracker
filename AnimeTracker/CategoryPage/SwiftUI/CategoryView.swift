@@ -97,24 +97,14 @@ struct CategoryView: View {
                                     ScrollViewReader { horizontalProxy in
                                         ScrollView(.horizontal, showsIndicators: false) {
                                             LazyHStack(spacing: 12) {
-                                                if vm.loadingCategoryIds.contains(category.id) {
-                                                    ForEach(0..<5) { _ in
-                                                        VStack(spacing: 8) {
-                                                            Text("")
-                                                                .skeleton(with: true, size: CGSize(width: 125, height: 175), shape: .rectangle)
-                                                                .cornerRadius(12)
-                                                        }
-                                                    }
-                                                } else {
-                                                    ForEach(Array(category.items.enumerated()), id: \.element.id) { (index, anime) in
-                                                        AnimePosterCard(animeID: anime.animeID, animeTitle: anime.animeName, animeImage: anime.animeThumbnailURL, onTap: { 
-                                                            self.vm.didSelectAnime.send($0)
-                                                        })
-                                                        .id("\(category.id.uuidString)-\(index)")
-                                                        .onAppear {
-                                                            if anime == category.items[category.items.count - 3] {
-                                                                self.vm.shouldLoadMoreSpecifyCategory.send(category.id)
-                                                            }
+                                                ForEach(Array(category.items.enumerated()), id: \.element.id) { (index, anime) in
+                                                    AnimePosterCard(animeID: anime.animeID, animeTitle: anime.animeName, animeImage: anime.animeThumbnailURL, onTap: { 
+                                                        self.vm.didSelectAnime.send($0)
+                                                    })
+                                                    .id("\(category.id.uuidString)-\(index)")
+                                                    .onAppear {
+                                                        if anime == category.items[category.items.count - 3] {
+                                                            self.vm.shouldLoadMoreSpecifyCategory.send(category.id)
                                                         }
                                                     }
                                                 }
