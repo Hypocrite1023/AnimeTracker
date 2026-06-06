@@ -20,7 +20,7 @@ class TabBarViewController: UITabBarController {
     }
     
     func setupUI() {
-        navigationItem.title = "AnimeTracker"
+        navigationItem.title = nil
         navigationItem.rightBarButtonItem = nil
         
         requestNotificationPermission()
