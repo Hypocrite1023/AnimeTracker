@@ -68,7 +68,7 @@ class CategoryViewModel: ObservableObject {
     @Published var categories: [Category] = []
     @Published var eachCategorySortBy: [UUID: Category.sortBy] = [:]
     @Published private var genres: [String] = []
-    @Published var isLoadingCategoryData: Bool = false // <-- ADDED
+    @Published var isLoadingCategoryData: Bool = true
     private var initializeDone: Bool = false
     private var cancellables: Set<AnyCancellable> = []
     // MARK: - input
@@ -153,23 +153,25 @@ class CategoryViewModel: ObservableObject {
             .store(in: &cancellables)
         
         shouldReloadSpecifyCategory
-            .handleEvents(receiveSubscription: { [weak self] _ in
+            .handleEvents(receiveOutput: { [weak self] _ in
                 self?.isLoadingCategoryData = true
-                print("➡️ [Debug] isLoadingCategoryData set to TRUE") // <-- ADDED
             })
-            .compactMap { uuid, sortBy -> (UUID, String, Category.sortBy)? in
-                guard let category = self.categories.first(where: { $0.id == uuid })?.category else { return nil }
+            .compactMap { [weak self] uuid, sortBy -> (UUID, String, Category.sortBy)? in
+                guard let self = self, let category = self.categories.first(where: { $0.id == uuid })?.category else { return nil }
                 return (uuid, category, sortBy)
             }
-            .flatMap { uuid, category, sortBy -> AnyPublisher<(UUID, Response.AnimeCategoryResult), Error> in
-                print("➡️ [Debug] CategoryViewModel: flatMap received publisher from fetchAnimeByCategory.") // <-- ADDED
+            .map { [weak self] uuid, category, sortBy -> AnyPublisher<(UUID, Response.AnimeCategoryResult), Error> in
+                guard let self = self else {
+                    return Fail(error: NSError(domain: "CategoryViewModel", code: -1)).eraseToAnyPublisher()
+                }
                 return AnimeDataFetcher.shared.fetchAnimeByCategory(genere: [category], sortBy: sortBy.apiParameter, page: 1)
                     .map { result in (uuid, result)}
                     .eraseToAnyPublisher()
             }
+            .switchToLatest()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
-                print("⬅️ [Debug] isLoadingCategoryData set to FALSE (completion: \(completion))") // <-- ADDED
+                self?.isLoadingCategoryData = false
                 switch completion {
                 case .finished:
                     break
@@ -178,7 +180,7 @@ class CategoryViewModel: ObservableObject {
                 }
             } receiveValue: { [weak self] result in
                 guard let self = self else { return }
-                print("✅ [Debug] Received new data in receiveValue.") // <-- ADDED
+                self.isLoadingCategoryData = false
                 var newCategories = self.categories
                 for (_, (_, animes)) in result.1.data.enumerated() {
                     guard let index = newCategories.firstIndex(where: { $0.id == result.0 }) else { continue }
