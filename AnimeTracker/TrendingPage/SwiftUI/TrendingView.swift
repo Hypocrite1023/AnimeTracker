@@ -242,44 +242,50 @@ struct TrendingAnimeCard: View {
     let onTap: () -> Void
     let onLongPress: () -> Void
     
+    @State private var isPressed: Bool = false
+    
     var body: some View {
-        Button(action: onTap) {
-            VStack(alignment: .center, spacing: 6) {
-                // Poster
-                KFImage(URL(string: anime.coverImage?.extraLarge ?? anime.coverImage?.large ?? ""))
-                    .placeholder {
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.primary.opacity(0.06))
-                            .aspectRatio(125/175, contentMode: .fit)
-                    }
-                    .resizable()
-                    .scaledToFill()
-                    .aspectRatio(125/175, contentMode: .fit)
-                    .cornerRadius(12)
-                    .clipped()
-                    .shadow(color: Color.black.opacity(0.08), radius: 6, x: 0, y: 3)
-                
-                // Name
-                Text(anime.title.native ?? anime.title.english ?? anime.title.romaji ?? "")
-                    .font(.caption)
-                    .fontWeight(.bold)
-                    .foregroundColor(.primary)
-                    .lineLimit(2)
-                    .multilineTextAlignment(.center)
-                    .minimumScaleFactor(0.8)
-                    .frame(height: 32, alignment: .top)
-                    .padding(.horizontal, 2)
-            }
-        }
-        .buttonStyle(ScaleButtonStyle())
-        .simultaneousGesture(
-            LongPressGesture(minimumDuration: 0.5)
-                .onEnded { _ in
-                    let impactMed = UIImpactFeedbackGenerator(style: .medium)
-                    impactMed.impactOccurred()
-                    onLongPress()
+        VStack(alignment: .center, spacing: 6) {
+            // Poster
+            KFImage(URL(string: anime.coverImage?.extraLarge ?? anime.coverImage?.large ?? ""))
+                .placeholder {
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color.primary.opacity(0.06))
+                        .aspectRatio(125/175, contentMode: .fit)
                 }
-        )
+                .resizable()
+                .scaledToFill()
+                .aspectRatio(125/175, contentMode: .fit)
+                .cornerRadius(12)
+                .clipped()
+                .shadow(color: Color.black.opacity(0.08), radius: 6, x: 0, y: 3)
+            
+            // Name
+            Text(anime.title.native ?? anime.title.english ?? anime.title.romaji ?? "")
+                .font(.caption)
+                .fontWeight(.bold)
+                .foregroundColor(.primary)
+                .lineLimit(2)
+                .multilineTextAlignment(.center)
+                .minimumScaleFactor(0.8)
+                .frame(height: 32, alignment: .top)
+                .padding(.horizontal, 2)
+        }
+        .scaleEffect(isPressed ? 0.95 : 1.0)
+        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isPressed)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            onTap()
+        }
+        .onLongPressGesture(minimumDuration: 0.5, pressing: { pressing in
+            withAnimation {
+                isPressed = pressing
+            }
+        }, perform: {
+            let impactMed = UIImpactFeedbackGenerator(style: .medium)
+            impactMed.impactOccurred()
+            onLongPress()
+        })
     }
 }
 
